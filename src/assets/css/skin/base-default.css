@@ -31,3 +31,12 @@
   box-shadow: inset 0 0 6px #eee;
   background-color: #555;
 }
+
+/*拼命加载*/
+.el-loading-spinner .el-loading-text {
+  color: #555;
+}
+
+.el-loading-spinner .path {
+  stroke:#555;
+}

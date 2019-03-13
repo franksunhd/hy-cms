@@ -19,5 +19,23 @@ export default {
   // 系统设置模块
   system:{
     systemSetting:'systemSettings'
+  },
+  // 面包屑
+  breadcrumb:{
+    systemSetting:'systemSettings',
+    license:'License information maintenance',
+    version:'version',
+    customerName:'customerName',
+    LicenseGenerated:'LicenseGenerated',
+    validity:'validity',
+    allNumber:'allNumber',
+    hasNumber:'hasNumber',
+    effectiveModule:'effectiveModule',
+    uploadLicense:'Renewal of license',
+    viewHistory:'View certificate history',
+    indexNumber:'index',
+    validityDate:'validityDate',
+    authorizationModule:'authorizationModule',
+    authorizationUpdateTime:'authorizationUpdateTime'
   }
 }

@@ -8,6 +8,7 @@ html,body,.Index-box {
   padding: 0;
   height: 60px !important;
   font-size: 20px;
+  overflow: hidden;
 }
 
 .el-badge {
@@ -39,4 +40,21 @@ html,body,.Index-box {
 
 .el-menu .el-submenu__title .el-submenu__icon-arrow {
   display: none;
+}
+
+.el-loading-mask {
+  height: auto !important;
+}
+
+/*面包屑*/
+.Breadcrumb {
+  height: 56px;
+  line-height: 56px;
+}
+
+.el-breadcrumb {
+  height: 56px;
+  line-height: 56px;
+  display: inline-block;
+  font-size: 16px;
 }

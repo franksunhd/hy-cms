@@ -29,15 +29,7 @@
         navBarArr:[
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
-              {id:'2-1',name:'平台信息设置1',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-2',name:'平台信息设置2',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-3',name:'平台信息设置3',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-4',name:'平台信息设置4',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-5',name:'平台信息设置5',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-6',name:'平台信息设置6',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-7',name:'平台信息设置7',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-8',name:'平台信息设置8',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-9',name:'平台信息设置9',url:'/YUser/systemSettings/platformInformation'},
+              {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
             ]
           },
         ]

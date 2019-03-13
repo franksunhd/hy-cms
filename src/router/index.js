@@ -16,21 +16,25 @@ const platformInformation = () => import ('@/page/pages/platformInformation');
 Vue.use(Router);
 export default new Router({
   routes: [
-// 首页重定向
-    { path: "/", redirect: "/YUser/index"},
-    { path: "/YUser", redirect: "/YUser/index"},
-    { path: '/YUser', name: 'index', component: Index,
+    // 首页重定向
+    {path: "/", redirect: "/YUser/index"},
+    {path: "/YUser", redirect: "/YUser/index"},
+    {path: '/YUser', name: 'index', component: Index,
       children:[
-        { path: "/YUser/index", name: 'Home', component: Home},
-        { path: "/YUser/systemSettings",redirect: "/YUser/systemSettings/licenseInformation"},
-        { path: "/YUser/systemSettings",name: 'systemSettings', component: systemSettings,
+        {path: "/YUser/index", name: 'Home', component: Home},
+        {path: "/YUser/systemSettings", redirect: "/YUser/systemSettings/licenseInformation"},
+        {path: "/YUser/systemSettings", name: 'systemSettings', component: systemSettings,
           children:[
-            { path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
-            { path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
+            {path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
+            {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
           ]
         }
       ]
     },
-    { path:'/login',name:'Login',component:Login}
+    {
+      path:'/login',
+      name:'Login',
+      component:Login
+    }
   ]
 });

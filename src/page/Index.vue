@@ -106,9 +106,6 @@
 </script>
 
 <style>
-  .BoxName {
-    /*overflow: hidden;*/
-  }
   .app-header-logo img {
     width: 60px;
   }
