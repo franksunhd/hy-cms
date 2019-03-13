@@ -24,9 +24,9 @@
       </el-form-item>
       <el-form-item label="通知的形式：">
         <el-radio-group v-model="noticeWay" @change="changeWay">
-          <el-radio label="1">站内信</el-radio>
-          <el-radio label="2">手机短信</el-radio>
-          <el-radio label="3">电子邮件</el-radio>
+          <el-radio label="1">{{$t('public.message')}}</el-radio>
+          <el-radio label="2">{{$t('public.sms')}}</el-radio>
+          <el-radio label="3">{{$t('public.email')}}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>

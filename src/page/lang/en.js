@@ -15,7 +15,10 @@ export default {
     cancel:'cancel',
     close:'close',
     clickUpload:'Click to upload',
-    save:'save'
+    save:'save',
+    message:'message letter station',
+    sms:'short message',
+    email:'email'
   },
   // 系统设置模块
   system:{

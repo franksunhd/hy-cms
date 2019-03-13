@@ -15,7 +15,10 @@ export default {
     cancel:'取消',
     close:'关闭',
     clickUpload:'点击上传',
-    save:'保存'
+    save:'保存',
+    message:'站内信',
+    sms:'手机短信',
+    email:'电子邮件'
   },
   // 系统设置模块 导航
   system:{
