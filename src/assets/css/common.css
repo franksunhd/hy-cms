@@ -1,0 +1,42 @@
+/*重置element-ui代码*/
+html,body,.Index-box {
+  width: 100%;
+  height: 100%;
+}
+
+.el-header {
+  padding: 0;
+  height: 60px !important;
+  font-size: 20px;
+}
+
+.el-badge {
+  vertical-align: baseline;
+}
+
+.el-badge__content.is-fixed {
+  top: 20px;
+}
+
+.el-main {
+  padding: 0;
+}
+
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.el-main::-webkit-scrollbar {
+  width: 5px;
+  height: 3px;
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.el-main::-webkit-scrollbar-track{
+  border-radius: 5px;
+}
+/*定义滑块，内阴影及圆角*/
+.el-main::-webkit-scrollbar-thumb{
+  height: 20px;
+  border-radius: 5px;
+}
+
+.el-menu .el-submenu__title .el-submenu__icon-arrow {
+  display: none;
+}
