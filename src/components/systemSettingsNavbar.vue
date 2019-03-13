@@ -30,6 +30,7 @@
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
               {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
+              {id:'2-2',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
             ]
           },
         ]

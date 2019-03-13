@@ -8,20 +8,20 @@
       </el-breadcrumb>
     </div>
     <el-form inline label-width="200px">
-      <el-form-item :label="$t('breadcrumb.version') + '：'">3.0</el-form-item><br>
-      <el-form-item :label="$t('breadcrumb.customerName') + '：'">上海XXXXXXXXXXXXXXX证券营业部</el-form-item><br>
-      <el-form-item :label="$t('breadcrumb.LicenseGenerated') + '：'">
+      <el-form-item :label="$t('license.version') + '：'">3.0</el-form-item><br>
+      <el-form-item :label="$t('license.customerName') + '：'">上海XXXXXXXXXXXXXXX证券营业部</el-form-item><br>
+      <el-form-item :label="$t('license.LicenseGenerated') + '：'">
         <span style="width: 100px;display: inline-block;">2019-02-01</span>
       </el-form-item>
-      <el-form-item :label="$t('breadcrumb.validity') + '：'">2019-02-01</el-form-item><br>
-      <el-form-item :label="$t('breadcrumb.allNumber') + '：'">
+      <el-form-item :label="$t('license.validity') + '：'">2019-02-01</el-form-item><br>
+      <el-form-item :label="$t('license.allNumber') + '：'">
         <span style="width: 100px;display: inline-block;">666</span>
       </el-form-item>
-      <el-form-item :label="$t('breadcrumb.hasNumber') + '：'">102</el-form-item><br>
-      <el-form-item :label="$t('breadcrumb.effectiveModule') + '：'">ALL</el-form-item>
+      <el-form-item :label="$t('license.hasNumber') + '：'">102</el-form-item><br>
+      <el-form-item :label="$t('license.effectiveModule') + '：'">ALL</el-form-item>
     </el-form>
-    <el-button size="small" @click="dialogVisible = true">{{$t('breadcrumb.uploadLicense')}}</el-button>
-    <el-button size="small" @click="isShow = true">{{$t('breadcrumb.viewHistory')}}</el-button>
+    <el-button size="small" @click="dialogVisible = true">{{$t('license.uploadLicense')}}</el-button>
+    <el-button size="small" @click="isShow = true">{{$t('license.viewHistory')}}</el-button>
     <el-dialog :title="$t('header.head')" :visible.sync="dialogVisible">
       <el-upload action="">
         <el-button size="small" type="primary">{{$t('public.clickUpload')}}</el-button>
@@ -32,12 +32,12 @@
       </span>
     </el-dialog>
     <el-table :data="tableData" v-if="isShow">
-      <el-table-column :label="$t('breadcrumb.indexNumber')" type="index" />
-      <el-table-column :label="$t('breadcrumb.customerName')" />
-      <el-table-column :label="$t('breadcrumb.allNumber')" />
-      <el-table-column :label="$t('breadcrumb.validityDate')" />
-      <el-table-column :label="$t('breadcrumb.authorizationModule')" />
-      <el-table-column :label="$t('breadcrumb.authorizationUpdateTime')" />
+      <el-table-column :label="$t('license.indexNumber')" type="index" />
+      <el-table-column :label="$t('license.customerName')" />
+      <el-table-column :label="$t('license.allNumber')" />
+      <el-table-column :label="$t('license.validityDate')" />
+      <el-table-column :label="$t('license.authorizationModule')" />
+      <el-table-column :label="$t('license.authorizationUpdateTime')" />
     </el-table>
   </Box>
 </template>

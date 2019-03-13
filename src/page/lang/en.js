@@ -14,7 +14,8 @@ export default {
     confirm:'confirm',
     cancel:'cancel',
     close:'close',
-    clickUpload:'Click to upload'
+    clickUpload:'Click to upload',
+    save:'save'
   },
   // 系统设置模块
   system:{
@@ -24,6 +25,12 @@ export default {
   breadcrumb:{
     systemSetting:'systemSettings',
     license:'License information maintenance',
+    systemManagement:'system management',
+    informationPlatform:'information platform',
+    licenseNotice:'License notice'
+  },
+  // 许可证信息维护
+  license:{
     version:'version',
     customerName:'customerName',
     LicenseGenerated:'LicenseGenerated',
@@ -37,5 +44,13 @@ export default {
     validityDate:'validityDate',
     authorizationModule:'authorizationModule',
     authorizationUpdateTime:'authorizationUpdateTime'
+  },
+  // 平台信息设置
+  informationPlatform:{
+
+  },
+  // License到期通知
+  licenseNotice:{
+    selectUser:'select user'
   }
 }

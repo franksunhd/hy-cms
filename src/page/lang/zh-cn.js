@@ -14,9 +14,10 @@ export default {
     confirm:'确认',
     cancel:'取消',
     close:'关闭',
-    clickUpload:'点击上传'
+    clickUpload:'点击上传',
+    save:'保存'
   },
-  // 系统设置模块
+  // 系统设置模块 导航
   system:{
     systemSetting:'系统设置'
   },
@@ -24,6 +25,12 @@ export default {
   breadcrumb:{
     systemSetting:'系统设置',
     license:'许可证信息维护',
+    systemManagement:'系统管理',
+    informationPlatform:'平台信息设置',
+    licenseNotice:'License到期通知'
+  },
+  // 许可证信息维护
+  license:{
     version:'版本',
     customerName:'客户名称',
     LicenseGenerated:'License生成于',
@@ -37,5 +44,13 @@ export default {
     validityDate:'有效期',
     authorizationModule:'授权模块',
     authorizationUpdateTime:'授权更新时间'
+  },
+  // 平台信息设置
+  informationPlatform:{
+
+  },
+  // License到期通知
+  licenseNotice:{
+    selectUser:'选择用户'
   }
 }
