@@ -24,7 +24,7 @@
     methods:{
 
     },
-    created:{
+    created(){
 
     }
   }
