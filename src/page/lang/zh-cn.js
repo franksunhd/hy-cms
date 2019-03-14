@@ -53,7 +53,12 @@ export default {
   },
   // 平台信息设置
   informationPlatform:{
-
+    loginTitle:'登录页标题',
+    loginLogo:'登录页Logo',
+    loginSwiper:'登录页轮播图',
+    loginFooterInfo:'登录页页脚信息',
+    homeTitle:'后台页面头部标题',
+    homeLogo:'后台页面头部Logo'
   },
   // License到期通知
   licenseNotice:{

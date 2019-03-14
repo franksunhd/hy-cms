@@ -53,7 +53,12 @@ export default {
   },
   // 平台信息设置
   informationPlatform:{
-
+    loginTitle:'loginTitle',
+    loginLogo:'loginLogo',
+    loginSwiper:'loginSwiper',
+    loginFooterInfo:'loginFooterInfo',
+    homeTitle:'homeTitle',
+    homeLogo:'homeLogo'
   },
   // License到期通知
   licenseNotice:{
