@@ -9,16 +9,16 @@
       </el-breadcrumb>
     </div>
     <el-form label-width="200px">
-      <el-form-item label="接口访问方式：">
+      <el-form-item :label="$t('interfaceTest.interfaceMode') + '：'">
         <el-radio-group v-model="interfaceWay" @change="changeInterfaceWay">
           <el-radio label="post">POST</el-radio>
           <el-radio label="get">GET</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="API 地址：">
+      <el-form-item :label="$t('interfaceTest.apiAddress') + '：'">
         <el-input class="inputWidth" />
       </el-form-item>
-      <el-form-item label="访问参数：">
+      <el-form-item :label="$t('interfaceTest.accessParameters') + '：'">
         <el-input type="textarea" :autosize="{ minRows: 5 }" />
       </el-form-item>
       <el-form-item>

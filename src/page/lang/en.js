@@ -70,5 +70,11 @@ export default {
     licenseTime:'licenseTime',
     licenseUser:'licenseUser',
     licenseWay:'licenseWay'
+  },
+  // 接口访问测试
+  interfaceTest:{
+    interfaceMode:'interface mode',
+    apiAddress:'API address',
+    accessParameters:'access parameters'
   }
 }

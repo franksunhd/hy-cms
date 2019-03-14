@@ -73,6 +73,8 @@ export default {
   },
   // 接口访问测试
   interfaceTest:{
-
+    interfaceMode:'接口访问方式',
+    apiAddress:'API 地址',
+    accessParameters:'访问参数'
   }
 }
