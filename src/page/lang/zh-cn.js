@@ -37,7 +37,11 @@ export default {
     systemManagement:'系统管理',
     informationPlatform:'平台信息设置',
     licenseNotice:'License到期通知',
-    interfaceTest:'接口访问测试'
+    interfaceTest:'接口访问测试',
+    userManagement:'用户管理',
+    userMaintenance:'用户维护',
+    roleMaintenance:'角色维护',
+    organizeMaintenance:'组织维护'
   },
   // 许可证信息维护
   license:{
@@ -76,5 +80,9 @@ export default {
     interfaceMode:'接口访问方式',
     apiAddress:'API 地址',
     accessParameters:'访问参数'
+  },
+  // 用户维护
+  userMaintenance:{
+
   }
 }

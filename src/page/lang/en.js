@@ -37,7 +37,11 @@ export default {
     systemManagement:'system management',
     informationPlatform:'information platform',
     licenseNotice:'License notice',
-    interfaceTest:'interface test'
+    interfaceTest:'interface test',
+    userManagement:'user management',
+    userMaintenance:'user maintenance',
+    roleMaintenance:'role maintenance',
+    organizeMaintenance:'organize maintenance'
   },
   // 许可证信息维护
   license:{
