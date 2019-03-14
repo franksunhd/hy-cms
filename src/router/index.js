@@ -16,6 +16,12 @@ const platformInformation = () => import ('@/page/pages/platformInformation');
 const licenseNotice = () => import ('@/page/pages/licenseNotice');
 // 接口访问测试
 const interfaceTest = () => import ('@/page/pages/interfaceTest');
+// 用户维护
+const userMaintenance = () => import ('@/page/pages/userMaintenance');
+// 角色维护
+const roleMaintenance = () => import ('@/page/pages/roleMaintenance');
+// 组织维护
+const organizeMaintenance = () => import ('@/page/pages/organizeMaintenance');
 
 Vue.use(Router);
 export default new Router({
@@ -33,6 +39,9 @@ export default new Router({
             {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
             {path: "/YUser/systemSettings/licenseNotice", name: 'licenseNotice', component: licenseNotice},
             {path: "/YUser/systemSettings/interfaceTest", name: 'interfaceTest', component: interfaceTest},
+            {path: "/YUser/systemSettings/userMaintenance", name: 'userMaintenance', component: userMaintenance},
+            {path: "/YUser/systemSettings/roleMaintenance", name: 'roleMaintenance', component: roleMaintenance},
+            {path: "/YUser/systemSettings/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
           ]
         }
       ]

@@ -34,6 +34,12 @@
               {id:'2-3',name:'接口访问测试',url:'/YUser/systemSettings/interfaceTest'},
             ]
           },
+          {id:'3',name:'用户管理',children:[
+              {id:'3-1',name:'用户维护',url:'/YUser/systemSettings/userMaintenance'},
+              {id:'3-2',name:'角色维护',url:'/YUser/systemSettings/roleMaintenance'},
+              {id:'3-3',name:'组织维护',url:'/YUser/systemSettings/organizeMaintenance'}
+            ]
+          },
         ]
       }
     },
