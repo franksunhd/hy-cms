@@ -20,7 +20,11 @@ export default {
     sms:'手机短信',
     email:'电子邮件',
     request:'请求',
-    reset:'重置'
+    reset:'重置',
+    month:'个月',
+    months:'个月',
+    day:'天',
+    days:'天'
   },
   // 系统设置模块 导航
   system:{
@@ -62,7 +66,10 @@ export default {
   },
   // License到期通知
   licenseNotice:{
-    selectUser:'选择用户'
+    selectUser:'选择用户',
+    licenseTime:'License到期提醒时间',
+    licenseUser:'通知的相关用户',
+    licenseWay:'通知的形式'
   },
   // 接口访问测试
   interfaceTest:{

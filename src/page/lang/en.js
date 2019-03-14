@@ -20,7 +20,11 @@ export default {
     sms:'short message',
     email:'email',
     request:'request',
-    reset:'reset'
+    reset:'reset',
+    month:'month',
+    months:'months',
+    day:'day',
+    days:'days',
   },
   // 系统设置模块
   system:{
@@ -62,6 +66,9 @@ export default {
   },
   // License到期通知
   licenseNotice:{
-    selectUser:'select user'
+    selectUser:'select user',
+    licenseTime:'licenseTime',
+    licenseUser:'licenseUser',
+    licenseWay:'licenseWay'
   }
 }

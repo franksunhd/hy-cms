@@ -9,17 +9,17 @@
       </el-breadcrumb>
     </div>
     <el-form label-width="200px">
-      <el-form-item label="License到期提醒时间：">
+      <el-form-item :label="$t('licenseNotice.licenseTime') + '：'">
         <el-radio-group v-model="radio" @change="changeTime">
-          <el-radio label="3">3个月</el-radio>
-          <el-radio label="2">2个月</el-radio>
-          <el-radio label="1">1个月</el-radio>
-          <el-radio label="15">15天</el-radio>
-          <el-radio label="10">10天</el-radio>
-          <el-radio label="7">7天</el-radio>
+          <el-radio label="3">3 {{$t('public.months')}}</el-radio>
+          <el-radio label="2">2 {{$t('public.months')}}</el-radio>
+          <el-radio label="1">1 {{$t('public.month')}}</el-radio>
+          <el-radio label="15">15 {{$t('public.days')}}</el-radio>
+          <el-radio label="10">10 {{$t('public.days')}}</el-radio>
+          <el-radio label="7">7 {{$t('public.days')}}</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="通知的相关用户：">
+      <el-form-item :label="$t('licenseNotice.licenseUser') + '：'">
         <el-button size="small" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}</el-button>
 
         <!--展示选择的用户数据-->
@@ -40,7 +40,7 @@
         </div>
 
       </el-form-item>
-      <el-form-item label="通知的形式：">
+      <el-form-item :label="$t('licenseNotice.licenseWay') + '：'">
         <el-radio-group v-model="noticeWay" @change="changeWay">
           <el-radio label="1">{{$t('public.message')}}</el-radio>
           <el-radio label="2">{{$t('public.sms')}}</el-radio>
