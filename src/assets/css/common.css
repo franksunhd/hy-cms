@@ -58,3 +58,7 @@ html,body,.Index-box {
   display: inline-block;
   font-size: 16px;
 }
+
+.inputWidth {
+  width: 500px;
+}

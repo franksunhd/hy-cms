@@ -67,7 +67,5 @@
 </script>
 
 <style scoped>
-  .inputWidth {
-    width: 500px;
-  }
+
 </style>

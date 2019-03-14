@@ -14,6 +14,8 @@ const licenseInformation = () => import ('@/page/pages/licenseInformation');
 const platformInformation = () => import ('@/page/pages/platformInformation');
 // License到期通知
 const licenseNotice = () => import ('@/page/pages/licenseNotice');
+// 接口访问测试
+const interfaceTest = () => import ('@/page/pages/interfaceTest');
 
 Vue.use(Router);
 export default new Router({
@@ -29,7 +31,8 @@ export default new Router({
           children:[
             {path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
             {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
-            {path: "/YUser/systemSettings/licenseNotice", name: 'licenseNotice', component: licenseNotice}
+            {path: "/YUser/systemSettings/licenseNotice", name: 'licenseNotice', component: licenseNotice},
+            {path: "/YUser/systemSettings/interfaceTest", name: 'interfaceTest', component: interfaceTest},
           ]
         }
       ]

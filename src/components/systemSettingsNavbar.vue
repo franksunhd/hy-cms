@@ -31,6 +31,7 @@
           {id:'2',name:'系统管理',children:[
               {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
               {id:'2-2',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
+              {id:'2-3',name:'接口访问测试',url:'/YUser/systemSettings/interfaceTest'},
             ]
           },
         ]

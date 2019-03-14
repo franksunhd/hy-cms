@@ -18,7 +18,9 @@ export default {
     save:'save',
     message:'message letter station',
     sms:'short message',
-    email:'email'
+    email:'email',
+    request:'request',
+    reset:'reset'
   },
   // 系统设置模块
   system:{
@@ -30,7 +32,8 @@ export default {
     license:'License information maintenance',
     systemManagement:'system management',
     informationPlatform:'information platform',
-    licenseNotice:'License notice'
+    licenseNotice:'License notice',
+    interfaceTest:'interface test'
   },
   // 许可证信息维护
   license:{

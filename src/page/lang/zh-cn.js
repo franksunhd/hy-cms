@@ -18,7 +18,9 @@ export default {
     save:'保存',
     message:'站内信',
     sms:'手机短信',
-    email:'电子邮件'
+    email:'电子邮件',
+    request:'请求',
+    reset:'重置'
   },
   // 系统设置模块 导航
   system:{
@@ -30,7 +32,8 @@ export default {
     license:'许可证信息维护',
     systemManagement:'系统管理',
     informationPlatform:'平台信息设置',
-    licenseNotice:'License到期通知'
+    licenseNotice:'License到期通知',
+    interfaceTest:'接口访问测试'
   },
   // 许可证信息维护
   license:{
@@ -55,5 +58,9 @@ export default {
   // License到期通知
   licenseNotice:{
     selectUser:'选择用户'
+  },
+  // 接口访问测试
+  interfaceTest:{
+
   }
 }
