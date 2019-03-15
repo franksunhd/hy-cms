@@ -42,12 +42,9 @@
       </el-header>
       <el-container>
         <!--左侧导航-->
-        <el-aside width="60px" class="app-aside">
+        <el-aside width="56px" class="app-aside">
           <!--功能导航-->
-          <div class="app-aside-box">
-            aside
-          </div>
-
+            <appSide />
         </el-aside>
         <!--内容区域-->
         <el-main class="BoxName">
@@ -71,8 +68,10 @@
 </template>
 
 <script>
+  import appSide from './pages/appSide';
   export default {
     name: "index",
+    components:{appSide},
     data(){
       return {
         defaultLang:localStorage.getItem('hyLanguage') || 'zh',
@@ -107,8 +106,12 @@
 </script>
 
 <style>
+  .app-aside {
+    overflow: visible;
+  }
   .app-header-logo img {
-    width: 60px;
+    width: 56px;
+    height: 60px;
   }
 
   .app-header-logo > img,
