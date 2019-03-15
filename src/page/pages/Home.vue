@@ -1,76 +1,28 @@
 <template>
-  <div>
-    <p>home111</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-    <p>home</p>
-
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-    <p>gggggg</p>
-  </div>
+  <Box>
+    <div style="padding: 20px 0 0 20px;">
+      <el-button @click="cms">前往系统设置</el-button>
+    </div>
+  </Box>
 
 </template>
 
 <script>
-    export default {
-        name: "home"
+  import Box from '../../components/Box';
+  export default {
+    name: "home",
+    components:{Box},
+    data(){
+      return {
+
+      }
+    },
+    methods:{
+      cms(){
+        this.$router.push({name:'systemSettings'});
+      }
     }
+  }
 </script>
 
 <style scoped>
