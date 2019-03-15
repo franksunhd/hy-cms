@@ -8,6 +8,7 @@ import api from './config/api.js';
 import ElementUI from 'element-ui';
 import canvas from './assets/js/canvas.js';
 import i18n from './page/lang/index';
+import pages from './components/pages';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
@@ -27,6 +28,7 @@ Vue.prototype.setCookie = setCookie;
 Vue.prototype.delCookie = delCookie;
 Vue.prototype.$api = api;
 Vue.prototype.$canvas = canvas;
+Vue.component('pages',pages);
 
 // 用户过期
 Vue.prototype.exclude = (name,message) => {

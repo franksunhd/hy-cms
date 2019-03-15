@@ -8,7 +8,7 @@
       <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">外</a>
     </div>
     <div id="systemSettings-routerView" class="systemSettings-routerView">
-      <div style="padding-left: 20px;">
+      <div style="padding: 0 20px;">
         <router-view/>
       </div>
     </div>
@@ -47,6 +47,7 @@
 
 <style>
   .systemSettings-routerView {
+    width: 100%;
     padding-left: 210px;
   }
 
@@ -55,21 +56,6 @@
     top: 60px;
     left: 60px;
     bottom: 0;
-  }
-
-  /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
-  .systemSettings-navBar::-webkit-scrollbar {
-    width: 5px;
-    height: 3px;
-  }
-  /*定义滚动条的轨道，内阴影及圆角*/
-  .systemSettings-navBar::-webkit-scrollbar-track{
-    border-radius: 5px;
-  }
-  /*定义滑块，内阴影及圆角*/
-  .systemSettings-navBar::-webkit-scrollbar-thumb{
-    height: 20px;
-    border-radius: 5px;
   }
 
   #systemSettings-navBar-inSet {

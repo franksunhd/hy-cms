@@ -43,8 +43,8 @@
       <el-button>删除</el-button>
     </div>
     <el-table :data="tableData" border>
-      <el-table-column type="selection" class="selectAllBoxTitle" />
-      <el-table-column type="index" label="序号" header-align="center" align="center" />
+      <el-table-column type="selection" fixed />
+      <el-table-column type="index" label="序号" width="50" header-align="center" align="center" />
       <el-table-column label="用户名" header-align="center" align="center" />
       <el-table-column label="登录账号" header-align="center" align="center" />
       <el-table-column label="所属组织" header-align="center" align="center" />
@@ -52,10 +52,23 @@
       <el-table-column label="手机" header-align="center" align="center" />
       <el-table-column label="邮箱" header-align="center" align="center" />
       <el-table-column label="状态" header-align="center" align="center" />
-      <el-table-column label="创建人" header-align="center" align="center" />
-      <el-table-column label="创建时间" header-align="center" align="center" />
+      <el-table-column label="创建人" width="200" header-align="center" align="center" />
+      <el-table-column label="创建时间" width="200" header-align="center" align="center" />
+      <el-table-column label="操作" width="120" header-align="center" align="center" fixed="right">
+        <template slot-scope="scope">
+          <el-button type="text" size="small">编辑</el-button>
+          <el-button type="text" size="small">重置密码</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
+    <!--分页-->
+    <pages
+      :total='options.total'
+      :currentPage='options.currentPage'
+      :pageSize='options.pageSize'
+      :firstPage='options.firstPage'
+      :lastPage='options.lastPage'
+      @handleCurrentChangeSub="handleCurrentChange" />
   </Box>
 </template>
 
@@ -76,11 +89,21 @@
         ],
         organization:'',
         username:'',
-        status:''
+        status:'',
+        options:{
+          total:1000, // 总条数
+          currentPage:1, // 当前页码
+          pageSize:10, // 每页显示条数
+          firstPage:1, // 首页
+          lastPage:100 // 末页
+        }
       }
     },
     methods:{
-
+      // 改变当前页码
+      handleCurrentChange(val){
+        console.log(val)
+      }
     },
     created(){
 

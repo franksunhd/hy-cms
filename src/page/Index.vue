@@ -92,6 +92,7 @@
           case 'pwd': // 修改密码
             break;
           case 'exit': // 退出登录
+            this.$router.push({name:'Login'});
             break;
           default:
             break;

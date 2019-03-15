@@ -16,7 +16,7 @@
       <div class="fl" style="width: 50%;">
         <el-carousel height="400px">
           <el-carousel-item v-for="item in loginImg" :key="item">
-            <img :src="item" alt="swiper">
+            <img class="login-swiper-img" :src="item" alt="swiper">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -222,7 +222,7 @@
 
 <style>
   .login-logo {
-    width: 150px;
+    width: 100px;
   }
 
   .login-logoText {
@@ -322,5 +322,7 @@
     top: 0;
     right: 0;
   }
-
+  .login-swiper-img {
+    height: 100%;
+  }
 </style>

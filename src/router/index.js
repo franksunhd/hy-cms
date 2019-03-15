@@ -32,8 +32,7 @@ export default new Router({
     {path: '/YUser', name: 'index', component: Index,
       children:[
         {path: "/YUser/index", name: 'Home', component: Home},
-        {path: "/YUser/systemSettings", redirect: "/YUser/systemSettings/licenseInformation"},
-        {path: "/YUser/systemSettings", name: 'systemSettings', component: systemSettings,
+        {path: "/YUser/systemSettings", redirect: "/YUser/systemSettings/licenseInformation", name: 'systemSettings', component: systemSettings,
           children:[
             {path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
             {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},

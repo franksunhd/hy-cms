@@ -24,16 +24,16 @@ html,body,.Index-box {
 }
 
 /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
-.el-main::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 5px;
-  height: 3px;
+  height: 5px;
 }
 /*定义滚动条的轨道，内阴影及圆角*/
-.el-main::-webkit-scrollbar-track{
+*::-webkit-scrollbar-track{
   border-radius: 5px;
 }
 /*定义滑块，内阴影及圆角*/
-.el-main::-webkit-scrollbar-thumb{
+*::-webkit-scrollbar-thumb{
   height: 20px;
   border-radius: 5px;
 }
@@ -66,3 +66,4 @@ html,body,.Index-box {
 .marBottom20 {
   margin-bottom: 20px;
 }
+

@@ -31,13 +31,13 @@
         <el-button type="primary" @click="dialogVisible = false" size="small">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
-    <el-table :data="tableData" v-if="isShow">
-      <el-table-column :label="$t('license.indexNumber')" type="index" />
-      <el-table-column :label="$t('license.customerName')" />
-      <el-table-column :label="$t('license.allNumber')" />
-      <el-table-column :label="$t('license.validityDate')" />
-      <el-table-column :label="$t('license.authorizationModule')" />
-      <el-table-column :label="$t('license.authorizationUpdateTime')" />
+    <el-table :data="tableData" v-if="isShow" border>
+      <el-table-column :label="$t('license.indexNumber')" type="index" width="60px" />
+      <el-table-column :label="$t('license.customerName')" header-align="center" align="center" />
+      <el-table-column :label="$t('license.allNumber')" header-align="center" align="center" />
+      <el-table-column :label="$t('license.validityDate')" header-align="center" align="center"/>
+      <el-table-column :label="$t('license.authorizationModule')" header-align="center" align="center" />
+      <el-table-column :label="$t('license.authorizationUpdateTime')" header-align="center" align="center" />
     </el-table>
   </Box>
 </template>
