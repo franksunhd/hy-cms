@@ -10,45 +10,45 @@
     </div>
     <!--表单-->
     <el-form inline>
-      <el-form-item label="组织名称：">
+      <el-form-item :label="$t('organizeMaintenance.organizationName') +'：'">
         <el-input />
       </el-form-item>
-      <el-form-item label="创建/更新日期：">
+      <el-form-item :label="$t('organizeMaintenance.createUpdateDate') +'：'">
         <el-date-picker
           v-model="startTime"
           type="date"
-          placeholder="选择日期" />
+          :placeholder="$t('public.selectDate')" />
         <span>~</span>
         <el-date-picker
           v-model="endTime"
           type="date"
-          placeholder="选择日期" />
+          :placeholder="$t('public.selectDate')" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
       </el-form-item>
     </el-form>
     <!--全局操作-->
     <div class="marBottom20">
-      <el-button @click="dialogVisible = true">新增</el-button>
-      <el-button @click="enableData">启用</el-button>
-      <el-button @click="disableData">禁用</el-button>
-      <el-button @click="deleteData">删除</el-button>
+      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
+      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
+      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
+      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
     </div>
     <!--表格-->
     <el-table :data="tableData" border>
       <el-table-column type="selection" fixed />
-      <el-table-column label="组织名称" width="120" header-align="center" align="center" />
-      <el-table-column label="角色数量" width="120" header-align="center" align="center" />
-      <el-table-column label="用户数量" width="120" header-align="center" align="center" />
-      <el-table-column label="状态" width="120" header-align="center" align="center" />
-      <el-table-column label="创建人" width="120" header-align="center" align="center" />
-      <el-table-column label="创建时间" width="120" header-align="center" align="center" />
-      <el-table-column label="更新人" width="120" header-align="center" align="center" />
-      <el-table-column label="更新时间" width="120" header-align="center" align="center" />
-      <el-table-column label="操作" fixed="right" header-align="center" align="center">
+      <el-table-column :label="$t('organizeMaintenance.organizationName')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.roleNum')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.userNum')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.status')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.createName')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.createTime')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.updateName')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('organizeMaintenance.updateTime')" width="150" header-align="center" align="center" />
+      <el-table-column :label="$t('public.operation')" fixed="right" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">编辑</el-button>
+          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,39 +62,33 @@
       @handleCurrentChangeSub="handleCurrentChange" />
     <!--新增、编辑-->
     <el-dialog
-      title="新增/修改组织"
+      :title="$t('organizeMaintenance.createUpdateOrganization')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="父级组织：">
-          <el-select v-model="organization">
-            <el-option
-              v-for="item in organizationList"
-              :label="item.label"
-              :value="item.value"
-              :key="item.value" />
-          </el-select>
+        <el-form-item :label="$t('organizeMaintenance.parentOrganization') + '：'">
+          <selectTree width="200" :options="organizationList" v-model="organization" />
         </el-form-item>
-        <el-form-item label="组织名称：">
+        <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="显示顺序：">
+        <el-form-item :label="$t('organizeMaintenance.orderIndex') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="是否启用：">
+        <el-form-item :label="$t('organizeMaintenance.isEnable') + '：'">
           <el-radio-group v-model="status">
-            <el-radio :label="0">启用</el-radio>
-            <el-radio :label="1">禁用</el-radio>
+            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="组织描述：">
+        <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'">
           <el-input type="textarea" :autosize="{ minRows: 3 }" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        <el-button @click="dialogVisible = false">关 闭</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisible = false">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -102,9 +96,10 @@
 
 <script>
   import Box from '../../components/Box';
+  import selectTree from '../../components/selectTree';
   export default {
     name: "organize-maintenance",
-    components:{Box},
+    components:{Box,selectTree},
     data(){
       return {
         startTime:'',
@@ -120,17 +115,174 @@
           lastPage:100 // 末页
         },
         dialogVisible:false,
-        organizationList:[],
+        // 数据默认字段
+        defaultProps: {
+          parent: 'parentId',   // 父级唯一标识
+          value: 'id',          // 唯一标识
+          label: 'label',       // 标签显示
+          children: 'children', // 子级
+        },
+        organizationList:[
+          {
+            id:1,
+            label:'集团亚洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:2,
+                label:'上海分部',
+                type:'branch',
+                parentId:1,
+                level:2,
+                children:[
+                  {
+                    id:4,
+                    label:'张三',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                  {
+                    id:5,
+                    label:'李四',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                  {
+                    id:6,
+                    label:'王五',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                ]
+              },
+              {
+                id:3,
+                label:'北京分部',
+                type:'branch',
+                parentId:1,
+                level:2,
+                children:[
+                  {
+                    id:7,
+                    label:'赵六',
+                    type:'user',
+                    parentId:3,
+                    level:3,
+                  }
+                ]
+              },
+              {
+                id:10,
+                label:'孙强',
+                type:'user',
+                parentId:1,
+                level:2,
+              },
+              {
+                id:13,
+                label:'金流福',
+                type:'user',
+                parentId:1,
+                level:2,
+              }
+            ]
+          },
+          {
+            id:8,
+            label:'集团欧洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:11,
+                label:'雅玛',
+                type:'user',
+                parentId:8,
+                level:2,
+              },
+              {
+                id:14,
+                label:'罗马分部',
+                type:'branch',
+                parentId:8,
+                level:2,
+                children:[]
+              },
+              {
+                id:15,
+                label:'英国分部',
+                type:'branch',
+                parentId:8,
+                level:2,
+                children:[
+                  {
+                    id:16,
+                    label:'伦敦',
+                    type:'user',
+                    parentId:15,
+                    level:3
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id:9,
+            label:'集团美洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:12,
+                label:'三丝',
+                type:'user',
+                parentId:9,
+                level:2
+              },
+              {
+                id:17,
+                label:'美国分部',
+                type:'branch',
+                parentId:9,
+                level:2,
+                children:[]
+              },
+              {
+                id:18,
+                label:'墨西哥分部',
+                type:'branch',
+                parentId:9,
+                level:2,
+                children:[
+                  {
+                    id:19,
+                    label:'摩卡',
+                    type:'user',
+                    parentId:18,
+                    level:3
+                  }
+                ]
+              }
+            ]
+          }
+        ],
         organization:'',
         status:''
       }
     },
     methods:{
-// 启用
+      // 启用
       enableData(){
-        this.$confirm('请问是否确认启用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -140,9 +292,9 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -152,9 +304,9 @@
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 

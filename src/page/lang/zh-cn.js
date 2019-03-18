@@ -140,5 +140,22 @@ export default {
     setRoleLimit:'设置角色权限',
     roleLimit:'角色权限',
     setDateLimit:'设置数据权限'
+  },
+  // 组织维护
+  organizeMaintenance: {
+    organizationName:'组织名称',
+    createUpdateDate:'创建/更新日期',
+    roleNum:'角色数量',
+    userNum:'用户数量',
+    status:'状态',
+    createName:'创建人',
+    createTime: '创建时间',
+    updateName:'更新人',
+    updateTime:'更新时间',
+    createUpdateOrganization:'新增/修改组织',
+    parentOrganization:'父级组织',
+    orderIndex:'显示顺序',
+    isEnable:'是否启用',
+    organizationDes:'组织描述',
   }
 }

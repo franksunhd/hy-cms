@@ -140,5 +140,22 @@ export default {
     setRoleLimit:'setRoleLimit',
     roleLimit:'roleLimit',
     setDateLimit:'setDateLimit'
+  },
+  // 组织维护
+  organizeMaintenance: {
+    organizationName:'organizationName',
+    createUpdateDate:'create/update date',
+    roleNum:'role Number',
+    userNum:'user Number',
+    status:'status',
+    createName:'createName',
+    createTime: 'createTime',
+    updateName:'updateName',
+    updateTime:'updateTime',
+    createUpdateOrganization:'create/update Organization',
+    parentOrganization:'parent Organization',
+    orderIndex:'orderIndex',
+    isEnable:'isEnable',
+    organizationDes:'organizationDes',
   }
 }
