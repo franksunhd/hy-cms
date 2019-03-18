@@ -38,7 +38,11 @@ export default {
     nextText:'next page',
     homePage:'Home page',
     lastPage:'last page',
-    operation:'operation'
+    operation:'operations',
+    selectDate:'select Date',
+    name:'name',
+    sex:'sex',
+    confirmTip:'confirmTip'
   },
   // 系统设置模块
   system:{
@@ -107,5 +111,34 @@ export default {
     email:'email',
     createName:'founder',
     createTime:'Creation time',
+  },
+  // 角色维护
+  roleMaintenance: {
+    roleName:'role name',
+    roleDate:'create/update Date',
+    userAuthorization:'user authorization',
+    functionLimit:'functionLimit',
+    dataLimit:'dataLimit',
+    organization:'organization',
+    userNum:'user number',
+    status:'status',
+    createName:'founder',
+    createTime: 'Creation time',
+    updateName:'update name',
+    updateTime:'update time',
+    addUpdateRole:'add/update role',
+    orderIndex:'orderIndex',
+    isEnable:'isEnable',
+    organizationDes:'Organization descriptions',
+    setUserName:'set userName',
+    roleOrganization:'role organization',
+    pleaseSelectUser:'please select user',
+    selectUser:'select user',
+    select:'select',
+    account:'account',
+    registerDate:'register Date',
+    setRoleLimit:'setRoleLimit',
+    roleLimit:'roleLimit',
+    setDateLimit:'setDateLimit'
   }
 }

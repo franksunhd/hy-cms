@@ -10,49 +10,49 @@
     </div>
     <!--表单-->
     <el-form inline>
-      <el-form-item label="角色名称：">
+      <el-form-item :label="$t('roleMaintenance.roleName') + '：'">
         <el-input />
       </el-form-item>
-      <el-form-item label="创建/更新日期：">
+      <el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
         <el-date-picker
           v-model="startTime"
           type="date"
-          placeholder="选择日期" />
+          :placeholder="$t('public.selectDate')" />
         <span>~</span>
         <el-date-picker
           v-model="endTime"
           type="date"
-          placeholder="选择日期" />
+          :placeholder="$t('public.selectDate')" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
       </el-form-item>
     </el-form>
     <!--全局操作-->
     <div class="marBottom20">
-      <el-button @click="dialogVisible = true">新增</el-button>
-      <el-button @click="enableData">启用</el-button>
-      <el-button @click="disableData">禁用</el-button>
-      <el-button @click="deleteData">删除</el-button>
+      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
+      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
+      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
+      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
 
-      <el-button @click="authorizationData">用户授权</el-button>
-      <el-button @click="functionData">功能权限</el-button>
-      <el-button @click="infoData">数据权限</el-button>
+      <el-button @click="authorizationData">{{$t('roleMaintenance.userAuthorization')}}</el-button>
+      <el-button @click="functionData">{{$t('roleMaintenance.functionLimit')}}</el-button>
+      <el-button @click="infoData">{{$t('roleMaintenance.dataLimit')}}</el-button>
     </div>
     <!--表格-->
     <el-table :data="tableData" border>
       <el-table-column type="selection" fixed />
-      <el-table-column label="角色名称" width="120" header-align="center" align="center" />
-      <el-table-column label="所属组织" width="120" header-align="center" align="center" />
-      <el-table-column label="用户数量" width="120" header-align="center" align="center" />
-      <el-table-column label="状态" width="120" header-align="center" align="center" />
-      <el-table-column label="创建人" width="120" header-align="center" align="center" />
-      <el-table-column label="创建时间" width="120" header-align="center" align="center" />
-      <el-table-column label="更新人" width="120" header-align="center" align="center" />
-      <el-table-column label="更新时间" width="120" header-align="center" align="center" />
-      <el-table-column label="操作" fixed="right" header-align="center" align="center">
+      <el-table-column :label="$t('roleMaintenance.roleName')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.organization')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.userNum')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.status')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.createName')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.createTime')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.updateName')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('roleMaintenance.updateTime')" width="120" header-align="center" align="center" />
+      <el-table-column :label="$t('public.operation')" fixed="right" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">编辑</el-button>
+          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,53 +66,47 @@
       @handleCurrentChangeSub="handleCurrentChange" />
     <!--新增/编辑-->
     <el-dialog
-      title="新增/修改角色"
+      :title="$t('roleMaintenance.addUpdateRole')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="所属组织：">
-          <el-select v-model="organization">
-            <el-option
-              v-for="item in organizationList"
-              :label="item.label"
-              :value="item.value"
-              :key="item.value" />
-          </el-select>
+        <el-form-item :label="$t('roleMaintenance.organization') +'：'">
+          <selectTree width="200" :options="organizationList" v-model="organization" />
         </el-form-item>
-        <el-form-item label="角色名称：">
+        <el-form-item :label="$t('roleMaintenance.roleName') +'：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="显示顺序：">
+        <el-form-item :label="$t('roleMaintenance.orderIndex') +'：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="是否启用：">
+        <el-form-item :label="$t('roleMaintenance.isEnable') +'：'">
           <el-radio-group v-model="status">
-            <el-radio :label="0">启用</el-radio>
-            <el-radio :label="1">禁用</el-radio>
+            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="组织描述：">
+        <el-form-item :label="$t('roleMaintenance.organizationDes') +'：'">
           <el-input type="textarea" :autosize="{ minRows: 3 }" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--用户授权-->
     <el-dialog
-      title="设置授权用户"
+      :title="$t('roleMaintenance.setUserName')"
       :visible.sync="outerVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="角色所属组织：">
+        <el-form-item :label="$t('roleMaintenance.roleOrganization') + '：'">
           <span>集团亚洲总部-->上海分部</span>
         </el-form-item>
-        <el-form-item label="请选择用户：">
-          <el-button @click="innerVisible = true">选择</el-button>
+        <el-form-item :label="$t('roleMaintenance.pleaseSelectUser') + '：'">
+          <el-button @click="innerVisible = true">{{$t('roleMaintenance.select')}}</el-button>
           <div style="height: 20px;"></div>
           <el-tag
             v-for="(tag,index) in tags"
@@ -126,25 +120,25 @@
         </el-form-item>
       </el-form>
       <el-dialog
-        title="选择用户"
+        :title="$t('roleMaintenance.selectUser')"
         :visible.sync="innerVisible"
         append-to-body
         :close-on-click-modal="false"
         :close-on-press-escape="false">
         <el-form inline>
-          <el-form-item label="姓名：">
+          <el-form-item :label="$t('public.name') + '：'">
             <el-input />
           </el-form-item>
           <el-form-item>
-            <el-button>查询</el-button>
+            <el-button>{{$t('public.query')}}</el-button>
           </el-form-item>
         </el-form>
         <el-table :data="innerTableData" border>
           <el-table-column type="selection" />
-          <el-table-column label="姓名" header-align="center" align="center" />
-          <el-table-column label="账号" header-align="center" align="center" />
-          <el-table-column label="性别" header-align="center" align="center" />
-          <el-table-column label="登记日期" header-align="center" align="center" />
+          <el-table-column :label="$t('public.name')" header-align="center" align="center" />
+          <el-table-column :label="$t('roleMaintenance.account')" header-align="center" align="center" />
+          <el-table-column :label="$t('public.sex')" header-align="center" align="center" />
+          <el-table-column :label="$t('roleMaintenance.registerDate')" header-align="center" align="center" />
         </el-table>
         <!--分页-->
         <pages
@@ -155,51 +149,51 @@
           :lastPage='innerOptions.lastPage'
           @handleCurrentChangeSub="innerOptionsHandleCurrentChange" />
         <div slot="footer">
-          <el-button type="primary" @click="innerVisible = false">确 认</el-button>
-          <el-button @click="innerVisible = false">取 消</el-button>
+          <el-button type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
+          <el-button @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
         </div>
       </el-dialog>
       <div slot="footer">
-        <el-button type="primary" @click="outerVisible = false">确 认</el-button>
-        <el-button @click="outerVisible = false">关 闭</el-button>
+        <el-button type="primary" @click="outerVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="outerVisible = false">{{$t('public.close')}}</el-button>
       </div>
     </el-dialog>
     <!--功能权限-->
     <el-dialog
-      title="设置角色权限"
+      :title="$t('roleMaintenance.setRoleLimit')"
       :visible.sync="dialogVisibleFunction"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="100px">
-        <el-form-item label="角色权限：">
+        <el-form-item :label="$t('roleMaintenance.roleLimit') + '：'">
           <el-tree
-            :data="treeDatas"
+            :data="organizationList"
             show-checkbox
             ref="tree" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleFunction = false">确 定</el-button>
-        <el-button @click="dialogVisibleFunction = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisibleFunction = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisibleFunction = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--数据权限-->
     <el-dialog
-      title="设置数据权限"
+      :title="$t('roleMaintenance.setDateLimit')"
       :visible.sync="dialogVisibleData"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="设置数据权限：">
+        <el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
           <el-tree
-            :data="treeDatas"
+            :data="organizationList"
             show-checkbox
             ref="tree" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleData = false">确 定</el-button>
-        <el-button @click="dialogVisibleData = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -207,9 +201,10 @@
 
 <script>
   import Box from '../../components/Box';
+  import selectTree from '../../components/selectTree';
   export default {
     name: "role-maintenance",
-    components:{Box},
+    components:{Box,selectTree},
     data(){
       return {
         startTime:'',
@@ -240,7 +235,6 @@
           lastPage:100 // 末页
         },
         status:'',
-        organizationList:[],
         organization:'',
         tags:[
           {id:1,label:'张思'},
@@ -248,7 +242,14 @@
           {id:3,label:'王五'},
           {id:4,label:'赵六'},
         ],
-        treeDatas:[
+        // 数据默认字段
+        defaultProps: {
+          parent: 'parentId',   // 父级唯一标识
+          value: 'id',          // 唯一标识
+          label: 'label',       // 标签显示
+          children: 'children', // 子级
+        },
+        organizationList:[
           {
             id:1,
             label:'集团亚洲总部',
@@ -412,9 +413,9 @@
       },
       // 启用
       enableData(){
-        this.$confirm('请问是否确认启用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -424,9 +425,9 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -436,9 +437,9 @@
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -469,7 +470,7 @@
       }
     },
     created(){
-
+      // this.$store.commit('setLoading',true);
     }
   }
 </script>

@@ -38,7 +38,11 @@ export default {
     nextText:'下一页',
     homePage:'首页',
     lastPage:'末页',
-    operation:'操作'
+    operation:'操作',
+    selectDate:'选择日期',
+    name:'姓名',
+    sex:'性别',
+    confirmTip:'确认提示'
   },
   // 系统设置模块 导航
   system:{
@@ -107,5 +111,34 @@ export default {
     email:'邮箱',
     createName:'创建人',
     createTime:'创建时间',
+  },
+  // 角色维护
+  roleMaintenance: {
+    roleName:'角色名称',
+    roleDate:'创建/更新日期',
+    userAuthorization:'用户授权',
+    functionLimit:'功能权限',
+    dataLimit:'数据权限',
+    organization:'所属组织',
+    userNum:'用户数量',
+    status:'状态',
+    createName:'创建人',
+    createTime: '创建时间',
+    updateName:'更新人',
+    updateTime:'更新时间',
+    addUpdateRole:'新增/修改角色',
+    orderIndex:'显示顺序',
+    isEnable:'是否启用',
+    organizationDes:'组织描述',
+    setUserName:'设置授权用户',
+    roleOrganization:'角色所属组织',
+    pleaseSelectUser:'请选择用户',
+    selectUser:'选择用户',
+    select:'选择',
+    account:'账号',
+    registerDate:'登记日期',
+    setRoleLimit:'设置角色权限',
+    roleLimit:'角色权限',
+    setDateLimit:'设置数据权限'
   }
 }

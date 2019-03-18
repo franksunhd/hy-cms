@@ -25,7 +25,7 @@
     min-height: 475px;
     box-sizing: border-box;
     overflow: hidden;
-    position: relative;
+    /*position: relative;*/
   }
 
   .box-wrap {
