@@ -309,9 +309,9 @@
       },
       // 启用
       enableData() {
-        this.$confirm('请问是否确认启用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -321,9 +321,9 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -333,9 +333,9 @@
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?','确认提示',{
-          confirmButtonText: '确认',
-          cancelButtonText: '取消',
+        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
