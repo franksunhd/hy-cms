@@ -30,7 +30,7 @@ export default {
     add:'新增',
     edit:'编辑',
     enable:'启用',
-    disable:'警用',
+    disable:'禁用',
     delete:'删除',
     resets:'重置密码',
     index:'序号',
@@ -42,7 +42,9 @@ export default {
     selectDate:'选择日期',
     name:'姓名',
     sex:'性别',
-    confirmTip:'确认提示'
+    confirmTip:'确认提示',
+    YES:'是',
+    NO:'否'
   },
   // 系统设置模块 导航
   system:{
@@ -59,7 +61,9 @@ export default {
     userManagement:'用户管理',
     userMaintenance:'用户维护',
     roleMaintenance:'角色维护',
-    organizeMaintenance:'组织维护'
+    organizeMaintenance:'组织维护',
+    platformLanguage:'平台语言设置',
+    dataDictionary:'数据字典管理'
   },
   // 许可证信息维护
   license:{
@@ -157,5 +161,25 @@ export default {
     orderIndex:'显示顺序',
     isEnable:'是否启用',
     organizationDes:'组织描述',
+  },
+  // 平台语言设置
+  platformLanguage: {
+    setDefault:'设为默认',
+    importFunction:'功能菜单语言导入模板',
+    importData:'数据字典语言导入模板',
+    languageCode:'语言编码',
+    languageCodes:'语言简码',
+    languageName:'语言名称',
+    status:'状态',
+    description:'说明/描述',
+    sort:'排序',
+    isDefault:'是否默认',
+    createName:'创建人',
+    createTime:'创建时间',
+    createUpdateLanguage:'新增/编辑平台语言',
+    translationName:'名称的译文',
+    descriptionAlert: '描述',
+    Order:'顺序',
+    isEnable:'是否启用'
   }
 }

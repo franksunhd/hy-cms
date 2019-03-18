@@ -12,6 +12,10 @@ const systemSettings = () => import ('@/components/systemSettings');
 const licenseInformation = () => import ('@/page/pages/licenseInformation');
 // 平台信息设置
 const platformInformation = () => import ('@/page/pages/platformInformation');
+// 平台语言设置
+const platformLanguage = () => import ('@/page/pages/platformLanguage');
+// 数据字典管理
+const dataDictionary = () => import ('@/page/pages/dataDictionary');
 // License到期通知
 const licenseNotice = () => import ('@/page/pages/licenseNotice');
 // 接口访问测试
@@ -36,6 +40,8 @@ export default new Router({
           children:[
             {path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
             {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
+            {path: "/YUser/systemSettings/platformLanguage", name: 'platformLanguage', component: platformLanguage},
+            {path: "/YUser/systemSettings/dataDictionary", name: 'dataDictionary', component: dataDictionary},
             {path: "/YUser/systemSettings/licenseNotice", name: 'licenseNotice', component: licenseNotice},
             {path: "/YUser/systemSettings/interfaceTest", name: 'interfaceTest', component: interfaceTest},
             {path: "/YUser/systemSettings/userMaintenance", name: 'userMaintenance', component: userMaintenance},

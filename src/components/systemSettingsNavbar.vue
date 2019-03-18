@@ -2,7 +2,7 @@
   <div class="systemSettings-navBarBox">
     <p class="systemSettings-title">{{$t('system.systemSetting')}}</p>
     <div class="systemSettings-navBarContent">
-      <el-menu :default-active="current" :router="true" :unique-opened="true">
+      <el-menu :default-active="current" :router="true" :unique-opened="false">
         <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index" :class="item.name">
           <template slot="title" v-if="item.children == null">
             <router-link class="systemSettings-oddRouter" :to="item.url">{{item.name}}</router-link>
@@ -29,9 +29,11 @@
         navBarArr:[
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
-              {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-2',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
-              {id:'2-3',name:'接口访问测试',url:'/YUser/systemSettings/interfaceTest'},
+              {id:'2-1',name:'平台基础设置',url:'/YUser/systemSettings/platformInformation'},
+              {id:'2-2',name:'平台语言设置',url:'/YUser/systemSettings/platformLanguage'},
+              {id:'2-3',name:'数据字典管理',url:'/YUser/systemSettings/dataDictionary'},
+              {id:'2-4',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
+              {id:'2-5',name:'接口访问测试',url:'/YUser/systemSettings/interfaceTest'},
             ]
           },
           {id:'3',name:'用户管理',children:[

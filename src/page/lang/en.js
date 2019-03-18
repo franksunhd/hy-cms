@@ -42,7 +42,9 @@ export default {
     selectDate:'select Date',
     name:'name',
     sex:'sex',
-    confirmTip:'confirmTip'
+    confirmTip:'confirmTip',
+    YES:'YES',
+    NO:'NO'
   },
   // 系统设置模块
   system:{
@@ -59,7 +61,9 @@ export default {
     userManagement:'user management',
     userMaintenance:'user maintenance',
     roleMaintenance:'role maintenance',
-    organizeMaintenance:'organize maintenance'
+    organizeMaintenance:'organize maintenance',
+    platformLanguage:'platform Language',
+    dataDictionary:'data Dictionary'
   },
   // 许可证信息维护
   license:{
@@ -157,5 +161,25 @@ export default {
     orderIndex:'orderIndex',
     isEnable:'isEnable',
     organizationDes:'organizationDes',
+  },
+  // 平台语言设置
+  platformLanguage: {
+    setDefault:'setDefault',
+    importFunction:'importFunction',
+    importData:'importData',
+    languageCode:'languageCode',
+    languageCodes:'languageCodes',
+    languageName:'languageName',
+    status:'status',
+    description:'description',
+    sort:'sort',
+    isDefault:'isDefault',
+    createName:'createName',
+    createTime:'createTime',
+    createUpdateLanguage:'create/update Language',
+    translationName:'translation Name',
+    descriptionAlert: 'description',
+    Order:'Order',
+    isEnable:'isEnable'
   }
 }
