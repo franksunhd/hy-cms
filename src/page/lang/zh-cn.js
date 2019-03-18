@@ -187,5 +187,21 @@ export default {
     descriptionAlert: '描述',
     Order:'顺序',
     isEnable:'是否启用'
+  },
+  // 数据字典管理
+  dataDictionary:{
+    systemDataDictionary:'系统数据字典',
+    businessCode:'业务编码',
+    dictionaryName:'字典名称',
+    status:'状态',
+    createUpdateDictionary:'新增/修改字典信息',
+    parentDictionary:'父级字典',
+    dictionaryType:'字典类型',
+    directoryLevel:'目录级别',
+    orderIndex:'显示顺序',
+    statusAlert:'启用状态',
+    sort:'排序',
+    createName:'创建人',
+    createTime:'创建时间'
   }
 }

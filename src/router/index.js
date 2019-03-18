@@ -48,6 +48,12 @@ export default new Router({
             {path: "/YUser/systemSettings/roleMaintenance", name: 'roleMaintenance', component: roleMaintenance},
             {path: "/YUser/systemSettings/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
           ]
+        },
+        {
+          path: "/YUser/systemSettingsAlert", redirect: "/YUser/systemSettingsAlert/organizeMaintenance", name: 'systemSettingsAlert', component: systemSettings,
+          children:[
+            {path: "/YUser/systemSettingsAlert/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
+          ]
         }
       ]
     },

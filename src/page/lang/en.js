@@ -187,5 +187,21 @@ export default {
     descriptionAlert: 'description',
     Order:'Order',
     isEnable:'isEnable'
+  },
+  // 数据字典管理
+  dataDictionary:{
+    systemDataDictionary:'system Data Dictionary',
+    businessCode:'businessCode',
+    dictionaryName:'dictionaryName',
+    status:'status',
+    createUpdateDictionary:'create/update Dictionary',
+    parentDictionary:'parent Dictionary',
+    dictionaryType:'dictionary Type',
+    directoryLevel:'directory Level',
+    orderIndex:'order Index',
+    statusAlert:'status',
+    sort:'sort',
+    createName:'createName',
+    createTime:'createTime'
   }
 }
