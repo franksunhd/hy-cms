@@ -48,7 +48,7 @@
       <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center" />
       <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
       <el-table-column :label="$t('userMaintenance.createTime')" width="200" header-align="center" align="center" />
-      <el-table-column label="操作" width="120" header-align="center" align="center" fixed="right">
+      <el-table-column :label="$t('public.operation')" width="120" header-align="center" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
           <el-button type="text" size="small">{{$t('public.resets')}}</el-button>

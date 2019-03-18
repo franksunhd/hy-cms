@@ -37,7 +37,8 @@ export default {
     prevText:'previous page',
     nextText:'next page',
     homePage:'Home page',
-    lastPage:'last page'
+    lastPage:'last page',
+    operation:'operation'
   },
   // 系统设置模块
   system:{
