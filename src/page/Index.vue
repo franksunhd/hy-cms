@@ -159,4 +159,8 @@
     top: -2px;
     margin-left: 10px;
   }
+
+  .BoxName {
+    height: 100%;
+  }
 </style>

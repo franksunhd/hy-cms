@@ -8,14 +8,14 @@
         <el-breadcrumb-item>{{$t('breadcrumb.dataDictionary')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="clearfix">
-      <div class="fl" style="width: 200px;">
+    <div style="display: flex;">
+      <div style="width: 200px;">
         <p><a href="javascript:;">系统数据字典</a></p>
         <el-tree
         :data="treeData"
         :default-expand-all="true"/>
       </div>
-      <div class="fl">
+      <div style="flex: 1;">
         <!--表单-->
         <el-form inline>
           <el-form-item label="业务编码：">
