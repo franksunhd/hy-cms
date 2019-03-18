@@ -10,19 +10,13 @@
     </div>
     <!--表单-->
     <el-form inline>
-      <el-form-item label="用户名/账号：">
+      <el-form-item :label="$t('userMaintenance.account') + '：'">
         <el-input v-model="username" />
       </el-form-item>
-      <el-form-item label="所属组织：">
-        <el-select v-model="organization">
-          <el-option
-            v-for="item in organizationList"
-            :label="item.label"
-            :value="item.value"
-            :key="item.value" />
-        </el-select>
+      <el-form-item :label="$t('userMaintenance.organization') + '：'">
+        <selectTree width="200" :options="organizationList" v-model="organization" />
       </el-form-item>
-      <el-form-item label="状态：">
+      <el-form-item :label="$t('userMaintenance.status') + '：'">
         <el-select v-model="status">
           <el-option
             v-for="item in statusList"
@@ -32,32 +26,32 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
       </el-form-item>
     </el-form>
     <!--全局操作-->
     <div class="marBottom20">
-      <el-button @click="dialogVisible = true">新增</el-button>
-      <el-button @click="enableData">启用</el-button>
-      <el-button @click="disableData">禁用</el-button>
-      <el-button @click="deleteData">删除</el-button>
+      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
+      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
+      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
+      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
     </div>
     <el-table :data="tableData" border>
       <el-table-column type="selection" fixed />
-      <el-table-column type="index" label="序号" width="60" header-align="center" align="center" />
-      <el-table-column label="用户名" width="100" header-align="center" align="center" />
-      <el-table-column label="登录账号" width="100" header-align="center" align="center" />
-      <el-table-column label="所属组织" width="100" header-align="center" align="center" />
-      <el-table-column label="用户角色" width="100" header-align="center" align="center" />
-      <el-table-column label="手机" width="100" header-align="center" align="center" />
-      <el-table-column label="邮箱" width="100" header-align="center" align="center" />
-      <el-table-column label="状态" width="100" header-align="center" align="center" />
-      <el-table-column label="创建人" width="200" header-align="center" align="center" />
-      <el-table-column label="创建时间" width="200" header-align="center" align="center" />
+      <el-table-column type="index" :label="$t('public.index')" width="60" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.loginAccount')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.organization')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.mobile')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.email')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
+      <el-table-column :label="$t('userMaintenance.createTime')" width="200" header-align="center" align="center" />
       <el-table-column label="操作" width="120" header-align="center" align="center" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">编辑</el-button>
-          <el-button type="text" size="small">重置密码</el-button>
+          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
+          <el-button type="text" size="small">{{$t('public.resets')}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -77,13 +71,7 @@
       :close-on-press-escape="false">
       <el-form label-width="150px">
         <el-form-item label="所属组织：">
-          <el-select v-model="organization">
-            <el-option
-              v-for="item in organizationList"
-              :label="item.label"
-              :value="item.value"
-              :key="item.value" />
-          </el-select>
+          <selectTree width="200" :options="organizationList" v-model="organization" />
         </el-form-item>
         <el-form-item label="用户名：">
           <el-input />
@@ -125,13 +113,13 @@
 
 <script>
   import Box from '../../components/Box';
+  import selectTree from '../../components/selectTree';
   export default {
     name: "user-maintenance",
-    components:{Box},
+    components:{Box,selectTree},
     data(){
       return {
         dialogVisible:false,
-        organizationList:[],
         tableData:[
           {},{}
         ],
@@ -139,7 +127,6 @@
           {label:'启用',value:1},
           {label:'禁用',value:0},
         ],
-        organization:'',
         checkListValue:[],
         checkList:[
           {label:'系统管理员', value:1},
@@ -153,7 +140,166 @@
           pageSize:10, // 每页显示条数
           firstPage:1, // 首页
           lastPage:100 // 末页
-        }
+        },
+        organization:'',
+        // 数据默认字段
+        defaultProps: {
+          parent: 'parentId',   // 父级唯一标识
+          value: 'id',          // 唯一标识
+          label: 'label',       // 标签显示
+          children: 'children', // 子级
+        },
+        organizationList:[
+          {
+            id:1,
+            label:'集团亚洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:2,
+                label:'上海分部',
+                type:'branch',
+                parentId:1,
+                level:2,
+                children:[
+                  {
+                    id:4,
+                    label:'张三',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                  {
+                    id:5,
+                    label:'李四',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                  {
+                    id:6,
+                    label:'王五',
+                    type:'user',
+                    parentId:2,
+                    level:3,
+                  },
+                ]
+              },
+              {
+                id:3,
+                label:'北京分部',
+                type:'branch',
+                parentId:1,
+                level:2,
+                children:[
+                  {
+                    id:7,
+                    label:'赵六',
+                    type:'user',
+                    parentId:3,
+                    level:3,
+                  }
+                ]
+              },
+              {
+                id:10,
+                label:'孙强',
+                type:'user',
+                parentId:1,
+                level:2,
+              },
+              {
+                id:13,
+                label:'金流福',
+                type:'user',
+                parentId:1,
+                level:2,
+              }
+            ]
+          },
+          {
+            id:8,
+            label:'集团欧洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:11,
+                label:'雅玛',
+                type:'user',
+                parentId:8,
+                level:2,
+              },
+              {
+                id:14,
+                label:'罗马分部',
+                type:'branch',
+                parentId:8,
+                level:2,
+                children:[]
+              },
+              {
+                id:15,
+                label:'英国分部',
+                type:'branch',
+                parentId:8,
+                level:2,
+                children:[
+                  {
+                    id:16,
+                    label:'伦敦',
+                    type:'user',
+                    parentId:15,
+                    level:3
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id:9,
+            label:'集团美洲总部',
+            type:'branch',
+            parentId:null,
+            level:1,
+            children:[
+              {
+                id:12,
+                label:'三丝',
+                type:'user',
+                parentId:9,
+                level:2
+              },
+              {
+                id:17,
+                label:'美国分部',
+                type:'branch',
+                parentId:9,
+                level:2,
+                children:[]
+              },
+              {
+                id:18,
+                label:'墨西哥分部',
+                type:'branch',
+                parentId:9,
+                level:2,
+                children:[
+                  {
+                    id:19,
+                    label:'摩卡',
+                    type:'user',
+                    parentId:18,
+                    level:3
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     },
     methods:{

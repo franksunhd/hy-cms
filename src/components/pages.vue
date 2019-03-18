@@ -7,10 +7,10 @@
       :page-size="pageSize"
       layout="slot,prev"
       :total="total"
-      prev-text="上一页"
+      :prev-text="$t('public.prevText')"
       :firstPage='firstPage'
       :lastPage='lastPage'>
-      <el-button type="text" @click="toFirstPage">首页</el-button>
+      <el-button type="text" @click="toFirstPage">{{$t('public.homePage')}}</el-button>
     </el-pagination>
     <el-pagination
       class="last-pager"
@@ -19,10 +19,10 @@
       :page-size="pageSize"
       layout="pager,next,slot"
       :total="total"
-      next-text="下一页"
+      :next-text="$t('public.nextText')"
       :firstPage='firstPage'
       :lastPage='lastPage'>
-      <el-button type="text" @click="toLastPage">末页</el-button>
+      <el-button type="text" @click="toLastPage">{{$t('public.lastPage')}}</el-button>
     </el-pagination>
   </div>
 </template>

@@ -24,7 +24,20 @@ export default {
     month:'个月',
     months:'个月',
     day:'天',
-    days:'天'
+    days:'天',
+    select:'请选择',
+    query:'查询',
+    add:'新增',
+    edit:'编辑',
+    enable:'启用',
+    disable:'警用',
+    delete:'删除',
+    resets:'重置密码',
+    index:'序号',
+    prevText:'上一页',
+    nextText:'下一页',
+    homePage:'首页',
+    lastPage:'末页'
   },
   // 系统设置模块 导航
   system:{
@@ -83,6 +96,15 @@ export default {
   },
   // 用户维护
   userMaintenance:{
-
+    account:'用户名/账号',
+    organization:'所属组织',
+    status:'状态',
+    username:'用户名',
+    loginAccount:'登录账号',
+    userRole:'用户角色',
+    mobile:'手机',
+    email:'邮箱',
+    createName:'创建人',
+    createTime:'创建时间',
   }
 }

@@ -25,6 +25,19 @@ export default {
     months:'months',
     day:'day',
     days:'days',
+    select:'Select',
+    query:'query',
+    add:'add',
+    edit:'edit',
+    enable:'enable',
+    disable:'disable',
+    delete:'delete',
+    resets:'reset passwords',
+    index:'Index',
+    prevText:'previous page',
+    nextText:'next page',
+    homePage:'Home page',
+    lastPage:'last page'
   },
   // 系统设置模块
   system:{
@@ -80,5 +93,18 @@ export default {
     interfaceMode:'interface mode',
     apiAddress:'API address',
     accessParameters:'access parameters'
+  },
+  // 用户维护
+  userMaintenance:{
+    account:'username/acccount',
+    organization:'organization',
+    status:'status',
+    username:'username',
+    loginAccount:'login account',
+    userRole:'userRole',
+    mobile:'mobile',
+    email:'email',
+    createName:'founder',
+    createTime:'Creation time',
   }
 }
