@@ -115,6 +115,12 @@ export default {
     email:'email',
     createName:'founder',
     createTime:'Creation time',
+    createUpdateUserInfo:'createUpdateUserInfo',
+    loginPassword:'loginPassword',
+    mobileNum:'mobileNum',
+    emails:'emails',
+    statusAlert:'statusAlert',
+    assignRole:'assignRole'
   },
   // 角色维护
   roleMaintenance: {

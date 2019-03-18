@@ -115,6 +115,12 @@ export default {
     email:'邮箱',
     createName:'创建人',
     createTime:'创建时间',
+    createUpdateUserInfo:'新增/编辑管理用户信息',
+    loginPassword:'登录密码',
+    mobileNum:'手机号码',
+    emails:'电子邮箱',
+    statusAlert:'启用状态',
+    assignRole:'分配角色'
   },
   // 角色维护
   roleMaintenance: {

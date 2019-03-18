@@ -65,36 +65,36 @@
       @handleCurrentChangeSub="handleCurrentChange" />
     <!--新增编辑-->
     <el-dialog
-      title="新增/编辑管理用户信息"
+      :title="$t('userMaintenance.createUpdateUserInfo')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="所属组织：">
+        <el-form-item :label="$t('userMaintenance.organization') + '：'">
           <selectTree width="200" :options="organizationList" v-model="organization" />
         </el-form-item>
-        <el-form-item label="用户名：">
+        <el-form-item :label="$t('userMaintenance.username') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="登录账号：">
+        <el-form-item :label="$t('userMaintenance.loginAccount') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="登录密码：">
+        <el-form-item :label="$t('userMaintenance.loginPassword') + '：'">
           <el-input type="password" />
         </el-form-item>
-        <el-form-item label="手机号码：">
+        <el-form-item :label="$t('userMaintenance.mobileNum') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="电子邮箱：">
+        <el-form-item :label="$t('userMaintenance.statusAlert') + '：'">
           <el-input />
         </el-form-item>
-        <el-form-item label="启用状态：">
+        <el-form-item :label="$t('userMaintenance.assignRole') + '：'">
           <el-radio-group v-model="status">
-            <el-radio :label="0">启用</el-radio>
-            <el-radio :label="1">禁用</el-radio>
+            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="分配角色：">
+        <el-form-item :label="$t('userMaintenance.emails') + '：'">
           <el-checkbox-group v-model="checkListValue">
             <template v-for="(item,index) in checkList">
               <el-checkbox :label="item.value">{{item.label}}</el-checkbox>
@@ -104,8 +104,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
