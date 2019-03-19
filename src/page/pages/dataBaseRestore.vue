@@ -93,8 +93,8 @@
       :visible.sync="dialogVisibleAlert"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="100px">
-        <el-form-item :label="$t('dataBaseRestore.keepTime') + '：'">
+      <my-cron>
+        <el-form-item slot="header" :label="$t('dataBaseRestore.keepTime') + '：'">
           <el-radio-group v-model="radio">
             <el-radio :label="0">1{{$t('public.month')}}</el-radio>
             <el-radio :label="1">3{{$t('public.months')}}</el-radio>
@@ -106,8 +106,7 @@
             <el-radio :label="7">{{$t('public.permanent')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-      </el-form>
-      <cron />
+      </my-cron>
       <span slot="footer">
         <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
         <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
@@ -118,10 +117,10 @@
 
 <script>
   import Box from '../../components/Box';
-  import cron from '../../components/cron';
+  import myCron from '../../components/cron';
   export default {
     name: "dataBaseRestore",
-    components:{Box,cron},
+    components:{Box,myCron},
     data() {
       return {
         radio:'',
