@@ -237,5 +237,20 @@ export default {
     ruleDescription:'rule Description',
     status:'status',
     note:'note'
+  },
+  // 数据库还原
+  dataBaseRestore:{
+    backUpObject:'backUp Object',
+    backUpTime:'backUp Time',
+    backUpType:'backUp Type',
+    singleTable:'single Table',
+    wholeLibrary:'whole Library',
+    runRestore:'run Restore',
+    deleteRestore:'delete',
+    restoreHistory:'restore History',
+    backUpRole:'backUp Role',
+    storageLocation:'storage Location',
+    dataSize:'data Size',
+    note:'note'
   }
 }

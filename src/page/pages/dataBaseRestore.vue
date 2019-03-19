@@ -1,5 +1,65 @@
 <template>
-  <Box></Box>
+  <Box>
+    <!--面包屑区域-->
+    <div class="Breadcrumb">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>{{$t('breadcrumb.systemSetting')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.dataBaseManagement')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.dataBaseRestore')}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!--表单-->
+    <el-form inline>
+      <el-form-item :label="$t('dataBaseRestore.backUpObject') + '：'">
+        <el-input />
+      </el-form-item>
+      <el-form-item :label="$t('dataBaseRestore.backUpTime') + '：'">
+        <el-date-picker
+          v-model="startTime"
+          type="date"
+          :placeholder="$t('public.selectDate')" />
+        <span>~</span>
+        <el-date-picker
+          v-model="endTime"
+          type="date"
+          :placeholder="$t('public.selectDate')" />
+      </el-form-item>
+      <el-form-item :label="$t('dataBaseRestore.backUpType') + '：'">
+        <el-select>
+          <el-option value="0" :label="$t('dataBaseRestore.singleTable')" />
+          <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
+      </el-form-item>
+    </el-form>
+    <!--全局操作-->
+    <div class="marBottom20">
+      <el-button @click="runRestore">{{$t('dataBaseRestore.runRestore')}}</el-button>
+      <el-button @click="deleteRestore">{{$t('dataBaseRestore.deleteRestore')}}</el-button>
+      <el-button @click="restoreHistory">{{$t('dataBaseRestore.restoreHistory')}}</el-button>
+      <el-button @click="backUpRole">{{$t('dataBaseRestore.backUpRole')}}</el-button>
+    </div>
+    <!--表格-->
+    <el-table :data="tableData" border>
+      <el-table-column type="selection" fixed />
+      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+      <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center" />
+      <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center" />
+      <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center" />
+      <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center" />
+      <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center" />
+    </el-table>
+    <!--分页-->
+    <pages
+      :total='options.total'
+      :currentPage='options.currentPage'
+      :pageSize='options.pageSize'
+      :firstPage='options.firstPage'
+      :lastPage='options.lastPage'
+      @handleCurrentChangeSub="handleCurrentChange" />
+  </Box>
 </template>
 
 <script>
@@ -8,9 +68,43 @@
     name: "dataBaseRestore",
     components:{Box},
     data() {
-      return {}
+      return {
+        startTime:'',
+        endTime:'',
+        tableData:[
+          {},{}
+        ],
+        options:{
+          total:1000, // 总条数
+          currentPage:1, // 当前页码
+          pageSize:10, // 每页显示条数
+          firstPage:1, // 首页
+          lastPage:100 // 末页
+        },
+      }
     },
-    methods: {},
+    methods: {
+      // 改变当前页码
+      handleCurrentChange(val){
+        console.log(val)
+      },
+      // 执行还原
+      runRestore(){
+
+      },
+      // 删除
+      deleteRestore(){
+
+      },
+      // 还原的执行历史
+      restoreHistory(){
+
+      },
+      // 备份文件的清理规则
+      backUpRole(){
+
+      }
+    },
     created() {
     }
   }

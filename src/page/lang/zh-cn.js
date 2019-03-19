@@ -237,5 +237,20 @@ export default {
     ruleDescription:'规则说明',
     status:'状态',
     note:'备注'
+  },
+  // 数据库还原
+  dataBaseRestore:{
+    backUpObject:'备份对象',
+    backUpTime:'备份时间',
+    backUpType:'备份方式',
+    singleTable:'单表',
+    wholeLibrary:'整库',
+    runRestore:'执行还原',
+    deleteRestore:'删除',
+    restoreHistory:'还原的执行历史',
+    backUpRole:'备份文件的清理规则',
+    storageLocation:'存储位置',
+    dataSize:'数据大小',
+    note:'备注'
   }
 }
