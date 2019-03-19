@@ -22,13 +22,13 @@
           :placeholder="$t('public.selectDate')" />
       </el-form-item>
       <el-form-item :label="$t('backUpTimer.backUpType') + '：'">
-        <el-select>
+        <el-select v-model="backUpType">
           <el-option value="0" :label="$t('backUpTimer.singleTable')" />
           <el-option value="1" :label="$t('backUpTimer.wholeLibrary')" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('backUpTimer.backUpStatus') + '：'">
-        <el-select>
+        <el-select v-model="backUpStatus">
           <el-option value="0" :label="$t('backUpTimer.running')" />
           <el-option value="1" :label="$t('backUpTimer.stopped')" />
         </el-select>
@@ -63,18 +63,49 @@
       :firstPage='options.firstPage'
       :lastPage='options.lastPage'
       @handleCurrentChangeSub="handleCurrentChange" />
+    <!--新增编辑-->
+    <el-dialog
+      :title="$t('backUpTimer.backUpTimerTitle')"
+      class="dataBaseClear-box"
+      :visible.sync="dialogVisibleAlert"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <my-cron>
+        <el-form-item slot="header" :label="$t('backUpTimer.backUpObject') + '：'">
+          <span>MySQL</span>
+          <span> &nbsp; > &nbsp; </span>
+          <el-select>
+            <el-option></el-option>
+          </el-select>
+          <span> &nbsp; > &nbsp; </span>
+          <el-select>
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item slot="footers" :label="$t('backUpTimer.ruleDescription') + '：'">
+          <el-input type="textarea" :autosize="{ minRows: 3}" />
+        </el-form-item>
+      </my-cron>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </Box>
 </template>
 
 <script>
   import Box from '../../components/Box';
+  import myCron from '../../components/cron';
   export default {
     name: "backUpTimer",
-    components:{Box},
+    components:{Box,myCron},
     data() {
       return {
         startTime:'',
         endTime:'',
+        backUpType:'',
+        backUpStatus:'',
         tableData:[
           {},{}
         ],
@@ -85,6 +116,7 @@
           firstPage:1, // 首页
           lastPage:100 // 末页
         },
+        dialogVisibleAlert:true,
       }
     },
     methods: {

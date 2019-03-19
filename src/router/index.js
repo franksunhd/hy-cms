@@ -57,12 +57,6 @@ export default new Router({
             {path: "/YUser/systemSettings/backUpTimer", name: 'backUpTimer', component: backUpTimer},
             {path: "/YUser/systemSettings/dataBaseRestore", name: 'dataBaseRestore', component: dataBaseRestore},
           ]
-        },
-        {
-          path: "/YUser/systemSettingsAlert", redirect: "/YUser/systemSettingsAlert/organizeMaintenance", name: 'systemSettingsAlert', component: systemSettings,
-          children:[
-            {path: "/YUser/systemSettingsAlert/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
-          ]
         }
       ]
     },

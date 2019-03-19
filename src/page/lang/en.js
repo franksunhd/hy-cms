@@ -239,7 +239,8 @@ export default {
     backUpObject:'backUp Object',
     ruleDescription:'rule Description',
     status:'status',
-    note:'note'
+    note:'note',
+    backUpTimerTitle:'create/update backUpTimer'
   },
   // 数据库还原
   dataBaseRestore:{

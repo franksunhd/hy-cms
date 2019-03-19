@@ -1,5 +1,6 @@
 <template>
   <el-form :model="options" label-width="100px">
+    <slot name="header"></slot>
     <el-form-item :label="$t('dataBaseRestore.setTime') + '：'">
       <el-select v-model="options.year" class="selectWidth-cron" placeholder="">
         <el-option v-for="(item,index) in yearList" :key="index" :label="item" :value="item" />
@@ -32,6 +33,7 @@
     <el-form-item :label="$t('dataBaseRestore.ruleDes') + '：'">
       <span>{{timeRuleDes}} 触发</span>
     </el-form-item>
+    <slot name="footers"></slot>
   </el-form>
 </template>
 

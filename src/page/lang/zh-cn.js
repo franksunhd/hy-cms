@@ -239,7 +239,8 @@ export default {
     backUpObject:'备份对象',
     ruleDescription:'规则说明',
     status:'状态',
-    note:'备注'
+    note:'备注',
+    backUpTimerTitle:'新增/编辑备份定时器'
   },
   // 数据库还原
   dataBaseRestore:{
