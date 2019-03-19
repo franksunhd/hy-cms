@@ -44,7 +44,8 @@ export default {
     sex:'性别',
     confirmTip:'确认提示',
     YES:'是',
-    NO:'否'
+    NO:'否',
+    resultTip:'结果提示'
   },
   // 系统设置模块 导航
   system:{
@@ -63,7 +64,11 @@ export default {
     roleMaintenance:'角色维护',
     organizeMaintenance:'组织维护',
     platformLanguage:'平台语言设置',
-    dataDictionary:'数据字典管理'
+    dataDictionary:'数据字典管理',
+    dataBaseManagement:'数据库管理',
+    dataBaseBackUp: '数据库备份',
+    backUpTimer:'备份定时器',
+    dataBaseRestore:'数据库还原'
   },
   // 许可证信息维护
   license:{
@@ -203,5 +208,15 @@ export default {
     sort:'排序',
     createName:'创建人',
     createTime:'创建时间'
+  },
+  // 数据库备份
+  dataBaseBackUp:{
+    backUpAllTable:'备份以下选中的表',
+    backUpThisDataBase:'备份当前选中的数据库',
+    dataBaseType:'数据库类型',
+    dataBaseName:'数据库名称',
+    backUpDirectory:'备份目录及文件为',
+    tableName:'表名',
+    tableDes:'表描述'
   }
 }

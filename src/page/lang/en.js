@@ -44,7 +44,8 @@ export default {
     sex:'sex',
     confirmTip:'confirmTip',
     YES:'YES',
-    NO:'NO'
+    NO:'NO',
+    resultTip:'resultTip'
   },
   // 系统设置模块
   system:{
@@ -63,7 +64,11 @@ export default {
     roleMaintenance:'role maintenance',
     organizeMaintenance:'organize maintenance',
     platformLanguage:'platform Language',
-    dataDictionary:'data Dictionary'
+    dataDictionary:'data Dictionary',
+    dataBaseManagement:'dataBase Management',
+    dataBaseBackUp: 'dataBase BackUp',
+    backUpTimer:'backUp Timer',
+    dataBaseRestore:'dataBase Restore'
   },
   // 许可证信息维护
   license:{
@@ -203,5 +208,15 @@ export default {
     sort:'sort',
     createName:'createName',
     createTime:'createTime'
+  },
+  // 数据库备份
+  dataBaseBackUp:{
+    backUpAllTable:'backUp All Table',
+    backUpThisDataBase:'backUp This DataBase',
+    dataBaseType:'dataBase Type',
+    dataBaseName:'dataBase Name',
+    backUpDirectory:'backUp Directory',
+    tableName:'table Name',
+    tableDes:'table Description'
   }
 }
