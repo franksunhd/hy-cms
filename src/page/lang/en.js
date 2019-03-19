@@ -218,5 +218,24 @@ export default {
     backUpDirectory:'backUp Directory',
     tableName:'table Name',
     tableDes:'table Description'
+  },
+  // 备份定时器
+  backUpTimer:{
+    createTime:'createTime',
+    backUpType:'backUp Type',
+    backUpStatus:'backUp Status',
+    singleTable:'single Table',
+    wholeLibrary:'whole Library',
+    running:'running',
+    stopped:'stopped',
+    addTimer:'addTimer',
+    editTimer:'editTimer',
+    runTimer:'runTimer',
+    deleteTimer:'deleteTimer',
+    taskName:'task Name',
+    backUpObject:'backUp Object',
+    ruleDescription:'rule Description',
+    status:'status',
+    note:'note'
   }
 }

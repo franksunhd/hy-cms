@@ -218,5 +218,24 @@ export default {
     backUpDirectory:'备份目录及文件为',
     tableName:'表名',
     tableDes:'表描述'
+  },
+  // 备份定时器
+  backUpTimer:{
+    createTime:'创建时间',
+    backUpType:'备份方式',
+    backUpStatus:'备份状态',
+    singleTable:'单表',
+    wholeLibrary:'整库',
+    running:'正在运行',
+    stopped:'已经停止',
+    addTimer:'新增定时器',
+    editTimer:'编辑定时器',
+    runTimer:'运行定时器',
+    deleteTimer:'删除',
+    taskName:'任务名称',
+    backUpObject:'备份对象',
+    ruleDescription:'规则说明',
+    status:'状态',
+    note:'备注'
   }
 }
