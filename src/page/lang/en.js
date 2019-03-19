@@ -25,6 +25,8 @@ export default {
     months:'months',
     day:'day',
     days:'days',
+    year:'year',
+    years:'years',
     select:'Select',
     query:'query',
     add:'add',
@@ -45,7 +47,8 @@ export default {
     confirmTip:'confirmTip',
     YES:'YES',
     NO:'NO',
-    resultTip:'resultTip'
+    resultTip:'resultTip',
+    permanent:'permanent'
   },
   // 系统设置模块
   system:{
@@ -251,6 +254,11 @@ export default {
     backUpRole:'backUp Role',
     storageLocation:'storage Location',
     dataSize:'data Size',
-    note:'note'
+    note:'note',
+    showMore:'show More',
+    keepTime:'keep Time',
+    setTime:'set Time',
+    timeRule:'time Rule',
+    ruleDes:'Description'
   }
 }

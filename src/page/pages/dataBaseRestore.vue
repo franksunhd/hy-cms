@@ -59,16 +59,72 @@
       :firstPage='options.firstPage'
       :lastPage='options.lastPage'
       @handleCurrentChangeSub="handleCurrentChange" />
+    <!--还原的执行史-->
+    <el-dialog
+      :title="$t('dataBaseRestore.restoreHistory')"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <div class="timeLineBox">
+        <el-timeline>
+          <template v-for="(item,index) in timelineData">
+            <el-timeline-item
+              class="timeLine-title"
+              v-if="item.level === 1"
+              :timestamp="item.label"
+              placement="top"
+              size="large"
+              icon="el-icon-more" />
+            <el-timeline-item v-else :timestamp="item.label" placement="top" size="normal">
+              <p>{{item.des}}</p>
+            </el-timeline-item>
+          </template>
+        </el-timeline>
+      </div>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogVisible = false">{{$t('dataBaseRestore.showMore')}}</el-button>
+        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+      </span>
+    </el-dialog>
+    <!--备份文件的清理规则-->
+    <el-dialog
+      :title="$t('dataBaseRestore.backUpRole')"
+      class="dataBaseClear-box"
+      :visible.sync="dialogVisibleAlert"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <el-form label-width="100px">
+        <el-form-item :label="$t('dataBaseRestore.keepTime') + '：'">
+          <el-radio-group v-model="radio">
+            <el-radio :label="0">1{{$t('public.month')}}</el-radio>
+            <el-radio :label="1">3{{$t('public.months')}}</el-radio>
+            <el-radio :label="2">6{{$t('public.months')}}</el-radio>
+            <el-radio :label="3">9{{$t('public.months')}}</el-radio>
+            <el-radio :label="4">1{{$t('public.year')}}</el-radio>
+            <el-radio :label="5">2{{$t('public.years')}}</el-radio>
+            <el-radio :label="6">3{{$t('public.years')}}</el-radio>
+            <el-radio :label="7">{{$t('public.permanent')}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <cron />
+      <span slot="footer">
+        <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </Box>
 </template>
 
 <script>
   import Box from '../../components/Box';
+  import cron from '../../components/cron';
   export default {
     name: "dataBaseRestore",
-    components:{Box},
+    components:{Box,cron},
     data() {
       return {
+        radio:'',
         startTime:'',
         endTime:'',
         tableData:[
@@ -81,6 +137,22 @@
           firstPage:1, // 首页
           lastPage:100 // 末页
         },
+        dialogVisible:false,
+        dialogVisibleAlert:true,
+        timelineData:[
+          {label:'2019年2月1日', level:1, des:null},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019年1月31日', level:1, des:null},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019年1月30日', level:1, des:null},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
+          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',}
+        ]
       }
     },
     methods: {
@@ -110,6 +182,17 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .timeLineBox {
+    height: 300px;
+    overflow-y: scroll;
+  }
 
+  .timeLine-title .el-timeline-item__timestamp {
+    font-size: 20px;
+  }
+
+  .dataBaseClear-box .el-radio {
+    margin-right: 15px;
+  }
 </style>

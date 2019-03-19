@@ -25,6 +25,8 @@ export default {
     months:'个月',
     day:'天',
     days:'天',
+    year:'年',
+    years:'年',
     select:'请选择',
     query:'查询',
     add:'新增',
@@ -45,7 +47,8 @@ export default {
     confirmTip:'确认提示',
     YES:'是',
     NO:'否',
-    resultTip:'结果提示'
+    resultTip:'结果提示',
+    permanent:'永久保存'
   },
   // 系统设置模块 导航
   system:{
@@ -251,6 +254,11 @@ export default {
     backUpRole:'备份文件的清理规则',
     storageLocation:'存储位置',
     dataSize:'数据大小',
-    note:'备注'
+    note:'备注',
+    showMore:'查看更多',
+    keepTime:'保留时间',
+    setTime:'时间设定',
+    timeRule:'时间规则',
+    ruleDes:'规则说明'
   }
 }
