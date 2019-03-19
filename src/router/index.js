@@ -26,6 +26,12 @@ const userMaintenance = () => import ('@/page/pages/userMaintenance');
 const roleMaintenance = () => import ('@/page/pages/roleMaintenance');
 // 组织维护
 const organizeMaintenance = () => import ('@/page/pages/organizeMaintenance');
+// 数据库备份
+const dataBaseBackUp = () => import ('@/page/pages/dataBaseBackUp');
+// 备份定时器
+const backUpTimer = () => import ('@/page/pages/backUpTimer');
+// 数据库还原
+const dataBaseRestore = () => import ('@/page/pages/dataBaseRestore');
 
 Vue.use(Router);
 export default new Router({
@@ -47,6 +53,9 @@ export default new Router({
             {path: "/YUser/systemSettings/userMaintenance", name: 'userMaintenance', component: userMaintenance},
             {path: "/YUser/systemSettings/roleMaintenance", name: 'roleMaintenance', component: roleMaintenance},
             {path: "/YUser/systemSettings/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
+            {path: "/YUser/systemSettings/dataBaseBackUp", name: 'dataBaseBackUp', component: dataBaseBackUp},
+            {path: "/YUser/systemSettings/backUpTimer", name: 'backUpTimer', component: backUpTimer},
+            {path: "/YUser/systemSettings/dataBaseRestore", name: 'dataBaseRestore', component: dataBaseRestore},
           ]
         },
         {

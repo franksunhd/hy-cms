@@ -42,6 +42,12 @@
               {id:'3-3',name:'组织维护',url:'/YUser/systemSettings/organizeMaintenance'}
             ]
           },
+          {id:'4',name:'数据库管理',children:[
+              {id:'4-1',name:'数据库备份',url:'/YUser/systemSettings/dataBaseBackUp'},
+              {id:'4-2',name:'备份定时器',url:'/YUser/systemSettings/backUpTimer'},
+              {id:'4-3',name:'数据库还原',url:'/YUser/systemSettings/dataBaseRestore'}
+            ]
+          },
         ]
       }
     },
