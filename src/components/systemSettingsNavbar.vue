@@ -39,13 +39,29 @@
           {id:'3',name:'用户管理',children:[
               {id:'3-1',name:'用户维护',url:'/YUser/systemSettings/userMaintenance'},
               {id:'3-2',name:'角色维护',url:'/YUser/systemSettings/roleMaintenance'},
-              {id:'3-3',name:'组织维护',url:'/YUser/systemSettings/organizeMaintenance'}
+              {id:'3-3',name:'组织维护',url:'/YUser/systemSettings/organizeMaintenance'},
+              {id:'3-4',name:'功能菜单维护',url:'/YUser/systemSettings/functionMenuMaintenance'}
             ]
           },
           {id:'4',name:'数据库管理',children:[
               {id:'4-1',name:'数据库备份',url:'/YUser/systemSettings/dataBaseBackUp'},
               {id:'4-2',name:'备份定时器',url:'/YUser/systemSettings/backUpTimer'},
               {id:'4-3',name:'数据库还原',url:'/YUser/systemSettings/dataBaseRestore'}
+            ]
+          },
+          {id:'5',name:'设备采集设置',children:[
+              {id:'5-1',name:'节点组维护',url:'/YUser/systemSettings/nodeGroupMaintenance'},
+              {id:'5-2',name:'采集节点管理',url:'/YUser/systemSettings/acquisitionNodeManagement'},
+              {id:'5-3',name:'采集任务分配',url:'/YUser/systemSettings/collectionTaskAssignment'},
+              {id:'5-4',name:'采集节点状态',url:'/YUser/systemSettings/acquisitionNodeState'}
+            ]
+          },
+          {id:'6',name:'日志管理',children:[
+              {id:'6-1',name:'登录日志',url:'/YUser/systemSettings/loginLog'},
+              {id:'6-2',name:'操作日志',url:'/YUser/systemSettings/operationLog'},
+              {id:'6-3',name:'任务日志',url:'/YUser/systemSettings/jobLog'},
+              {id:'6-4',name:'通知日志',url:'/YUser/systemSettings/notificationLog'},
+              {id:'6-5',name:'检测日志',url:'/YUser/systemSettings/testLog'}
             ]
           },
         ]

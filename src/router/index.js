@@ -32,6 +32,26 @@ const dataBaseBackUp = () => import ('@/page/pages/dataBaseBackUp');
 const backUpTimer = () => import ('@/page/pages/backUpTimer');
 // 数据库还原
 const dataBaseRestore = () => import ('@/page/pages/dataBaseRestore');
+// 节点组维护
+const nodeGroupMaintenance = () => import ('@/page/pages/nodeGroupMaintenance');
+// 功能菜单维护
+const functionMenuMaintenance = () => import ('@/page/pages/functionMenuMaintenance');
+// 采集节点管理
+const acquisitionNodeManagement = () => import ('@/page/pages/acquisitionNodeManagement');
+// 采集任务分配
+const collectionTaskAssignment = () => import ('@/page/pages/collectionTaskAssignment');
+// 采集节点状态
+const acquisitionNodeState = () => import ('@/page/pages/acquisitionNodeState');
+// 登录日志
+const loginLog = () => import ('@/page/pages/loginLog');
+// 操作日志
+const operationLog = () => import ('@/page/pages/operationLog');
+// 任务日志
+const jobLog = () => import ('@/page/pages/jobLog');
+// 通知日志
+const notificationLog = () => import ('@/page/pages/notificationLog');
+// 检测日志
+const testLog = () => import ('@/page/pages/testLog');
 
 Vue.use(Router);
 export default new Router({
@@ -56,6 +76,17 @@ export default new Router({
             {path: "/YUser/systemSettings/dataBaseBackUp", name: 'dataBaseBackUp', component: dataBaseBackUp},
             {path: "/YUser/systemSettings/backUpTimer", name: 'backUpTimer', component: backUpTimer},
             {path: "/YUser/systemSettings/dataBaseRestore", name: 'dataBaseRestore', component: dataBaseRestore},
+            {path: "/YUser/systemSettings/nodeGroupMaintenance", name: 'nodeGroupMaintenance', component: nodeGroupMaintenance},
+            {path: "/YUser/systemSettings/functionMenuMaintenance", name: 'functionMenuMaintenance', component: functionMenuMaintenance},
+            {path: "/YUser/systemSettings/acquisitionNodeManagement", name: 'acquisitionNodeManagement', component: acquisitionNodeManagement},
+            {path: "/YUser/systemSettings/collectionTaskAssignment", name: 'collectionTaskAssignment', component: collectionTaskAssignment},
+            {path: "/YUser/systemSettings/acquisitionNodeState", name: 'acquisitionNodeState', component: acquisitionNodeState},
+            {path: "/YUser/systemSettings/loginLog", name: 'loginLog', component: loginLog},
+            {path: "/YUser/systemSettings/operationLog", name: 'operationLog', component: operationLog},
+            {path: "/YUser/systemSettings/jobLog", name: 'jobLog', component: jobLog},
+            {path: "/YUser/systemSettings/notificationLog", name: 'notificationLog', component: notificationLog},
+            {path: "/YUser/systemSettings/testLog", name: 'testLog', component: testLog},
+
           ]
         }
       ]
