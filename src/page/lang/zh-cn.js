@@ -366,5 +366,14 @@ export default {
     logInTime:'登入时间',
     logOutTime:'登出时间',
     timeLength:'时长'
+  },
+  // 操作日志
+  operationLog:{
+    userName:'登录人姓名/账号/手机/邮箱',
+    loginDate:'登录日期',
+    operationType:'操作分类',
+    operationDes:'操作说明',
+    operationStaff:'操作人员',
+    operationTime:'操作时间',
   }
 }

@@ -1,14 +1,79 @@
 <template>
-    
+  <Box>
+    <!--面包屑区域-->
+    <div class="Breadcrumb">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>{{$t('breadcrumb.systemSetting')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.logManagement')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.operationLog')}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!--表单-->
+    <el-form inline>
+      <el-form-item :label="$t('operationLog.userName') + '：'">
+        <el-input />
+      </el-form-item>
+      <el-form-item :label="$t('operationLog.loginDate') + '：'">
+        <el-date-picker
+          v-model="startTime"
+          type="date"
+          :placeholder="$t('public.selectDate')" />
+        <span>~</span>
+        <el-date-picker
+          v-model="endTime"
+          type="date"
+          :placeholder="$t('public.selectDate')" />
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
+      </el-form-item>
+    </el-form>
+    <!--表格-->
+    <el-table :data="tableData" border>
+      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+      <el-table-column :label="$t('operationLog.operationType')" header-align="center" align="center" />
+      <el-table-column :label="$t('operationLog.operationDes')" header-align="center" align="center" />
+      <el-table-column :label="$t('operationLog.operationStaff')" header-align="center" align="center" />
+      <el-table-column :label="$t('operationLog.operationTime')" header-align="center" align="center" />
+    </el-table>
+    <!--分页-->
+    <pages
+      :total='options.total'
+      :currentPage='options.currentPage'
+      :pageSize='options.pageSize'
+      :firstPage='options.firstPage'
+      :lastPage='options.lastPage'
+      @handleCurrentChangeSub="handleCurrentChange" />
+  </Box>
 </template>
 
 <script>
+  import Box from '../../components/Box';
   export default {
     name: "operationLog",
+    components:{Box},
     data() {
-      return {}
+      return {
+        startTime:'',
+        endTime:'',
+        tableData:[
+          {},{}
+        ],
+        options:{
+          total:1000, // 总条数
+          currentPage:1, // 当前页码
+          pageSize:10, // 每页显示条数
+          firstPage:1, // 首页
+          lastPage:100 // 末页
+        },
+      }
     },
-    methods: {},
+    methods: {
+      // 外层 改变当前页码
+      handleCurrentChange(val){
+        console.log(val);
+      },
+    },
     created() {
     }
   }

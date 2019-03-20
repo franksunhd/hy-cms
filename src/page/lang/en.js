@@ -366,5 +366,14 @@ export default {
     logInTime:'logInTime',
     logOutTime:'logOutTime',
     timeLength:'timeLength'
+  },
+  // 操作日志
+  operationLog:{
+    userName:'userName/account/mobile/email',
+    loginDate:'loginDate',
+    operationType:'operationType',
+    operationDes:'description',
+    operationStaff:'operationStaff',
+    operationTime:'operationTime',
   }
 }
