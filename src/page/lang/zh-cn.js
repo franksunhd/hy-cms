@@ -332,5 +332,27 @@ export default {
     ruleDes:'规则说明',
     statusAlert:'启用状态',
     monitoringTask:'设备监测任务分配',
+  },
+  // 采集节点状态
+  acquisitionNodeState:{
+    nodeName:'节点名称',
+    nodeIp:'节点IP',
+    nodePort:'节点端口',
+    nodeType:'节点类型',
+    status:'状态',
+    groupName:'组名称',
+    runMonitoring:'执行监测',
+    stopMonitoring:'停止监测',
+    ip:'IP',
+    port:'端口',
+    nodeGroup:'所属节点组',
+    equipmentNumber:'监测设备数',
+    description:'描述',
+    executionStatus:'执行状态',
+    lastExecutionTime:'最后一次执行时间',
+    banMonitoring:'禁止监测',
+    temporarilyIgnore:'暂时忽略',
+    cancelIgnore:'取消忽略',
+    offLine:'离线'
   }
 }

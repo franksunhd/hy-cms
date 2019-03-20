@@ -332,5 +332,27 @@ export default {
     ruleDes:'ruleDes',
     statusAlert:'statusAlert',
     monitoringTask:'monitoring Task',
+  },
+  // 采集节点状态
+  acquisitionNodeState:{
+    nodeName:'nodeName',
+    nodeIp:'nodeIp',
+    nodePort:'nodePort',
+    nodeType:'nodeType',
+    status:'status',
+    groupName:'groupName',
+    runMonitoring:'runMonitoring',
+    stopMonitoring:'stopMonitoring',
+    ip:'IP',
+    port:'port',
+    nodeGroup:'nodeGroup',
+    equipmentNumber:'equipmentNumber',
+    description:'description',
+    executionStatus:'executionStatus',
+    lastExecutionTime:'lastExecutionTime',
+    banMonitoring:'banMonitoring',
+    temporarilyIgnore:'temporarilyIgnore',
+    cancelIgnore:'cancelIgnore',
+    offLine:'offLine'
   }
 }
