@@ -71,7 +71,18 @@ export default {
     dataBaseManagement:'数据库管理',
     dataBaseBackUp: '数据库备份',
     backUpTimer:'备份定时器',
-    dataBaseRestore:'数据库还原'
+    dataBaseRestore:'数据库还原',
+    deviceAcquisitionSettings:'设备采集设置',
+    nodeGroupMaintenance:'节点组维护',
+    functionMenuMaintenance:'功能菜单维护',
+    collectionTaskAssignment:'采集任务分配',
+    acquisitionNodeState:'采集节点状态',
+    logManagement:'日志管理',
+    loginLog:'登录日志',
+    operationLog:'操作日志',
+    jobLog:'任务日志',
+    notificationLog:'通知日志',
+    testLog:'检测日志'
   },
   // 许可证信息维护
   license:{

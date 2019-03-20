@@ -71,7 +71,18 @@ export default {
     dataBaseManagement:'dataBase Management',
     dataBaseBackUp: 'dataBase BackUp',
     backUpTimer:'backUp Timer',
-    dataBaseRestore:'dataBase Restore'
+    dataBaseRestore:'dataBase Restore',
+    deviceAcquisitionSettings:'device Acquisition Settings',
+    nodeGroupMaintenance:'node Group Maintenance',
+    functionMenuMaintenance:'function Menu Maintenance',
+    collectionTaskAssignment:'collection Task Assignment',
+    acquisitionNodeState:'acquisition Node State',
+    logManagement:'log Management',
+    loginLog:'login Log',
+    operationLog:'operation Log',
+    jobLog:'job Log',
+    notificationLog:'notification Log',
+    testLog:'test Log'
   },
   // 许可证信息维护
   license:{
