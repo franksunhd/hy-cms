@@ -1,14 +1,176 @@
 <template>
-    
+  <Box>
+    <!--面包屑区域-->
+    <div class="Breadcrumb">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>{{$t('breadcrumb.systemSetting')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.deviceAcquisitionSettings')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.collectionTaskAssignment')}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <!--表单-->
+    <el-form inline>
+      <el-form-item :label="$t('collectionTaskAssignment.nodeName') + '：'">
+        <el-input />
+      </el-form-item>
+      <el-form-item :label="$t('collectionTaskAssignment.nodeIp') + '：'">
+        <el-input />
+      </el-form-item>
+      <el-form-item :label="$t('collectionTaskAssignment.nodePort') + '：'">
+        <el-input />
+      </el-form-item>
+      <br>
+      <el-form-item :label="$t('collectionTaskAssignment.groupName') + '：'">
+        <el-select>
+          <el-option></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('collectionTaskAssignment.nodeType') + '：'">
+        <el-select>
+          <el-option></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('collectionTaskAssignment.status') + '：'">
+        <el-select>
+          <el-option></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary">{{$t('public.query')}}</el-button>
+      </el-form-item>
+    </el-form>
+    <!--全局操作-->
+    <div class="marBottom20">
+      <el-button @click="runMonitoring">{{$t('collectionTaskAssignment.runMonitoring')}}</el-button>
+      <el-button @click="stopMonitoring">{{$t('collectionTaskAssignment.stopMonitoring')}}</el-button>
+      <el-button @click="assignedTasks">{{$t('collectionTaskAssignment.equipmentMonitoring')}}</el-button>
+    </div>
+    <!--表格-->
+    <el-table :data="tableData" border>
+      <el-table-column type="selection" fixed />
+      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.nodeName')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.ip')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.port')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.nodeGroup')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="center" align="center" />
+      <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="center" align="center" />
+    </el-table>
+    <!--分页-->
+    <pages
+      :total='options.total'
+      :currentPage='options.currentPage'
+      :pageSize='options.pageSize'
+      :firstPage='options.firstPage'
+      :lastPage='options.lastPage'
+      @handleCurrentChangeSub="handleCurrentChange" />
+    <!--分配设备监测任务-->
+    <el-dialog
+      :title="$t('collectionTaskAssignment.createUpdateNode')"
+      :visible.sync="dialogVisibleAlert"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <el-form label-width="120px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('collectionTaskAssignment.nodeGroup') + '：'">
+              温州机房
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('collectionTaskAssignment.nodeName') + '：'">
+              A01
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('collectionTaskAssignment.nodeIp') + '：'">
+              192.168.0.1
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="$t('collectionTaskAssignment.nodePort') + '：'">
+              8080
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <el-row>
+        <el-col :span="24">
+          <p>{{$t('collectionTaskAssignment.monitoringTask') + '：'}}</p>
+          <p>穿梭框插件</p>
+        </el-col>
+      </el-row>
+      <span slot="footer">
+        <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
+      </span>
+    </el-dialog>
+  </Box>
 </template>
 
 <script>
+  import Box from '../../components/Box';
   export default {
     name: "collectionTaskAssignment",
+    components:{Box},
     data() {
-      return {}
+      return {
+        tableData:[
+          {},{}
+        ],
+        options:{
+          total:1000, // 总条数
+          currentPage:1, // 当前页码
+          pageSize:10, // 每页显示条数
+          firstPage:1, // 首页
+          lastPage:100 // 末页
+        },
+        dialogVisibleAlert:false
+      }
     },
-    methods: {},
+    methods: {
+      // 改变当前页码
+      handleCurrentChange(val){
+        console.log(val)
+      },
+      // 执行监测
+      runMonitoring(){
+        this.$confirm('请问是否确认立即开始执行监测?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
+          cancelButtonClass: "btn-custom-cancel",
+          type: 'warning',
+        }).then(()=>{
+
+        }).catch(()=>{
+          return;
+        });
+      },
+      // 停止监测
+      stopMonitoring(){
+        this.$confirm('请问是否确认要停止正在执行的监测?',this.$t('public.confirmTip'),{
+          confirmButtonText: this.$t('public.confirm'),
+          cancelButtonText: this.$t('public.close'),
+          cancelButtonClass: "btn-custom-cancel",
+          type: 'warning',
+
+        }).then(()=>{
+
+        }).catch(()=>{
+          return;
+        });
+      },
+      // 分配设备监测任务
+      assignedTasks(){
+        this.dialogVisibleAlert = true;
+      }
+    },
     created() {
     }
   }
