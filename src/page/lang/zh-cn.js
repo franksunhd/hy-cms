@@ -275,7 +275,7 @@ export default {
     ruleDes:'规则说明'
   },
   // 节点组维护
-  nodeGroupMaintenance: {
+  nodeGroupMaintenance:{
     groupName:'组名称',
     nodeGroupName:'节点组名称',
     description: '描述',
@@ -286,5 +286,28 @@ export default {
     createUpdateNode:'新增/编辑节点组',
     isEnable:'是否启用',
     note:'备注'
+  },
+  // 采集节点管理
+  acquisitionNodeManagement:{
+    nodeName:'节点名称',
+    nodeIp:'节点IP',
+    nodePort:'节点端口',
+    nodeType:'节点类型',
+    status:'状态',
+    groupName:'组名称',
+    ip:'IP',
+    port:'端口',
+    nodeGroup:'所属节点组',
+    equipmentNumber:'监测设备数',
+    description:'描述',
+    createTime:'创建时间',
+    createName:'创建人',
+    runMonitoring:'执行监测',
+    stopMonitoring:'停止监测',
+    equipmentMonitoring:'分配设备监测任务',
+    createUpdateNode:'新增/编辑采集节点',
+    ruleDes:'规则说明',
+    statusAlert:'启用状态',
+    monitoringTask:'设备监测任务分配',
   }
 }

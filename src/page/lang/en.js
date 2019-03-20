@@ -286,5 +286,28 @@ export default {
     createUpdateNode:'createUpdateNode',
     isEnable:'isEnable',
     note:'note'
+  },
+  // 采集节点管理
+  acquisitionNodeManagement:{
+    nodeName:'node Name',
+    nodeIp:'node Ip',
+    nodePort:'node Port',
+    nodeType:'node Type',
+    status:'status',
+    groupName:'group Name',
+    ip:'IP',
+    port:'port',
+    nodeGroup:'node Group',
+    equipmentNumber:'equipment Number',
+    description:'description',
+    createTime:'create Time',
+    createName:'create Name',
+    runMonitoring:'run Monitoring',
+    stopMonitoring:'stop sMonitoring',
+    equipmentMonitoring:'equipment Monitoring',
+    createUpdateNode:'create Update Node',
+    ruleDes:'ruleDes',
+    statusAlert:'statusAlert',
+    monitoringTask:'monitoring Task',
   }
 }
