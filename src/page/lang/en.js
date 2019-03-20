@@ -75,6 +75,7 @@ export default {
     deviceAcquisitionSettings:'device Acquisition Settings',
     nodeGroupMaintenance:'node Group Maintenance',
     functionMenuMaintenance:'function Menu Maintenance',
+    acquisitionNodeManagement:'acquisition Node Management',
     collectionTaskAssignment:'collection Task Assignment',
     acquisitionNodeState:'acquisition Node State',
     logManagement:'log Management',

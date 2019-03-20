@@ -75,6 +75,7 @@ export default {
     deviceAcquisitionSettings:'设备采集设置',
     nodeGroupMaintenance:'节点组维护',
     functionMenuMaintenance:'功能菜单维护',
+    acquisitionNodeManagement:'采集节点管理',
     collectionTaskAssignment:'采集任务分配',
     acquisitionNodeState:'采集节点状态',
     logManagement:'日志管理',
