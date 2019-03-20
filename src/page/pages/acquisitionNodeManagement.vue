@@ -100,7 +100,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('acquisitionNodeManagement.nodeGroup') + '：'">
-              <el-input />
+              <el-select>
+                <el-option></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -112,7 +114,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('acquisitionNodeManagement.nodeType') + '：'">
-              <el-input />
+              <el-select>
+                <el-option></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
