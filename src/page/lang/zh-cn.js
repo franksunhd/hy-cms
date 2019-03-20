@@ -273,5 +273,18 @@ export default {
     setTime:'时间设定',
     timeRule:'时间规则',
     ruleDes:'规则说明'
+  },
+  // 节点组维护
+  nodeGroupMaintenance: {
+    groupName:'组名称',
+    nodeGroupName:'节点组名称',
+    description: '描述',
+    collectionNodesNum:'采集节点数量',
+    status:'状态',
+    createName:'创建人',
+    createTime:'创建时间',
+    createUpdateNode:'新增/编辑节点组',
+    isEnable:'是否启用',
+    note:'备注'
   }
 }

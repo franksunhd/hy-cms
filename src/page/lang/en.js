@@ -273,5 +273,18 @@ export default {
     setTime:'set Time',
     timeRule:'time Rule',
     ruleDes:'Description'
+  },
+  // 节点组维护
+  nodeGroupMaintenance: {
+    groupName:'groupName',
+    nodeGroupName:'nodeGroupName',
+    description: 'description',
+    collectionNodesNum:'collectionNodesNum',
+    status:'status',
+    createName:'createName',
+    createTime:'createTime',
+    createUpdateNode:'createUpdateNode',
+    isEnable:'isEnable',
+    note:'note'
   }
 }
