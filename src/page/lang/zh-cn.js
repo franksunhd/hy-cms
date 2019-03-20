@@ -354,5 +354,17 @@ export default {
     temporarilyIgnore:'暂时忽略',
     cancelIgnore:'取消忽略',
     offLine:'离线'
+  },
+  // 登录日志
+  loginLog:{
+    userName:'登录人姓名/账号/手机/邮箱',
+    loginDate:'登录日期',
+    name:'用户名',
+    account:'登录账号',
+    loginType:'登录方式',
+    loginIpAddress:'登录IP地址',
+    logInTime:'登入时间',
+    logOutTime:'登出时间',
+    timeLength:'时长'
   }
 }

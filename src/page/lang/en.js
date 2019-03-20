@@ -354,5 +354,17 @@ export default {
     temporarilyIgnore:'temporarilyIgnore',
     cancelIgnore:'cancelIgnore',
     offLine:'offLine'
+  },
+  // 登录日志
+  loginLog:{
+    userName:'userName/account/mobile/email',
+    loginDate:'loginDate',
+    name:'name',
+    account:'account',
+    loginType:'loginType',
+    loginIpAddress:'loginIpAddress',
+    logInTime:'logInTime',
+    logOutTime:'logOutTime',
+    timeLength:'timeLength'
   }
 }
