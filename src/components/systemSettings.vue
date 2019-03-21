@@ -53,7 +53,7 @@
 
   .systemSettings-navBar {
     position: absolute;
-    top: 53px;
+    top: 56px;
     left: 56px;
     bottom: 0;
   }

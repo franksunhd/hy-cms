@@ -8,6 +8,8 @@ import Login from '@/page/login';
 const Home = () => import ('@/page/pages/Home');
 // 系统设置页面
 const systemSettings = () => import ('@/components/systemSettings');
+// 系统监测页面
+const systemSettingsMonitoring = () => import ('@/components/systemSettingsMonitoring');
 // 许可证信息管理
 const licenseInformation = () => import ('@/page/pages/licenseInformation');
 // 平台信息设置
@@ -94,13 +96,13 @@ export default new Router({
             {path: "/YUser/systemSettings/testLog", name: 'testLog', component: testLog},
           ]
         },
-        {path: "/YUser/systemSettingsMonitoring", redirect: "/YUser/systemSettingsMonitoring/WebApplication", name: 'systemSettingsMonitoring', component: systemSettings,
-          children:[
+        {path: "/YUser/systemSettingsMonitoring", redirect: "/YUser/systemSettingsMonitoring/WebApplication", name: 'systemSettingsMonitoring', component: systemSettingsMonitoring,
+            children:[
             {path: "/YUser/systemSettingsMonitoring/WebApplication", name: 'WebApplication', component: WebApplication},
             {path: "/YUser/systemSettingsMonitoring/DatabaseApplication", name: 'DatabaseApplication', component: DatabaseApplication},
             {path: "/YUser/systemSettingsMonitoring/CollectorApplication", name: 'CollectorApplication', component: CollectorApplication},
           ]
-        }
+        },
       ]
     },
     {path:'/login', name:'Login', component:Login}

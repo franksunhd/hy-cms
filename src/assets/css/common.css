@@ -73,3 +73,7 @@ html,body,.Index-box {
   margin-left: 10px;
 }
 
+.el-main {
+  -webkit-box-shadow:0px 3px 3px #c8c8c8 inset;
+}
+

@@ -25,13 +25,11 @@
         <span class="fnspan">{{value.name}}</span>
         <ul>
           <li v-for="(item,index) in value.arrList" :item="item" :key="index">
-            <router-link :to="{path:item.url,query:{id:item.preId}}">
+            <router-link @click.native="hiddenAlert" :to="{path:item.url,query:{id:item.preId}}">
               {{ item.name }}
-                <span>
-                <i :class="activeClass.indexOf(item.name)!=-1?'el-icon-star-on':'el-icon-star-off'"
-                 @click="getItem(index,item.name)"></i>
-              </span>
             </router-link>
+            <i :class="activeClass.indexOf(item.name)!=-1?'el-icon-star-on':'el-icon-star-off'"
+               @click="getItem(index,item.name)"></i>
           </li>
         </ul>
       </div>
@@ -181,14 +179,27 @@
       })
     },
     methods: {
+      // 路由跳转隐藏弹出层
+      hiddenAlert(){
+        this.show = false;
+        this.rshow = false;
+      },
       getItem(index, val) {
         //console.log(val)
         // 把当前点击元素的index，赋值给activeClass
-        if (this.activeClass.indexOf(val) == -1) {
-          this.activeClass.unshift(val);
-        } else {
-          this.activeClass.splice(this.activeClass.indexOf(val), 1);
-        }
+        // if (this.activeClass.indexOf(val) == -1) {
+        //   this.activeClass.unshift(val);
+        // } else {
+        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
+        // }
+
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('menuId','menu_01_01');
+        _t.$api.post('system/userShortcutMenu/insertSystemUserShortcutMenuFromMenuAndLanguage',params,function (res) {
+          console.log(res.data)
+        });
+
       },
       delItem(y, val) {
         this.activeClass.splice(this.activeClass.indexOf(val), 1);
@@ -247,9 +258,7 @@
     background-color: #fff;
     z-index: 1001;
     position: relative;
-    /*border-right: 1px solid #ddd;
-        border-bottom: 1px solid #ddd;
-        border-left: 1px solid #ddd;*/
+    height: 444px;
   }
 
   .fnlist {

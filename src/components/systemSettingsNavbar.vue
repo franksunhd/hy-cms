@@ -34,7 +34,8 @@
     data(){
       return {
         titleName:'',
-        navBarArr:[
+        navBarArr:[],
+        navBarArrList1:[
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
               {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
@@ -72,6 +73,11 @@
               {id:'6-5',name:'检测日志',url:'/YUser/systemSettings/testLog'}
             ]
           },
+        ],
+        navBarArrList2:[
+          {id:'1',name:'WEB应用',children:null,url:'/YUser/systemSettingsMonitoring/WebApplication'},
+          {id:'2',name:'数据库应用',children:null,url:'/YUser/systemSettingsMonitoring/DatabaseApplication'},
+          {id:'3',name:'采集器应用',children:null,url:'/YUser/systemSettingsMonitoring/CollectorApplication'},
         ]
       }
     },
@@ -113,9 +119,11 @@
       switch (this.$route.query.id) {
         case '1':
           this.titleName = this.$t('system.systemSetting');
+          this.navBarArr = this.navBarArrList1;
           break;
         case '2':
           this.titleName = this.$t('system.systemMonitoring');
+          this.navBarArr = this.navBarArrList2;
           break;
         default:
           break;
