@@ -9,6 +9,7 @@ import ElementUI from 'element-ui';
 import canvas from './assets/js/canvas.js';
 import i18n from './page/lang/index';
 import pages from './components/pages';
+import VueDND from 'awe-dnd';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
@@ -18,6 +19,7 @@ import 'babel-polyfill';
 
 
 Vue.use(Vuex);
+Vue.use(VueDND);
 Vue.use(ElementUI,{
   i18n:(key, value) => i18n.t(key, value)
 });
