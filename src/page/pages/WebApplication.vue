@@ -211,17 +211,14 @@
 				var that = this;
 				myChart.on('click', function(param) {
 					var index = param.dataIndex;
-					alert(index);
 					if(index == 1) {
 						that.WEB = false;
 					} else if(index == 2 || index == 3 || index == 4) {
 						that.WEB = true;
 					}
 					return that.WEB;
-					//alert(that.WEB)
 				});
 				/*this.WEB=that.WEB;*/
-				alert(this.WEB)
 			},
 		}
 	}
