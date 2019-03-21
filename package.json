@@ -13,7 +13,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "awe-dnd": "^0.3.4",
     "axios": "^0.18.0",
+    "echarts": "^4.1.0",
     "element-ui": "^2.6.1",
     "vue": "^2.5.2",
     "vue-i18n": "^8.9.0",

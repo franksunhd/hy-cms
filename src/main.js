@@ -10,6 +10,7 @@ import canvas from './assets/js/canvas.js';
 import i18n from './page/lang/index';
 import pages from './components/pages';
 import VueDND from 'awe-dnd';
+import echarts from 'echarts';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
@@ -30,6 +31,7 @@ Vue.prototype.setCookie = setCookie;
 Vue.prototype.delCookie = delCookie;
 Vue.prototype.$api = api;
 Vue.prototype.$canvas = canvas;
+Vue.prototype.$echarts = echarts;
 Vue.component('pages',pages);
 
 // 用户过期
