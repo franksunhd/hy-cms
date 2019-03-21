@@ -111,7 +111,7 @@
   }
   .app-header-logo img {
     width: 56px;
-    height: 60px;
+    height: 52px;
   }
 
   .app-header-logo > img,
@@ -120,7 +120,7 @@
   }
 
   .app-header-navBar {
-    line-height: 60px;
+    line-height: 52px;
   }
 
   .app-header-navBar li {
@@ -150,8 +150,8 @@
   }
 
   .el-app-header-icon {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 
   .el-app-header-dropDown {
