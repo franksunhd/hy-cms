@@ -1,6 +1,6 @@
 <template>
   <div class="systemSettings-navBarBox">
-    <p class="systemSettings-title" :title="$t('system.systemSetting')">{{$t('system.systemSetting')}}</p>
+    <p class="systemSettings-title" :title="titleName">{{titleName}}</p>
     <div class="systemSettings-navBarContent">
       <el-menu id="system-menu" :default-active="current" :router="true" :unique-opened="false" menu-trigger="click">
         <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index" :class="item.name">
@@ -33,6 +33,7 @@
     name: "system-settings-navbar",
     data(){
       return {
+        titleName:'',
         navBarArr:[
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
@@ -97,7 +98,6 @@
             }
           }
         }
-
         // 点击菜单
         var titleMenu = document.querySelectorAll('#system-menu li.el-submenu .el-submenu__title');
         for (var k = 0;k < titleMenu.length;k++){
@@ -108,6 +108,18 @@
           }
         }
       });
+    },
+    created() {
+      switch (this.$route.query.id) {
+        case '1':
+          this.titleName = this.$t('system.systemSetting');
+          break;
+        case '2':
+          this.titleName = this.$t('system.systemMonitoring');
+          break;
+        default:
+          break;
+      }
     }
   }
 </script>

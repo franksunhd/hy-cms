@@ -25,7 +25,7 @@
         <span class="fnspan">{{value.name}}</span>
         <ul>
           <li v-for="(item,index) in value.arrList" :item="item" :key="index">
-            <router-link :to="item.url">
+            <router-link :to="{path:item.url,query:{id:item.preId}}">
               {{ item.name }}
                 <span>
                 <i :class="activeClass.indexOf(item.name)!=-1?'el-icon-star-on':'el-icon-star-off'"

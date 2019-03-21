@@ -52,7 +52,8 @@ export default {
   },
   // 系统设置模块 导航
   system:{
-    systemSetting:'系统设置'
+    systemSetting:'系统设置',
+    systemMonitoring:'系统监测'
   },
   // 面包屑
   breadcrumb:{

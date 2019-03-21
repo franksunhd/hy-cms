@@ -52,7 +52,8 @@ export default {
   },
   // 系统设置模块
   system:{
-    systemSetting:'systemSettings'
+    systemSetting:'system Settings',
+    systemMonitoring:'system Monitoring'
   },
   // 面包屑
   breadcrumb:{
