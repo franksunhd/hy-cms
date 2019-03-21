@@ -52,6 +52,12 @@ const jobLog = () => import ('@/page/pages/jobLog');
 const notificationLog = () => import ('@/page/pages/notificationLog');
 // 检测日志
 const testLog = () => import ('@/page/pages/testLog');
+// web应用
+const WebApplication = () => import ('@/page/pages/WebApplication');
+// 数据库应用
+const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
+//采集器应用
+const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
 
 Vue.use(Router);
 export default new Router({
@@ -86,7 +92,13 @@ export default new Router({
             {path: "/YUser/systemSettings/jobLog", name: 'jobLog', component: jobLog},
             {path: "/YUser/systemSettings/notificationLog", name: 'notificationLog', component: notificationLog},
             {path: "/YUser/systemSettings/testLog", name: 'testLog', component: testLog},
-
+          ]
+        },
+        {path: "/YUser/systemSettingsMonitoring", redirect: "/YUser/systemSettingsMonitoring/WebApplication", name: 'systemSettingsMonitoring', component: systemSettings,
+          children:[
+            {path: "/YUser/systemSettingsMonitoring/WebApplication", name: 'WebApplication', component: WebApplication},
+            {path: "/YUser/systemSettingsMonitoring/DatabaseApplication", name: 'DatabaseApplication', component: DatabaseApplication},
+            {path: "/YUser/systemSettingsMonitoring/CollectorApplication", name: 'CollectorApplication', component: CollectorApplication},
           ]
         }
       ]
