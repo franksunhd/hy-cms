@@ -83,7 +83,17 @@ export default {
     operationLog:'operation Log',
     jobLog:'job Log',
     notificationLog:'notification Log',
-    testLog:'test Log'
+    testLog:'test Log',
+    SystemMonitoring:'System Monitoring',
+    WebApplication:' Web Application',
+    DatabaseApplication:'DatabaseApplication',
+    CollectorApplication:'CollectorApplication',
+    ComputerRoomEquipment:'ComputerRoomEquipment',
+    DeviceDiscovery:'DeviceDiscovery',
+    DeviceTypeManagement:"DeviceTypeManagement",
+    DeviceInformationSetting:"DeviceInformationSetting",
+    DeviceDiscoverySettings:'DeviceDiscoverySettings',
+    AutomaticDeviceDiscovery:'AutomaticDeviceDiscovery'
   },
   // 许可证信息维护
   license:{

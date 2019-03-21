@@ -83,7 +83,17 @@ export default {
     operationLog:'操作日志',
     jobLog:'任务日志',
     notificationLog:'通知日志',
-    testLog:'检测日志'
+    testLog:'检测日志',
+    SystemMonitoring:'系统监测',
+    WebApplication:' WEB应用',
+    DatabaseApplication:'数据库应用',
+    CollectorApplication:'采集器应用',
+    ComputerRoomEquipment:'机房设备监测情况',
+    DeviceDiscovery:'设备发现',
+    DeviceTypeManagement:"设备类型管理",
+    DeviceInformationSetting:"设备信息设置",
+    DeviceDiscoverySettings:'设备发现设置',
+    AutomaticDeviceDiscovery:'设备自带发现'
   },
   // 许可证信息维护
   license:{
