@@ -278,6 +278,10 @@
       }
     },
     methods:{
+      // 外层 改变当前页码
+      handleCurrentChange(val){
+        console.log(val);
+      },
       // 启用
       enableData(){
         this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
