@@ -57,7 +57,7 @@
             </div>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="login_btn" @click="login($event)">登录</el-button>
+            <el-button type="primary" class="login_btn" @click="toLogin">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -157,6 +157,13 @@
       toLogin(){
         var _t = this;
         // 登录按钮点击之后重绘验证码
+        var params = new URLSearchParams();
+        params.append('username','123123');
+        params.append('password','123345');
+        params.append('token','123');
+        _t.$api.post('system/user/goLoginSystem',params,function (res) {
+          console.log(res);
+        });
         this.draw();
       },
       draw(){
@@ -215,7 +222,8 @@
     mounted(){
       var canvas = document.getElementById('comments-canvas');
       this.codeNum = this.$canvas.canvas_draw(120,40,canvas);
-      console.log(this.codeNum);
+      // console.log(this.codeNum);
+      console.log(this)
     }
   }
 </script>
