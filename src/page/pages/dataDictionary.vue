@@ -23,7 +23,7 @@
       <el-col :span="20">
         <!--表单-->
         <el-form inline>
-          <el-form-item :label="$t('dataDictionary.systemDataDictionary') + '：'">
+          <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
             <el-input />
           </el-form-item>
           <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
