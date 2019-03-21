@@ -1,18 +1,25 @@
 <template>
   <div class="systemSettings-navBarBox">
-    <p class="systemSettings-title">{{$t('system.systemSetting')}}</p>
+    <p class="systemSettings-title" :title="$t('system.systemSetting')">{{$t('system.systemSetting')}}</p>
     <div class="systemSettings-navBarContent">
-      <el-menu :default-active="current" :router="true" :unique-opened="false">
+      <el-menu id="system-menu" :default-active="current" :router="true" :unique-opened="false" menu-trigger="click">
         <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index" :class="item.name">
           <template slot="title" v-if="item.children == null">
-            <router-link class="systemSettings-oddRouter" :to="item.url">{{item.name}}</router-link>
+            <i class="el-icon-minus"></i>
+            <router-link class="systemSettings-oddRouter" :to="item.url" :title="item.name">{{item.name}}</router-link>
           </template>
           <template v-else>
             <template slot="title">
-              {{item.name}}
+              <span :title="item.name">
+                <i class="el-icon-plus"></i>
+                {{item.name}}
+              </span>
             </template>
             <el-menu-item v-for="(i,index2) in item.children" :key="index2" :index="i.url">
-              {{i.name}}
+              <span class="treeBorder" :title="i.name">
+                <span class="treeBorderLine"> - - - &nbsp;</span>
+                 {{i.name}}
+              </span>
             </el-menu-item>
           </template>
         </el-submenu>
@@ -29,7 +36,7 @@
         navBarArr:[
           {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
           {id:'2',name:'系统管理',children:[
-              {id:'2-1',name:'平台基础设置',url:'/YUser/systemSettings/platformInformation'},
+              {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
               {id:'2-2',name:'平台语言设置',url:'/YUser/systemSettings/platformLanguage'},
               {id:'2-3',name:'数据字典管理',url:'/YUser/systemSettings/dataDictionary'},
               {id:'2-4',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
@@ -79,24 +86,79 @@
         }
       }
     },
+    mounted() {
+      this.$nextTick(()=>{
+        var node = document.querySelectorAll('#system-menu li.el-submenu');
+        for (var i = 0;i < node.length;i++) {
+          var classArr = node[i].getAttribute('class').split(' ');
+          for (var j = 0;j < classArr.length;j++){
+            if (classArr[j] === 'is-active') {
+              node[i].childNodes[0].childNodes[0].childNodes[0].className = 'el-icon-minus';
+            }
+          }
+        }
+
+        // 点击菜单
+        var titleMenu = document.querySelectorAll('#system-menu li.el-submenu .el-submenu__title');
+        for (var k = 0;k < titleMenu.length;k++){
+          titleMenu[k].onclick = function () {
+            if (this.childNodes[0].className !== 'el-icon-minus')  {
+              this.childNodes[0].childNodes[0].className = this.childNodes[0].childNodes[0].className === 'el-icon-plus' ? 'el-icon-minus' : 'el-icon-plus';
+            }
+          }
+        }
+      });
+    }
   }
 </script>
 
 <style>
   .systemSettings-navBarBox {
     position: relative;
-    overflow: auto;
   }
-  .systemSettings-title {
-    height: 56px;
-    line-height: 56px;
-    padding: 0 10px;
-    font-size: 16px;
 
+  .systemSettings-title {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 0 0 20px;
+    font-size: 14px;
+
+  }
+
+  .systemSettings-navBarContent .el-submenu__title {
+    font-size: 12px;
+  }
+
+  .systemSettings-navBarContent .el-menu-item {
+    font-size: 12px;
+  }
+
+  .systemSettings-navBarContent .el-submenu i {
+    font-size: 14px !important;
   }
 
   .systemSettings-oddRouter {
+    display: inline-block;
+  }
+
+  .systemSettings-navBarBox .el-menu-item,
+  .systemSettings-navBarBox .el-submenu__title {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  .systemSettings-navBarBox .el-submenu__title {
+    padding: 0 !important;
+  }
+
+  .systemSettings-navBarBox .el-menu-item {
+    min-width: 100%;
+    padding: 0 0 0 10px !important;
+  }
+
+  .systemSettings-navBarBox .treeBorder {
     width: 100%;
+    padding-left: 10px;
     display: inline-block;
   }
 </style>
