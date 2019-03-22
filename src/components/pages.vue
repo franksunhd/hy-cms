@@ -10,7 +10,7 @@
       :prev-text="$t('public.prevText')"
       :firstPage='firstPage'
       :lastPage='lastPage'>
-      <el-button type="text" @click="toFirstPage">{{$t('public.homePage')}}</el-button>
+      <el-button type="text" class="pageBtn-border" @click="toFirstPage">{{$t('public.homePage')}}</el-button>
     </el-pagination>
     <el-pagination
       class="last-pager"
@@ -22,7 +22,7 @@
       :next-text="$t('public.nextText')"
       :firstPage='firstPage'
       :lastPage='lastPage'>
-      <el-button type="text" @click="toLastPage">{{$t('public.lastPage')}}</el-button>
+      <el-button type="text" class="page-btn-last" @click="toLastPage">{{$t('public.lastPage')}}</el-button>
     </el-pagination>
   </div>
 </template>
@@ -82,8 +82,9 @@
 
 <style scoped>
   .paging {
-    text-align: center;
+    text-align: right;
     margin-top: 30px;
+    font-size: 0;
   }
 
   .first-pager,

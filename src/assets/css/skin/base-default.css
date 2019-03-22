@@ -111,3 +111,19 @@
   background-color: #f6f9f9;
 }
 
+/*分页*/
+.el-pager li,
+.el-pagination button {
+  border: 1px solid #eaedf1;
+  border-right: none;
+}
+
+.el-pager li.active {
+  border-right: 1px solid #eaedf1;
+}
+
+.el-pagination button.page-btn-last {
+  border-right: 1px solid #eaedf1;
+}
+
+

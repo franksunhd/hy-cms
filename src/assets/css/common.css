@@ -109,3 +109,12 @@ html,body,.Index-box {
   line-height: 30px;
   padding: 0 10px;
 }
+
+/*分页*/
+.el-pagination {
+  padding: 0;
+}
+
+.el-pager li {
+  padding: 0 10px;
+}
