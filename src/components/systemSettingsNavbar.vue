@@ -161,10 +161,11 @@
     display: inline-block;
   }
 
-  .systemSettings-navBarBox .el-menu-item,
-  .systemSettings-navBarBox .el-submenu__title {
+  .systemSettings-navBarBox .el-submenu .el-menu-item,
+  .systemSettings-navBarBox .el-submenu .el-submenu__title {
     height: 30px;
     line-height: 30px;
+    min-width: auto;
   }
 
   .systemSettings-navBarBox .el-submenu__title {
