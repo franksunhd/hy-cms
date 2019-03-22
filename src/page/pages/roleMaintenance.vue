@@ -35,23 +35,23 @@
     <div class="padding20">
       <!--全局操作-->
       <div class="marBottom16">
-        <el-button type="warning" @click="dialogVisible = true">
+        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button @click="dialogVisible = true">
+        <el-button class="queryBtn" @click="dialogVisible = true">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button @click="enableData">
+        <el-button class="queryBtn" @click="enableData">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('public.enable')}}
         </el-button>
-        <el-button @click="disableData">
+        <el-button class="queryBtn" @click="disableData">
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button @click="deleteData">
+        <el-button class="queryBtn" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
