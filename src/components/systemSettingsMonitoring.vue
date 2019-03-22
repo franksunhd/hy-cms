@@ -8,9 +8,7 @@
       <a href="javascript:;" @click="clickOutset" id="systemSettingsMonitoring-navBar-outSet">外</a>
     </div>
     <div id="systemSettingsMonitoring-routerView" class="systemSettingsMonitoring-routerView">
-      <div style="padding: 0 20px;">
-        <router-view/>
-      </div>
+      <router-view/>
     </div>
   </el-container>
 </template>
