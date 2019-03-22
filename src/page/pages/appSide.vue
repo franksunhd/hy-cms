@@ -78,12 +78,12 @@
               {
                 preId: '5',
                 name: '设备发现设置',
-                url:''
+                url:'/YUser/DeviceDiscoverSettings'
               },
               {
                 preId: '6',
                 name: '设备自动发现',
-                url:''
+                url:'/YUser/automatiDeviceDiscovery'
               }
             ]
           },
