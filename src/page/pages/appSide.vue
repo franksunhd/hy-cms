@@ -68,7 +68,7 @@
             arrList: [{
               preId: '3',
               name: '设备类型管理',
-              url:''
+              url:'/YUser/DeviceTypeManagement'
             },
               {
                 preId: '4',

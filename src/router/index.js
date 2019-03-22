@@ -60,6 +60,8 @@ const WebApplication = () => import ('@/page/pages/WebApplication');
 const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
 //采集器应用
 const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
+//设备类型管理
+const DeviceTypeManagement = () => import ('@/page/pages/DeviceTypeManagement');
 
 Vue.use(Router);
 export default new Router({
@@ -103,6 +105,8 @@ export default new Router({
             {path: "/YUser/systemSettingsMonitoring/CollectorApplication", name: 'CollectorApplication', component: CollectorApplication},
           ]
         },
+
+        {path:"/YUser/DeviceTypeManagement",name:"DeviceTypeManagement",component:DeviceTypeManagement},
       ]
     },
     {path:'/login', name:'Login', component:Login}
