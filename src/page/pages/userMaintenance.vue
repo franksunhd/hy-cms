@@ -8,61 +8,79 @@
         <el-breadcrumb-item>{{$t('breadcrumb.userMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('userMaintenance.account') + '：'">
-        <el-input v-model="username" />
-      </el-form-item>
-      <el-form-item :label="$t('userMaintenance.organization') + '：'">
-        <selectTree width="200" :options="organizationList" v-model="organization" />
-      </el-form-item>
-      <el-form-item :label="$t('userMaintenance.status') + '：'">
-        <el-select v-model="status">
-          <el-option
-            v-for="item in statusList"
-            :value="item.value"
-            :key="item.key"
-            :label="item.label" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
-      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
-      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
-      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('userMaintenance.account') + '：'">
+          <el-input v-model="username" class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('userMaintenance.organization') + '：'">
+          <selectTree width="200" :options="organizationList" v-model="organization" />
+        </el-form-item>
+        <el-form-item :label="$t('userMaintenance.status') + '：'">
+          <el-select v-model="status" class="width200">
+            <el-option
+              v-for="item in statusList"
+              :value="item.value"
+              :key="item.key"
+              :label="item.label" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column type="index" :label="$t('public.index')" width="60" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.loginAccount')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.organization')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.mobile')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.email')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
-      <el-table-column :label="$t('userMaintenance.createTime')" width="200" header-align="center" align="center" />
-      <el-table-column :label="$t('public.operation')" width="120" header-align="center" align="center" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
-          <el-button type="text" size="small">{{$t('public.resets')}}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button type="warning" @click="dialogVisible = true" class="queryBtn">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('public.add')}}
+        </el-button>
+        <el-button @click="dialogVisible = true" class="queryBtn">
+          <i class="el-icon-edit-outline"></i>
+          {{$t('public.edit')}}
+        </el-button>
+        <el-button>
+          <i class="el-icon-refresh"></i>
+          {{$t('public.resets')}}
+        </el-button>
+        <el-button @click="enableData" class="queryBtn">
+          <i class="el-icon-circle-check-outline"></i>
+          {{$t('public.enable')}}
+        </el-button>
+        <el-button @click="disableData" class="queryBtn">
+          <i class="el-icon-circle-close-outline"></i>
+          {{$t('public.disable')}}
+        </el-button>
+        <el-button @click="deleteData" class="queryBtn">
+          <i class="el-icon-delete"></i>
+          {{$t('public.delete')}}
+        </el-button>
+      </div>
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column type="index" :label="$t('public.index')" width="60" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.loginAccount')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.organization')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.mobile')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.email')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--新增编辑-->
     <el-dialog
       :title="$t('userMaintenance.createUpdateUserInfo')"
@@ -121,7 +139,7 @@
       return {
         dialogVisible:false,
         tableData:[
-          {},{}
+          {},{},{},{},{},{}
         ],
         statusList:[
           {label:'启用',value:1},
