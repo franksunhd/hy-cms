@@ -8,62 +8,87 @@
         <el-breadcrumb-item>{{$t('breadcrumb.roleMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('roleMaintenance.roleName') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
-        <el-date-picker
-          v-model="startTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-        <span>~</span>
-        <el-date-picker
-          v-model="endTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
-      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
-      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
-      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
-
-      <el-button @click="authorizationData">{{$t('roleMaintenance.userAuthorization')}}</el-button>
-      <el-button @click="functionData">{{$t('roleMaintenance.functionLimit')}}</el-button>
-      <el-button @click="infoData">{{$t('roleMaintenance.dataLimit')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('roleMaintenance.roleName') + '：'">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
+          <el-date-picker
+            class="width120"
+            v-model="startTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+          <span>—</span>
+          <el-date-picker
+            class="width120"
+            v-model="endTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column :label="$t('roleMaintenance.roleName')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.organization')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.userNum')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.status')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.createName')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.createTime')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.updateName')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('roleMaintenance.updateTime')" width="120" header-align="center" align="center" />
-      <el-table-column :label="$t('public.operation')" fixed="right" header-align="center" align="center">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button type="warning" @click="dialogVisible = true">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('public.add')}}
+        </el-button>
+        <el-button @click="dialogVisible = true">
+          <i class="el-icon-edit-outline"></i>
+          {{$t('public.edit')}}
+        </el-button>
+        <el-button @click="enableData">
+          <i class="el-icon-circle-check-outline"></i>
+          {{$t('public.enable')}}
+        </el-button>
+        <el-button @click="disableData">
+          <i class="el-icon-circle-close-outline"></i>
+          {{$t('public.disable')}}
+        </el-button>
+        <el-button @click="deleteData">
+          <i class="el-icon-delete"></i>
+          {{$t('public.delete')}}
+        </el-button>
+        <el-button @click="authorizationData">
+          <i class="el-icon-delete"></i>
+          {{$t('roleMaintenance.userAuthorization')}}
+        </el-button>
+        <el-button @click="functionData">
+          <i class="el-icon-delete"></i>
+          {{$t('roleMaintenance.functionLimit')}}
+        </el-button>
+        <el-button @click="infoData">
+          <i class="el-icon-delete"></i>
+          {{$t('roleMaintenance.dataLimit')}}
+        </el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" border stripe>
+        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.roleName')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.organization')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.userNum')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.createName')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.createTime')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.updateName')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--新增/编辑-->
     <el-dialog
       :title="$t('roleMaintenance.addUpdateRole')"
@@ -215,7 +240,7 @@
         outerVisible:false,
         innerVisible:false,
         dialogVisibleFunction:false,
-        dialogVisibleData:true,
+        dialogVisibleData:false,
         tableData:[
           {},{}
         ],

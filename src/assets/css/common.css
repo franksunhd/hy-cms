@@ -91,6 +91,11 @@ html,body,.Index-box {
   width: 200px;
 }
 
+.el-date-editor.el-input.width120 {
+  width: 120px;
+}
+
+
 .el-input__inner {
   border-radius: 0;
   height: 30px;
