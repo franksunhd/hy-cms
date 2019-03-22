@@ -153,7 +153,7 @@
         username:'',
         status:'',
         options:{
-          total:1000000000000, // 总条数
+          total:1000, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
           firstPage:1, // 首页

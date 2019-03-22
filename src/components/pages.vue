@@ -5,7 +5,7 @@
       @current-change="handleCurrentChange"
       :current-page="currentPageNum"
       :page-size="pageSize"
-      layout="slot,prev"
+      layout="total,slot,prev"
       :total="total"
       :prev-text="$t('public.prevText')"
       :firstPage='firstPage'
