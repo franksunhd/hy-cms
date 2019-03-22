@@ -386,5 +386,20 @@ export default {
     operationDes:'description',
     operationStaff:'operationStaff',
     operationTime:'operationTime',
+  },
+  // 功能菜单维护
+  functionMenuMaintenance: {
+    systemDataDictionary:'systemDataDictionary',
+    businessCode:'businessCode',
+    dictionaryName:'dictionaryName',
+    status:'status',
+    menuName:'menuName',
+    icon:'icon',
+    link:'link',
+    jumpType:'jumpType',
+    modelLevel:'modelLevel',
+    sort:'sort',
+    createName:'createName',
+    createTime:'createTime'
   }
 }

@@ -124,11 +124,6 @@ html,body,.Index-box {
   padding: 0 10px;
 }
 
-/*表格*/
-.el-table__header {
-  table-layout: auto;
-}
-
 .el-message-box__btns .el-button {
   float: right;
   margin-left: 10px;

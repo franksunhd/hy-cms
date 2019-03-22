@@ -386,5 +386,20 @@ export default {
     operationDes:'操作说明',
     operationStaff:'操作人员',
     operationTime:'操作时间',
+  },
+  // 功能菜单维护
+  functionMenuMaintenance: {
+    systemDataDictionary:'系统功能菜单',
+    businessCode:'业务编码',
+    dictionaryName:'字典名称',
+    status:'状态',
+    menuName:'菜单名称',
+    icon:'图标',
+    link:'链接',
+    jumpType:'跳转方式',
+    modelLevel:'目录级别',
+    sort:'排序',
+    createName:'创建人',
+    createTime:'创建时间'
   }
 }
