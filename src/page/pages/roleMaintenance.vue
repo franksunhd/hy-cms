@@ -186,7 +186,9 @@
       <el-form label-width="150px">
         <el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
           <el-tree
+            id="dataLimit-box"
             :data="organizationList"
+            :default-expand-all="true"
             show-checkbox
             ref="tree" />
         </el-form-item>
@@ -213,7 +215,7 @@
         outerVisible:false,
         innerVisible:false,
         dialogVisibleFunction:false,
-        dialogVisibleData:false,
+        dialogVisibleData:true,
         tableData:[
           {},{}
         ],
@@ -399,7 +401,8 @@
               }
             ]
           }
-        ]
+        ],
+        flag:false,
       }
     },
     methods:{
@@ -475,6 +478,8 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+  #dataLimit-box > div.el-tree-node > div.el-tree-node__children > div.el-tree-node > div.el-tree-node__children > div.el-tree-node {
+    float: left;
+  }
 </style>
