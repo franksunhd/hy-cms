@@ -116,8 +116,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--用户授权-->
@@ -174,13 +174,13 @@
           :lastPage='innerOptions.lastPage'
           @handleCurrentChangeSub="innerOptionsHandleCurrentChange" />
         <div slot="footer">
-          <el-button type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
-          <el-button @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
+          <el-button class="queryBtn" type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
+          <el-button class="queryBtn" @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
         </div>
       </el-dialog>
       <div slot="footer">
-        <el-button type="primary" @click="outerVisible = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="outerVisible = false">{{$t('public.close')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="outerVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="outerVisible = false">{{$t('public.close')}}</el-button>
       </div>
     </el-dialog>
     <!--功能权限-->
@@ -198,8 +198,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleFunction = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisibleFunction = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="dialogVisibleFunction = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisibleFunction = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--数据权限-->
@@ -219,8 +219,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>

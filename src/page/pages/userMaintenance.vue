@@ -122,8 +122,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>

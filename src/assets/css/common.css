@@ -83,7 +83,7 @@ html,body,.Index-box {
   padding: 20px;
 }
 
-.el-form-item {
+.borderBottom .el-form-item {
   margin-bottom: 0;
 }
 
@@ -92,7 +92,7 @@ html,body,.Index-box {
 }
 
 .el-date-editor.el-input.width120 {
-  width: 120px;
+  width: 140px;
 }
 
 
@@ -122,4 +122,14 @@ html,body,.Index-box {
 
 .el-pager li {
   padding: 0 10px;
+}
+
+/*表格*/
+.el-table__header {
+  table-layout: auto;
+}
+
+.el-message-box__btns .el-button {
+  float: right;
+  margin-left: 10px;
 }
