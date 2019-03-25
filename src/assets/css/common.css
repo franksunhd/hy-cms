@@ -128,3 +128,8 @@ html,body,.Index-box {
   float: right;
   margin-left: 10px;
 }
+
+/*登录页*/
+.el-carousel__container {
+  height: 100%;
+}

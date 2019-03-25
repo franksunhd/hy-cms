@@ -150,3 +150,26 @@
 .el-checkbox__input.is-checked .el-checkbox__inner {
   border-color: #3f81d0;
 }
+
+/*登录页*/
+.login-logoText,
+.login-footer {
+  color: #fff;
+}
+
+.login-form {
+  background-color: #fff;
+}
+
+.login-error-box {
+  background-color: orange;
+}
+
+.login-form .el-input__inner {
+  border: none;
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.login-error-i {
+  color:#fb6140;
+}
