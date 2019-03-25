@@ -38,28 +38,28 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button @click="dialogVisible = true" class="queryBtn">
+        <el-button :disabled="disableBtn.edit" @click="dialogVisible = true" class="queryBtn">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button>
+        <el-button :disabled="disableBtn.more">
           <i class="el-icon-refresh"></i>
           {{$t('public.resets')}}
         </el-button>
-        <el-button @click="enableData" class="queryBtn">
+        <el-button :disabled="disableBtn.enable" @click="enableData" class="queryBtn">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('public.enable')}}
         </el-button>
-        <el-button @click="disableData" class="queryBtn">
+        <el-button :disabled="disableBtn.disable" @click="disableData" class="queryBtn">
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button @click="deleteData" class="queryBtn">
+        <el-button :disabled="disableBtn.more" @click="deleteData" class="queryBtn">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
       </div>
-      <el-table :data="tableData" stripe>
+      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column type="index" :label="$t('public.index')" width="60" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
@@ -137,6 +137,12 @@
     components:{Box,selectTree},
     data(){
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
         dialogVisible:false,
         tableData:[
           {},{},{},{},{},{}
@@ -321,6 +327,29 @@
       }
     },
     methods:{
+      // 当前选中条数
+      selectTableNum(data){
+        switch (data.length) {
+          case 0: // 未选中
+            this.disableBtn.disable = true;
+            this.disableBtn.edit = true;
+            this.disableBtn.enable = true;
+            this.disableBtn.more = true;
+            break;
+          case 1: // 单选
+            this.disableBtn.disable = false;
+            this.disableBtn.edit = false;
+            this.disableBtn.enable = false;
+            this.disableBtn.more = false;
+            break;
+          default: // 多选
+            this.disableBtn.disable = false;
+            this.disableBtn.edit = true;
+            this.disableBtn.enable = false;
+            this.disableBtn.more = false;
+            break;
+        }
+      },
       // 改变当前页码
       handleCurrentChange(val){
         console.log(val)
