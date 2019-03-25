@@ -8,66 +8,79 @@
         <el-breadcrumb-item>{{$t('breadcrumb.collectionTaskAssignment')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('collectionTaskAssignment.nodeName') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('collectionTaskAssignment.nodeIp') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('collectionTaskAssignment.nodePort') + '：'">
-        <el-input />
-      </el-form-item>
-      <br>
-      <el-form-item :label="$t('collectionTaskAssignment.groupName') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('collectionTaskAssignment.nodeType') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('collectionTaskAssignment.status') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="runMonitoring">{{$t('collectionTaskAssignment.runMonitoring')}}</el-button>
-      <el-button @click="stopMonitoring">{{$t('collectionTaskAssignment.stopMonitoring')}}</el-button>
-      <el-button @click="assignedTasks">{{$t('collectionTaskAssignment.equipmentMonitoring')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('collectionTaskAssignment.nodeName') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('collectionTaskAssignment.nodeIp') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('collectionTaskAssignment.nodePort') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <br>
+        <el-form-item :label="$t('collectionTaskAssignment.groupName') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('collectionTaskAssignment.nodeType') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('collectionTaskAssignment.status') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.nodeName')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.ip')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.port')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.nodeGroup')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="center" align="center" />
-      <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="center" align="center" />
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button @click="runMonitoring">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('collectionTaskAssignment.runMonitoring')}}
+        </el-button>
+        <el-button @click="stopMonitoring">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('collectionTaskAssignment.stopMonitoring')}}
+        </el-button>
+        <el-button @click="assignedTasks">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('collectionTaskAssignment.equipmentMonitoring')}}
+        </el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.nodeName')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.ip')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.port')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.nodeGroup')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--分配设备监测任务-->
     <el-dialog
       :title="$t('collectionTaskAssignment.createUpdateNode')"
