@@ -400,6 +400,14 @@ export default {
     modelLevel:'目录级别',
     sort:'排序',
     createName:'创建人',
-    createTime:'创建时间'
+    createTime:'创建时间',
+    createUpdateDictionary:'新增/编辑菜单信息',
+    menuIcon:'菜单图标',
+    menuUrl:'菜单路径',
+    roleMenu:'角色授权',
+    directoryLevel:'目录级别',
+    orderIndex:'显示顺序',
+    statusAlert:'启用状态',
+    selectUser:'选择用户',
   }
 }

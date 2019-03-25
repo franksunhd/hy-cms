@@ -400,6 +400,14 @@ export default {
     modelLevel:'modelLevel',
     sort:'sort',
     createName:'createName',
-    createTime:'createTime'
+    createTime:'createTime',
+    createUpdateDictionary:'createUpdateDictionary',
+    menuIcon:'menuIcon',
+    menuUrl:'menuUrl',
+    roleMenu:'roleMenu',
+    directoryLevel:'directoryLevel',
+    orderIndex:'orderIndex',
+    statusAlert:'statusAlert',
+    selectUser:'selectUser',
   }
 }
