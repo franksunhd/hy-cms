@@ -8,42 +8,48 @@
         <el-breadcrumb-item>{{$t('breadcrumb.operationLog')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('operationLog.userName') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('operationLog.loginDate') + '：'">
-        <el-date-picker
-          v-model="startTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-        <span>~</span>
-        <el-date-picker
-          v-model="endTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
-      <el-table-column :label="$t('operationLog.operationType')" header-align="center" align="center" />
-      <el-table-column :label="$t('operationLog.operationDes')" header-align="center" align="center" />
-      <el-table-column :label="$t('operationLog.operationStaff')" header-align="center" align="center" />
-      <el-table-column :label="$t('operationLog.operationTime')" header-align="center" align="center" />
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('operationLog.userName') + '：'">
+          <el-input class="width200"/>
+        </el-form-item>
+        <el-form-item :label="$t('operationLog.loginDate') + '：'">
+          <el-date-picker
+            class="width120"
+            v-model="startTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+          <span>—</span>
+          <el-date-picker
+            class="width120"
+            v-model="endTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="padding20">
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('operationLog.operationType')" header-align="center" align="center" />
+        <el-table-column :label="$t('operationLog.operationDes')" header-align="center" align="center" />
+        <el-table-column :label="$t('operationLog.operationStaff')" header-align="center" align="center" />
+        <el-table-column :label="$t('operationLog.operationTime')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
   </Box>
 </template>
 
