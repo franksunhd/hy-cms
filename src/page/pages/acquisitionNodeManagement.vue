@@ -8,76 +8,99 @@
         <el-breadcrumb-item>{{$t('breadcrumb.acquisitionNodeManagement')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'">
-        <el-input />
-      </el-form-item>
-      <br>
-      <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('acquisitionNodeManagement.nodeType') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item :label="$t('acquisitionNodeManagement.status') + '：'">
-        <el-select>
-          <el-option></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
-      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
-      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
-      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
-
-      <el-button @click="runMonitoring">{{$t('acquisitionNodeManagement.runMonitoring')}}</el-button>
-      <el-button @click="stopMonitoring">{{$t('acquisitionNodeManagement.stopMonitoring')}}</el-button>
-      <el-button @click="assignedTasks">{{$t('acquisitionNodeManagement.equipmentMonitoring')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" style="margin-bottom: 16px;">
+          <el-input class="width200" />
+        </el-form-item>
+        <br>
+        <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeType') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.status') + '：'">
+          <el-select class="width200">
+            <el-option></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button class="queryBtn" type="primary">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.nodeType')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.equipmentNumber')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center" />
-      <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center" />
-      <el-table-column :label="$t('public.operation')" width="120" header-align="center" align="center" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('public.add')}}
+        </el-button>
+        <el-button class="queryBtn" @click="dialogVisible = true">
+          <i class="el-icon-edit-outline"></i>
+          {{$t('public.edit')}}
+        </el-button>
+        <el-button class="queryBtn" @click="enableData">
+          <i class="el-icon-circle-check-outline"></i>
+          {{$t('public.enable')}}
+        </el-button>
+        <el-button class="queryBtn" @click="disableData">
+          <i class="el-icon-circle-close-outline"></i>
+          {{$t('public.disable')}}
+        </el-button>
+        <el-button class="queryBtn" @click="deleteData">
+          <i class="el-icon-delete"></i>
+          {{$t('public.delete')}}
+        </el-button>
+        <el-button @click="runMonitoring">
+          <i class="el-icon-delete"></i>
+          {{$t('acquisitionNodeManagement.runMonitoring')}}
+        </el-button>
+        <el-button @click="stopMonitoring">
+          <i class="el-icon-delete"></i>
+          {{$t('acquisitionNodeManagement.stopMonitoring')}}
+        </el-button>
+        <el-button @click="assignedTasks">
+          <i class="el-icon-delete"></i>
+          {{$t('acquisitionNodeManagement.equipmentMonitoring')}}
+        </el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeType')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.equipmentNumber')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--新增编辑-->
     <el-dialog
       :title="$t('acquisitionNodeManagement.createUpdateNode')"
