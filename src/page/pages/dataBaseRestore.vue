@@ -8,57 +8,75 @@
         <el-breadcrumb-item>{{$t('breadcrumb.dataBaseRestore')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('dataBaseRestore.backUpObject') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item :label="$t('dataBaseRestore.backUpTime') + '：'">
-        <el-date-picker
-          v-model="startTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-        <span>~</span>
-        <el-date-picker
-          v-model="endTime"
-          type="date"
-          :placeholder="$t('public.selectDate')" />
-      </el-form-item>
-      <el-form-item :label="$t('dataBaseRestore.backUpType') + '：'">
-        <el-select>
-          <el-option value="0" :label="$t('dataBaseRestore.singleTable')" />
-          <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="runRestore">{{$t('dataBaseRestore.runRestore')}}</el-button>
-      <el-button @click="deleteRestore">{{$t('dataBaseRestore.deleteRestore')}}</el-button>
-      <el-button @click="restoreHistory">{{$t('dataBaseRestore.restoreHistory')}}</el-button>
-      <el-button @click="backUpRole">{{$t('dataBaseRestore.backUpRole')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('dataBaseRestore.backUpObject') + '：'">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item :label="$t('dataBaseRestore.backUpTime') + '：'">
+          <el-date-picker
+            class="width120"
+            v-model="startTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+          <span>—</span>
+          <el-date-picker
+            class="width120"
+            v-model="endTime"
+            type="date"
+            :placeholder="$t('public.selectDate')" />
+        </el-form-item>
+        <el-form-item :label="$t('dataBaseRestore.backUpType') + '：'">
+          <el-select class="width200">
+            <el-option value="0" :label="$t('dataBaseRestore.singleTable')" />
+            <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center" />
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button @click="runRestore">
+          <i class="el-icon-circle-check-outline"></i>
+          {{$t('dataBaseRestore.runRestore')}}
+        </el-button>
+        <el-button class="queryBtn" @click="deleteRestore">
+          <i class="el-icon-delete"></i>
+          {{$t('dataBaseRestore.deleteRestore')}}
+        </el-button>
+        <el-button @click="restoreHistory">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('dataBaseRestore.restoreHistory')}}
+          </el-button>
+        <el-button @click="backUpRole">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('dataBaseRestore.backUpRole')}}
+          </el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--还原的执行史-->
     <el-dialog
       :title="$t('dataBaseRestore.restoreHistory')"
@@ -137,7 +155,7 @@
           lastPage:100 // 末页
         },
         dialogVisible:false,
-        dialogVisibleAlert:true,
+        dialogVisibleAlert:false,
         timelineData:[
           {label:'2019年2月1日', level:1, des:null},
           {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
@@ -169,11 +187,11 @@
       },
       // 还原的执行历史
       restoreHistory(){
-
+        this.dialogVisible = true;
       },
       // 备份文件的清理规则
       backUpRole(){
-
+        this.dialogVisibleAlert = true;
       }
     },
     created() {

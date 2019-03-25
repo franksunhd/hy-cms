@@ -62,7 +62,7 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" border>
+      <el-table :data="tableData" stripe>
         <el-table-column type="selection" fixed />
         <el-table-column :label="$t('public.index')" header-align="center" align="center" />
         <el-table-column :label="$t('backUpTimer.taskName')" header-align="center" align="center" />
