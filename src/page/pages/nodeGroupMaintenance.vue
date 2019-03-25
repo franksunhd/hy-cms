@@ -8,46 +8,61 @@
         <el-breadcrumb-item>{{$t('breadcrumb.nodeGroupMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('nodeGroupMaintenance.groupName') + '：'">
-        <el-input />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">{{$t('public.query')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
-      <el-button @click="enableData">{{$t('public.enable')}}</el-button>
-      <el-button @click="disableData">{{$t('public.disable')}}</el-button>
-      <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('nodeGroupMaintenance.groupName') + '：'">
+          <el-input class="width200" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed />
-      <el-table-column :label="$t('public.index')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.description')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.status')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.createName')" header-align="center" align="center" />
-      <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="center" align="center" />
-      <el-table-column :label="$t('public.operation')" width="120" header-align="center" align="center" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--分页-->
-    <pages
-      :total='options.total'
-      :currentPage='options.currentPage'
-      :pageSize='options.pageSize'
-      :firstPage='options.firstPage'
-      :lastPage='options.lastPage'
-      @handleCurrentChangeSub="handleCurrentChange" />
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+          <i class="el-icon-circle-plus-outline"></i>
+          {{$t('public.add')}}
+        </el-button>
+        <el-button class="queryBtn" @click="dialogVisible = true">
+          <i class="el-icon-edit-outline"></i>
+          {{$t('public.edit')}}
+        </el-button>
+        <el-button class="queryBtn" @click="enableData">
+          <i class="el-icon-circle-check-outline"></i>
+          {{$t('public.enable')}}
+        </el-button>
+        <el-button class="queryBtn" @click="disableData">
+          <i class="el-icon-circle-close-outline"></i>
+          {{$t('public.disable')}}
+        </el-button>
+        <el-button class="queryBtn" @click="deleteData">
+          <i class="el-icon-delete"></i>
+          {{$t('public.delete')}}
+        </el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.description')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.createName')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="center" align="center" />
+      </el-table>
+      <!--分页-->
+      <pages
+        :total='options.total'
+        :currentPage='options.currentPage'
+        :pageSize='options.pageSize'
+        :firstPage='options.firstPage'
+        :lastPage='options.lastPage'
+        @handleCurrentChangeSub="handleCurrentChange" />
+    </div>
     <!--新增编辑-->
     <el-dialog
       :title="$t('nodeGroupMaintenance.createUpdateNode')"
