@@ -159,7 +159,8 @@
     margin-left: 10px;
   }
 
-  .BoxName {
+  .BoxName,
+  #BoxName {
     height: 100%;
   }
 </style>

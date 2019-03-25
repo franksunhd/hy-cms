@@ -44,6 +44,10 @@
 </script>
 
 <style>
+  .systemSettings-box {
+    height: 100%;
+  }
+
   .systemSettings-routerView {
     width: 100%;
     padding-left: 174px;
