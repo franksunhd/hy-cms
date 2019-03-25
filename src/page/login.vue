@@ -1,15 +1,9 @@
 <template>
   <div class="login-box">
     <!--header-->
-    <div class="login-header clearfix">
-      <div class="fl">
-        <img class="login-logo" src="../assets/img/logo.png" alt="logo">
-        <span class="login-logoText">带外设备管理平台</span>
-      </div>
-      <div class="fr">
-        <a class="login-collect" href="javascript:;" @click="addFavorite">加入收藏</a>
-        <a class="login-home" href="javascript:;" @click="setHome">设为首页</a>
-      </div>
+    <div class="login-header">
+      <img class="login-logo" src="../assets/img/logo.png" alt="logo">
+      <span class="login-logoText">带外设备管理平台</span>
     </div>
     <!--main-->
     <div class="login-main clearfix">
