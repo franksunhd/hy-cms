@@ -68,7 +68,12 @@
         <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.mobile')" width="100" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.email')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 0" style="color: red;">禁用</span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.createTime')" header-align="center" align="center" />
       </el-table>
@@ -145,7 +150,7 @@
         },
         dialogVisible:false,
         tableData:[
-          {},{},{},{},{},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         statusList:[
           {label:'启用',value:1},
@@ -329,24 +334,46 @@
     methods:{
       // 当前选中条数
       selectTableNum(data){
+        var _t = this;
         switch (data.length) {
           case 0: // 未选中
-            this.disableBtn.disable = true;
-            this.disableBtn.edit = true;
-            this.disableBtn.enable = true;
-            this.disableBtn.more = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.more = true;
             break;
           case 1: // 单选
-            this.disableBtn.disable = false;
-            this.disableBtn.edit = false;
-            this.disableBtn.enable = false;
-            this.disableBtn.more = false;
+            _t.disableBtn.edit = false;
+            _t.disableBtn.more = false;
+            data.forEach(function (item) {
+              if (item.status === 0) {
+                _t.disableBtn.enable = false;
+              } else if (item.status === 1) {
+                _t.disableBtn.disable = false;
+              }
+            });
             break;
           default: // 多选
-            this.disableBtn.disable = false;
-            this.disableBtn.edit = true;
-            this.disableBtn.enable = false;
-            this.disableBtn.more = false;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.more = false;
+            var disableFlag = 0, enableFlag = 0;
+            for (var i = 0;i < data.length;i++){
+              if (data[i].status === 0) {
+                disableFlag++;
+              } else if (data[i].status === 1) {
+                enableFlag++;
+              }
+            }
+            if (disableFlag > 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+            } else if (disableFlag === 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = false;
+            } else if (disableFlag > 0 && enableFlag === 0) {
+              _t.disableBtn.enable = false;
+              _t.disableBtn.disable = true;
+            }
             break;
         }
       },
