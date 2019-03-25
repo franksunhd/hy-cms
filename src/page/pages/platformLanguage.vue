@@ -38,31 +38,31 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button class="queryBtn" @click="dialogVisible = true">
+        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button class="queryBtn" @click="enableData">
+        <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('public.enable')}}
         </el-button>
-        <el-button class="queryBtn" @click="disableData">
+        <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button class="queryBtn" @click="deleteData">
+        <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
-        <el-button @click="setDefault">
+        <el-button @click="setDefault" :disabled="disableBtn.more">
           <i class="el-icon-delete"></i>
           {{$t('platformLanguage.setDefault')}}
         </el-button>
-        <el-button @click="importFunction">
+        <el-button @click="importFunction" :disabled="disableBtn.more">
           <i class="el-icon-delete"></i>
           {{$t('platformLanguage.importFunction')}}
         </el-button>
-        <el-button @click="importData">
+        <el-button @click="importData" :disabled="disableBtn.more">
           <i class="el-icon-delete"></i>
           {{$t('platformLanguage.importData')}}
         </el-button>
@@ -89,7 +89,6 @@
         :lastPage='options.lastPage'
         @handleCurrentChangeSub="handleCurrentChange" />
     </div>
-
     <!--新增/编辑-->
     <el-dialog
       :title="$t('platformLanguage.createUpdateLanguage')"
@@ -143,6 +142,12 @@
     components:{Box},
     data() {
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
         statusList:[
           {label:'启用',value:1},
           {label:'禁用',value:0},
