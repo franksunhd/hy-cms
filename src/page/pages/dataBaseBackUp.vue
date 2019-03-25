@@ -8,36 +8,40 @@
         <el-breadcrumb-item>{{$t('breadcrumb.dataBaseBackUp')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--表单-->
-    <el-form inline>
-      <el-form-item :label="$t('dataBaseBackUp.dataBaseType') + '：'">
-        <span>MySQL</span>
-      </el-form-item>
-      <el-form-item :label="$t('dataBaseBackUp.dataBaseName') + '：'">
-        <el-select v-model="dataBaseName">
-          <el-option v-for="(item,index) in dataBaseList"
-                     :key="index"
-                     :label="item.label"
-                     :value="item.value" />
-        </el-select>
-      </el-form-item>
-      <br>
-      <el-form-item :label="$t('dataBaseBackUp.backUpDirectory') + '：'">
-        <span>/mysql-5.7.12-winx64/backup/{yyyyMMdd}/{库名/表名}_{时间戳}.sql</span>
-      </el-form-item>
-    </el-form>
-    <!--全局操作-->
-    <div class="marBottom20">
-      <el-button @click="backUpAllTable">{{$t('dataBaseBackUp.backUpAllTable')}}</el-button>
-      <el-button @click="backUpThisDataBase">{{$t('dataBaseBackUp.backUpThisDataBase')}}</el-button>
+    <div class="padding20 borderBottom">
+      <!--表单-->
+      <el-form inline>
+        <el-form-item :label="$t('dataBaseBackUp.dataBaseType') + '：'">
+          <span>MySQL</span>
+        </el-form-item>
+        <el-form-item :label="$t('dataBaseBackUp.dataBaseName') + '：'">
+          <el-select v-model="dataBaseName">
+            <el-option v-for="(item,index) in dataBaseList"
+                       :key="index"
+                       :label="item.label"
+                       :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <br>
+        <el-form-item :label="$t('dataBaseBackUp.backUpDirectory') + '：'">
+          <span>/mysql-5.7.12-winx64/backup/{yyyyMMdd}/{库名/表名}_{时间戳}.sql</span>
+        </el-form-item>
+      </el-form>
     </div>
-    <!--表格-->
-    <el-table :data="tableData" border>
-      <el-table-column type="selection" fixed/>
-      <el-table-column :label="$t('public.index')" width="100" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseBackUp.tableName')" width="200" header-align="center" align="center" />
-      <el-table-column :label="$t('dataBaseBackUp.tableDes')" header-align="center" align="center" />
-    </el-table>
+    <div class="padding20">
+      <!--全局操作-->
+      <div class="marBottom16">
+        <el-button @click="backUpAllTable">{{$t('dataBaseBackUp.backUpAllTable')}}</el-button>
+        <el-button @click="backUpThisDataBase">{{$t('dataBaseBackUp.backUpThisDataBase')}}</el-button>
+      </div>
+      <!--表格-->
+      <el-table :data="tableData" stripe>
+        <el-table-column type="selection" fixed/>
+        <el-table-column :label="$t('public.index')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseBackUp.tableName')" width="200" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseBackUp.tableDes')" header-align="center" align="center" />
+      </el-table>
+    </div>
   </Box>
 </template>
 
