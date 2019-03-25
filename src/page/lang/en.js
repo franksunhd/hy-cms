@@ -94,7 +94,10 @@ export default {
     DeviceTypeManagement:"DeviceTypeManagement",
     DeviceInformationSetting:"DeviceInformationSetting",
     DeviceDiscoverySettings:'DeviceDiscoverySettings',
-    AutomaticDeviceDiscovery:'AutomaticDeviceDiscovery'
+    AutomaticDeviceDiscovery:'AutomaticDeviceDiscovery',
+    DeviceManualDetection:'DeviceManualDetection',
+    DeviceType:'DeviceType',
+    rackTowerServer:'rackTowerServer'
   },
   // 许可证信息维护
   license:{

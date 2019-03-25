@@ -61,11 +61,7 @@ const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
 //采集器应用
 const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
 //设备类型管理
-const DeviceTypeManagement = () => import ('@/page/pages/DeviceTypeManagement');
-//设备发现设置
-const DeviceDiscoverSettings = () => import ('@/page/pages/DeviceDiscoverSettings');
-//设备自动发现
-const automatiDeviceDiscovery = () => import ('@/page/pages/automatiDeviceDiscovery');
+const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection');
 
 Vue.use(Router);
 export default new Router({
@@ -109,10 +105,7 @@ export default new Router({
             {path: "/YUser/systemSettingsMonitoring/CollectorApplication", name: 'CollectorApplication', component: CollectorApplication},
           ]
         },
-
-        {path:"/YUser/DeviceTypeManagement",name:"DeviceTypeManagement",component:DeviceTypeManagement},
-        {path:"/YUser/DeviceDiscoverSettings",name:"DeviceDiscoverSettings",component:DeviceDiscoverSettings},
-        {path:"/YUser/automatiDeviceDiscovery",name:"automatiDeviceDiscovery",component:automatiDeviceDiscovery},
+        {path:"/YUser/DeviceManualDetection",name:"DeviceManualDetection",component:DeviceManualDetection},
       ]
     },
     {path:'/login', name:'Login', component:Login}

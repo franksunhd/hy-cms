@@ -65,25 +65,16 @@
           {
             id: '2',
             name: '设备发现',
-            arrList: [{
+            arrList: [
+              {
               preId: '3',
-              name: '设备类型管理',
-              url:'/YUser/DeviceTypeManagement'
-            },
+              name: '设备手动发现',
+              url:'/YUser/DeviceManualDetection'
+              },
               {
                 preId: '4',
                 name: '设备信息设置',
                 url:''
-              },
-              {
-                preId: '5',
-                name: '设备发现设置',
-                url:'/YUser/DeviceDiscoverSettings'
-              },
-              {
-                preId: '6',
-                name: '设备自动发现',
-                url:'/YUser/automatiDeviceDiscovery'
               }
             ]
           },

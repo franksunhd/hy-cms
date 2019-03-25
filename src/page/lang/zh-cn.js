@@ -94,7 +94,10 @@ export default {
     DeviceTypeManagement:"设备类型管理",
     DeviceInformationSetting:"设备信息设置",
     DeviceDiscoverySettings:'设备发现设置',
-    AutomaticDeviceDiscovery:'设备自带发现'
+    AutomaticDeviceDiscovery:'设备自动发现',
+    DeviceManualDetection:'设备手动发现',
+    DeviceType:'设备类型',
+    rackTowerServer:'【机架/塔式服务器】'
   },
   // 许可证信息维护
   license:{

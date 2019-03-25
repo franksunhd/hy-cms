@@ -170,14 +170,31 @@
     },
     methods: {
       drawLine() {
-        /*基于准备好的DOM 初始化echarts*/
         let myChart = this.$echarts.init(document.getElementById("echart"))
         myChart.setOption({
+          title: {
+            text: '监测概览',
+            subtext: '2019年3月25日 09:02',
+            top:5,
+            left:20,
+            textStyle:{
+              fontSize:18,
+              color:'#333'
+            },
+            subtextStyle:{
+              fontSize:14,
+              color:'#ccc'
+            },
+            itemGap:10
+          },
           tooltip: {
             trigger: 'axis',
             axisPointer: { // 坐标轴指示器，坐标轴触发有效
               type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
             }
+          },
+          grid:{
+            top:'100',
           },
           legend: {
             data: ['正常', '紧急', '主要', '次要', '警告', '忽略', '禁止', '设备总数']
