@@ -8,25 +8,28 @@
         <el-breadcrumb-item>{{$t('breadcrumb.interfaceTest')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-form label-width="200px">
-      <el-form-item :label="$t('interfaceTest.interfaceMode') + '：'">
-        <el-radio-group v-model="interfaceWay" @change="changeInterfaceWay">
-          <el-radio label="post">POST</el-radio>
-          <el-radio label="get">GET</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item :label="$t('interfaceTest.apiAddress') + '：'">
-        <el-input class="inputWidth" />
-      </el-form-item>
-      <el-form-item :label="$t('interfaceTest.accessParameters') + '：'">
-        <el-input type="textarea" :autosize="{ minRows: 5 }" />
-      </el-form-item>
-      <el-form-item>
-        <el-button size="small" @click="request">{{$t('public.request')}}</el-button>
-        <el-button size="small" type="reset">{{$t('public.reset')}}</el-button>
-      </el-form-item>
-    </el-form>
-    <div id="writePlace"></div>
+    <div class="padding20">
+      <el-form label-width="200px">
+        <el-form-item :label="$t('interfaceTest.interfaceMode') + '：'">
+          <el-radio-group v-model="interfaceWay" @change="changeInterfaceWay">
+            <el-radio label="post">POST</el-radio>
+            <el-radio label="get">GET</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item :label="$t('interfaceTest.apiAddress') + '：'">
+          <el-input class="inputWidth" />
+        </el-form-item>
+        <el-form-item :label="$t('interfaceTest.accessParameters') + '：'">
+          <el-input type="textarea" :autosize="{ minRows: 5 }" />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" @click="request">{{$t('public.request')}}</el-button>
+          <el-button size="small" type="reset">{{$t('public.reset')}}</el-button>
+        </el-form-item>
+      </el-form>
+      <!--接口响应区域-->
+      <div id="writePlace"></div>
+    </div>
   </Box>
 </template>
 

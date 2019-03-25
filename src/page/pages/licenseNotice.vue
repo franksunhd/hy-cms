@@ -8,49 +8,50 @@
         <el-breadcrumb-item>{{$t('breadcrumb.licenseNotice')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-form label-width="200px">
-      <el-form-item :label="$t('licenseNotice.licenseTime') + '：'">
-        <el-radio-group v-model="radio" @change="changeTime">
-          <el-radio label="3">3 {{$t('public.months')}}</el-radio>
-          <el-radio label="2">2 {{$t('public.months')}}</el-radio>
-          <el-radio label="1">1 {{$t('public.month')}}</el-radio>
-          <el-radio label="15">15 {{$t('public.days')}}</el-radio>
-          <el-radio label="10">10 {{$t('public.days')}}</el-radio>
-          <el-radio label="7">7 {{$t('public.days')}}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item :label="$t('licenseNotice.licenseUser') + '：'">
-        <el-button size="small" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}</el-button>
-
-        <!--展示选择的用户数据-->
-        <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
-          <p>
-            <span>{{item.headName}}</span>
-            <span v-if="item.branchName !== null">></span>
-            <span v-if="item.branchName !== null">{{item.branchName}}</span>
-          </p>
-          <el-tag
-            v-for="(tag,index) in item.headChildren"
-            :key="tag.id"
-            @close="handleClose(tag)"
-            :disable-transitions="true"
-            closable>
-            {{tag.label}}
-          </el-tag>
-        </div>
-
-      </el-form-item>
-      <el-form-item :label="$t('licenseNotice.licenseWay') + '：'">
-        <el-radio-group v-model="noticeWay" @change="changeWay">
-          <el-radio label="1">{{$t('public.message')}}</el-radio>
-          <el-radio label="2">{{$t('public.sms')}}</el-radio>
-          <el-radio label="3">{{$t('public.email')}}</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item>
-        <el-button size="small">{{$t('public.save')}}</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="padding20">
+      <el-form label-width="200px">
+        <el-form-item :label="$t('licenseNotice.licenseTime') + '：'">
+          <el-radio-group v-model="radio" @change="changeTime">
+            <el-radio label="3">3 {{$t('public.months')}}</el-radio>
+            <el-radio label="2">2 {{$t('public.months')}}</el-radio>
+            <el-radio label="1">1 {{$t('public.month')}}</el-radio>
+            <el-radio label="15">15 {{$t('public.days')}}</el-radio>
+            <el-radio label="10">10 {{$t('public.days')}}</el-radio>
+            <el-radio label="7">7 {{$t('public.days')}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item :label="$t('licenseNotice.licenseUser') + '：'">
+          <el-button class="queryBtn" type="primary" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}</el-button>
+          <!--展示选择的用户数据-->
+          <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
+            <p>
+              <span>{{item.headName}}</span>
+              <span v-if="item.branchName !== null">></span>
+              <span v-if="item.branchName !== null">{{item.branchName}}</span>
+            </p>
+            <el-tag
+              v-for="(tag,index) in item.headChildren"
+              :key="tag.id"
+              @close="handleClose(tag)"
+              :disable-transitions="true"
+              closable>
+              {{tag.label}}
+            </el-tag>
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('licenseNotice.licenseWay') + '：'">
+          <el-radio-group v-model="noticeWay" @change="changeWay">
+            <el-radio label="1">{{$t('public.message')}}</el-radio>
+            <el-radio label="2">{{$t('public.sms')}}</el-radio>
+            <el-radio label="3">{{$t('public.email')}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="queryBtn">{{$t('public.save')}}</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!--选择用户-->
     <el-dialog :title="$t('licenseNotice.selectUser')" :visible.sync="dialogVisible">
       <el-tree
         :data="treeData"
@@ -61,8 +62,8 @@
         </span>
       </el-tree>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" @click="dialogVisible = false" size="small">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
+        <el-button @click="dialogVisible = false" size="small">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>

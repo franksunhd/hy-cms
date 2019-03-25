@@ -21,60 +21,75 @@
           :default-expand-all="true"/>
       </el-col>
       <el-col :span="20">
-        <!--表单-->
-        <el-form inline>
-          <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-            <el-input />
-          </el-form-item>
-          <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-            <el-input />
-          </el-form-item>
-          <el-form-item :label="$t('dataDictionary.status') + '：'">
-            <el-select v-model="status">
-              <el-option
-                v-for="item in statusList"
-                :value="item.value"
-                :key="item.key"
-                :label="item.label" />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary">{{$t('public.query')}}</el-button>
-          </el-form-item>
-        </el-form>
-        <!--全局操作-->
-        <div class="marBottom20">
-          <el-button @click="dialogVisible = true">{{$t('public.add')}}</el-button>
-          <el-button @click="enableData">{{$t('public.enable')}}</el-button>
-          <el-button @click="disableData">{{$t('public.disable')}}</el-button>
-          <el-button @click="deleteData">{{$t('public.delete')}}</el-button>
+        <div class="padding20 borderBottom">
+          <!--表单-->
+          <el-form inline>
+            <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
+              <el-input class="width200" />
+            </el-form-item>
+            <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
+              <el-input class="width200" />
+            </el-form-item>
+            <el-form-item :label="$t('dataDictionary.status') + '：'">
+              <el-select v-model="status" class="width200">
+                <el-option
+                  v-for="item in statusList"
+                  :value="item.value"
+                  :key="item.key"
+                  :label="item.label" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+            </el-form-item>
+          </el-form>
         </div>
-        <!--表格-->
-        <el-table :data="tableData" border>
-          <el-table-column type="selection" />
-          <el-table-column :label="$t('public.index')" width="60" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.dictionaryType')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.dictionaryName')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.businessCode')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.directoryLevel')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.sort')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.status')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.createName')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('dataDictionary.createTime')" width="150" header-align="center" align="center" />
-          <el-table-column :label="$t('public.operation')" width="120" header-align="center" align="center" fixed="right">
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="dialogVisible = true">{{$t('public.edit')}}</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!--分页-->
-        <pages
-          :total='options.total'
-          :currentPage='options.currentPage'
-          :pageSize='options.pageSize'
-          :firstPage='options.firstPage'
-          :lastPage='options.lastPage'
-          @handleCurrentChangeSub="handleCurrentChange" />
+        <div class="padding20">
+          <!--全局操作-->
+          <div class="marBottom16">
+            <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+              <i class="el-icon-circle-plus-outline"></i>
+              {{$t('public.add')}}
+            </el-button>
+            <el-button class="queryBtn" @click="dialogVisible = true">
+              <i class="el-icon-edit-outline"></i>
+              {{$t('public.edit')}}
+            </el-button>
+            <el-button class="queryBtn" @click="enableData">
+              <i class="el-icon-circle-check-outline"></i>
+              {{$t('public.enable')}}
+            </el-button>
+            <el-button class="queryBtn" @click="disableData">
+              <i class="el-icon-circle-close-outline"></i>
+              {{$t('public.disable')}}
+            </el-button>
+            <el-button class="queryBtn" @click="deleteData">
+              <i class="el-icon-delete"></i>
+              {{$t('public.delete')}}
+            </el-button>
+          </div>
+          <!--表格-->
+          <el-table :data="tableData" stripe>
+            <el-table-column type="selection" header-align="center" align="center" />
+            <el-table-column :label="$t('public.index')" width="60" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.dictionaryType')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.dictionaryName')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.businessCode')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.directoryLevel')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.sort')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.status')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.createName')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.createTime')" width="150" header-align="center" align="center" />
+          </el-table>
+          <!--分页-->
+          <pages
+            :total='options.total'
+            :currentPage='options.currentPage'
+            :pageSize='options.pageSize'
+            :firstPage='options.firstPage'
+            :lastPage='options.lastPage'
+            @handleCurrentChangeSub="handleCurrentChange" />
+        </div>
       </el-col>
     </el-row>
     <!--新增编辑-->
