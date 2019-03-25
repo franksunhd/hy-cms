@@ -166,52 +166,6 @@
         this.codeNum = _t.$canvas.canvas_draw(120,40,canvas);
         console.log(this.codeNum);
       },
-      // 加入收藏
-      addFavorite(){
-        var event = window.event || event;
-        if(document.all){
-          //支持IE
-          event.returnValue = false;
-        }else{
-          //IE不支持
-          event.preventDefault();
-        }
-        var url = window.location.href;
-        var title = '我的网站';
-        try {
-          window.external.addFavorite(url, title);
-        }
-        catch (e) {
-          try {
-            window.sidebar.addPanel(title, url, "");
-          }
-          catch (e) {
-            alert("抱歉，您所使用的浏览器无法完成此操作。\n加入收藏失败，请使用Ctrl+D进行添加");
-          }
-        }
-      },
-      // 设为首页
-      setHome(){
-        var obj = this;
-        var vrl = window.location;
-        try {
-          console.log(1)
-            obj.style.behavior='url(#default#homepage)';
-            obj.setHomePage(vrl);
-        } catch(e){
-          console.log(2)
-          if(window.netscape) {
-            try {
-              netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-            }
-            catch (e) {
-              alert("此操作被浏览器拒绝！\n请在浏览器地址栏输入“about:config”并回车\n然后将[signed.applets.codebase_principal_support]设置为'true'");
-            }
-            var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
-            prefs.setCharPref('browser.startup.homepage',vrl);
-          }
-        }
-      }
     },
     mounted(){
       var canvas = document.getElementById('comments-canvas');
