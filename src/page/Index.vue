@@ -42,10 +42,9 @@
       </el-header>
       <el-container>
         <!--左侧导航-->
-        <el-aside width="56px" class="app-aside">
-          <!--功能导航-->
-            <appSide />
-        </el-aside>
+        <el-aside width="56px" class="app-aside"></el-aside>
+        <!--功能导航-->
+        <appSide />
         <!--内容区域-->
         <el-main class="BoxName">
           <div id="BoxName" >

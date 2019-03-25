@@ -187,18 +187,18 @@
       getItem(index, val) {
         //console.log(val)
         // 把当前点击元素的index，赋值给activeClass
-        // if (this.activeClass.indexOf(val) == -1) {
-        //   this.activeClass.unshift(val);
-        // } else {
-        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
-        // }
+        if (this.activeClass.indexOf(val) == -1) {
+          this.activeClass.unshift(val);
+        } else {
+          this.activeClass.splice(this.activeClass.indexOf(val), 1);
+        }
 
-        var _t = this;
-        var params = new URLSearchParams();
-        params.append('menuId','menu_01_01');
-        _t.$api.post('system/userShortcutMenu/insertSystemUserShortcutMenuFromMenuAndLanguage',params,function (res) {
-          console.log(res.data)
-        });
+        // var _t = this;
+        // var params = new URLSearchParams();
+        // params.append('menuId','menu_01_01');
+        // _t.$api.post('system/userShortcutMenu/insertSystemUserShortcutMenuFromMenuAndLanguage',params,function (res) {
+        //   console.log(res.data)
+        // });
 
       },
       delItem(y, val) {
@@ -242,11 +242,13 @@
 
 <style scoped>
   .box {
-    width: 828px;
     overflow: hidden;
     z-index: 1001;
     height: 100%;
-    display: flex;
+    position: fixed;
+    top: 55px;
+    left: 0;
+    bottom: 0;
   }
 
   .box-right {
@@ -256,7 +258,6 @@
     float: left;
     overflow: hidden;
     background-color: #fff;
-    z-index: 1001;
     position: relative;
     height: 444px;
   }
@@ -284,14 +285,6 @@
 
   .fnlist ul li:first-child {
     margin-left: 0;
-  }
-
-  .fnlist ul li:nth-child(5) {
-    /*margin-left: 0;*/
-    /*line-height: 20px;*/
-  }
-
-  .fnlist ul li span {
   }
 
   .fnlist ul li:hover {
@@ -334,11 +327,9 @@
   .box-left-ful:hover {
     height: 50px;
     line-height: 50px;
-    /*font-size: 18px;*/
     background-color: #3f81d0;
     color: #fff;
     cursor: pointer;
-    /*border-bottom: 1px solid #fff;*/
   }
 
   .box-left-ful li:first-child {
@@ -347,7 +338,6 @@
     height: 50px;
     line-height: 50px;
     font-size: 26px;
-    /*padding-left: 10px;*/
     text-align: center;
   }
 
@@ -371,7 +361,6 @@
     height: 44px;
     line-height: 44px;
     font-size: 12px;
-    /*color: #E3E5EE;*/
   }
 
   .box-left-two:hover {
