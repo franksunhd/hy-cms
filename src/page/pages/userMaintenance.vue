@@ -71,7 +71,7 @@
         <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" style="color: red;">禁用</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />

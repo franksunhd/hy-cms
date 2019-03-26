@@ -173,3 +173,8 @@
 .login-error-i {
   color:#fb6140;
 }
+
+/*禁用状态颜色*/
+.disabledStatusColor {
+  color: #fb6140;
+}
