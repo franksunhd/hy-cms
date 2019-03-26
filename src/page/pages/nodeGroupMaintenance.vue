@@ -45,8 +45,14 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe>
-        <el-table-column type="selection" fixed />
-        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+          <template scope="scope">
+            <span>
+              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="center" align="center" />
         <el-table-column :label="$t('nodeGroupMaintenance.description')" header-align="center" align="center" />
         <el-table-column :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="center" align="center" />

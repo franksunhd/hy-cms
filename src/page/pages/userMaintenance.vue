@@ -61,7 +61,13 @@
       </div>
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
-        <el-table-column type="index" :label="$t('public.index')" width="60" header-align="center" align="center" />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+          <template scope="scope">
+            <span>
+              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.loginAccount')" width="100" header-align="center" align="center" />
         <el-table-column :label="$t('userMaintenance.organization')" width="100" header-align="center" align="center" />

@@ -78,9 +78,14 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe>
-        <el-table-column type="selection" fixed />
-        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+      <el-table :data="tableData" stripe >
+        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+          <template scope="scope">
+            <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center" />
         <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center" />
         <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center" />

@@ -70,7 +70,13 @@
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center" />
+        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+          <template scope="scope">
+            <span>
+              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('platformLanguage.languageCodes')" header-align="center" align="center" />
         <el-table-column :label="$t('platformLanguage.languageName')" header-align="center" align="center" />
         <el-table-column :label="$t('platformLanguage.description')" header-align="center" align="center" />
