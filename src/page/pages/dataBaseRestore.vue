@@ -167,7 +167,7 @@
           lastPage:100 // 末页
         },
         dialogVisible:false,
-        dialogVisibleAlert:true,
+        dialogVisibleAlert:false,
         timelineData:[
           {label:'2019年2月1日', level:1, des:null},
           {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
