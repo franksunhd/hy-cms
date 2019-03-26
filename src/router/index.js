@@ -60,7 +60,7 @@ const WebApplication = () => import ('@/page/pages/WebApplication');
 const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
 //采集器应用
 const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
-//设备类型管理
+//设备手动发现
 const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection');
 
 Vue.use(Router);
