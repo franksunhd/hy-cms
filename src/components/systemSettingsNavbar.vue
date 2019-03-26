@@ -133,16 +133,22 @@
 </script>
 
 <style>
-  .systemSettings-navBarBox {
-    position: relative;
-  }
-
   .systemSettings-title {
     height: 50px;
     line-height: 50px;
     padding: 0 0 0 20px;
     font-size: 14px;
+  }
 
+  .systemSettings-navBarContent {
+    width: auto;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    overflow-y: auto;
   }
 
   .systemSettings-navBarContent .el-submenu__title {

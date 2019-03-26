@@ -234,10 +234,10 @@
 <style scoped>
   .box {
     overflow: hidden;
-    z-index: 1001;
+    z-index: 1031;
     height: 100%;
     position: fixed;
-    top: 55px;
+    top: 52px;
     left: 0;
     bottom: 0;
   }

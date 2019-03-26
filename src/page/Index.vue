@@ -1,58 +1,49 @@
 <template>
   <div class="Index-box">
-    <el-container style="height: 100%;" direction="vertical">
-      <!--头部-->
-      <el-header>
-        <div class="app-header clearfix">
-          <div class="app-header-logo middle fl">
-            <img src="../assets/img/logo.png" alt="logo"/>
-            <span>控制台首页</span>
-          </div>
-          <ul class="app-header-navBar fr">
-            <li>
-              <el-badge :value="messageNum">
-                <a href="javascript:;">{{$t('header.message')}}</a>
-              </el-badge>
-            </li>
-            <li>
-              <a href="javascript:;">{{$t('header.document')}}</a>
-            </li>
-            <li>
-              <el-select class="el-app-header-select" v-model="defaultLang" @change="changeLanguage">
-                <el-option label="中文" value="zh" />
-                <el-option label="En" value="en" />
-              </el-select>
-            </li>
-            <li>
-              <span>{{$t('header.welcome')}}:</span>
-              <span>{{username}}</span>
-              <el-dropdown class="el-app-header-dropDown" @command="handleCommand">
+    <!--头部-->
+    <div class="app-header clearfix">
+      <div class="app-header-logo middle fl">
+        <img src="../assets/img/logo.png" alt="logo"/>
+        <span @click="homePage" style="cursor: pointer;margin-left: 10px;">控制台首页</span>
+      </div>
+      <ul class="app-header-navBar fr">
+        <li>
+          <el-badge :value="messageNum">
+            <a href="javascript:;">{{$t('header.message')}}</a>
+          </el-badge>
+        </li>
+        <li>
+          <a href="javascript:;">{{$t('header.document')}}</a>
+        </li>
+        <li>
+          <el-select class="el-app-header-select" v-model="defaultLang" @change="changeLanguage">
+            <el-option label="中文" value="zh"/>
+            <el-option label="En" value="en"/>
+          </el-select>
+        </li>
+        <li>
+          <span>{{$t('header.welcome')}}:</span>
+          <span>{{username}}</span>
+          <el-dropdown class="el-app-header-dropDown" @command="handleCommand">
               <span style="display: inline-block;">
-                <img class="el-app-header-icon" style="border-radius: 50%;overflow: hidden;" src="../assets/img/default.jpg">
+                <img class="el-app-header-icon" style="border-radius: 50%;overflow: hidden;"
+                     src="../assets/img/default.jpg">
               </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="head">{{$t('header.head')}}</el-dropdown-item>
-                  <el-dropdown-item command="pwd">{{$t('header.pwd')}}</el-dropdown-item>
-                  <el-dropdown-item command="exit">{{$t('header.logOut')}}</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </li>
-          </ul>
-        </div>
-      </el-header>
-      <el-container>
-        <!--左侧导航-->
-        <el-aside width="56px" class="app-aside"></el-aside>
-        <!--功能导航-->
-        <appSide />
-        <!--内容区域-->
-        <el-main class="BoxName">
-          <div id="BoxName" >
-            <router-view />
-          </div>
-        </el-main>
-      </el-container>
-    </el-container>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="head">{{$t('header.head')}}</el-dropdown-item>
+              <el-dropdown-item command="pwd">{{$t('header.pwd')}}</el-dropdown-item>
+              <el-dropdown-item command="exit">{{$t('header.logOut')}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </li>
+      </ul>
+    </div>
+    <!--左侧导航-->
+    <appSide/>
+    <!--内容区域-->
+    <div id="BoxName" class="BoxName">
+      <router-view/>
+    </div>
     <!--修改密码弹出层-->
     <el-dialog :title="$t('header.head')" :visible.sync="dialogVisible">
       <el-upload action="">
@@ -68,21 +59,22 @@
 
 <script>
   import appSide from './pages/appSide';
+
   export default {
     name: "index",
-    components:{appSide},
-    data(){
+    components: {appSide},
+    data() {
       return {
-        defaultLang:localStorage.getItem('hyLanguage') || 'zh',
-        username:'admin',
-        messageNum:21,
-        dialogVisible:false,
-        isCollapse:true
+        defaultLang: localStorage.getItem('hyLanguage') || 'zh',
+        username: 'admin',
+        messageNum: 21,
+        dialogVisible: false,
+        isCollapse: true
       }
     },
-    methods:{
+    methods: {
       // 点击头像
-      handleCommand(command){
+      handleCommand(command) {
         switch (command) {
           case 'head': // 修改头像
             this.dialogVisible = true;
@@ -90,24 +82,40 @@
           case 'pwd': // 修改密码
             break;
           case 'exit': // 退出登录
-            this.$router.push({name:'Login'});
+            this.$router.push({name: 'Login'});
             break;
           default:
             break;
         }
       },
-      changeLanguage(val){
-        localStorage.setItem('hyLanguage',val);
+      // 切换语言
+      changeLanguage(val) {
+        localStorage.setItem('hyLanguage', val);
         window.location.reload();
+      },
+      // 点击title
+      homePage(){
+        this.$router.push({name:'Home'});
       }
     }
   }
 </script>
 
 <style>
+  .app-header {
+    height: 52px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    font-size: 16px;
+  }
+
   .app-aside {
     overflow: visible;
   }
+
   .app-header-logo img {
     width: 56px;
     height: 52px;
@@ -144,7 +152,7 @@
     background-color: transparent;
     border-radius: 0;
     border: none;
-    font-size: 20px;
+    font-size: 16px;
     text-align: center;
   }
 
@@ -159,8 +167,14 @@
     margin-left: 10px;
   }
 
-  .BoxName,
-  #BoxName {
-    height: 100%;
+  .BoxName {
+    position: absolute;
+    top: 52px;
+    left: 56px;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    width: auto;
+    overflow: hidden;
   }
 </style>

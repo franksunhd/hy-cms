@@ -1,43 +1,40 @@
 <template>
-  <el-container class="systemSettings-box">
-    <div>
-      <el-aside v-show="isShow" class="systemSettings-navBar" width="174px">
-        <systemSettingsNavBar />
-        <a href="javascript:;"  @click="clickInset" id="systemSettings-navBar-inSet">内</a>
-      </el-aside>
-      <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">外</a>
+  <div class="systemSettings-box">
+    <div v-show="isShow" class="systemSettings-navBar">
+      <systemSettingsNavBar/>
+      <a href="javascript:;" @click="clickInset" id="systemSettings-navBar-inSet">内</a>
     </div>
+    <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">外</a>
     <div id="systemSettings-routerView" class="systemSettings-routerView">
       <router-view/>
     </div>
-  </el-container>
+  </div>
 </template>
 
 <script>
   import systemSettingsNavBar from './systemSettingsNavbar';
+
   export default {
     name: "system-settings",
-    components:{systemSettingsNavBar},
-    data(){
+    components: {systemSettingsNavBar},
+    data() {
       return {
-        isShow:true,
+        isShow: true,
         levelList: null,
       }
     },
-    methods:{
+    methods: {
       // 收缩
-      clickInset(){
+      clickInset() {
         this.isShow = false;
         document.getElementById('systemSettings-navBar-outSet').style.display = 'inline-block';
-        document.getElementById('systemSettings-navBar-outSet').style.left = '60px';
-        document.getElementById('systemSettings-routerView').style.paddingLeft = '0px';
+        document.getElementById('systemSettings-routerView').style.left= '0';
       },
       // 展开
-      clickOutset(){
+      clickOutset() {
         this.isShow = true;
         document.getElementById('systemSettings-navBar-outSet').style.display = 'none';
-        document.getElementById('systemSettings-navBar-outSet').style.left = '235px';
-        document.getElementById('systemSettings-routerView').style.paddingLeft = '174px';
+        document.getElementById('systemSettings-routerView').style.left = '174px';
       },
     },
   }
@@ -49,14 +46,21 @@
   }
 
   .systemSettings-routerView {
-    width: 100%;
-    padding-left: 174px;
+    width: auto;
+    position: absolute;
+    top: 0;
+    left: 174px;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    overflow-y: auto;
   }
 
   .systemSettings-navBar {
+    width: 174px;
     position: absolute;
-    top: 56px;
-    left: 56px;
+    top: 0;
+    left: 0;
     bottom: 0;
   }
 

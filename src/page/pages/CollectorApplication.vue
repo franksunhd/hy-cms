@@ -1,16 +1,12 @@
 <template>
-	<div>
-		<el-row>
-			<el-col>
-					<!--面包屑区域-->
-					<div class="Breadcrumb">
-						<el-breadcrumb separator-class="el-icon-arrow-right">
-							<el-breadcrumb-item>{{$t('breadcrumb.SystemMonitoring')}}</el-breadcrumb-item>
-							<el-breadcrumb-item>{{$t('breadcrumb.CollectorApplication')}}</el-breadcrumb-item>
-						</el-breadcrumb>
-					</div>
-			</el-col>
-		</el-row>
+	<Box>
+    <!--面包屑区域-->
+    <div class="Breadcrumb">
+      <el-breadcrumb>
+        <el-breadcrumb-item>{{$t('breadcrumb.SystemMonitoring')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.CollectorApplication')}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
 		<el-row>
 			<el-col :span="24">
 				<div id="echart" style="width: 100%; height: 430px; border: #CCCCCC solid 1px; padding:20px 100px 0 50px"></div>
@@ -57,7 +53,6 @@
 									</div>
 								</el-collapse-item>
 							</el-collapse>
-
 						</el-tab-pane>
 						<el-tab-pane label="资源实用情况" name="third">
 							<div class="Resources">
@@ -85,11 +80,14 @@
 				</div>
 			</el-col>
 		</el-row>
-	</div>
+	</Box>
 </template>
 
 <script>
+  import Box from '../../components/Box';
 	export default {
+	  name:'collector-application',
+    components:{Box},
 		data() {
 			return {
 				/*tabs*/
@@ -218,17 +216,14 @@
 				var that = this;
 				myChart.on('click', function(param) {
 					var index = param.dataIndex;
-					alert(index);
 					if(index == 1) {
 						that.WEB = false;
 					} else if(index == 2 || index == 3 || index == 4) {
 						that.WEB = true;
 					}
 					return that.WEB;
-					//alert(that.WEB)
 				});
 				/*this.WEB=that.WEB;*/
-				alert(this.WEB)
 			},
 		}
 	}

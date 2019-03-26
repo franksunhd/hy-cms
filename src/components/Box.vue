@@ -31,6 +31,6 @@
   .box-wrap {
     height: 100%;
     overflow: auto;
-    padding: 0;
+    padding: 50px 0 0 0;
   }
 </style>

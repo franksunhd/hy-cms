@@ -2,9 +2,10 @@
   默认皮肤( 共计 0 种色值)
 */
 
-.el-header {
+.app-header {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+  -webkit-box-shadow:0px 3px 3px #c8c8c8;
 }
 
 .app-aside {
@@ -21,6 +22,15 @@
   background-color: #f6f9f9;
 }
 
+.box-wrap {
+  background-color: #f0f0f0;
+}
+
+/*面包屑*/
+.Breadcrumb {
+  border-bottom: 1px solid #eaedf1;
+  background-color: #fff;
+}
 
 /*区域滚动条*/
 *::-webkit-scrollbar {

@@ -1,22 +1,17 @@
 <template>
-	<div>
-		<el-row>
-			<el-col>
-					<!--面包屑区域-->
-					<div class="Breadcrumb">
-						<el-breadcrumb separator-class="el-icon-arrow-right">
-							<el-breadcrumb-item>{{$t('breadcrumb.SystemMonitoring')}}</el-breadcrumb-item>
-							<el-breadcrumb-item>{{$t('breadcrumb.WebApplication')}}</el-breadcrumb-item>
-						</el-breadcrumb>
-					</div>
-			</el-col>
-		</el-row>
+	<Box>
+    <!--面包屑区域-->
+    <div class="Breadcrumb">
+      <el-breadcrumb>
+        <el-breadcrumb-item>{{$t('breadcrumb.SystemMonitoring')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.WebApplication')}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
 		<el-row>
 			<el-col :span="24">
 				<div id="echart" style="width: 100%; height: 430px; border: #CCCCCC solid 1px; padding:20px 100px 0 50px"></div>
 			</el-col>
 		</el-row>
-		
 		<el-row v-show="WEB">
 			<el-col>
 				<div class="col-title">
@@ -58,7 +53,6 @@
 									</div>
 								</el-collapse-item>
 							</el-collapse>
-
 						</el-tab-pane>
 						<el-tab-pane label="资源实用情况" name="third">
 							<div class="Resources">
@@ -86,11 +80,14 @@
 				</div>
 			</el-col>
 		</el-row>
-	</div>
+	</Box>
 </template>
 
 <script>
+  import Box from '../../components/Box';
 	export default {
+	  name:'web-application',
+    components:{Box},
 		data() {
 			return {
 				/*tabs*/
