@@ -26,25 +26,25 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button class="queryBtn" @click="dialogVisible = true">
+        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button class="queryBtn" @click="enableData">
+        <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('public.enable')}}
         </el-button>
-        <el-button class="queryBtn" @click="disableData">
+        <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button class="queryBtn" @click="deleteData">
+        <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe>
+      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template scope="scope">
@@ -56,7 +56,12 @@
         <el-table-column :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="center" align="center" />
         <el-table-column :label="$t('nodeGroupMaintenance.description')" header-align="center" align="center" />
         <el-table-column :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="center" align="center" />
-        <el-table-column :label="$t('nodeGroupMaintenance.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('nodeGroupMaintenance.status')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('nodeGroupMaintenance.createName')" header-align="center" align="center" />
         <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="center" align="center" />
       </el-table>
@@ -104,8 +109,14 @@
     components:{Box},
     data() {
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
         tableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         options:{
           total:1000, // 总条数
@@ -119,6 +130,51 @@
       }
     },
     methods: {
+      // 当前选中条数
+      selectTableNum(data){
+        var _t = this;
+        switch (data.length) {
+          case 0: // 未选中
+            _t.disableBtn.disable = true;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.more = true;
+            break;
+          case 1: // 单选
+            _t.disableBtn.edit = false;
+            _t.disableBtn.more = false;
+            data.forEach(function (item) {
+              if (item.status === 0) {
+                _t.disableBtn.enable = false;
+              } else if (item.status === 1) {
+                _t.disableBtn.disable = false;
+              }
+            });
+            break;
+          default: // 多选
+            _t.disableBtn.edit = true;
+            _t.disableBtn.more = false;
+            var disableFlag = 0, enableFlag = 0;
+            for (var i = 0;i < data.length;i++){
+              if (data[i].status === 0) {
+                disableFlag++;
+              } else if (data[i].status === 1) {
+                enableFlag++;
+              }
+            }
+            if (disableFlag > 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+            } else if (disableFlag === 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = false;
+            } else if (disableFlag > 0 && enableFlag === 0) {
+              _t.disableBtn.enable = false;
+              _t.disableBtn.disable = true;
+            }
+            break;
+        }
+      },
       // 改变当前页码
       handleCurrentChange(val){
         console.log(val)
