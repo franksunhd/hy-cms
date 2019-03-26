@@ -44,21 +44,21 @@
     <div class="padding20">
       <!--全局操作-->
       <div class="marBottom16">
-        <el-button @click="runMonitoring">
+        <el-button @click="runMonitoring" :disabled="disableBtn.enable">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('collectionTaskAssignment.runMonitoring')}}
         </el-button>
-        <el-button @click="stopMonitoring">
+        <el-button @click="stopMonitoring" :disabled="disableBtn.disable">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('collectionTaskAssignment.stopMonitoring')}}
         </el-button>
-        <el-button @click="assignedTasks">
+        <el-button @click="assignedTasks" :disabled="disableBtn.edit">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('collectionTaskAssignment.equipmentMonitoring')}}
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe>
+      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template scope="scope">
@@ -73,7 +73,12 @@
         <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="center" align="center" />
         <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="center" align="center" />
         <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="center" align="center" />
-        <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="center" align="center" />
         <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="center" align="center" />
       </el-table>
@@ -139,8 +144,14 @@
     components:{Box},
     data() {
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
         tableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         options:{
           total:1000, // 总条数
@@ -153,6 +164,51 @@
       }
     },
     methods: {
+      // 当前选中条数
+      selectTableNum(data){
+        var _t = this;
+        switch (data.length) {
+          case 0: // 未选中
+            _t.disableBtn.disable = true;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.more = true;
+            break;
+          case 1: // 单选
+            _t.disableBtn.edit = false;
+            _t.disableBtn.more = false;
+            data.forEach(function (item) {
+              if (item.status === 0) {
+                _t.disableBtn.enable = false;
+              } else if (item.status === 1) {
+                _t.disableBtn.disable = false;
+              }
+            });
+            break;
+          default: // 多选
+            _t.disableBtn.edit = true;
+            _t.disableBtn.more = false;
+            var disableFlag = 0, enableFlag = 0;
+            for (var i = 0;i < data.length;i++){
+              if (data[i].status === 0) {
+                disableFlag++;
+              } else if (data[i].status === 1) {
+                enableFlag++;
+              }
+            }
+            if (disableFlag > 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+            } else if (disableFlag === 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = false;
+            } else if (disableFlag > 0 && enableFlag === 0) {
+              _t.disableBtn.enable = false;
+              _t.disableBtn.disable = true;
+            }
+            break;
+        }
+      },
       // 改变当前页码
       handleCurrentChange(val){
         console.log(val)
