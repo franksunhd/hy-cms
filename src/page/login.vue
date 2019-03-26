@@ -1,39 +1,33 @@
 <template>
   <div class="login-box">
+    <!--背景-->
+    <el-carousel class="login-bg-box" arrow="never" indicator-position="none">
+      <el-carousel-item v-for="item in loginImg" :key="item">
+        <img class="login-swiper-img" :src="item" alt="swiper">
+      </el-carousel-item>
+    </el-carousel>
     <!--header-->
-    <div class="login-header clearfix">
-      <div class="fl">
-        <img class="login-logo" src="../assets/img/logo.png" alt="logo">
-        <span class="login-logoText">带外设备管理平台</span>
-      </div>
-      <div class="fr">
-        <a class="login-collect" href="javascript:;" @click="addFavorite">加入收藏</a>
-        <a class="login-home" href="javascript:;" @click="setHome">设为首页</a>
-      </div>
+    <div class="login-header">
+      <img class="login-logo" src="../assets/img/logo.png" alt="logo">
+      <span class="login-logoText">带外设备管理平台</span>
     </div>
     <!--main-->
-    <div class="login-main clearfix">
-      <div class="fl" style="width: 50%;">
-        <el-carousel height="400px">
-          <el-carousel-item v-for="item in loginImg" :key="item">
-            <img class="login-swiper-img" :src="item" alt="swiper">
-          </el-carousel-item>
-        </el-carousel>
-      </div>
-      <div class="fl login-form">
-        <p class="login-form-title">账号登录</p>
-        <el-form>
-          <el-form-item>
+    <div class="login-form">
+      <p class="login-form-title">账号登录</p>
+      <div class="login-content-box">
+        <div class="login-error-box" v-if="isError">
+          <i class="el-icon-warning login-error-i"></i>
+          <span>登录名、密码或者验证码不正确</span>
+        </div>
+        <el-form style="width: 340px;">
+          <el-form-item style="margin-bottom: 10px;">
             <el-input class="login_input"
                       placeholder="账号"
                       v-model="username"
                       @input="inputUser('user',username)"
                       clearable/>
-            <div class="errorTips activeColor" v-show="userError">
-              <span v-text="userTip"></span>
-            </div>
           </el-form-item>
-          <el-form-item>
+          <el-form-item style="margin-bottom: 10px;">
             <el-input class="login_input" type="password"
                       autocomplete="new-password"
                       placeholder="密码"
@@ -41,24 +35,21 @@
                       @input="inputUser('pwd',password)"
                       v-model="password"
                       @keyup.enter.native="login($event)"/>
-            <div class="errorTips activeColor" v-show="passError">
-              <span v-text="passTip"></span>
-            </div>
           </el-form-item>
-          <el-form-item style="position: relative">
+          <el-form-item style="position: relative;margin-bottom: 30px;">
             <el-input class="login_input"
-                      style="width: 200px;"
                       v-model="code"
                       placeholder="验证码"
                       clearable/>
-            <canvas id="comments-canvas" @click="draw" width="120" height="40"></canvas>
-            <div class="errorTips activeColor" v-show="codeError">
-              <span v-text="codeTip"></span>
-            </div>
+            <canvas id="comments-canvas" @click="draw" width="120" height="30"></canvas>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" class="login_btn" @click="toLogin">登录</el-button>
+          <el-form-item style="margin-bottom: 0;">
+            <el-button type="primary" class="login_btn" @click="login">登录</el-button>
           </el-form-item>
+          <div class="login-foot-box">
+            <a href="javascript:;">忘记密码?</a>
+            <a href="javascript:;">立即注册</a>
+          </div>
         </el-form>
       </div>
     </div>
@@ -72,265 +63,201 @@
 <script>
   export default {
     name: "login",
-    data(){
+    data() {
       return {
-        loginImg:[
-          '../../static/img/01.jpg',
-          '../../static/img/02.jpg',
-          '../../static/img/03.jpg'
+        loginImg: [
+          'static/img/login_bg.png',
+          'static/img/login_bg.png',
+          'static/img/login_bg.png'
         ],
-        username:'',
-        password:'',
-        code:'',
-        codeNum:'',
-        userError:false,
-        passError:false,
-        codeError:false,
-        userTip:'',
-        passTip:'',
-        codeTip:'',
+        username: '',
+        password: '',
+        code: '',
+        codeNum: '',
+        isError: false,
+        userTip: '',
+        passTip: '',
+        codeTip: '',
       }
     },
-    methods:{
+    methods: {
       // 输入校验
-      inputUser(item,val) {
+      inputUser(item, val) {
         if (item === 'user') {
           if (val.trim() === '') {
             this.userTip = '请输入用户名';
-            this.userError = true;
+            this.isError = true;
           } else {
             this.userTip = '';
-            this.userError = false;
+            this.isError = false;
           }
         } else {
           if (val.trim() === '') {
             this.passTip = '请输入密码';
-            this.passError = true;
+            this.isError = true;
           } else {
             this.passTip = '';
-            this.passError = false;
+            this.isError = false;
           }
         }
       },
       // 登录校验
-      login(event){
+      login(event) {
         event.preventDefault();
         // 校验账户名
         if (this.username === '') {
           this.userTip = '请输入用户名';
-          this.userError = true;
+          this.isError = true;
         } else {
           this.userTip = '';
-          this.userError = false;
+          this.isError = false;
         }
 
         // 校验密码
         if (this.password === '') {
           this.passTip = '请输入密码';
-          this.passError = true;
+          this.isError = true;
         } else {
           this.passTip = '';
-          this.passError = false;
+          this.isError = false;
         }
 
         // 校验验证码
         if (this.code === '') {
           this.codeTip = '请输入验证码';
-          this.codeError = true;
+          this.isError = true;
         } else if (this.code.toUpperCase() !== this.codeNum) {
           this.codeTip = '验证码输入错误';
-          this.codeError = true;
+          this.isError = true;
         } else {
           this.codeTip = '';
-          this.codeError = false;
+          this.isError = false;
         }
 
-        if(this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum){
+        if (this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum) {
           this.userTip = '';
-          this.userError = false;
+          this.isError = false;
           this.passTip = '';
-          this.passError = false;
+          this.isError = false;
           this.toLogin();
         }
       },
       // 去登录接口
-      toLogin(){
+      toLogin() {
         var _t = this;
         // 登录按钮点击之后重绘验证码
         var params = new URLSearchParams();
-        params.append('username','123123');
-        params.append('password','123345');
-        params.append('token','123');
-        _t.$api.post('system/user/goLoginSystem',params,function (res) {
+        params.append('username', '123123');
+        params.append('password', '123345');
+        params.append('token', '123');
+        _t.$api.post('system/user/goLoginSystem', params, function (res) {
           console.log(res);
         });
         this.draw();
       },
-      draw(){
+      draw() {
         var _t = this;
         var canvas = document.getElementById('comments-canvas');
-        this.codeNum = _t.$canvas.canvas_draw(120,40,canvas);
+        this.codeNum = _t.$canvas.canvas_draw(120, 30, canvas);
         console.log(this.codeNum);
       },
-      // 加入收藏
-      addFavorite(){
-        var event = window.event || event;
-        if(document.all){
-          //支持IE
-          event.returnValue = false;
-        }else{
-          //IE不支持
-          event.preventDefault();
-        }
-        var url = window.location.href;
-        var title = '我的网站';
-        try {
-          window.external.addFavorite(url, title);
-        }
-        catch (e) {
-          try {
-            window.sidebar.addPanel(title, url, "");
-          }
-          catch (e) {
-            alert("抱歉，您所使用的浏览器无法完成此操作。\n加入收藏失败，请使用Ctrl+D进行添加");
-          }
-        }
-      },
-      // 设为首页
-      setHome(){
-        var obj = this;
-        var vrl = window.location;
-        try {
-          console.log(1)
-            obj.style.behavior='url(#default#homepage)';
-            obj.setHomePage(vrl);
-        } catch(e){
-          console.log(2)
-          if(window.netscape) {
-            try {
-              netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
-            }
-            catch (e) {
-              alert("此操作被浏览器拒绝！\n请在浏览器地址栏输入“about:config”并回车\n然后将[signed.applets.codebase_principal_support]设置为'true'");
-            }
-            var prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefBranch);
-            prefs.setCharPref('browser.startup.homepage',vrl);
-          }
-        }
-      }
     },
-    mounted(){
+    mounted() {
       var canvas = document.getElementById('comments-canvas');
-      this.codeNum = this.$canvas.canvas_draw(120,40,canvas);
+      this.codeNum = this.$canvas.canvas_draw(120, 30, canvas);
       // console.log(this.codeNum);
-      console.log(this)
+      // console.log(this)
     }
   }
 </script>
 
-<style>
-  .login-logo {
-    width: 100px;
-  }
-
-  .login-logoText {
-    font-size: 20px;
+<style scoped>
+  .login-box,
+  .login-bg-box {
+    height: 100%;
   }
 
   .login-header {
-    line-height: 70px;
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
   }
 
-  .login-collect {
-    font-size: 16px;
-    margin-right: 20px;
+  .login-logo {
+    width: 50px;
+    height: 50px;
   }
 
-  .login-home {
+  .login-logoText {
     font-size: 16px;
-    margin-right: 100px;
   }
 
   .login-footer {
-    height: 50px;
-    line-height: 50px;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 1000;
     text-align: center;
-  }
-
-  .login-box li.el-carousel__indicator {
-    padding: 0;
-    line-height: 20px;
-    height: 20px;
-  }
-
-  .login-box li.el-carousel__indicator.is-active .el-carousel__button {
-    width: 20px;
-    height: 20px;
-  }
-
-  .login-box li.el-carousel__indicator .el-carousel__button {
-    background-color: #000;
-    width: 10px;
-    height: 10px;
-    margin: 0 5px;
-    border-radius: 50%;
+    height: 60px;
+    line-height: 60px;
   }
 
   .login-form {
-    width: 400px;
-    padding-left: 50px;
+    width: 538px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    border-radius: 10px;
   }
 
   .login-form-title {
-    font-size: 20px;
-    margin-bottom: 50px;
-  }
-
-  .login-form .login_btn {
-    width: 100%;
-  }
-
-  .login-form p.welcome {
-    font-size: 24px;
-    color: #ff9500;
-    margin-bottom: 38px;
-  }
-
-  .login-form p.login-tip {
-    text-align: left;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.5;
-    margin-bottom: 10px;
-  }
-
-  .login-form div.errorTips {
-    margin: 0;
-    padding: 0;
-    font-size: 12px;
-    height: 25px;
-    line-height: 25px;
-    text-align: left;
-    position: absolute;
-    top:38px;
-  }
-
-  .login-form .login_form_item {
-    position: relative;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 22px;
     margin-bottom: 20px;
   }
 
-  #comments-canvas {
-    cursor: pointer;
-    position: absolute;
-    top: 0;
-    right: 0;
+  .login-content-box {
+    padding: 0 100px;
   }
+
+  .login-error-box {
+    line-height: 36px;
+    height: 36px;
+    padding-left: 10px;
+  }
+
+  .login_btn {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 4px;
+  }
+
+  #comments-canvas {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+  }
+
+  .login-foot-box {
+    text-align: center;
+    font-size: 12px;
+    margin: 20px 0;
+  }
+
+  .login-foot-box a:nth-child(1) {
+    margin-right: 10px;
+  }
+
   .login-swiper-img {
+    width: 100%;
     height: 100%;
   }
 </style>

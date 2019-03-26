@@ -39,42 +39,47 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button class="queryBtn" @click="dialogVisible = true">
+        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button class="queryBtn" @click="enableData">
+        <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('public.enable')}}
         </el-button>
-        <el-button class="queryBtn" @click="disableData">
+        <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button class="queryBtn" @click="deleteData">
+        <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
-        <el-button @click="authorizationData">
+        <el-button :disabled="disableBtn.edit" @click="authorizationData">
           <i class="el-icon-delete"></i>
           {{$t('roleMaintenance.userAuthorization')}}
         </el-button>
-        <el-button @click="functionData">
+        <el-button :disabled="disableBtn.edit" @click="functionData">
           <i class="el-icon-delete"></i>
           {{$t('roleMaintenance.functionLimit')}}
         </el-button>
-        <el-button @click="infoData">
+        <el-button :disabled="disableBtn.edit" @click="infoData">
           <i class="el-icon-delete"></i>
           {{$t('roleMaintenance.dataLimit')}}
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" border stripe>
+      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column :label="$t('roleMaintenance.roleName')" header-align="center" align="center" />
         <el-table-column :label="$t('roleMaintenance.organization')" header-align="center" align="center" />
         <el-table-column :label="$t('roleMaintenance.userNum')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('roleMaintenance.createName')" header-align="center" align="center" />
         <el-table-column :label="$t('roleMaintenance.createTime')" header-align="center" align="center" />
         <el-table-column :label="$t('roleMaintenance.updateName')" header-align="center" align="center" />
@@ -131,7 +136,7 @@
           <span>集团亚洲总部-->上海分部</span>
         </el-form-item>
         <el-form-item :label="$t('roleMaintenance.pleaseSelectUser') + '：'">
-          <el-button @click="innerVisible = true">{{$t('roleMaintenance.select')}}</el-button>
+          <el-button type="primary" class="queryBtn" @click="innerVisible = true">{{$t('roleMaintenance.select')}}</el-button>
           <div style="height: 20px;"></div>
           <el-tag
             v-for="(tag,index) in tags"
@@ -152,14 +157,14 @@
         :close-on-press-escape="false">
         <el-form inline>
           <el-form-item :label="$t('public.name') + '：'">
-            <el-input />
+            <el-input class="width200" />
           </el-form-item>
           <el-form-item>
-            <el-button>{{$t('public.query')}}</el-button>
+            <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="innerTableData" border>
-          <el-table-column type="selection" />
+        <el-table :data="innerTableData" stripe>
+          <el-table-column type="selection" fixed header-align="center" align="center" />
           <el-table-column :label="$t('public.name')" header-align="center" align="center" />
           <el-table-column :label="$t('roleMaintenance.account')" header-align="center" align="center" />
           <el-table-column :label="$t('public.sex')" header-align="center" align="center" />
@@ -210,12 +215,25 @@
       :close-on-press-escape="false">
       <el-form label-width="150px">
         <el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
+          <el-radio-group v-model="status">
+            <el-radio :label="3">资源视图</el-radio>
+            <el-radio :label="6">业务视图</el-radio>
+            <el-radio :label="9">机房视图</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <el-input class="width200" />
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox :checked="checked" @change="checkedAll">全选</el-checkbox>
           <el-tree
             id="dataLimit-box"
+            node-key="id"
             :data="organizationList"
             :default-expand-all="true"
             show-checkbox
-            ref="tree" />
+            ref="vueTree" />
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -234,6 +252,13 @@
     components:{Box,selectTree},
     data(){
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
+        checked:false,
         startTime:'',
         endTime:'',
         dialogVisible:false,
@@ -242,10 +267,10 @@
         dialogVisibleFunction:false,
         dialogVisibleData:false,
         tableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         innerTableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         options:{
           total:1000, // 总条数
@@ -431,6 +456,51 @@
       }
     },
     methods:{
+      // 当前选中条数
+      selectTableNum(data){
+        var _t = this;
+        switch (data.length) {
+          case 0: // 未选中
+            _t.disableBtn.disable = true;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.more = true;
+            break;
+          case 1: // 单选
+            _t.disableBtn.edit = false;
+            _t.disableBtn.more = false;
+            data.forEach(function (item) {
+              if (item.status === 0) {
+                _t.disableBtn.enable = false;
+              } else if (item.status === 1) {
+                _t.disableBtn.disable = false;
+              }
+            });
+            break;
+          default: // 多选
+            _t.disableBtn.edit = true;
+            _t.disableBtn.more = false;
+            var disableFlag = 0, enableFlag = 0;
+            for (var i = 0;i < data.length;i++){
+              if (data[i].status === 0) {
+                disableFlag++;
+              } else if (data[i].status === 1) {
+                enableFlag++;
+              }
+            }
+            if (disableFlag > 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+            } else if (disableFlag === 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = false;
+            } else if (disableFlag > 0 && enableFlag === 0) {
+              _t.disableBtn.enable = false;
+              _t.disableBtn.disable = true;
+            }
+            break;
+        }
+      },
       // 外层 改变当前页码
       handleCurrentChange(val){
         console.log(val);
@@ -495,11 +565,22 @@
           }
         }
         console.log(this.tags);
+      },
+      // 全选和取消全选
+      checkedAll(){
+        this.checked = !this.checked;
+        if (this.checked) {
+          //全选
+          this.$refs.vueTree.setCheckedNodes(this.organizationList);
+        }else{
+          //取消选中
+          this.$refs.vueTree.setCheckedKeys([]);
+        }
       }
     },
     created(){
       // this.$store.commit('setLoading',true);
-    }
+    },
   }
 </script>
 
