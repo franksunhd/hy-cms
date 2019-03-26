@@ -164,7 +164,7 @@
           </el-form-item>
         </el-form>
         <el-table :data="innerTableData" stripe>
-          <el-table-column type="selection" />
+          <el-table-column type="selection" fixed header-align="center" align="center" />
           <el-table-column :label="$t('public.name')" header-align="center" align="center" />
           <el-table-column :label="$t('roleMaintenance.account')" header-align="center" align="center" />
           <el-table-column :label="$t('public.sex')" header-align="center" align="center" />
