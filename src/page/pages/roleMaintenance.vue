@@ -136,7 +136,7 @@
           <span>集团亚洲总部-->上海分部</span>
         </el-form-item>
         <el-form-item :label="$t('roleMaintenance.pleaseSelectUser') + '：'">
-          <el-button @click="innerVisible = true">{{$t('roleMaintenance.select')}}</el-button>
+          <el-button type="primary" class="queryBtn" @click="innerVisible = true">{{$t('roleMaintenance.select')}}</el-button>
           <div style="height: 20px;"></div>
           <el-tag
             v-for="(tag,index) in tags"
@@ -157,13 +157,13 @@
         :close-on-press-escape="false">
         <el-form inline>
           <el-form-item :label="$t('public.name') + '：'">
-            <el-input />
+            <el-input class="width200" />
           </el-form-item>
           <el-form-item>
-            <el-button>{{$t('public.query')}}</el-button>
+            <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="innerTableData" border>
+        <el-table :data="innerTableData" stripe>
           <el-table-column type="selection" />
           <el-table-column :label="$t('public.name')" header-align="center" align="center" />
           <el-table-column :label="$t('roleMaintenance.account')" header-align="center" align="center" />
@@ -215,12 +215,25 @@
       :close-on-press-escape="false">
       <el-form label-width="150px">
         <el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
+          <el-radio-group v-model="status">
+            <el-radio :label="3">资源视图</el-radio>
+            <el-radio :label="6">业务视图</el-radio>
+            <el-radio :label="9">机房视图</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <el-input class="width200" />
+          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox :checked="checked" @change="checkedAll">全选</el-checkbox>
           <el-tree
             id="dataLimit-box"
+            node-key="id"
             :data="organizationList"
             :default-expand-all="true"
             show-checkbox
-            ref="tree" />
+            ref="vueTree" />
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -245,6 +258,7 @@
           disable:true,
           more:true
         },
+        checked:false,
         startTime:'',
         endTime:'',
         dialogVisible:false,
@@ -256,7 +270,7 @@
           {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         innerTableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         options:{
           total:1000, // 总条数
@@ -551,11 +565,22 @@
           }
         }
         console.log(this.tags);
+      },
+      // 全选和取消全选
+      checkedAll(){
+        this.checked = !this.checked;
+        if (this.checked) {
+          //全选
+          this.$refs.vueTree.setCheckedNodes(this.organizationList);
+        }else{
+          //取消选中
+          this.$refs.vueTree.setCheckedKeys([]);
+        }
       }
     },
     created(){
       // this.$store.commit('setLoading',true);
-    }
+    },
   }
 </script>
 
