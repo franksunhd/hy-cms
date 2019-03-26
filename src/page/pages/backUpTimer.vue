@@ -48,28 +48,33 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('backUpTimer.addTimer')}}
         </el-button>
-        <el-button @click="editTimer">
+        <el-button @click="editTimer" :disabled="disableBtn.edit">
           <i class="el-icon-edit-outline"></i>
           {{$t('backUpTimer.editTimer')}}
         </el-button>
-        <el-button @click="runTimer">
+        <el-button @click="runTimer" :disabled="disableBtn.enable">
           <i class="el-icon-circle-check-outline"></i>
           {{$t('backUpTimer.runTimer')}}
         </el-button>
-        <el-button @click="deleteTimer" class="queryBtn">
+        <el-button @click="deleteTimer" :disabled="disableBtn.more" class="queryBtn">
           <i class="el-icon-delete"></i>
           {{$t('backUpTimer.deleteTimer')}}
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe>
-        <el-table-column type="selection" fixed />
+      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+        <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column :label="$t('public.index')" header-align="center" align="center" />
         <el-table-column :label="$t('backUpTimer.taskName')" header-align="center" align="center" />
         <el-table-column :label="$t('backUpTimer.createTime')" header-align="center" align="center" />
         <el-table-column :label="$t('backUpTimer.backUpObject')" header-align="center" align="center" />
         <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="center" align="center" />
-        <el-table-column :label="$t('backUpTimer.status')" header-align="center" align="center" />
+        <el-table-column :label="$t('backUpTimer.status')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status === 1">启用</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('backUpTimer.note')" header-align="center" align="center" />
       </el-table>
       <!--分页-->
@@ -120,12 +125,18 @@
     components:{Box,myCron},
     data() {
       return {
+        disableBtn:{
+          edit:true,
+          enable:true,
+          disable:true,
+          more:true
+        },
         startTime:'',
         endTime:'',
         backUpType:'',
         backUpStatus:'',
         tableData:[
-          {},{}
+          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
         ],
         options:{
           total:1000, // 总条数
@@ -138,6 +149,51 @@
       }
     },
     methods: {
+      // 当前选中条数
+      selectTableNum(data){
+        var _t = this;
+        switch (data.length) {
+          case 0: // 未选中
+            _t.disableBtn.disable = true;
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.more = true;
+            break;
+          case 1: // 单选
+            _t.disableBtn.edit = false;
+            _t.disableBtn.more = false;
+            data.forEach(function (item) {
+              if (item.status === 0) {
+                _t.disableBtn.enable = false;
+              } else if (item.status === 1) {
+                _t.disableBtn.disable = false;
+              }
+            });
+            break;
+          default: // 多选
+            _t.disableBtn.edit = true;
+            _t.disableBtn.more = false;
+            var disableFlag = 0, enableFlag = 0;
+            for (var i = 0;i < data.length;i++){
+              if (data[i].status === 0) {
+                disableFlag++;
+              } else if (data[i].status === 1) {
+                enableFlag++;
+              }
+            }
+            if (disableFlag > 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+            } else if (disableFlag === 0 && enableFlag > 0) {
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = false;
+            } else if (disableFlag > 0 && enableFlag === 0) {
+              _t.disableBtn.enable = false;
+              _t.disableBtn.disable = true;
+            }
+            break;
+        }
+      },
       // 改变当前页码
       handleCurrentChange(val){
         console.log(val)
