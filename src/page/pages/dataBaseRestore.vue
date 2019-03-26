@@ -28,7 +28,7 @@
             :placeholder="$t('public.selectDate')" />
         </el-form-item>
         <el-form-item :label="$t('dataBaseRestore.backUpType') + '：'">
-          <el-select class="width200">
+          <el-select v-model="status" class="width200">
             <el-option value="0" :label="$t('dataBaseRestore.singleTable')" />
             <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')" />
           </el-select>
@@ -152,6 +152,7 @@
           disable:true,
           more:true
         },
+        status:'',
         radio:'',
         startTime:'',
         endTime:'',
@@ -166,7 +167,7 @@
           lastPage:100 // 末页
         },
         dialogVisible:false,
-        dialogVisibleAlert:false,
+        dialogVisibleAlert:true,
         timelineData:[
           {label:'2019年2月1日', level:1, des:null},
           {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
