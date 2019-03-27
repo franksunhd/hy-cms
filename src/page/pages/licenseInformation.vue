@@ -27,7 +27,10 @@
       <el-button size="small" @click="isShow = true">{{$t('license.viewHistory')}}</el-button>
     </div>
     <!--更新许可证书-->
-    <el-dialog :title="$t('header.head')" :visible.sync="dialogVisible">
+    <el-dialog
+      append-to-body
+      :title="$t('header.head')"
+      :visible.sync="dialogVisible">
       <el-upload action="">
         <el-button size="small" type="primary">{{$t('public.clickUpload')}}</el-button>
       </el-upload>

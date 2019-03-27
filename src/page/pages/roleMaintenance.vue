@@ -127,6 +127,7 @@
     </el-dialog>
     <!--用户授权-->
     <el-dialog
+      append-to-body
       :title="$t('roleMaintenance.setUserName')"
       :visible.sync="outerVisible"
       :close-on-click-modal="false"
@@ -190,6 +191,7 @@
     </el-dialog>
     <!--功能权限-->
     <el-dialog
+      append-to-body
       :title="$t('roleMaintenance.setRoleLimit')"
       :visible.sync="dialogVisibleFunction"
       :close-on-click-modal="false"
@@ -209,6 +211,7 @@
     </el-dialog>
     <!--数据权限-->
     <el-dialog
+      append-to-body
       :title="$t('roleMaintenance.setDateLimit')"
       :visible.sync="dialogVisibleData"
       :close-on-click-modal="false"

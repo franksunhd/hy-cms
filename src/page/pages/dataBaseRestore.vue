@@ -84,6 +84,7 @@
     </div>
     <!--还原的执行史-->
     <el-dialog
+      append-to-body
       :title="$t('dataBaseRestore.restoreHistory')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
@@ -111,6 +112,7 @@
     </el-dialog>
     <!--备份文件的清理规则-->
     <el-dialog
+      append-to-body
       :title="$t('dataBaseRestore.backUpRole')"
       class="dataBaseClear-box"
       :visible.sync="dialogVisibleAlert"

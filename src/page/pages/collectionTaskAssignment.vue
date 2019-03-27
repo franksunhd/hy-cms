@@ -93,6 +93,7 @@
     </div>
     <!--分配设备监测任务-->
     <el-dialog
+      append-to-body
       :title="$t('collectionTaskAssignment.createUpdateNode')"
       :visible.sync="dialogVisibleAlert"
       :close-on-click-modal="false"

@@ -76,6 +76,7 @@
     </div>
     <!--新增编辑-->
     <el-dialog
+      append-to-body
       :title="$t('nodeGroupMaintenance.createUpdateNode')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"

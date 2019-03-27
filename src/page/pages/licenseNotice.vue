@@ -52,7 +52,10 @@
       </el-form>
     </div>
     <!--选择用户-->
-    <el-dialog :title="$t('licenseNotice.selectUser')" :visible.sync="dialogVisible">
+    <el-dialog
+      append-to-body
+      :title="$t('licenseNotice.selectUser')"
+      :visible.sync="dialogVisible">
       <el-tree
         :data="treeData"
         show-checkbox

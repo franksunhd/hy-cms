@@ -44,8 +44,11 @@
     <div id="BoxName" class="BoxName">
       <router-view/>
     </div>
-    <!--修改密码弹出层-->
-    <el-dialog :title="$t('header.head')" :visible.sync="dialogVisible">
+    <!--修改头像弹出层-->
+    <el-dialog
+      append-to-body
+      :title="$t('header.head')"
+      :visible.sync="dialogVisible">
       <el-upload action="">
         <el-button size="small" type="primary">{{$t('public.clickUpload')}}</el-button>
       </el-upload>

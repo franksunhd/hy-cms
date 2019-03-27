@@ -105,6 +105,7 @@
     </el-row>
     <!--新增编辑-->
     <el-dialog
+      append-to-body
       :title="$t('dataDictionary.createUpdateDictionary')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"

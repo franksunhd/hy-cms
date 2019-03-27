@@ -113,6 +113,7 @@
     </div>
     <!--新增编辑-->
     <el-dialog
+      append-to-body
       :title="$t('acquisitionNodeManagement.createUpdateNode')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
@@ -182,6 +183,7 @@
     </el-dialog>
     <!--分配设备监测任务-->
     <el-dialog
+      append-to-body
       :title="$t('acquisitionNodeManagement.createUpdateNode')"
       :visible.sync="dialogVisibleAlert"
       :close-on-click-modal="false"

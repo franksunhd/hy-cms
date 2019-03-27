@@ -94,6 +94,7 @@
     </div>
     <!--新增编辑-->
     <el-dialog
+      append-to-body
       :title="$t('backUpTimer.backUpTimerTitle')"
       class="dataBaseClear-box"
       :visible.sync="dialogVisibleAlert"
