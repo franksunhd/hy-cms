@@ -14,7 +14,7 @@
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
     </div>
-    <div class="box-right" v-show="rshow">
+    <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
         <div class="box-batchEditor">
@@ -22,14 +22,14 @@
         </div>
       </div>
       <div class="fnlist" v-for="(value,index) in selectArr" :key="index">
-        <span class="fnspan">{{value.name}}</span>
+        <span class="fnspan">{{value.menuName}}</span>
         <ul>
-          <li v-for="(item,index) in value.arrList" :item="item" :key="index">
-            <router-link @click.native="hiddenAlert" :to="{path:item.url,query:{id:item.preId}}">
-              {{ item.name }}
+          <li v-for="(item,index) in value.systemMenuAndLanguageRelationChildList" :item="item" :key="index">
+            <router-link @click.native="hiddenAlert(item.id)" :to="{path:item.menuHref,query:{id:item.id}}">
+              {{ item.menuName }}
             </router-link>
-            <i :class="activeClass.indexOf(item.name)!=-1?'el-icon-star-on':'el-icon-star-off'"
-               @click="getItem(index,item.name)"></i>
+            <i :class="activeClass.indexOf(item.menuName)!=-1?'el-icon-star-on':'el-icon-star-off'"
+               @click="getItem(item)"></i>
           </li>
         </ul>
       </div>
@@ -46,124 +46,14 @@
         show: false,
         activeClass: [],
         Income: [],
-        selectArr: [{
-          id: '1',
-          name: '系统管理',
-          arrList: [
-            {
-              preId: '1',
-              name: '系统设置',
-              url:'/YUser/systemSettings'
-            },
-            {
-              preId: '2',
-              name: '系统监测',
-              url:'/YUser/systemSettingsMonitoring'
-            }
-          ]
-        },
-          {
-            id: '2',
-            name: '设备发现',
-            arrList: [
-              {
-              preId: '3',
-              name: '设备手动发现',
-              url:'/YUser/DeviceManualDetection'
-              },
-              {
-                preId: '4',
-                name: '设备信息设置',
-                url:''
-              }
-            ]
-          },
-          {
-            id: '3',
-            name: '资产管理',
-            arrList: [{
-              preId: '7',
-              name: '资产统计',
-              url:''
-            },
-              {
-                preId: '8',
-                name: '资产设置',
-                url:''
-              },
-              {
-                preId: '9',
-                name: '保修管理',
-                url:''
-              },
-              {
-                preId: '10',
-                name: '变更记录',
-                url:''
-              }
-            ]
-          },
-          {
-            id: '4',
-            name: '监测管理',
-            arrList: [{
-              preId: '11',
-              name: '资源视图',
-              url:''
-            },
-              {
-                preId: '12',
-                name: '业务视图',
-                url:''
-              },
-              {
-                preId: '13',
-                name: '机房视图',
-                url:''
-              }
-            ]
-          },
-          {
-            id: '5',
-            name: '告警管理',
-            arrList: [{
-              preId: '14',
-              name: '当前告警',
-              url:''
-            },
-              {
-                preId: '15',
-                name: '历史告警',
-                url:''
-              },
-              {
-                preId: '16',
-                name: '告警设置',
-                url:''
-              },
-              {
-                preId: '17',
-                name: '外部告警集成',
-                url:''
-              },
-              {
-                preId: '18',
-                name: '状态搜索',
-                url:''
-              }
-            ]
-          }
-        ]
-
+        selectArr: []
       }
     },
     mounted() {
-      this.$dragging.$on('dragged', ({
-                                       value
-                                     }) => {
-        console.log(value.item)
-        console.log(value.list)
-        console.log(value.otherData)
+      this.$dragging.$on('dragged', ({value}) => {
+        console.log(value.item);
+        console.log(value.list);
+        console.log(value.otherData);
       })
       this.$dragging.$on('dragend', () => {
 
@@ -171,18 +61,21 @@
     },
     methods: {
       // 路由跳转隐藏弹出层
-      hiddenAlert(){
+      hiddenAlert(val) {
         this.show = false;
         this.rshow = false;
+        localStorage.setItem('hy-menu-id', val);
       },
-      getItem(index, val) {
-        //console.log(val)
+      // 加入便捷菜单
+      getItem(val) {
         // 把当前点击元素的index，赋值给activeClass
-        if (this.activeClass.indexOf(val) == -1) {
-          this.activeClass.unshift(val);
-        } else {
-          this.activeClass.splice(this.activeClass.indexOf(val), 1);
-        }
+        // if (this.activeClass.indexOf(val) == -1) {
+        //   this.activeClass.unshift(val);
+        // } else {
+        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
+        // }
+
+        console.log(val);
 
         // var _t = this;
         // var params = new URLSearchParams();
@@ -209,7 +102,6 @@
           this.show = true;
           this.rshow = false;
         }
-
       },
       MouseOutTwo() {
         if (this.rshow == true) {
@@ -221,13 +113,47 @@
           this.show = false;
           this.rshow = false;
         }
-
       },
       ClickClose() {
         this.show = false;
         this.rshow = false;
       },
+      // 请求菜单数据
+      getData(item) {
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('token', _t.getCookie('hy-token'));
+        params.append('menuId', item);
+        params.append('menuLevel', '1_2');
+        params.append('languageMark', localStorage.getItem('hy-language'));
+        _t.$api.get('system/menu/', params, function (res) {
+          switch (res.status) {
+            case 200:
+              var navBarArr = res.data.rootMenu;
+              if (navBarArr) {
+                navBarArr.forEach(function (item) {
+                  if (item.systemMenuAndLanguageRelationChildList.length === 0) {
+                    item.systemMenuAndLanguageRelationChildList = null;
+                  }
+                });
+                _t.selectArr = navBarArr;
+              }
+              break;
+            case 1004: // token 失效
+            case 1005: // token 为 null
+            case 1006: // token 不一致
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.selectArr = [];
+              break;
+          }
+        });
+      }
     },
+    created() {
+      this.getData('');
+    }
   }
 </script>
 
@@ -268,7 +194,7 @@
 
   .fnlist ul li {
     display: inline-block;
-    width: 120px;
+    width: 125px;
     line-height: 35px;
     margin-right: 10px;
     overflow: hidden;
@@ -279,7 +205,7 @@
   }
 
   .fnlist ul li:hover {
-    width: 120px;
+    width: 125px;
     cursor: pointer;
     color: #3f81d0;
   }

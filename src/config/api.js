@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // var root = "";   //正式环境
-var root = "http://192.168.0.110:8080/";   //测试环境内网
+var root = "http://192.168.0.107:8080/";   //测试环境内网
 
-function apiAxios(method, url, params, success, failure) {
+function apiAxios(method, url, params, success) {
   axios({
     method: method,
     url: url,
@@ -27,19 +27,19 @@ function apiAxios(method, url, params, success, failure) {
 // 返回在vue模板中的调用接口
 export default {
   // 查询
-  get: function (url, params, success, failure) {
-    return apiAxios('GET', url, params, success, failure);
+  get: function (url, params, success) {
+    return apiAxios('GET', url, params, success);
   },
   // 修改
-  post: function(url, params, success, failure) {
-    return apiAxios('POST', url, params, success, failure);
+  post: function (url, params, success) {
+    return apiAxios('POST', url, params, success);
   },
   // 更新
-  put: function (url, parmas, success, failure) {
-    return apiAxios('PUT',url, parmas, success, failure);
+  put: function (url, parmas, success) {
+    return apiAxios('PUT', url, parmas, success);
   },
   // 删除
-  delete: function (url, params, success, failure) {
-    return apiAxios('DELETE', url, params, success, failure);
+  delete: function (url, params, success) {
+    return apiAxios('DELETE', url, params, success);
   }
 }

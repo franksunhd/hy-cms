@@ -17,7 +17,7 @@
         </li>
         <li>
           <el-select class="el-app-header-select" v-model="defaultLang" @change="changeLanguage">
-            <el-option label="中文" value="zh"/>
+            <el-option label="中文" value="zh_CN"/>
             <el-option label="En" value="en"/>
           </el-select>
         </li>
@@ -62,13 +62,12 @@
 
 <script>
   import appSide from './pages/appSide';
-
   export default {
     name: "index",
     components: {appSide},
     data() {
       return {
-        defaultLang: localStorage.getItem('hyLanguage') || 'zh',
+        defaultLang: localStorage.getItem('hy-language') || 'zh_CN)',
         username: 'admin',
         messageNum: 21,
         dialogVisible: false,
@@ -93,13 +92,16 @@
       },
       // 切换语言
       changeLanguage(val) {
-        localStorage.setItem('hyLanguage', val);
+        localStorage.setItem('hy-language', val);
         window.location.reload();
       },
       // 点击title
       homePage(){
         this.$router.push({name:'Home'});
       }
+    },
+    created() {
+      document.getElementsByTagName("title")[0].innerText = '带外设备管理平台';
     }
   }
 </script>

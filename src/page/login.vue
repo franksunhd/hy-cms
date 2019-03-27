@@ -24,23 +24,22 @@
             <el-input class="login_input"
                       placeholder="账号"
                       v-model="username"
-                      @input="inputUser('user',username)"
-                      clearable/>
+                      @input="inputUser"/>
           </el-form-item>
           <el-form-item style="margin-bottom: 10px;">
             <el-input class="login_input" type="password"
                       autocomplete="new-password"
                       placeholder="密码"
-                      clearable
-                      @input="inputUser('pwd',password)"
+                      @input="inputUser"
+                      maxlength="20"
                       v-model="password"
                       @keyup.enter.native="login($event)"/>
           </el-form-item>
           <el-form-item style="position: relative;margin-bottom: 30px;">
             <el-input class="login_input"
                       v-model="code"
-                      placeholder="验证码"
-                      clearable/>
+                      maxlength="4"
+                      placeholder="验证码"/>
             <canvas id="comments-canvas" @click="draw" width="120" height="30"></canvas>
           </el-form-item>
           <el-form-item style="margin-bottom: 0;">
@@ -66,107 +65,62 @@
     data() {
       return {
         loginImg: [
-          'static/img/login_bg.png',
-          'static/img/login_bg.png',
-          'static/img/login_bg.png'
+          // 'static/img/login_bg.png',
+          // 'static/img/login_bg.png',
+          // 'static/img/login_bg.png'
         ],
         username: '',
         password: '',
         code: '',
         codeNum: '',
         isError: false,
-        userTip: '',
-        passTip: '',
-        codeTip: '',
       }
     },
     methods: {
       // 输入校验
-      inputUser(item, val) {
-        if (item === 'user') {
-          if (val.trim() === '') {
-            this.userTip = '请输入用户名';
-            this.isError = true;
-          } else {
-            this.userTip = '';
-            this.isError = false;
-          }
+      inputUser() {
+        if (this.username.trim() === '' || this.password.trim() === '') {
+          this.isError = true;
         } else {
-          if (val.trim() === '') {
-            this.passTip = '请输入密码';
-            this.isError = true;
-          } else {
-            this.passTip = '';
-            this.isError = false;
-          }
+          this.isError = false;
         }
       },
       // 登录校验
       login(event) {
         event.preventDefault();
         // 校验账户名
-        if (this.username === '') {
-          this.userTip = '请输入用户名';
+        if (this.username === '' || this.password === '' || this.code.toUpperCase() !== this.codeNum) {
           this.isError = true;
-        } else {
-          this.userTip = '';
+          this.draw();
+        } else if (this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum) {
           this.isError = false;
-        }
 
-        // 校验密码
-        if (this.password === '') {
-          this.passTip = '请输入密码';
-          this.isError = true;
+          this.draw();
         } else {
-          this.passTip = '';
           this.isError = false;
         }
-
-        // 校验验证码
-        if (this.code === '') {
-          this.codeTip = '请输入验证码';
-          this.isError = true;
-        } else if (this.code.toUpperCase() !== this.codeNum) {
-          this.codeTip = '验证码输入错误';
-          this.isError = true;
-        } else {
-          this.codeTip = '';
-          this.isError = false;
-        }
-
-        if (this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum) {
-          this.userTip = '';
-          this.isError = false;
-          this.passTip = '';
-          this.isError = false;
-          this.toLogin();
-        }
+        this.toLogin();
       },
       // 去登录接口
       toLogin() {
         var _t = this;
         // 登录按钮点击之后重绘验证码
-        var params = new URLSearchParams();
-        params.append('username', '123123');
-        params.append('password', '123345');
-        params.append('token', '123');
-        _t.$api.post('system/user/goLoginSystem', params, function (res) {
-          console.log(res);
-        });
-        this.draw();
+        // var params = new URLSearchParams();
+        // params.append('username', _t.username);
+        // params.append('password', password);
+        // _t.$api.post('system/user/goLoginSystem', params, function (res) {
+        //   console.log(res);
+        // });
       },
       draw() {
         var _t = this;
         var canvas = document.getElementById('comments-canvas');
         this.codeNum = _t.$canvas.canvas_draw(120, 30, canvas);
-        console.log(this.codeNum);
       },
     },
     mounted() {
       var canvas = document.getElementById('comments-canvas');
       this.codeNum = this.$canvas.canvas_draw(120, 30, canvas);
-      // console.log(this.codeNum);
-      // console.log(this)
     }
   }
 </script>

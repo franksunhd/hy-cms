@@ -12,14 +12,14 @@ const messages = {
     ...enLocale,
     ...elementEnLocale
   },
-  zh:{
+  zh_CN: {
     ...zhLocale,
     ...elementZhLocale
   }
 };
 
 const i18n = new VueI18n({
-  locale: localStorage.getItem('hyLanguage') || 'zh', // 语言标识
+  locale: localStorage.getItem('hy-language') || 'zh_CN', // 语言标识
   messages
 });
 

@@ -11,12 +11,14 @@ import i18n from './page/lang/index';
 import pages from './components/pages';
 import VueDND from 'awe-dnd';
 import echarts from 'echarts';
+import md5 from 'js-md5';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
 import './assets/css/common.css';
 import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
+import './assets/css/fontStyle.css';
 
 
 Vue.use(Vuex);
@@ -32,6 +34,7 @@ Vue.prototype.delCookie = delCookie;
 Vue.prototype.$api = api;
 Vue.prototype.$canvas = canvas;
 Vue.prototype.$echarts = echarts;
+Vue.prototype.$md5 = md5;
 Vue.component('pages',pages);
 
 // 用户过期
@@ -40,12 +43,12 @@ Vue.prototype.exclude = (name,message) => {
     confirmButtonText: '确定',
     type: 'warning',
     callback: action => {
-      // name.$store.commit("setLoading",false);
-      // name.$router.push({name:'Login'});
-      // name.delCookie('tokenID');
-      // name.delCookie('userId');
-      // name.delCookie('pass_word');
-      // localStorage.removeItem('appSide');
+      name.$store.commit("setLoading", false);
+      name.$router.push({name: 'Login'});
+      name.delCookie('hy-token');
+      name.delCookie('hy-user-id');
+      localStorage.removeItem('hy-language');
+      localStorage.removeItem('hy-menu-id');
     }
   });
 };
@@ -76,12 +79,12 @@ new Vue({
     // 检查是否登录
     checkLogin() {
       if (!this.getCookie('tokenID')) {
-        // this.$store.commit("setLoading",false);
+        this.$store.commit("setLoading", false);
         // this.$router.replace('/login');
-        // this.delCookie('tokenID');
-        // this.delCookie('userId');
-        // this.delCookie('pass_word');
-        // localStorage.removeItem('appSide');
+        // this.delCookie('hy-token');
+        // this.delCookie('hy-user-id');
+        // localStorage.removeItem('hy-language');
+        // localStorage.removeItem('hy-menu-id');
       }
     }
   }
