@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+  <metadata>
+    Created by iconfont
+  </metadata>
+  <defs>
+
+    <font id="iconfont" horiz-adv-x="1024">
+      <font-face
+        font-family="iconfont"
+        font-weight="500"
+        font-stretch="normal"
+        units-per-em="1024"
+        ascent="896"
+        descent="-128"
+      />
+      <missing-glyph/>
+
+      <glyph glyph-name="biaoge" unicode="&#58903;"
+             d="M585.3 64.3l183.1 319.6h-0.7V831.2H256.4v-447.4h-0.7l183.1-319.6H64.7v-127.8h894.8V64.3H585.3zM384.2 447.7V703.4h255.7v-255.7h0.4L512.1 192.1 383.9 447.7h0.3z"
+             horiz-adv-x="1024"/>
+
+
+      <glyph glyph-name="biaoge1" unicode="&#58905;"
+             d="M600.7 563.9l-90.2-90.2-90.2 90.2-90.2-90.2 90.2-90.2-90.2-90.2 90.2-90.2 90.2 90.2 90.2-90.2 90.2 90.2-90.2 90.2 90.2 90.2-90.2 90.2zM510.5 830.1c-246.6 0-446.6-199.9-446.6-446.6s199.9-446.6 446.6-446.6c246.6 0 446.6 199.9 446.6 446.6S757.1 830.1 510.5 830.1z m0-765.6c-176.2 0-319 142.8-319 319s142.8 319 319 319 319-142.8 319-319-142.8-319-319-319z"
+             horiz-adv-x="1024"/>
+
+
+      <glyph glyph-name="biaoge2" unicode="&#58907;"
+             d="M377.8 541l-90.5-90.5 226.2-226.2 407.1 407.1-90.5 90.5-316.5-316.6L377.8 541z m418-156.7v-319.9H220.1V704.1H540v128H92.1v-895.6h831.7V384.3h-128z"
+             horiz-adv-x="1024"/>
+
+
+      <glyph glyph-name="biaoge3" unicode="&#58908;"
+             d="M735.4 490.2H568.3v280h-112v-280H289.2l223.1-224 223.1 224z m112.9-280v-112H176.2v112h-112v-224h896.1v224h-112z"
+             horiz-adv-x="1024"/>
+
+
+    </font>
+  </defs>
+</svg>
