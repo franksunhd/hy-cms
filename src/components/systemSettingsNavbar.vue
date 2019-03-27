@@ -1,24 +1,26 @@
 <template>
   <div class="systemSettings-navBarBox">
     <p class="systemSettings-title" :title="titleName">{{titleName}}</p>
-    <div class="systemSettings-navBarContent">
+    <div v-loading="navBarArr.length === 0" class="systemSettings-navBarContent">
       <el-menu id="system-menu" :default-active="current" :router="true" :unique-opened="false" menu-trigger="click">
-        <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index" :class="item.name">
-          <template slot="title" v-if="item.children == null">
+        <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index">
+          <template slot="title" v-if="item.systemMenuAndLanguageRelationChildList == null">
             <i class="el-icon-minus"></i>
-            <router-link class="systemSettings-oddRouter" :to="item.url" :title="item.name">{{item.name}}</router-link>
+            <router-link class="systemSettings-oddRouter" :to="item.menuHref" :title="item.menuName">{{item.menuName}}
+            </router-link>
           </template>
           <template v-else>
             <template slot="title">
-              <span :title="item.name">
+              <span :title="item.menuName">
                 <i class="el-icon-plus"></i>
-                {{item.name}}
+                {{item.menuName}}
               </span>
             </template>
-            <el-menu-item v-for="(i,index2) in item.children" :key="index2" :index="i.url">
-              <span class="treeBorder" :title="i.name">
-                <span class="treeBorderLine"> - - - &nbsp;</span>
-                 {{i.name}}
+            <el-menu-item v-for="(i,index2) in item.systemMenuAndLanguageRelationChildList" :key="index2"
+                          :index="i.menuHref">
+              <span class="treeBorder" :title="i.menuName">
+                <span class="treeBorderLine">--- &nbsp;</span>
+                 {{i.menuName}}
               </span>
             </el-menu-item>
           </template>
@@ -81,25 +83,48 @@
         ]
       }
     },
-    computed: {
-      // 监听 url 详情页面的导航
-      current() {
-        var arr = this.$route.path.split('/');
-        if (arr.length > 4) {
-          arr.pop();
-          return arr.join("/");
-        } else {
-          return this.$route.path;
-        }
-      }
-    },
-    mounted() {
-      this.$nextTick(()=>{
+    methods: {
+      // 请求菜单数据
+      getData(item) {
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('token', _t.getCookie('hy-token'));
+        params.append('menuId', item);
+        params.append('menuLevel', '3_4');
+        params.append('languageMark', localStorage.getItem('hy-language'));
+        _t.$api.get('system/menu/', params, function (res) {
+          switch (res.status) {
+            case 200:
+              var navBarArr = res.data.rootMenu;
+              if (navBarArr) {
+                navBarArr.forEach(function (item) {
+                  if (item.systemMenuAndLanguageRelationChildList.length === 0) {
+                    item.systemMenuAndLanguageRelationChildList = null;
+                  }
+                });
+                _t.navBarArr = navBarArr;
+                _t.$nextTick(() => {
+                  _t.clickNode();
+                });
+              }
+              break;
+            case 1004: // token 失效
+            case 1005: // token 为 null
+            case 1006: // token 不一致
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.navBarArr = [];
+              break;
+          }
+        });
+      },
+      clickNode() {
         var node = document.querySelectorAll('#system-menu li.el-submenu');
         for (var i = 0;i < node.length;i++) {
           var classArr = node[i].getAttribute('class').split(' ');
           for (var j = 0;j < classArr.length;j++){
-            if (classArr[j] === 'is-active') {
+            if (classArr[j] === 'is-opened') {
               node[i].childNodes[0].childNodes[0].childNodes[0].className = 'el-icon-minus';
             }
           }
@@ -113,21 +138,33 @@
             }
           }
         }
-      });
+      }
+    },
+    computed: {
+      // 监听 url 详情页面的导航
+      current() {
+        var arr = this.$route.path.split('/');
+        if (arr.length > 4) {
+          arr.pop();
+          return arr.join("/");
+        } else {
+          return this.$route.path;
+        }
+      }
     },
     created() {
-      switch (this.$route.query.id) {
-        case '1':
+      var menuId = this.$route.query.id || localStorage.getItem('hy-menu-id');
+      switch (menuId) {
+        case 'menu_01_01':
           this.titleName = this.$t('system.systemSetting');
-          this.navBarArr = this.navBarArrList1;
           break;
-        case '2':
+        case 'menu_01_02':
           this.titleName = this.$t('system.systemMonitoring');
-          this.navBarArr = this.navBarArrList2;
           break;
         default:
           break;
       }
+      this.getData(menuId);
     }
   }
 </script>
