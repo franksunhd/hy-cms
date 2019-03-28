@@ -33,6 +33,8 @@ export default {
     edit:'编辑',
     enable:'启用',
     disable:'禁用',
+    lock: '锁死',
+    stop: '停用',
     delete:'删除',
     resets:'重置密码',
     index:'序号',

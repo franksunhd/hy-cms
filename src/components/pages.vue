@@ -8,8 +8,8 @@
       layout="total,slot,prev"
       :total="total"
       :prev-text="$t('public.prevText')"
-      :firstPage='firstPage'
-      :lastPage='lastPage'>
+      :firstPage="firstPage"
+      :lastPage="lastPage">
       <el-button type="text" class="pageBtn-border" @click="toFirstPage">{{$t('public.homePage')}}</el-button>
     </el-pagination>
     <el-pagination
@@ -20,8 +20,8 @@
       layout="pager,next,slot"
       :total="total"
       :next-text="$t('public.nextText')"
-      :firstPage='firstPage'
-      :lastPage='lastPage'>
+      :firstPage="firstPage"
+      :lastPage="lastPage">
       <el-button type="text" class="page-btn-last" @click="toLastPage">{{$t('public.lastPage')}}</el-button>
     </el-pagination>
   </div>
@@ -53,12 +53,9 @@
       },
       // 首页页码
       firstPage: {
-        type: Number
+        type: Number,
+        default: 1
       },
-      // 末页页码
-      lastPage: {
-        type: Number
-      }
     },
     methods:{
       // 改变当前页码
@@ -75,6 +72,17 @@
       toLastPage(val) {
         this.currentPageNum = this.lastPage;
         this.handleCurrentChange(this.lastPage);
+      }
+    },
+    // 计算属性
+    computed: {
+      lastPage: function () {
+        var pages = this.total % this.pageSize;
+        if (pages !== 0) {
+          return parseInt(this.total / this.pageSize) + 1;
+        } else {
+          return parseInt(this.total / this.pageSize);
+        }
       }
     }
   }

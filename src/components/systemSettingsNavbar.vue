@@ -87,12 +87,12 @@
       // 请求菜单数据
       getData(item) {
         var _t = this;
-        var params = new URLSearchParams();
-        params.append('token', _t.getCookie('hy-token'));
-        params.append('menuId', item);
-        params.append('menuLevel', '3_4');
-        params.append('languageMark', localStorage.getItem('hy-language'));
-        _t.$api.get('system/menu/', params, function (res) {
+        _t.$api.get('system/menu/', {
+          token: _t.getCookie('hy-token'),
+          menuId: item,
+          menuLevel: '3_4',
+          languageMark: localStorage.getItem('hy-language') || 'zh_CN'
+        }, function (res) {
           switch (res.status) {
             case 200:
               var navBarArr = res.data.rootMenu;
