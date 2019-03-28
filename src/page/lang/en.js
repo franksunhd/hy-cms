@@ -33,6 +33,8 @@ export default {
     edit:'edit',
     enable:'enable',
     disable:'disable',
+    lock: 'lock',
+    stop: 'stop',
     delete:'delete',
     resets:'reset passwords',
     index:'Index',

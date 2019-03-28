@@ -17,7 +17,7 @@
       <div class="login-content-box">
         <div class="login-error-box" v-if="isError">
           <i class="el-icon-warning login-error-i"></i>
-          <span>登录名、密码或者验证码不正确</span>
+          <span>{{loginTip}}</span>
         </div>
         <el-form style="width: 340px;">
           <el-form-item style="margin-bottom: 10px;">
@@ -40,7 +40,7 @@
                       v-model="code"
                       maxlength="4"
                       placeholder="验证码"/>
-            <img id="comments-canvas" src="">
+            <img id="comments-canvas" @click="getCode" :src="codeImg">
             <!--<canvas  @click="draw" width="120" height="30"></canvas>-->
           </el-form-item>
           <el-form-item style="margin-bottom: 0;">
@@ -66,15 +66,17 @@
     data() {
       return {
         loginImg: [
-          // 'static/img/login_bg.png',
-          // 'static/img/login_bg.png',
-          // 'static/img/login_bg.png'
+          'static/img/login_bg.png',
+          'static/img/login_bg.png',
+          'static/img/login_bg.png'
         ],
         username: '',
         password: '',
         code: '',
-        codeNum: '',
+        codeImg: '',
+        code_SN: '',
         isError: false,
+        loginTip: '登录名、密码或者验证码不正确'
       }
     },
     methods: {
@@ -92,35 +94,58 @@
         // 校验账户名
         if (this.username === '' || this.password === '' || this.code.toUpperCase() !== this.codeNum) {
           this.isError = true;
-          this.draw();
         } else if (this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum) {
           this.isError = false;
-
-          this.draw();
+          this.toLogin();
         } else {
           this.isError = false;
         }
-        this.toLogin();
       },
       // 去登录接口
       toLogin() {
         var _t = this;
         // 登录按钮点击之后重绘验证码
         var params = new URLSearchParams();
+        var password = _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password));
         params.append('username', _t.username);
         params.append('password', password);
+        params.append('code', _t.code);
+        params.append('sn', _t.code_SN);
         _t.$api.post('system/user/goLoginSystem', params, function (res) {
+          switch (res.status) {
+            case 200: // 成功
+              _t.setCookie('hy-token', res.data.token);
+              _t.$router.push({name: 'Home'});
+              break;
+            case 3004: // 登录失败
+              _t.loginTip = res.message;
+              break;
+            default:
+              _t.loginTip = res.message;
+              break;
+          }
+          _t.getCode();
           console.log(res);
         });
       },
-      draw() {
+      // 获取验证码
+      getCode() {
         var _t = this;
-        var canvas = document.getElementById('comments-canvas');
-        this.codeNum = _t.$canvas.canvas_draw(120, 30, canvas);
-      },
+        var params = new URLSearchParams();
+        _t.$api.get('random/code', params, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.code_SN = res.data.sn;
+              _t.codeImg = res.data.codeBase64;
+              break;
+            default:
+              break;
+          }
+        });
+      }
     },
     created() {
-      this.getData();
+      this.getCode();
     }
   }
 </script>
@@ -197,7 +222,8 @@
   #comments-canvas {
     position: absolute;
     right: 0;
-    bottom: 10px;
+    bottom: 12px;
+    cursor: pointer;
   }
 
   .login-foot-box {

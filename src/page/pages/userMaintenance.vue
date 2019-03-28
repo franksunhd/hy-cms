@@ -10,24 +10,24 @@
     </div>
     <div class="padding20 borderBottom">
       <!--表单-->
-      <el-form inline>
+      <el-form inline v-model="formItem">
         <el-form-item :label="$t('userMaintenance.account') + '：'">
-          <el-input v-model="username" class="width200" />
+          <el-input v-model="formItem.username" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.organization') + '：'">
-          <selectTree width="200" :options="organizationList" v-model="organization" />
+          <selectTree width="200" :options="organizationList" v-model="formItem.organization"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.status') + '：'">
-          <el-select v-model="status" class="width200">
+          <el-select v-model="formItem.status" class="width200">
             <el-option
-              v-for="item in statusList"
+              v-for="(item,index) in statusList"
               :value="item.value"
-              :key="item.key"
+              :key="index"
               :label="item.label" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+          <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -68,28 +68,33 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('userMaintenance.username')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.loginAccount')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.organization')" width="100" header-align="center" align="center" />
+        <el-table-column prop="displayName" :label="$t('userMaintenance.username')" width="100" header-align="center"
+                         align="center"/>
+        <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" width="100" header-align="center"
+                         align="center"/>
+        <el-table-column prop="organizationId" :label="$t('userMaintenance.organization')" width="100"
+                         header-align="center" align="center"/>
         <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.mobile')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.email')" width="100" header-align="center" align="center" />
+        <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="center"
+                         align="center"/>
+        <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="center"
+                         align="center"/>
         <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('userMaintenance.createName')" width="200" header-align="center" align="center" />
-        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center" align="center" />
+        <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="center"
+                         align="center"/>
+        <el-table-column prop="createTime" :label="$t('userMaintenance.createTime')" header-align="center"
+                         align="center"/>
       </el-table>
       <!--分页-->
       <pages
         :total='options.total'
         :currentPage='options.currentPage'
-        :pageSize='options.pageSize'
-        :firstPage='options.firstPage'
-        :lastPage='options.lastPage'
+        :page-size="options.pageSize"
         @handleCurrentChangeSub="handleCurrentChange" />
     </div>
     <!--新增编辑-->
@@ -99,42 +104,37 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px">
-        <el-form-item :label="$t('userMaintenance.organization') + '：'">
-          <selectTree width="200" :options="organizationList" v-model="organization" />
+      <el-form :model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
+        <el-form-item :label="$t('userMaintenance.organization') + '：'" prop="organization">
+          <selectTree width="200" :options="organizationList" v-model="addEdit.organization"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.username') + '：'">
-          <el-input />
+        <el-form-item :label="$t('userMaintenance.username') + '：'" prop="username">
+          <el-input v-model="addEdit.username"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.loginAccount') + '：'">
-          <el-input />
+        <el-form-item :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
+          <el-input v-model="addEdit.loginAccount"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.loginPassword') + '：'">
-          <el-input type="password" />
+        <el-form-item :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
+          <el-input type="password" v-model="addEdit.loginPassword"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.mobileNum') + '：'">
-          <el-input />
+        <el-form-item :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
+          <el-input v-model="addEdit.mobileNum"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.statusAlert') + '：'">
-          <el-input />
+        <el-form-item :label="$t('userMaintenance.emails') + '：'" prop="emails">
+          <el-input v-model="addEdit.emails"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.assignRole') + '：'">
-          <el-radio-group v-model="status">
+        <el-form-item :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
+
+        </el-form-item>
+        <el-form-item :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
+          <el-radio-group v-model="addEdit.status">
             <el-radio :label="0">{{$t('public.enable')}}</el-radio>
             <el-radio :label="1">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.emails') + '：'">
-          <el-checkbox-group v-model="checkListValue">
-            <template v-for="(item,index) in checkList">
-              <el-checkbox :label="item.value">{{item.label}}</el-checkbox>
-              <br>
-            </template>
-          </el-checkbox-group>
-        </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -144,11 +144,30 @@
 <script>
   import Box from '../../components/Box';
   import selectTree from '../../components/selectTree';
+  import {isNotNull} from "../../assets/js/validator";
   export default {
     name: "user-maintenance",
     components:{Box,selectTree},
     data(){
       return {
+        // 查询表单
+        formItem: {
+          organization: null,
+          status: null,
+          username: null
+        },
+        // 新增 编辑表单
+        addEdit: {
+          organization: '',
+          username: '',
+          loginAccount: '',
+          loginPassword: '',
+          mobileNum: '',
+          emails: '',
+          status: '',
+          assignRole: ''
+        },
+        // 控制全局按钮 是否禁用
         disableBtn:{
           edit:true,
           enable:true,
@@ -161,21 +180,18 @@
           {label:'启用',value:1},
           {label:'禁用',value:0},
         ],
+        // 表格选中之后数据接收
         checkListValue:[],
         checkList:[
           {label:'系统管理员', value:1},
           {label:'区域经理',value:2}
         ],
-        username:'',
-        status:'',
+        // 分页
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage: 1 // 末页
+          pageSize: 10, // 显示条数
         },
-        organization:'',
         // 数据默认字段
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
@@ -183,163 +199,40 @@
           label: 'label',       // 标签显示
           children: 'children', // 子级
         },
-        organizationList:[
-          {
-            id:1,
-            label:'集团亚洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:2,
-                label:'上海分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:4,
-                    label:'张三',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:5,
-                    label:'李四',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:6,
-                    label:'王五',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                ]
-              },
-              {
-                id:3,
-                label:'北京分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:7,
-                    label:'赵六',
-                    type:'user',
-                    parentId:3,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'孙强',
-                type:'user',
-                parentId:1,
-                level:2,
-              },
-              {
-                id:13,
-                label:'金流福',
-                type:'user',
-                parentId:1,
-                level:2,
-              }
-            ]
-          },
-          {
-            id:8,
-            label:'集团欧洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:11,
-                label:'雅玛',
-                type:'user',
-                parentId:8,
-                level:2,
-              },
-              {
-                id:14,
-                label:'罗马分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[]
-              },
-              {
-                id:15,
-                label:'英国分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[
-                  {
-                    id:16,
-                    label:'伦敦',
-                    type:'user',
-                    parentId:15,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id:9,
-            label:'集团美洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:12,
-                label:'三丝',
-                type:'user',
-                parentId:9,
-                level:2
-              },
-              {
-                id:17,
-                label:'美国分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[]
-              },
-              {
-                id:18,
-                label:'墨西哥分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[
-                  {
-                    id:19,
-                    label:'摩卡',
-                    type:'user',
-                    parentId:18,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        organizationList: [],
+        rules: {
+          organization: [
+            {validator: isNotNull, trigger: ['blur', 'change']}
+          ],
+          username: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          loginAccount: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          loginPassword: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          mobileNum: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          emails: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          status: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          assignRole: [
+            {validator: isNotNull, trigger: ['blur']}
+          ]
+        }
       }
     },
     methods:{
       // 当前选中条数
       selectTableNum(data){
         var _t = this;
+        _t.checkListValue = data;
         switch (data.length) {
           case 0: // 未选中
             _t.disableBtn.disable = true;
@@ -384,16 +277,39 @@
       },
       // 改变当前页码
       handleCurrentChange(val){
-        console.log(val)
+        this.options.currentPage = val;
       },
       // 启用
       enableData() {
+        var _t = this;
         this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          var params = new URLSearchParams();
+          _t.$store.commit('setLoading', true);
+          params.append('token', _t.getCookie('hy-token'));
+          params.append('id', 'user_01');
+          params.append('status', 1);
+          _t.$api.put('system/user', params, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('内容', this.$t('public.resultTip'), {
+                  confirmButtonText: this.$t('public.confirm')
+                });
+                _t.getData();
+                break;
+              case 1004: // token 失效
+              case 1005: // token 为 null
+              case 1006: // token 不一致
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
@@ -426,13 +342,27 @@
       getData() {
         var _t = this;
         var params = new URLSearchParams();
-        params.append('userId', '');
         params.append('token', _t.getCookie('hy-token'));
+        if (_t.formItem.username !== null) {
+          params.append('username', _t.formItem.username);
+        }
+        if (_t.formItem.organization !== null) {
+          params.append('organizationId', _t.formItem.organization);
+        }
+        if (_t.formItem.status !== null) {
+          params.append('status', _t.formItem.status);
+        }
+        params.append('currentPage', _t.options.currentPage);
+        params.append('pageSize', _t.options.pageSize);
+        _t.$store.commit('setLoading', true);
         params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
-        _t.$api.get('', params, function (res) {
+        _t.$api.get('system/user/pagelist', params, function (res) {
+          _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              _t.tableData = res.data;
+              _t.tableData = res.data.list;
+              _t.options.currentPage = res.data.currentPage;
+              _t.options.total = res.data.count;
               break;
             case 1004: // token 失效
             case 1005: // token 为 null
@@ -441,14 +371,46 @@
               break;
             default:
               _t.tableData = [];
+              _t.options.currentPage = 1;
               _t.options.total = 0;
+              break;
+          }
+        });
+      },
+      // 新增数据
+      addData(formName) {
+        var _t = this;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+
+          }
+        });
+      },
+      // 查询所属组织
+      getOrganization() {
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('token', _t.getCookie('hy-token'));
+        _t.$api.get('system/organization/all', params, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.organizationList = JSON.parse(res.data).children;
+              break;
+            case 1004: // token 失效
+            case 1005: // token 为 null
+            case 1006: // token 不一致
+              _t.exclude(_t, res.message);
+              break;
+            default:
               break;
           }
         });
       }
     },
     created(){
-      // this.getData();
+      this.$store.commit('setLoading', true);
+      this.getData();
+      this.getOrganization();
     }
   }
 </script>

@@ -28,7 +28,7 @@
             :placeholder="$t('public.selectDate')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+          <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -85,8 +85,6 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
-        :firstPage='options.firstPage'
-        :lastPage='options.lastPage'
         @handleCurrentChangeSub="handleCurrentChange" />
     </div>
     <!--新增、编辑-->
@@ -140,15 +138,11 @@
         },
         startTime:'',
         endTime:'',
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
-        ],
+        tableData: [],
         options:{
-          total:1000, // 总条数
+          total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
         },
         dialogVisible:false,
         // 数据默认字段
@@ -158,157 +152,7 @@
           label: 'label',       // 标签显示
           children: 'children', // 子级
         },
-        organizationList:[
-          {
-            id:1,
-            label:'集团亚洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:2,
-                label:'上海分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:4,
-                    label:'张三',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:5,
-                    label:'李四',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:6,
-                    label:'王五',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                ]
-              },
-              {
-                id:3,
-                label:'北京分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:7,
-                    label:'赵六',
-                    type:'user',
-                    parentId:3,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'孙强',
-                type:'user',
-                parentId:1,
-                level:2,
-              },
-              {
-                id:13,
-                label:'金流福',
-                type:'user',
-                parentId:1,
-                level:2,
-              }
-            ]
-          },
-          {
-            id:8,
-            label:'集团欧洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:11,
-                label:'雅玛',
-                type:'user',
-                parentId:8,
-                level:2,
-              },
-              {
-                id:14,
-                label:'罗马分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[]
-              },
-              {
-                id:15,
-                label:'英国分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[
-                  {
-                    id:16,
-                    label:'伦敦',
-                    type:'user',
-                    parentId:15,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id:9,
-            label:'集团美洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:12,
-                label:'三丝',
-                type:'user',
-                parentId:9,
-                level:2
-              },
-              {
-                id:17,
-                label:'美国分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[]
-              },
-              {
-                id:18,
-                label:'墨西哥分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[
-                  {
-                    id:19,
-                    label:'摩卡',
-                    type:'user',
-                    parentId:18,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          }
-        ],
+        organizationList: [],
         organization:'',
         status:''
       }
@@ -361,7 +205,7 @@
       },
       // 外层 改变当前页码
       handleCurrentChange(val){
-        console.log(val);
+        this.options.currentPage = val;
       },
       // 启用
       enableData(){
@@ -399,9 +243,43 @@
           return;
         });
       },
+      // 查询组织维护表格数据
+      getData() {
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('token', _t.getCookie('hy-token'));
+        params.append('username', _t.username);
+        params.append('organizationId', _t.organization);
+        params.append('status', _t.status);
+        params.append('pagePage', _t.options.currentPage);
+        params.append('pageSize', _t.options.pageSize);
+        _t.$store.commit('setLoading', true);
+        params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
+        _t.$api.get('', params, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200: // 查询成功
+              _t.tableData = res.data.list;
+              _t.options.currentPage = res.data.currentPage;
+              _t.options.total = res.data.count;
+              break;
+            case 1004: // token 失效
+            case 1005: // token 为 null
+            case 1006: // token 不一致
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
+              break;
+          }
+        });
+      }
     },
     created(){
-
+      this.$store.commit('setLoading', true);
+      this.getData();
     }
   }
 </script>

@@ -51,14 +51,14 @@
         required: false,
         default: () => ({
           parent: {
-            type:Number,
-            default:'parentId'
+            type: String,
+            default: 'parentNodeId'
           },
           value: {
-            type:Number,
-            default:'id'
+            type: String,
+            default: 'nodeId'
           },
-          label: 'label',
+          label: 'nodeName',
           children: 'children',
         }),
       },
