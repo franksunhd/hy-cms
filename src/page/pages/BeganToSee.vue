@@ -29,7 +29,7 @@
 			<el-row style="margin-top: 10px;">
 				<el-col>
 					<div class="BeganToSee-right">
-						<div class="BeganToSee-right-list"> 【机架/塔式服务器】已发现的设备列表</div>
+						<div class="BeganToSee-right-list"> {{BeganToSee}}已发现的设备列表</div>
 						<div class="BeganToSee-button">
 							<button class="BeganToSee-addEquipment">
 									<i class="el-icon-circle-plus">&nbsp;&nbsp;添加已选设备</i>
@@ -75,6 +75,7 @@
 		},
 		data() {
 			return {
+				BeganToSee:'',
 				//表格
 				tableData: [{
 					/*序号*/
@@ -200,8 +201,12 @@
 				value: ''
 			}
 		},
+		created(){
+			 this.BeganToSee = this.$route.query.BeganToSee;
+		},
 		mounted() {
 			this.drawLine();
+			console.log(this.BeganToSee);
 		},
 		methods: {
 			drawLine() {

@@ -26,35 +26,38 @@
 					</div>
 					<div class="DeviceManualDetection-button">
 						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;增加检索范围</i></div>
-						<div class="BeganToSee" @click="BeganToSee">开始发现</div>
+						<div class="BeganToSee" @click="BeganToSee">开始发现
+							<!--<router-link :to="{path:'/YUser/DeviceManualDetection/BeganToSee',query:{BeganToSee:label}}">开始发现
+							</router-link>-->
+						</div>
 						<div class="ListOfUncompletedDiscoveries">未完成的发现列表</div>
 					</div>
-					<el-form v-model="tables" inline>
+					<el-form inline>
 						<div v-for="(list,index) in lists" class="DeviceManualDetection-box-right-bottom">
 							<el-button @click="del(index)" style="float: right;margin-top: 20px;margin-right: 20px;"><i class="el-icon-delete"></i></el-button>
 							<el-form-item label="IP地址段:">
 								<el-button @click="addI(index)" style="float: right; margin-top: 5px;">+</el-button>
-								<template v-for="(val,i) in list.ipAddress">
-									<el-input v-model="val.ips1" class="width200"></el-input>
+								<template v-for="(val,i) in list.ip">
+									<el-input v-model="val.startIp" class="width200"></el-input>
 									<span>~</span>
-									<el-input v-model="val.ips2" class="width200"></el-input>
+									<el-input v-model="val.endIp" class="width200"></el-input>
 									<el-button v-if="(i!==0)" @click="delI(index,i)">-</el-button>
 									<br />
 								</template>
 							</el-form-item>
 
 							<el-form-item v-if="status === 1" label="带外用户名:">
-								<el-input v-model="list.userName" class="width200"></el-input>
+								<el-input v-model="list.username" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="status === 1" label="带外用户密码:">
-								<el-input v-model="list.password" class="width200"></el-input>
+								<el-input type="password" v-model="list.password" class="width200"></el-input>
 							</el-form-item>
 							<br />
 							<el-form-item v-if="status === 1" label="端口:">
 								<el-input v-model="list.port" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="status === 2" label="SNMP版本:">
-								<el-select v-model="value" placeholder="请选择" class="width200">
+								<el-select v-model="list.snmpVersion" placeholder="请选择" class="width200">
 									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
@@ -62,11 +65,11 @@
 								<!--<el-input v-model="list.userName" class="width200"></el-input>-->
 							</el-form-item>
 							<el-form-item v-if="status === 2" label="SNMP端口:">
-								<el-input v-model="list.password" class="width200"></el-input>
+								<el-input v-model="list.snmpPort" class="width200"></el-input>
 							</el-form-item>
 							<br />
 							<el-form-item v-if="status === 2" label="SNMP团体名:">
-								<el-input v-model="list.port" class="width200"></el-input>
+								<el-input v-model="list.snmpCommunity" class="width200"></el-input>
 							</el-form-item>
 						</div>
 					</el-form>
@@ -80,7 +83,9 @@
 	import Box from '../../components/Box';
 	export default {
 		name: 'DeviceManualDetection',
-		components:{Box},
+		components: {
+			Box
+		},
 		data() {
 			return {
 				status: 1,
@@ -90,6 +95,7 @@
 						id: 1,
 						status: 1,
 						label: '机架/塔式服务器 ',
+						type: 1,
 						children: [{
 							status: 1,
 							id: 6,
@@ -111,6 +117,7 @@
 					}, {
 						id: 2,
 						status: 2,
+						type: 2,
 						label: '网络设备',
 						children: [{
 							id: 8,
@@ -124,6 +131,7 @@
 					}, {
 						id: 3,
 						status: 3,
+						type: 3,
 						label: '小型机',
 						children: [{
 							id: 10,
@@ -148,11 +156,13 @@
 					}, {
 						id: 4,
 						status: 4,
+						type: 4,
 						label: '刀片/刀箱'
 					},
 					{
 						id: 5,
 						status: 5,
+						type: 5,
 						label: '存储设备'
 					}
 				],
@@ -163,15 +173,34 @@
 
 				//表单
 				tables: [],
-				lists: [{
-					ipAddress: [{
-						ips1: 'enter text',
-						ips2: 'asdasdsad'
+				/*tables: [
+				{
+					ip:[{
+						startIp: '',
+						endIp:''
 					}],
-					userName: "enter text...",
-					password: "enter text...",
-					port: "enter text..."
+					username: "",
+					password: "",
+					port: "",
+					snmpPort:'',
+					snmpCommunity:'',
+					snmpVersion:''
+				}
+				
+				],*/
+				lists: [{
+					ip: [{
+						"startIp": '192.168.0.2',
+						"endIp": '192.168.0.5'
+					}],
+					"username": "asd",
+					password: "asdasd",
+					port: "80",
+					snmpPort: '81',
+					snmpCommunity: 'asd',
+					snmpVersion: '',
 				}],
+				
 				options: [{
 					value: '1',
 					label: 'V1a'
@@ -188,17 +217,28 @@
 					value: '5',
 					label: 'V5e'
 				}],
-				value: ''
+				type: '',
 
 			}
 		},
 		methods: {
-			BeganToSee(){
-				
+			BeganToSee() {
+				var _t = this;
+				var params = new URLSearchParams();
+				//params.append('token', _t.getCookie('hy-token'));
+				params.append('param', _t.lists);
+				params.append('type', _t.type);
+				console.log(_t.type);
+				_t.$api.post('/web/asset/discovery/start', params, function(res) {
+					console.log(res);
+					_t.$router.push('/YUser/DeviceManualDetection/BeganToSee');
+				});
 			},
 			handleNodeClick(data) {
 				this.status = data.status;
 				this.label = data.label;
+				this.type = data.type;
+				console.log(this.type);
 				if(this.status === 1) {
 					this.label = this.label + '的信息'
 				} else if(this.status === 2) {
@@ -207,13 +247,16 @@
 			},
 			add: function() {
 				let cope = {
-					ipAddress: [{
-						ips1: "",
-						ips2: ""
+					ip: [{
+						startIp: "",
+						endIp: ""
 					}],
-					userName: "",
+					username: "",
 					password: "",
 					port: "",
+					snmpPort: '',
+					snmpCommunity: '',
+					snmpVersion: '',
 				}
 				this.lists.push(cope);
 				/*console.log(this.lists)*/
@@ -224,15 +267,15 @@
 			},
 			addI(index) {
 				let copes = {
-					ipAddress: [{
-						ips1: "",
-						ips2: ""
+					ip: [{
+						startIp: "",
+						endIp: ""
 					}]
 				}
-				this.lists[index].ipAddress.push(copes)
+				this.lists[index].ip.push(copes)
 			},
 			delI(index, i) {
-				this.lists[index].ipAddress.splice(i, 1);
+				this.lists[index].ip.splice(i, 1);
 			}
 		},
 
@@ -390,5 +433,4 @@
 		width: 96px;
 		font-size: 12px;
 	}
-	
 </style>
