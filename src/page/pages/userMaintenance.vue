@@ -23,7 +23,7 @@
               v-for="(item,index) in statusList"
               :value="item.value"
               :key="index"
-              :label="item.label" />
+              :label="item.label"/>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -60,7 +60,7 @@
         </el-button>
       </div>
       <el-table :data="tableData" stripe @selection-change="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
             <span>
@@ -74,7 +74,7 @@
                          align="center"/>
         <el-table-column prop="organizationId" :label="$t('userMaintenance.organization')" width="100"
                          header-align="center" align="center"/>
-        <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center" />
+        <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center"/>
         <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="center"
                          align="center"/>
         <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="center"
@@ -95,7 +95,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :page-size="options.pageSize"
-        @handleCurrentChangeSub="handleCurrentChange" />
+        @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
     <el-dialog
@@ -145,10 +145,11 @@
   import Box from '../../components/Box';
   import selectTree from '../../components/selectTree';
   import {isNotNull} from "../../assets/js/validator";
+
   export default {
     name: "user-maintenance",
-    components:{Box,selectTree},
-    data(){
+    components: {Box, selectTree},
+    data() {
       return {
         // 查询表单
         formItem: {
@@ -168,28 +169,28 @@
           assignRole: ''
         },
         // 控制全局按钮 是否禁用
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        dialogVisible:false,
+        dialogVisible: false,
         tableData: [],
-        statusList:[
-          {label:'启用',value:1},
-          {label:'禁用',value:0},
+        statusList: [
+          {label: '启用', value: 1},
+          {label: '禁用', value: 0},
         ],
         // 表格选中之后数据接收
-        checkListValue:[],
-        checkList:[
-          {label:'系统管理员', value:1},
-          {label:'区域经理',value:2}
+        checkListValue: [],
+        checkList: [
+          {label: '系统管理员', value: 1},
+          {label: '区域经理', value: 2}
         ],
         // 分页
-        options:{
+        options: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
+          currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
         // 数据默认字段
@@ -228,11 +229,10 @@
         }
       }
     },
-    methods:{
+    methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
-        _t.checkListValue = data;
         switch (data.length) {
           case 0: // 未选中
             _t.disableBtn.disable = true;
@@ -255,7 +255,7 @@
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
                 disableFlag++;
               } else if (data[i].status === 1) {
@@ -274,29 +274,35 @@
             }
             break;
         }
+        // 选中数据 获取id 存储
+        var checkValue = new Array();
+        data.forEach(function (item) {
+          checkValue.push(item.id);
+        });
+        _t.checkListValue = checkValue;
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         this.options.currentPage = val;
       },
       // 启用
       enableData() {
         var _t = this;
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+        this.$confirm('请问是否确认启用当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
-          var params = new URLSearchParams();
+        }).then(() => {
           _t.$store.commit('setLoading', true);
-          params.append('token', _t.getCookie('hy-token'));
-          params.append('id', 'user_01');
-          params.append('status', 1);
-          _t.$api.put('system/user', params, function (res) {
+          _t.$api.put('system/user', {
+            token: _t.getCookie('hy-token'),
+            id: _t.checkListValue.join(','),
+            status: 1
+          }, function (res) {
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('内容', this.$t('public.resultTip'), {
+                _t.$alert('恭喜你,当前记录启用成功!', this.$t('public.resultTip'), {
                   confirmButtonText: this.$t('public.confirm')
                 });
                 _t.getData();
@@ -310,53 +316,69 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 禁用
-      disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
+      disableData() {
+        this.$confirm('请问是否确认禁用当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
-
-        }).catch(()=>{
+        }).then(() => {
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/user', {
+            token: _t.getCookie('hy-token'),
+            id: _t.checkListValue.join(','),
+            status: 0
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', this.$t('public.resultTip'), {
+                  confirmButtonText: this.$t('public.confirm')
+                });
+                _t.getData();
+                break;
+              case 1004: // token 失效
+              case 1005: // token 为 null
+              case 1006: // token 不一致
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
+        }).catch(() => {
           return;
         });
       },
       // 删除
-      deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+      deleteData() {
+        this.$confirm('请问是否确认删除当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 查询数据
       getData() {
         var _t = this;
-        var params = new URLSearchParams();
-        params.append('token', _t.getCookie('hy-token'));
-        if (_t.formItem.username !== null) {
-          params.append('username', _t.formItem.username);
-        }
-        if (_t.formItem.organization !== null) {
-          params.append('organizationId', _t.formItem.organization);
-        }
-        if (_t.formItem.status !== null) {
-          params.append('status', _t.formItem.status);
-        }
-        params.append('currentPage', _t.options.currentPage);
-        params.append('pageSize', _t.options.pageSize);
         _t.$store.commit('setLoading', true);
-        params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
-        _t.$api.get('system/user/pagelist', params, function (res) {
+        _t.$api.get('system/user/pagelist', {
+          token: _t.getCookie('hy-token'),
+          username: _t.formItem.username,
+          organizationId: _t.formItem.organization,
+          status: _t.formItem.status,
+          currentPage: _t.options.currentPage,
+          pageSize: _t.options.pageSize,
+          languageMark: localStorage.getItem('hy-language')
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
@@ -389,9 +411,9 @@
       // 查询所属组织
       getOrganization() {
         var _t = this;
-        var params = new URLSearchParams();
-        params.append('token', _t.getCookie('hy-token'));
-        _t.$api.get('system/organization/all', params, function (res) {
+        _t.$api.get('system/organization/all', {
+          token: _t.getCookie('hy-token')
+        }, function (res) {
           switch (res.status) {
             case 200:
               _t.organizationList = JSON.parse(res.data).children;
@@ -407,10 +429,10 @@
         });
       }
     },
-    created(){
-      this.$store.commit('setLoading', true);
-      this.getData();
-      this.getOrganization();
+    created() {
+      // this.$store.commit('setLoading', true);
+      // this.getData();
+      // this.getOrganization();
     }
   }
 </script>

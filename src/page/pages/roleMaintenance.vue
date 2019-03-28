@@ -425,16 +425,13 @@
       // 查询表格数据
       getData() {
         var _t = this;
-        var params = new URLSearchParams();
-        params.append('token', _t.getCookie('hy-token'));
-        params.append('username', _t.username);
-        params.append('organizationId', _t.organization);
-        params.append('status', _t.status);
-        params.append('pagePage', _t.options.currentPage);
-        params.append('pageSize', _t.options.pageSize);
         _t.$store.commit('setLoading', true);
-        params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
-        _t.$api.get('system/user/pagelist', params, function (res) {
+        _t.$api.get('system/user/pagelist', {
+          token: _t.getCookie('hy-token'),
+          currentPage: _t.options.currentPage,
+          pageSize: _t.options.pageSize,
+          languageMark: localStorage.getItem('hy-language')
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功

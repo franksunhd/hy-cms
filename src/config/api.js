@@ -19,7 +19,7 @@ function apiAxios(method, url, params, success) {
       success(res.data);
     }
   }).catch(function(err) {
-    alert(err);
+    // alert(err);
     return;
   });
 }

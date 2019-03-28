@@ -104,14 +104,12 @@
       // 去登录接口
       toLogin() {
         var _t = this;
-        // 登录按钮点击之后重绘验证码
-        var params = new URLSearchParams();
-        var password = _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password));
-        params.append('username', _t.username);
-        params.append('password', password);
-        params.append('code', _t.code);
-        params.append('sn', _t.code_SN);
-        _t.$api.post('system/user/goLoginSystem', params, function (res) {
+        _t.$api.post('system/user/goLoginSystem', {
+          username: _t.username.trim(),
+          password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password.trim())),
+          code: _t.code,
+          sn: _t.code_SN
+        }, function (res) {
           switch (res.status) {
             case 200: // 成功
               _t.setCookie('hy-token', res.data.token);
@@ -125,14 +123,12 @@
               break;
           }
           _t.getCode();
-          console.log(res);
         });
       },
       // 获取验证码
       getCode() {
         var _t = this;
-        var params = new URLSearchParams();
-        _t.$api.get('random/code', params, function (res) {
+        _t.$api.get('random/code', {}, function (res) {
           switch (res.status) {
             case 200:
               _t.code_SN = res.data.sn;

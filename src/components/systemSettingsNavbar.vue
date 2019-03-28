@@ -91,7 +91,7 @@
           token: _t.getCookie('hy-token'),
           menuId: item,
           menuLevel: '3_4',
-          languageMark: localStorage.getItem('hy-language') || 'zh_CN'
+          languageMark: localStorage.getItem('hy-language')
         }, function (res) {
           switch (res.status) {
             case 200:

@@ -74,16 +74,6 @@
         // } else {
         //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
         // }
-
-        console.log(val);
-
-        // var _t = this;
-        // var params = new URLSearchParams();
-        // params.append('menuId','menu_01_01');
-        // _t.$api.post('system/userShortcutMenu/insertSystemUserShortcutMenuFromMenuAndLanguage',params,function (res) {
-        //   console.log(res.data)
-        // });
-
       },
       delItem(y, val) {
         this.activeClass.splice(this.activeClass.indexOf(val), 1);
@@ -125,7 +115,7 @@
           token: _t.getCookie('hy-token'),
           menuId: item,
           menuLevel: '1_2',
-          languageMark: localStorage.getItem('hy-language') || 'zh_CN'
+          languageMark: localStorage.getItem('hy-language')
         }, function (res) {
           switch (res.status) {
             case 200: // 查询成功
