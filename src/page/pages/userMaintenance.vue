@@ -59,7 +59,7 @@
           {{$t('public.delete')}}
         </el-button>
       </div>
-      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+      <el-table :data="tableData" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
@@ -156,9 +156,7 @@
           more:true
         },
         dialogVisible:false,
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
-        ],
+        tableData: [],
         statusList:[
           {label:'启用',value:1},
           {label:'禁用',value:0},
@@ -171,11 +169,11 @@
         username:'',
         status:'',
         options:{
-          total:1000, // 总条数
+          total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
           firstPage:1, // 首页
-          lastPage:100 // 末页
+          lastPage: 1 // 末页
         },
         organization:'',
         // 数据默认字段
@@ -423,10 +421,34 @@
         }).catch(()=>{
           return;
         });
+      },
+      // 查询数据
+      getData() {
+        var _t = this;
+        var params = new URLSearchParams();
+        params.append('userId', '');
+        params.append('token', _t.getCookie('hy-token'));
+        params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
+        _t.$api.get('', params, function (res) {
+          switch (res.status) {
+            case 200: // 查询成功
+              _t.tableData = res.data;
+              break;
+            case 1004: // token 失效
+            case 1005: // token 为 null
+            case 1006: // token 不一致
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.total = 0;
+              break;
+          }
+        });
       }
     },
     created(){
-
+      // this.getData();
     }
   }
 </script>

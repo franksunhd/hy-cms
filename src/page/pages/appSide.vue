@@ -125,10 +125,10 @@
         params.append('token', _t.getCookie('hy-token'));
         params.append('menuId', item);
         params.append('menuLevel', '1_2');
-        params.append('languageMark', localStorage.getItem('hy-language'));
+        params.append('languageMark', localStorage.getItem('hy-language') || 'zh_CN');
         _t.$api.get('system/menu/', params, function (res) {
           switch (res.status) {
-            case 200:
+            case 200: // 查询成功
               var navBarArr = res.data.rootMenu;
               if (navBarArr) {
                 navBarArr.forEach(function (item) {

@@ -40,7 +40,8 @@
                       v-model="code"
                       maxlength="4"
                       placeholder="验证码"/>
-            <canvas id="comments-canvas" @click="draw" width="120" height="30"></canvas>
+            <img id="comments-canvas" src="">
+            <!--<canvas  @click="draw" width="120" height="30"></canvas>-->
           </el-form-item>
           <el-form-item style="margin-bottom: 0;">
             <el-button type="primary" class="login_btn" @click="login">登录</el-button>
@@ -105,12 +106,12 @@
       toLogin() {
         var _t = this;
         // 登录按钮点击之后重绘验证码
-        // var params = new URLSearchParams();
-        // params.append('username', _t.username);
-        // params.append('password', password);
-        // _t.$api.post('system/user/goLoginSystem', params, function (res) {
-        //   console.log(res);
-        // });
+        var params = new URLSearchParams();
+        params.append('username', _t.username);
+        params.append('password', password);
+        _t.$api.post('system/user/goLoginSystem', params, function (res) {
+          console.log(res);
+        });
       },
       draw() {
         var _t = this;
@@ -118,9 +119,8 @@
         this.codeNum = _t.$canvas.canvas_draw(120, 30, canvas);
       },
     },
-    mounted() {
-      var canvas = document.getElementById('comments-canvas');
-      this.codeNum = this.$canvas.canvas_draw(120, 30, canvas);
+    created() {
+      this.getData();
     }
   }
 </script>

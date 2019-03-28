@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// var root = "";   //正式环境
-var root = "http://192.168.0.107:8080/";   //测试环境内网
+// var root = "http://192.168.0.9:8080/webapi";   //正式环境
+var root = "http://192.168.0.107:8080";   //测试环境内网
 
 function apiAxios(method, url, params, success) {
   axios({
