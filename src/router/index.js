@@ -62,7 +62,8 @@ const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
 const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
 //设备手动发现
 const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection');
-
+//开始发现
+const BeganToSee = () => import ('@/page/pages/BeganToSee');
 Vue.use(Router);
 export default new Router({
   routes: [
@@ -106,6 +107,8 @@ export default new Router({
           ]
         },
         {path:"/YUser/DeviceManualDetection",name:"DeviceManualDetection",component:DeviceManualDetection},
+       {path:"/YUser/DeviceManualDetection/BeganToSee",name:"BeganToSee",component:BeganToSee},
+        
       ]
     },
     {path:'/login', name:'Login', component:Login}

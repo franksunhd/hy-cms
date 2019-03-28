@@ -171,7 +171,9 @@
     methods: {
       drawLine() {
         let myChart = this.$echarts.init(document.getElementById("echart"))
+        
         myChart.setOption({
+        	
           title: {
             text: '监测概览',
             subtext: '2019年3月25日 09:02',

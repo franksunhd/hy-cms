@@ -1,16 +1,12 @@
 <template>
-	<div class="DeviceManualDetection-box">
-		<el-row>
-			<el-col>
-				<!--面包屑区域-->
-				<div class="Breadcrumb">
-					<el-breadcrumb separator-class="el-icon-arrow-right">
-						<el-breadcrumb-item>{{$t('breadcrumb.DeviceDiscovery')}}</el-breadcrumb-item>
-						<el-breadcrumb-item>{{$t('breadcrumb.DeviceManualDetection')}}</el-breadcrumb-item>
-					</el-breadcrumb>
-				</div>
-			</el-col>
-		</el-row>
+	<Box>
+		<!--面包屑区域-->
+		<div class="Breadcrumb">
+			<el-breadcrumb>
+				<el-breadcrumb-item>{{$t('breadcrumb.DeviceDiscovery')}}</el-breadcrumb-item>
+				<el-breadcrumb-item>{{$t('breadcrumb.DeviceManualDetection')}}</el-breadcrumb-item>
+			</el-breadcrumb>
+		</div>
 		<el-row :gutter="80">
 			<el-col :span="8">
 				<div class="DeviceManualDetection-box-left">
@@ -30,7 +26,7 @@
 					</div>
 					<div class="DeviceManualDetection-button">
 						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;增加检索范围</i></div>
-						<div class="BeganToSee">开始发现</div>
+						<div class="BeganToSee" @click="BeganToSee">开始发现</div>
 						<div class="ListOfUncompletedDiscoveries">未完成的发现列表</div>
 					</div>
 					<el-form v-model="tables" inline>
@@ -77,13 +73,14 @@
 				</div>
 			</el-col>
 		</el-row>
-
-	</div>
+	</Box>
 </template>
 
 <script>
+	import Box from '../../components/Box';
 	export default {
 		name: 'DeviceManualDetection',
+		components:{Box},
 		data() {
 			return {
 				status: 1,
@@ -196,6 +193,9 @@
 			}
 		},
 		methods: {
+			BeganToSee(){
+				
+			},
 			handleNodeClick(data) {
 				this.status = data.status;
 				this.label = data.label;
@@ -386,16 +386,9 @@
 	}
 </style>
 <style>
-	.el-form-item__label {
-		/*display: inline-block;*/
+	.DeviceManualDetection-box-right-bottom .el-form-item__label {
 		width: 96px;
 		font-size: 12px;
 	}
-	/*.DeviceManualDetection-box-right-bottom {
-		padding: 10px 20px;
-		overflow: hidden;
-		padding-bottom: 20px;
-		margin-bottom: 20px;
-		background-color: #f6f9f9;
-	}*/
+	
 </style>
