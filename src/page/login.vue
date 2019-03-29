@@ -2,8 +2,8 @@
   <div class="login-box">
     <!--背景-->
     <el-carousel class="login-bg-box" arrow="never" indicator-position="none">
-      <el-carousel-item v-for="item in loginImg" :key="item">
-        <img class="login-swiper-img" :src="item" alt="swiper">
+      <el-carousel-item v-for="(item,index) in loginImg" :key="index">
+        <img class="login-swiper-img" src="../../static/img/login_bg.png" alt="swiper">
       </el-carousel-item>
     </el-carousel>
     <!--header-->
@@ -65,11 +65,7 @@
     name: "login",
     data() {
       return {
-        loginImg: [
-          'static/img/login_bg.png',
-          'static/img/login_bg.png',
-          'static/img/login_bg.png'
-        ],
+        loginImg: [{}, {}, {}],
         username: '',
         password: '',
         code: '',
@@ -82,7 +78,7 @@
     methods: {
       // 输入校验
       inputUser() {
-        if (this.username.trim() === '' || this.password.trim() === '') {
+        if (this.username.trim() === '' && this.password.trim() === '') {
           this.isError = true;
         } else {
           this.isError = false;
@@ -92,9 +88,9 @@
       login(event) {
         event.preventDefault();
         // 校验账户名
-        if (this.username === '' || this.password === '' || this.code.toUpperCase() !== this.codeNum) {
+        if (this.username === '' || this.password === '') {
           this.isError = true;
-        } else if (this.username !== '' && this.password !== '' && this.code.toUpperCase() === this.codeNum) {
+        } else if (this.username !== '' && this.password !== '') {
           this.isError = false;
           this.toLogin();
         } else {
@@ -104,7 +100,7 @@
       // 去登录接口
       toLogin() {
         var _t = this;
-        _t.$api.post('system/user/goLoginSystem', {
+        _t.$api.post('login', '', {
           username: _t.username.trim(),
           password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password.trim())),
           code: _t.code,
@@ -117,9 +113,11 @@
               break;
             case 3004: // 登录失败
               _t.loginTip = res.message;
+              _t.isError = true;
               break;
             default:
               _t.loginTip = res.message;
+              _t.isError = true;
               break;
           }
           _t.getCode();
@@ -128,7 +126,7 @@
       // 获取验证码
       getCode() {
         var _t = this;
-        _t.$api.get('random/code', {}, function (res) {
+        _t.$api.get('random/code', '', {}, function (res) {
           switch (res.status) {
             case 200:
               _t.code_SN = res.data.sn;

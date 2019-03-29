@@ -17,8 +17,8 @@
         </li>
         <li>
           <el-select class="el-app-header-select" v-model="defaultLang" @change="changeLanguage">
-            <el-option label="中文" value="zh_CN"/>
-            <el-option label="En" value="en"/>
+            <el-option v-for="(item,index) in languageList" :key="index" :label="item.languageName"
+                       :value="item.languageCode"/>
           </el-select>
         </li>
         <li>
@@ -67,11 +67,12 @@
     components: {appSide},
     data() {
       return {
-        defaultLang: localStorage.getItem('hy-language') || 'zh_CN)',
-        username: 'admin',
-        messageNum: 21,
+        defaultLang: localStorage.getItem('hy-language'),
+        username: '',
+        messageNum: '0',
         dialogVisible: false,
-        isCollapse: true
+        isCollapse: true,
+        languageList: []
       }
     },
     methods: {
@@ -92,16 +93,82 @@
       },
       // 切换语言
       changeLanguage(val) {
-        localStorage.setItem('hy-language', val);
-        window.location.reload();
+        var _t = this;
+        _t.$api.put('system/language/userSet', _t.getCookie('hy-token'), {
+          userId: _t.getCookie('hy-user-id'),
+          languageMark: localStorage.getItem('hy-language')
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              localStorage.setItem('hy-language', val);
+              // window.location.reload();
+              break;
+            default:
+              break;
+          }
+        });
+
       },
       // 点击title
       homePage(){
         this.$router.push({name:'Home'});
+      },
+      // 获取用户信息
+      getData() {
+        var _t = this;
+        _t.$api.get('login/userInfo', _t.getCookie('hy-token'), {}, function (res) {
+          switch (res.status) {
+            case 200:
+              localStorage.setItem('hy-language', res.data.languageMark);
+              localStorage.setItem('hy-organization-id', res.data.organizationId);
+              _t.setCookie('hy-user-id', res.data.id);
+              _t.username = res.data.displayName;
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 获取当前支持的语言
+      getLanguage() {
+        var _t = this;
+        _t.$api.get('system/language/all', _t.getCookie('hy-token'), {}, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.languageList = res.data.list;
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      getDetr() {
+        var _t = this;
+        _t.$api.get('system/basedata/all', _t.getCookie('hy-token'), {
+          dictionaryCode: 'base_01'
+        }, function (res) {
+          console.log(res.data)
+        })
+      },
+      // 获取消息条数
+      getMessage() {
+        this.messageNum = 0
+        console.log('message');
+      }
+    },
+    watch: {
+      messageNum: function () {
+        var _t = this;
+        setInterval(function () {
+          // _t.getMessage();
+        }, 1000);
       }
     },
     created() {
-      document.getElementsByTagName("title")[0].innerText = '带外设备管理平台';
+      this.getData();
+      this.getLanguage();
+      // this.getMessage();
+      this.getDetr();
     }
   }
 </script>
@@ -115,10 +182,6 @@
     width: 100%;
     z-index: 1030;
     font-size: 16px;
-  }
-
-  .app-aside {
-    overflow: visible;
   }
 
   .app-header-logo img {
@@ -145,7 +208,8 @@
   }
 
   .el-app-header-select {
-    width: 50px;
+    width: 90px;
+    top: -1px;
   }
 
   .el-app-header-select .el-input__suffix {

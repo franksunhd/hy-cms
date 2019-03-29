@@ -137,3 +137,15 @@ html,body,.Index-box {
 .el-carousel__container {
   height: 100%;
 }
+
+/*左侧导航*/
+.box-right-search .el-input {
+  width: 624px;
+}
+
+.box-right-search .el-input__inner {
+  border: none;
+  line-height: 40px;
+  height: 40px;
+  padding-left: 40px;
+}

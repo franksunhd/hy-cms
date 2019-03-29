@@ -1,6 +1,6 @@
 <template>
-  <div class="box">
-    <div class="box-left">
+  <div class="box clearfix">
+    <div class="box-left fl">
       <ul class="box-left-ful">
         <li @mouseover="MouseOverFul"><i class="el-icon-menu"></i></li>
         <li v-show="show">功能清单列表</li>
@@ -14,6 +14,35 @@
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
     </div>
+    <!--<div v-show="rshow" class="box-right-box fl">-->
+    <!--<div class="box-right-searchBox">-->
+    <!--<el-input v-model="search" class="box-right-search" prefix-icon="el-icon-search" placeholder="请输入关键词"/>-->
+    <!--<i class="el-icon-close box-right-search-no" @click="ClickClose"></i>-->
+    <!--</div>-->
+    <!--<ul v-if="selectArr.length !== 0">-->
+    <!--<li v-for="(item,index) in selectArr"-->
+    <!--:key="index">-->
+    <!--&lt;!&ndash;一级&ndash;&gt;-->
+    <!--<span style="font-size: 20px;">{{item.menuName}}</span>-->
+    <!--<div v-for="(val,i) in item.systemMenuAndLanguageRelationChildList"-->
+    <!--v-if="item.systemMenuAndLanguageRelationChildList.length !== 0"-->
+    <!--:key="i">-->
+    <!--&lt;!&ndash;二级&ndash;&gt;-->
+    <!--<span style="font-size: 16px;">{{val.menuName}}</span>-->
+    <!--<ul>-->
+    <!--<li v-for="(data,j) in val.systemMenuAndLanguageRelationChildList"-->
+    <!--:key="j">-->
+    <!--<span>{{data.menuName}}</span>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--</div>-->
+    <!--</li>-->
+    <!--</ul>-->
+    <!--<p v-else class="box-search-result-null">-->
+    <!--未找到与 "<span> {{ search }} </span>" 有关的内容-->
+    <!--</p>-->
+    <!--</div>-->
+
     <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
@@ -37,6 +66,8 @@
   </div>
 </template>
 <script>
+  import menuData from '../../assets/js/menuData';
+
   export default {
     name: 'app-side',
     data() {
@@ -46,7 +77,8 @@
         show: false,
         activeClass: [],
         Income: [],
-        selectArr: []
+        selectArr: [],
+        search: ''
       }
     },
     mounted() {
@@ -109,13 +141,11 @@
         this.rshow = false;
       },
       // 请求菜单数据
-      getData(item) {
+      getData() {
         var _t = this;
-        _t.$api.get('system/menu/', {
-          token: _t.getCookie('hy-token'),
-          menuId: item,
-          menuLevel: '1_2',
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.get('system/menu/', _t.getCookie('hy-token'), {
+          'menuLevel': '1_2',
+          'languageMark': localStorage.getItem('hy-language')
         }, function (res) {
           switch (res.status) {
             case 200: // 查询成功
@@ -142,10 +172,48 @@
       }
     },
     created() {
-      this.getData('');
+      this.getData();
     }
   }
 </script>
+<style scoped>
+  .box-right-box {
+    width: 840px;
+    height: 100%;
+    padding: 24px 0 20px 30px;
+  }
+
+  .box-right-searchBox {
+    position: relative;
+  }
+
+  .box-right-search {
+    width: 624px;
+  }
+
+  .box-right-search-no {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    position: absolute;
+    top: -4px;
+    right: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .box-search-result-null {
+    margin-top: 20px;
+    line-height: 30px;
+    height: 30px;
+  }
+
+  .box-search-result-null > span {
+    font-size: 20px;
+  }
+</style>
 
 <style scoped>
   .box {

@@ -87,8 +87,7 @@
       // 请求菜单数据
       getData(item) {
         var _t = this;
-        _t.$api.get('system/menu/', {
-          token: _t.getCookie('hy-token'),
+        _t.$api.get('system/menu/', _t.getCookie('hy-token'), {
           menuId: item,
           menuLevel: '3_4',
           languageMark: localStorage.getItem('hy-language')

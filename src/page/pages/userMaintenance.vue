@@ -294,8 +294,7 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user', {
-            token: _t.getCookie('hy-token'),
+          _t.$api.put('system/user', _t.getCookie('hy-token'), {
             id: _t.checkListValue.join(','),
             status: 1
           }, function (res) {
@@ -328,8 +327,7 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user', {
-            token: _t.getCookie('hy-token'),
+          _t.$api.put('system/user', _t.getCookie('hy-token'), {
             id: _t.checkListValue.join(','),
             status: 0
           }, function (res) {
@@ -370,8 +368,7 @@
       getData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('system/user/pagelist', {
-          token: _t.getCookie('hy-token'),
+        _t.$api.get('system/user/pagelist', _t.getCookie('hy-token'), {
           username: _t.formItem.username,
           organizationId: _t.formItem.organization,
           status: _t.formItem.status,
@@ -411,9 +408,7 @@
       // 查询所属组织
       getOrganization() {
         var _t = this;
-        _t.$api.get('system/organization/all', {
-          token: _t.getCookie('hy-token')
-        }, function (res) {
+        _t.$api.get('system/organization/all', _t.getCookie('hy-token'), {}, function (res) {
           switch (res.status) {
             case 200:
               _t.organizationList = JSON.parse(res.data).children;
@@ -430,8 +425,8 @@
       }
     },
     created() {
-      // this.$store.commit('setLoading', true);
-      // this.getData();
+      this.$store.commit('setLoading', true);
+      this.getData();
       // this.getOrganization();
     }
   }

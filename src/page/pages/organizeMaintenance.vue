@@ -247,8 +247,7 @@
       getData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('', {
-          token: _t.getCookie('hy-token'),
+        _t.$api.get('', _t.getCookie('hy-token'), {
           currentPage: _t.options.currentPage,
           pageSize: _t.options.pageSize,
           languageMark: localStorage.getItem('hy-language')

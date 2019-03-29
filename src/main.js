@@ -47,6 +47,7 @@ Vue.prototype.exclude = (name,message) => {
       name.delCookie('hy-user-id');
       localStorage.removeItem('hy-language');
       localStorage.removeItem('hy-menu-id');
+      localStorage.removeItem('hy-organization-id');
     }
   });
 };

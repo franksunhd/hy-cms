@@ -188,3 +188,16 @@
 .disabledStatusColor {
   color: #fb6140;
 }
+
+.box-right-box {
+  background-color: #fff;
+}
+
+.box-right-search .el-input__inner {
+  border-bottom: 1px solid #c1c1c1;
+  color: #999;
+}
+
+.box-search-result-null > span {
+  color: #3f81d0;
+}
