@@ -12,7 +12,7 @@
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
 					<div class="TreeControl">
-						<el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick">
+						<el-tree :data="d" :props="defaultProps" @node-click="handleNodeClick">
 
 						</el-tree>
 					</div>
@@ -46,17 +46,17 @@
 								</template>
 							</el-form-item>
 
-							<el-form-item v-if="status === 1" label="带外用户名:">
+							<el-form-item v-if="type == 1" label="带外用户名:">
 								<el-input v-model="list.username" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="status === 1" label="带外用户密码:">
+							<el-form-item v-if="type == 1" label="带外用户密码:">
 								<el-input type="password" v-model="list.password" class="width200"></el-input>
 							</el-form-item>
 							<br />
-							<el-form-item v-if="status === 1" label="端口:">
+							<el-form-item v-if="type == 1" label="端口:">
 								<el-input v-model="list.port" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="status === 2" label="SNMP版本:">
+							<el-form-item v-if="type == 2" label="SNMP版本:">
 								<el-select v-model="list.snmpVersion" placeholder="请选择" class="width200">
 									<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
@@ -64,11 +64,11 @@
 
 								<!--<el-input v-model="list.userName" class="width200"></el-input>-->
 							</el-form-item>
-							<el-form-item v-if="status === 2" label="SNMP端口:">
+							<el-form-item v-if="type == 2" label="SNMP端口:">
 								<el-input v-model="list.snmpPort" class="width200"></el-input>
 							</el-form-item>
 							<br />
-							<el-form-item v-if="status === 2" label="SNMP团体名:">
+							<el-form-item v-if="type == 2" label="SNMP团体名:">
 								<el-input v-model="list.snmpCommunity" class="width200"></el-input>
 							</el-form-item>
 						</div>
@@ -88,10 +88,8 @@
 		},
 		data() {
 			return {
-				status: 1,
-				label: '',
 				//树形控件
-				data: [{
+				/*data: [{
 						id: 1,
 						status: 1,
 						label: '机架/塔式服务器 ',
@@ -165,7 +163,8 @@
 						type: 5,
 						label: '存储设备'
 					}
-				],
+				],*/
+				da:[],
 				defaultProps: {
 					children: 'children',
 					label: 'label'
@@ -173,21 +172,7 @@
 
 				//表单
 				tables: [],
-				/*tables: [
-				{
-					ip:[{
-						startIp: '',
-						endIp:''
-					}],
-					username: "",
-					password: "",
-					port: "",
-					snmpPort:'',
-					snmpCommunity:'',
-					snmpVersion:''
-				}
 				
-				],*/
 				lists: [{
 					ip: [{
 						"startIp": '192.168.0.2',
@@ -200,7 +185,7 @@
 					snmpCommunity: 'asd',
 					snmpVersion: '',
 				}],
-				
+
 				options: [{
 					value: '1',
 					label: 'V1a'
@@ -217,31 +202,64 @@
 					value: '5',
 					label: 'V5e'
 				}],
-				type: '',
+				type: '1',
+				label:'机架/塔式服务器（中）',
+				d:[],
 
 			}
+		},
+		created() {
+			var _t = this;
+			_t.$api.post('/system/basedata/all', {
+				"systemBasedata": {
+					"dictionaryType": "AssetType",
+					"enable": true,
+					"languageMark": "zh_CN"
+				}
+			}, function(res) {
+				var datas = JSON.parse(res.data.treeNode);
+			    var da = datas.children[0].children;
+			    var objArr = new Array()
+			    for(var i=0; i < da.length;i++){
+			    	var obj = new Object();
+			    	obj.label = da[i].nodeName;
+			    	obj.type = da[i].nodeCode;
+			    	objArr.push(obj);
+			    }
+			    _t.d = objArr;
+			});
 		},
 		methods: {
 			BeganToSee() {
 				var _t = this;
-				var params = new URLSearchParams();
 				//params.append('token', _t.getCookie('hy-token'));
-				params.append('param', _t.lists);
+				/*params.append('param', _t.lists);
 				params.append('type', _t.type);
-				console.log(_t.type);
-				_t.$api.post('/web/asset/discovery/start', params, function(res) {
+				console.log(_t.type);*/
+				_t.$api.post('/asset/discovery/start', {
+					param: _t.lists,
+					type: _t.type
+				}, function(response) {
+					var res=response.data;
 					console.log(res);
-					_t.$router.push('/YUser/DeviceManualDetection/BeganToSee');
+					if(response.status==200){
+						_t.$router.push({name:'BeganToSee',params:{
+							resdata:res,
+						}
+						});
+						localStorage.setItem('hy-resdata',JSON.stringify(res));
+					}
+					
 				});
 			},
-			handleNodeClick(data) {
-				this.status = data.status;
-				this.label = data.label;
-				this.type = data.type;
+			handleNodeClick(d) {
+				/*this.status = da.status;*/
+				this.label = d.label;
+				this.type = d.type;
 				console.log(this.type);
-				if(this.status === 1) {
+				if(this.type === 1) {
 					this.label = this.label + '的信息'
-				} else if(this.status === 2) {
+				} else if(this.type === 2) {
 					this.label = '【' + this.label + '】' + '的检索范围'
 				}
 			},

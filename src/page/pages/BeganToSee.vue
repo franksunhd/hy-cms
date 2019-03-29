@@ -9,7 +9,7 @@
 			</el-breadcrumb>
 		</div>
 		<div class="BeganToSee-col">
-			<div class="BeganToSee-return"><i class="el-icon-back">&nbsp;&nbsp;返回设备手动发现</i></div>
+			<div class="BeganToSee-return" @click="BeganToSeeReturn"><i class="el-icon-back">&nbsp;&nbsp;返回设备手动发现</i></div>
 
 			<div class="BeganToSee-IncompleteDiscovery">未完成的发现列表</div>
 			<div class="BeganToSee-RefreshRate">
@@ -31,26 +31,26 @@
 					<div class="BeganToSee-right">
 						<div class="BeganToSee-right-list"> {{BeganToSee}}已发现的设备列表</div>
 						<div class="BeganToSee-button">
-							<button class="BeganToSee-addEquipment">
+							<button class="BeganToSee-addEquipment" @click="addEquipment">
 									<i class="el-icon-circle-plus">&nbsp;&nbsp;添加已选设备</i>
 							</button>
 							<button class="BeganToSee-exportEquipment">
-									<i class="el-icon-circle-plus">&nbsp;&nbsp;添加已选设备</i>
+									<i class="el-icon-circle-plus">&nbsp;&nbsp;发现结果导出</i>
 							</button>
 							<!--表格-->
-							<el-table ref="multipleTable" :data="tableData" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
+							<el-table :data="tableData" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
 								<el-table-column type="selection" width="55">
 								</el-table-column>
 								<el-table-column prop="serialNumber" label="序号" width="120">
 									<!--<template slot-scope="scope">{{ scope.row.date }}</template>-->
 								</el-table-column>
-								<el-table-column prop="IpAddress" label="IP地址" width="120">
+								<el-table-column prop="ip" label="IP地址" width="120">
 								</el-table-column>
-								<el-table-column prop="BrandModels" label="品牌型号" show-overflow-tooltip>
+								<el-table-column prop="manufacturerModel" label="品牌型号" show-overflow-tooltip>
 								</el-table-column>
-								<el-table-column prop="FoundThatTheState" label="发现状态" show-overflow-tooltip>
+								<el-table-column prop="discovery" label="发现状态" show-overflow-tooltip>
 								</el-table-column>
-								<el-table-column prop="DeviceDescription" label="设备描述" show-overflow-tooltip>
+								<el-table-column prop="errorText " label="描述" show-overflow-tooltip>
 								</el-table-column>
 							</el-table>
 							<!--分页-->
@@ -75,94 +75,10 @@
 		},
 		data() {
 			return {
-				BeganToSee:'',
+				BeganToSee: '',
 				//表格
-				tableData: [{
-					/*序号*/
-					serialNumber: '1',
-					/*IP地址*/
-					IpAddress: '192.168.0.5',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
+				
 
-				}, {
-					/*序号*/
-					serialNumber: '2',
-					/*IP地址*/
-					IpAddress: '192.168.0.6',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '失败',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}, {
-					/*序号*/
-					serialNumber: '3',
-					/*IP地址*/
-					IpAddress: '192.168.0.7',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}, {
-					/*序号*/
-					serialNumber: '4',
-					/*IP地址*/
-					IpAddress: '192.168.0.8',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}, {
-					/*序号*/
-					serialNumber: '5',
-					/*IP地址*/
-					IpAddress: '192.168.0.5',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}, {
-					/*序号*/
-					serialNumber: '6',
-					/*IP地址*/
-					IpAddress: '192.168.0.5',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}, {
-					/*序号*/
-					serialNumber: '7',
-					/*IP地址*/
-					IpAddress: '192.168.0.5',
-					/*品牌型号*/
-					BrandModels: 'Dell Power Edge R620',
-					/*发现状态*/
-					FoundThatTheState: '成功',
-					/*设备描述*/
-					DeviceDescription: '飒飒的'
-
-				}],
-				multipleSelection: [],
 				/*currentPage: 1,
 				pagesize: 5,*/
 				optionss: {
@@ -198,20 +114,54 @@
 					value: '8',
 					label: '1分钟'
 				}],
-				value: ''
+				value: '',
+				tableData: [],
+				multipleSelection: [],
+				ips:[]
 			}
 		},
-		created(){
-			 this.BeganToSee = this.$route.query.BeganToSee;
+		created() {
+			var _t = this;
+			var optionsData = new Object();
+			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
+			_t.$api.post('/asset/discovery/result', {
+				"sn": optionsData
+			}, function(res) {
+				
+				var Income = [];
+				Income = res.data.pageList;
+				console.log(res);
+				for(var i = 0; i < Income.length; i++) {
+					if(Income[i].discovery === true) {
+						Income[i].discovery = "成功"
+					} else if (Income[i].discovery === false) {
+						Income[i].discovery = "失败"
+					} else {
+						Income[i].discovery = "待发现"
+					}
+					_t.tableData.push({
+						'manufacturerModel': Income[i].manufacturer + Income[i].model,
+						'serialNumber': i + 1,
+						'ip': Income[i].ip,
+						'discovery': Income[i].discovery,
+						'errorText ':Income[i].errorText 
+					})
+
+				}
+				//console.log(_t.tableData);
+
+			});
+
+			/*this.BeganToSee = this.$route.query.BeganToSee;
+			console.log(this.BeganToSee);*/
 		},
 		mounted() {
 			this.drawLine();
-			console.log(this.BeganToSee);
+			/*console.log(this.BeganToSee);*/
 		},
 		methods: {
 			drawLine() {
 				var myChart = this.$echarts.init(document.getElementById("echart"))
-
 				var option = {
 					color: ['#fde33f', '#fb6041', '#40a8ff'],
 					title: {
@@ -313,29 +263,70 @@
 				};
 				// 使用刚指定的配置项和数据显示图表。
 				myChart.setOption(option);
+				var _t=this;
 				myChart.on('click', function(param) {
-							alert(param.dataIndex);
-					});
-					},
+					var optionsData = new Object();
+			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
+					_t.$api.post('/asset/discovery/result', {
+					"sn": optionsData,
+					"status":param.dataIndex-1
+					
+				}, function(res) {
+					console.log(res);
+					
+					
+				});
+					alert(status);
+				});
+			},
+			
+			// 改变当前页码
+			handleCurrentChange(val) {
+				//console.log(val)
+			},
 
-					handleSelectionChange(val) {
-						this.multipleSelection = val;
-						//console.log(val);
-					},
-					// 改变当前页码
-					handleCurrentChange(val) {
-						//console.log(val)
-					},
+			/*handleSizeChange: function(size) {
+				this.pagesize = size;
+			},
+			/*handleCurrentChange: function(currentPage) {
+				this.currentPage = currentPage;
+			}*/
+			//返回设备手动发现
+			BeganToSeeReturn() {
+				this.$router.push({
+					path: '/YUser/DeviceManualDetection'
+				})
+			},
+			//添加设备
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+				var int=[];
+				for(var i=0;i<val.length;i++){
+					int.push(
+						val[i].ip
+					)
+				}
+				this.ips=int;
+			},
+			addEquipment() {
+					var _t=this;
+					var optionsData = new Object();
+			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
+					_t.$api.post('/asset/discovery/insert', {
+					"sn": optionsData,
+					"ips":_t.ips
+				}, function(res) {
+					
+					console.log(res);
+					
+				});
+			},
 
-					/*handleSizeChange: function(size) {
-						this.pagesize = size;
-					},
-					/*handleCurrentChange: function(currentPage) {
-						this.currentPage = currentPage;
-					}*/
-
-			}
+		},
+		beforeDestroy() {
+			localStorage.removeItem('hy-resdata');
 		}
+	}
 </script>
 
 <style scoped>
