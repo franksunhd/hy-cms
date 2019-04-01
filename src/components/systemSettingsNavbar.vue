@@ -1,7 +1,7 @@
 <template>
   <div class="systemSettings-navBarBox">
     <p class="systemSettings-title" :title="titleName">{{titleName}}</p>
-    <div v-loading="navBarArr.length === 0" class="systemSettings-navBarContent">
+    <div class="systemSettings-navBarContent">
       <el-menu id="system-menu" :default-active="current" :router="true" :unique-opened="false" menu-trigger="click">
         <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index">
           <template slot="title" v-if="item.systemMenuAndLanguageRelationChildList == null">
@@ -37,60 +37,18 @@
       return {
         titleName:'',
         navBarArr:[],
-        navBarArrList1:[
-          {id:'1',name:'许可证信息维护',children:null,url:'/YUser/systemSettings/licenseInformation'},
-          {id:'2',name:'系统管理',children:[
-              {id:'2-1',name:'平台信息设置',url:'/YUser/systemSettings/platformInformation'},
-              {id:'2-2',name:'平台语言设置',url:'/YUser/systemSettings/platformLanguage'},
-              {id:'2-3',name:'数据字典管理',url:'/YUser/systemSettings/dataDictionary'},
-              {id:'2-4',name:'License到期通知',url:'/YUser/systemSettings/licenseNotice'},
-              {id:'2-5',name:'接口访问测试',url:'/YUser/systemSettings/interfaceTest'},
-            ]
-          },
-          {id:'3',name:'用户管理',children:[
-              {id:'3-1',name:'用户维护',url:'/YUser/systemSettings/userMaintenance'},
-              {id:'3-2',name:'角色维护',url:'/YUser/systemSettings/roleMaintenance'},
-              {id:'3-3',name:'组织维护',url:'/YUser/systemSettings/organizeMaintenance'},
-              {id:'3-4',name:'功能菜单维护',url:'/YUser/systemSettings/functionMenuMaintenance'}
-            ]
-          },
-          {id:'4',name:'数据库管理',children:[
-              {id:'4-1',name:'数据库备份',url:'/YUser/systemSettings/dataBaseBackUp'},
-              {id:'4-2',name:'备份定时器',url:'/YUser/systemSettings/backUpTimer'},
-              {id:'4-3',name:'数据库还原',url:'/YUser/systemSettings/dataBaseRestore'}
-            ]
-          },
-          {id:'5',name:'设备采集设置',children:[
-              {id:'5-1',name:'节点组维护',url:'/YUser/systemSettings/nodeGroupMaintenance'},
-              {id:'5-2',name:'采集节点管理',url:'/YUser/systemSettings/acquisitionNodeManagement'},
-              {id:'5-3',name:'采集任务分配',url:'/YUser/systemSettings/collectionTaskAssignment'},
-              {id:'5-4',name:'采集节点状态',url:'/YUser/systemSettings/acquisitionNodeState'}
-            ]
-          },
-          {id:'6',name:'日志管理',children:[
-              {id:'6-1',name:'登录日志',url:'/YUser/systemSettings/loginLog'},
-              {id:'6-2',name:'操作日志',url:'/YUser/systemSettings/operationLog'},
-              {id:'6-3',name:'任务日志',url:'/YUser/systemSettings/jobLog'},
-              {id:'6-4',name:'通知日志',url:'/YUser/systemSettings/notificationLog'},
-              {id:'6-5',name:'检测日志',url:'/YUser/systemSettings/testLog'}
-            ]
-          },
-        ],
-        navBarArrList2:[
-          {id:'1',name:'WEB应用',children:null,url:'/YUser/systemSettingsMonitoring/WebApplication'},
-          {id:'2',name:'数据库应用',children:null,url:'/YUser/systemSettingsMonitoring/DatabaseApplication'},
-          {id:'3',name:'采集器应用',children:null,url:'/YUser/systemSettingsMonitoring/CollectorApplication'},
-        ]
       }
     },
     methods: {
       // 请求菜单数据
       getData(item) {
         var _t = this;
-        _t.$api.get('system/menu/', _t.getCookie('hy-token'), {
-          menuId: item,
-          menuLevel: '3_4',
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.get('system/menu/', {
+          jsonString: JSON.stringify({
+            menuId: item,
+            menuLevel: '3_4',
+            languageMark: localStorage.getItem('hy-language')
+          })
         }, function (res) {
           switch (res.status) {
             case 200:
@@ -107,9 +65,10 @@
                 });
               }
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:

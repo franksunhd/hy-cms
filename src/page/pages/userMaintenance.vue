@@ -72,9 +72,10 @@
                          align="center"/>
         <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" width="100" header-align="center"
                          align="center"/>
-        <el-table-column prop="organizationId" :label="$t('userMaintenance.organization')" width="100"
+        <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" width="100"
                          header-align="center" align="center"/>
-        <el-table-column :label="$t('userMaintenance.userRole')" width="100" header-align="center" align="center"/>
+        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" width="100" header-align="center"
+                         align="center"/>
         <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="center"
                          align="center"/>
         <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="center"
@@ -283,14 +284,15 @@
       },
       // 改变当前页码
       handleCurrentChange(val) {
-        this.options.currentPage = val;
+        var _t = this;
+        _t.options.currentPage = val;
       },
       // 启用
       enableData() {
         var _t = this;
-        this.$confirm('请问是否确认启用当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
@@ -301,14 +303,15 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录启用成功!', this.$t('public.resultTip'), {
-                  confirmButtonText: this.$t('public.confirm')
+                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getData();
                 break;
-              case 1004: // token 失效
-              case 1005: // token 为 null
-              case 1006: // token 不一致
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
                 _t.exclude(_t, res.message);
                 break;
               default:
@@ -321,9 +324,10 @@
       },
       // 禁用
       disableData() {
-        this.$confirm('请问是否确认禁用当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
@@ -334,8 +338,8 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', this.$t('public.resultTip'), {
-                  confirmButtonText: this.$t('public.confirm')
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getData();
                 break;
@@ -354,9 +358,10 @@
       },
       // 删除
       deleteData() {
-        this.$confirm('请问是否确认删除当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(() => {
 
@@ -368,13 +373,15 @@
       getData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('system/user/pagelist', _t.getCookie('hy-token'), {
-          username: _t.formItem.username,
-          organizationId: _t.formItem.organization,
-          status: _t.formItem.status,
-          currentPage: _t.options.currentPage,
-          pageSize: _t.options.pageSize,
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.get('system/user/pagelist', {
+          jsonString: JSON.stringify({
+            username: _t.formItem.username,
+            organizationId: _t.formItem.organization,
+            status: _t.formItem.status,
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize,
+            languageMark: localStorage.getItem('hy-language')
+          })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {

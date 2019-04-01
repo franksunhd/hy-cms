@@ -205,13 +205,15 @@
       },
       // 外层 改变当前页码
       handleCurrentChange(val){
-        this.options.currentPage = val;
+        var _t = this;
+        _t.options.currentPage = val;
       },
       // 启用
       enableData(){
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -221,9 +223,10 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -233,9 +236,10 @@
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -247,10 +251,12 @@
       getData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('', _t.getCookie('hy-token'), {
-          currentPage: _t.options.currentPage,
-          pageSize: _t.options.pageSize,
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.get('', {
+          jsonString: JSON.stringify({
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize,
+            languageMark: localStorage.getItem('hy-language')
+          })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -259,9 +265,10 @@
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:
@@ -274,8 +281,8 @@
       }
     },
     created(){
-      this.$store.commit('setLoading', true);
-      this.getData();
+      // this.$store.commit('setLoading', true);
+      // this.getData();
     }
   }
 </script>
