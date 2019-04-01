@@ -100,7 +100,7 @@
       // 去登录接口
       toLogin() {
         var _t = this;
-        _t.$api.post('login', '', {
+        _t.$api.post('login', {
           username: _t.username.trim(),
           password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password.trim())),
           code: _t.code,
@@ -108,16 +108,17 @@
         }, function (res) {
           switch (res.status) {
             case 200: // 成功
-              _t.setCookie('hy-token', res.data.token);
+              localStorage.setItem('hy-token', res.data.token);
               _t.$router.push({name: 'Home'});
               break;
-            case 3004: // 登录失败
+            case 1000: // 登录失败
+            case 1001: // 登录请求异常
+            case 1002: // 未登录状态
+            case 1003: // 无操作权限
               _t.loginTip = res.message;
               _t.isError = true;
               break;
             default:
-              _t.loginTip = res.message;
-              _t.isError = true;
               break;
           }
           _t.getCode();
@@ -126,7 +127,7 @@
       // 获取验证码
       getCode() {
         var _t = this;
-        _t.$api.get('random/code', '', {}, function (res) {
+        _t.$api.get('random/code', {}, function (res) {
           switch (res.status) {
             case 200:
               _t.code_SN = res.data.sn;

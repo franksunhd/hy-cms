@@ -43,11 +43,11 @@ Vue.prototype.exclude = (name,message) => {
     callback: action => {
       name.$store.commit("setLoading", false);
       name.$router.push({name: 'Login'});
-      name.delCookie('hy-token');
-      name.delCookie('hy-user-id');
       localStorage.removeItem('hy-language');
       localStorage.removeItem('hy-menu-id');
       localStorage.removeItem('hy-organization-id');
+      localStorage.removeItem('hy-token');
+      localStorage.removeItem('hy-user-id');
     }
   });
 };
@@ -80,8 +80,8 @@ new Vue({
       if (!this.getCookie('tokenID')) {
         this.$store.commit("setLoading", false);
         // this.$router.replace('/login');
-        // this.delCookie('hy-token');
-        // this.delCookie('hy-user-id');
+        // localStorage.removeItem('hy-token');
+        // localStorage.removeItem('hy-user-id');
         // localStorage.removeItem('hy-language');
         // localStorage.removeItem('hy-menu-id');
       }

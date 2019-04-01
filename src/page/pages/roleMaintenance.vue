@@ -67,19 +67,24 @@
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.roleName')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.organization')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.userNum')" header-align="center" align="center" />
+        <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="center" align="center"/>
+        <el-table-column prop="organizationId" :label="$t('roleMaintenance.organization')" header-align="center"
+                         align="center"/>
+        <el-table-column prop="" :label="$t('roleMaintenance.userNum')" header-align="center" align="center"/>
         <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('roleMaintenance.createName')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.createTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.updateName')" header-align="center" align="center" />
-        <el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="center" align="center" />
+        <el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="center"
+                         align="center"/>
+        <el-table-column prop="createTime" :label="$t('roleMaintenance.createTime')" header-align="center"
+                         align="center"/>
+        <el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="center"
+                         align="center"/>
+        <el-table-column prop="lastModifyTime" :label="$t('roleMaintenance.updateTime')" width="200"
+                         header-align="center" align="center"/>
       </el-table>
       <!--分页-->
       <pages
@@ -348,7 +353,8 @@
       },
       // 外层 改变当前页码
       handleCurrentChange(val){
-        this.options.currentPage = val;
+        var _t = this;
+        _t.options.currentPage = val;
       },
       // 内层 改变当前页码
       innerOptionsHandleCurrentChange(val){
@@ -356,9 +362,10 @@
       },
       // 启用
       enableData(){
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -368,9 +375,10 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -380,9 +388,10 @@
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
@@ -392,44 +401,51 @@
       },
       // 用户授权
       authorizationData(){
-        this.outerVisible = true;
+        var _t = this;
+        _t.outerVisible = true;
       },
       // 功能权限
       functionData(){
-        this.dialogVisibleFunction = true;
+        var _t = this;
+        _t.dialogVisibleFunction = true;
       },
       // 数据权限
       infoData(){
-        this.dialogVisibleData = true;
+        var _t = this;
+        _t.dialogVisibleData = true;
       },
       // 关闭标签
       handleClose(tag){
-        for (var i = 0;i < this.tags.length;i++){
-          if (tag.id === this.tags[i].id) {
-            this.tags.splice(i,1);
+        var _t = this;
+        for (var i = 0; i < _t.tags.length; i++) {
+          if (tag.id === _t.tags[i].id) {
+            _t.tags.splice(i, 1);
           }
         }
-        console.log(this.tags);
+        console.log(_t.tags);
       },
       // 全选和取消全选
       checkedAll(){
-        this.checked = !this.checked;
-        if (this.checked) {
+        var _t = this;
+        _t.checked = !_t.checked;
+        if (_t.checked) {
           //全选
-          this.$refs.vueTree.setCheckedNodes(this.organizationList);
+          _t.$refs.vueTree.setCheckedNodes(_t.organizationList);
         }else{
           //取消选中
-          this.$refs.vueTree.setCheckedKeys([]);
+          _t.$refs.vueTree.setCheckedKeys([]);
         }
       },
       // 查询表格数据
       getData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('system/user/pagelist', _t.getCookie('hy-token'), {
-          currentPage: _t.options.currentPage,
-          pageSize: _t.options.pageSize,
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.get('system/role/all', {
+          jsonString: JSON.stringify({
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize,
+            languageMark: localStorage.getItem('hy-language')
+          })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -438,9 +454,10 @@
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:
@@ -452,9 +469,10 @@
         });
       },
       log() {
-        console.log(this.formItem.startTime);
-        console.log(this.formItem.startTime[0]);
-        console.log(this.formItem.startTime[1]);
+        var _t = this;
+        console.log(_t.formItem.startTime);
+        console.log(_t.formItem.startTime[0]);
+        console.log(_t.formItem.startTime[1]);
       }
     },
     created(){

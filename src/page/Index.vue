@@ -62,6 +62,7 @@
 
 <script>
   import appSide from './pages/appSide';
+
   export default {
     name: "index",
     components: {appSide},
@@ -94,14 +95,20 @@
       // 切换语言
       changeLanguage(val) {
         var _t = this;
-        _t.$api.put('system/language/userSet', _t.getCookie('hy-token'), {
-          userId: _t.getCookie('hy-user-id'),
-          languageMark: localStorage.getItem('hy-language')
+        _t.$api.put('system/language/userSet', {
+          userId: localStorage.getItem('hy-user-id'),
+          languageMark: _t.defaultLang
         }, function (res) {
           switch (res.status) {
             case 200:
               localStorage.setItem('hy-language', val);
-              // window.location.reload();
+              window.location.reload();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
               break;
             default:
               break;
@@ -109,20 +116,27 @@
         });
 
       },
-      // 点击title
-      homePage(){
-        this.$router.push({name:'Home'});
+      // 点击title回到首页
+      homePage() {
+        this.$router.push({name: 'Home'});
       },
       // 获取用户信息
       getData() {
         var _t = this;
-        _t.$api.get('login/userInfo', _t.getCookie('hy-token'), {}, function (res) {
+        _t.$api.get('login/userInfo', {}, function (res) {
           switch (res.status) {
             case 200:
               localStorage.setItem('hy-language', res.data.languageMark);
               localStorage.setItem('hy-organization-id', res.data.organizationId);
-              _t.setCookie('hy-user-id', res.data.id);
+              localStorage.setItem('hy-user-id', res.data.id);
               _t.username = res.data.displayName;
+              _t.defaultLang = res.data.languageMark;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
               break;
             default:
               break;
@@ -132,43 +146,40 @@
       // 获取当前支持的语言
       getLanguage() {
         var _t = this;
-        _t.$api.get('system/language/all', _t.getCookie('hy-token'), {}, function (res) {
+        _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
             case 200:
               _t.languageList = res.data.list;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
               break;
             default:
               break;
           }
         });
       },
-      getDetr() {
-        var _t = this;
-        _t.$api.get('system/basedata/all', _t.getCookie('hy-token'), {
-          dictionaryCode: 'base_01'
-        }, function (res) {
-          console.log(res.data)
-        })
-      },
       // 获取消息条数
       getMessage() {
         this.messageNum = 0
-        console.log('message');
+        // console.log('message');
       }
     },
     watch: {
       messageNum: function () {
         var _t = this;
         setInterval(function () {
-          // _t.getMessage();
+          _t.getMessage();
         }, 1000);
       }
     },
     created() {
       this.getData();
       this.getLanguage();
-      // this.getMessage();
-      this.getDetr();
+      this.getMessage();
     }
   }
 </script>
