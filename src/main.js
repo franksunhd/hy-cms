@@ -11,6 +11,7 @@ import pages from './components/pages';
 import VueDND from 'awe-dnd';
 import echarts from 'echarts';
 import md5 from 'js-md5';
+import * as custom from './assets/js/filters';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
@@ -22,8 +23,8 @@ import './assets/css/fontStyle.css';
 
 Vue.use(Vuex);
 Vue.use(VueDND);
-Vue.use(ElementUI,{
-  i18n:(key, value) => i18n.t(key, value)
+Vue.use(ElementUI, {
+  i18n: (key, value) => i18n.t(key, value)
 });
 
 Vue.config.productionTip = false;
@@ -33,10 +34,13 @@ Vue.prototype.delCookie = delCookie;
 Vue.prototype.$api = api;
 Vue.prototype.$echarts = echarts;
 Vue.prototype.$md5 = md5;
-Vue.component('pages',pages);
+Vue.component('pages', pages);
+Object.keys(custom).forEach(key => {
+  Vue.filter(key, custom[key])
+});
 
 // 用户过期
-Vue.prototype.exclude = (name,message) => {
+Vue.prototype.exclude = (name, message) => {
   name.$alert(message, '温馨提示', {
     confirmButtonText: '确定',
     type: 'warning',
@@ -69,7 +73,7 @@ new Vue({
   router,
   store,
   i18n,
-  components: { App },
+  components: {App},
   template: '<App/>',
   watch: {
     "$route": 'checkLogin'
@@ -92,22 +96,24 @@ new Vue({
 // 获取cookie
 function getCookie(name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-  if(arr = document.cookie.match(reg))
+  if (arr = document.cookie.match(reg))
     return unescape(arr[2]);
   else
     return null;
 }
+
 // 设置cookie 有效期为30天
-function setCookie(name,value,days) {
+function setCookie(name, value, days) {
   var exp = new Date();
   exp.setDate(exp.getDate() + days);
   document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
 }
+
 // 删除 cookie
 function delCookie(name) {
   var exp = new Date();
   exp.setTime(exp.getTime() - 1);
   var cval = this.getCookie(name);
-  if(cval != null)
+  if (cval != null)
     document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
 }
