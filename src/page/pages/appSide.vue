@@ -1,16 +1,19 @@
 <template>
-  <div class="box clearfix">
+  <div id="menuBox" class="box clearfix">
     <div class="box-left fl">
       <ul class="box-left-ful">
         <li @mouseover="MouseOverFul"><i class="el-icon-menu"></i></li>
         <li v-show="show">功能清单列表</li>
         <li v-show="show">&gt;</li>
       </ul>
-      <ul class="box-left-two" v-for='x,y in activeClass' :key="x"
-          v-dragging="{ item: x, list: activeClass, group: 'x' }" @mouseover="MouseOverTwo" @mouseout="MouseOutTwo">
+      <!--便捷菜单列表-->
+      <ul class="box-left-two" v-for='data in activeClass' :key="data.id"
+          v-dragging="{ item: data, list: activeClass, group: 'data' }"
+          @mouseover="MouseOverTwo"
+          @mouseout="MouseOutTwo">
         <li><i class="el-icon-picture"></i></li>
-        <li v-show="show">{{x}}</li>
-        <li v-show="mouse"><i class="el-icon-close" @click="delItem(y,x)"></i></li>
+        <li v-show="show">{{data.menuName}}</li>
+        <li v-show="mouse"><i class="el-icon-close" @click="delItem(data)"></i></li>
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
     </div>
@@ -19,20 +22,37 @@
     <!--<el-input v-model="search" class="box-right-search" prefix-icon="el-icon-search" placeholder="请输入关键词"/>-->
     <!--<i class="el-icon-close box-right-search-no" @click="ClickClose"></i>-->
     <!--</div>-->
-    <!--<ul v-if="selectArr.length !== 0">-->
-    <!--<li v-for="(item,index) in selectArr"-->
+    <!--<ul style="overflow-y: scroll;position: absolute;top: 84px;left: 30px;bottom: 0;padding-bottom: 50px;" v-if="selectArr.length !== 0">-->
+    <!--<li :id="item.id" v-for="(item,index) in selectArr"-->
     <!--:key="index">-->
     <!--&lt;!&ndash;一级&ndash;&gt;-->
-    <!--<span style="font-size: 20px;">{{item.menuName}}</span>-->
-    <!--<div v-for="(val,i) in item.systemMenuAndLanguageRelationChildList"-->
+    <!--<span style="-->
+    <!--font-size: 20px;-->
+    <!--color: red;-->
+    <!--background-color: green;-->
+    <!--">{{item.menuName}}</span><div v-for="(val,i) in item.systemMenuAndLanguageRelationChildList"-->
     <!--v-if="item.systemMenuAndLanguageRelationChildList.length !== 0"-->
     <!--:key="i">-->
     <!--&lt;!&ndash;二级&ndash;&gt;-->
-    <!--<span style="font-size: 16px;">{{val.menuName}}</span>-->
-    <!--<ul>-->
+    <!--<router-link-->
+    <!--:to="{path:item.menuHref,query:{id:val.id}}"-->
+    <!--@click.native="hiddenAlert(val.id)"-->
+    <!--style="font-size: 16px;color: blue;background-color: red;">{{val.menuName}}</router-link>-->
+    <!--<ul style="width: 640px;display: flex;flex-wrap: wrap;">-->
+    <!--&lt;!&ndash;三级&ndash;&gt;-->
     <!--<li v-for="(data,j) in val.systemMenuAndLanguageRelationChildList"-->
-    <!--:key="j">-->
-    <!--<span>{{data.menuName}}</span>-->
+    <!--:key="j"-->
+    <!--style="width: 156px;">-->
+    <!--<router-link-->
+    <!--:to="{path:data.menuHref,query: {id:val.id}}"-->
+    <!--@click.native="hiddenAlert(val.id)"-->
+    <!--style="font-size: 14px;color: green;background-color: orange;">{{data.menuName}}</router-link>-->
+    <!--<div v-for="(menu,k) in data.systemMenuAndLanguageRelationChildList" :key="k">-->
+    <!--<router-link-->
+    <!--:to="{path:menu.menuHref,query: {id:val.id}}"-->
+    <!--@click.native="hiddenAlert(val.id)"-->
+    <!--style="font-size: 12px;height: 30px;line-height: 30px;color: orange;">{{menu.menuName}}</router-link>-->
+    <!--</div>-->
     <!--</li>-->
     <!--</ul>-->
     <!--</div>-->
@@ -41,6 +61,11 @@
     <!--<p v-else class="box-search-result-null">-->
     <!--未找到与 "<span> {{ search }} </span>" 有关的内容-->
     <!--</p>-->
+    <!--<ul style="position: absolute; top: 84px; right: 75px;">-->
+    <!--<li v-for="(item,index) in selectArr" :key="index">-->
+    <!--<a href="javascript:;" @click="resultTip(item.id)">{{item.menuName}}</a>-->
+    <!--</li>-->
+    <!--</ul>-->
     <!--</div>-->
 
     <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
@@ -63,11 +88,11 @@
         </ul>
       </div>
     </div>
+
   </div>
 </template>
 <script>
   import menuData from '../../assets/js/menuData';
-
   export default {
     name: 'app-side',
     data() {
@@ -82,33 +107,23 @@
       }
     },
     mounted() {
-      this.$dragging.$on('dragged', ({value}) => {
-        console.log(value.item);
-        console.log(value.list);
-        console.log(value.otherData);
-      })
-      this.$dragging.$on('dragend', () => {
+      // 拖拽
+      var _t = this;
+      _t.$dragging.$on('dragged', ({value}) => {
 
-      })
+      });
+      _t.$dragging.$on('dragend', (val) => {
+      });
     },
     methods: {
+      resultTip(data) {
+        document.querySelector('#' + data).scrollIntoView(true);
+      },
       // 路由跳转隐藏弹出层
       hiddenAlert(val) {
         this.show = false;
         this.rshow = false;
         localStorage.setItem('hy-menu-id', val);
-      },
-      // 加入便捷菜单
-      getItem(val) {
-        // 把当前点击元素的index，赋值给activeClass
-        // if (this.activeClass.indexOf(val) == -1) {
-        //   this.activeClass.unshift(val);
-        // } else {
-        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
-        // }
-      },
-      delItem(y, val) {
-        this.activeClass.splice(this.activeClass.indexOf(val), 1);
       },
       MouseOverFul() {
         this.show = true;
@@ -118,24 +133,23 @@
         if (this.rshow == true) {
           this.mouse = true;
           this.show = true;
-          this.rshow = true;
-        } else if (this.rshow == false) {
+        } else {
           this.mouse = true;
           this.show = true;
-          this.rshow = false;
         }
+
       },
       MouseOutTwo() {
         if (this.rshow == true) {
           this.mouse = false;
           this.show = true;
-          this.rshow = true;
-        } else if (this.rshow == false) {
+        } else {
           this.mouse = false;
           this.show = false;
-          this.rshow = false;
         }
+
       },
+      // 点击关闭弹出层
       ClickClose() {
         this.show = false;
         this.rshow = false;
@@ -143,9 +157,11 @@
       // 请求菜单数据
       getData() {
         var _t = this;
-        _t.$api.get('system/menu/', _t.getCookie('hy-token'), {
-          'menuLevel': '1_2',
-          'languageMark': localStorage.getItem('hy-language')
+        _t.$api.get('system/menu/', {
+          jsonString: JSON.stringify({
+            menuLevel: '1_2_3_4',
+            languageMark: localStorage.getItem('hy-language')
+          })
         }, function (res) {
           switch (res.status) {
             case 200: // 查询成功
@@ -159,9 +175,10 @@
                 _t.selectArr = navBarArr;
               }
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:
@@ -169,10 +186,87 @@
               break;
           }
         });
-      }
+      },
+      // 获取便捷菜单列表
+      getMenuData() {
+        var _t = this;
+        _t.$api.get('system/userShortcutMenu/getListByUserId', {
+          jsonString: JSON.stringify({
+            languageMark: localStorage.getItem('hy-language'),
+            userId: localStorage.getItem('hy-user-id')
+          })
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              console.log(res.data)
+              _t.activeClass = res.data;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.activeClass = [];
+              break;
+          }
+        });
+      },
+      // 加入便捷菜单
+      getItem(val) {
+        // 把当前点击元素的index，赋值给activeClass
+        // if (this.activeClass.indexOf(val) == -1) {
+        //   this.activeClass.unshift(val);
+        // } else {
+        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
+        // }
+        var _t = this;
+        _t.$api.post('system/userShortcutMenu/', {
+          userId: localStorage.getItem('hy-user-id'),
+          menuId: val.id
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 删除便捷菜单
+      delItem(data) {
+        console.log(data);
+        var _t = this;
+        _t.$api.delete('system/userShortcutMenu/' + data.id, {}, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            case 2007:
+              _t.$alert(res.message);
+            default:
+              break;
+          }
+        })
+      },
     },
     created() {
       this.getData();
+      this.getMenuData();
     }
   }
 </script>
@@ -181,10 +275,12 @@
     width: 840px;
     height: 100%;
     padding: 24px 0 20px 30px;
+    position: relative;
   }
 
   .box-right-searchBox {
     position: relative;
+    margin-bottom: 20px;
   }
 
   .box-right-search {
