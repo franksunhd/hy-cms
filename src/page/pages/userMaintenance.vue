@@ -42,7 +42,7 @@
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
-        <el-button :disabled="disableBtn.more">
+        <el-button :disabled="disableBtn.more" @click="resetPassword">
           <i class="el-icon-refresh"></i>
           {{$t('public.resets')}}
         </el-button>
@@ -88,8 +88,12 @@
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="center"
                          align="center"/>
-        <el-table-column prop="createTime" :label="$t('userMaintenance.createTime')" header-align="center"
-                         align="center"/>
+        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center"
+                         align="center">
+          <template slot-scope="scope">
+            {{scope.row.createTime | dateFilter}}
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页-->
       <pages
@@ -105,33 +109,34 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
+      <el-form :model="addEdit" inline label-width="150px" :rules="rules" ref="ruleForm">
         <el-form-item :label="$t('userMaintenance.organization') + '：'" prop="organization">
           <selectTree width="200" :options="organizationList" v-model="addEdit.organization"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.username') + '：'" prop="username">
-          <el-input v-model="addEdit.username"/>
+          <el-input v-model="addEdit.username" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
-          <el-input v-model="addEdit.loginAccount"/>
+          <el-input v-model="addEdit.loginAccount" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
-          <el-input type="password" v-model="addEdit.loginPassword"/>
+          <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
-          <el-input v-model="addEdit.mobileNum"/>
+          <el-input v-model="addEdit.mobileNum" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.emails') + '：'" prop="emails">
-          <el-input v-model="addEdit.emails"/>
-        </el-form-item>
-        <el-form-item :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
-
+          <el-input v-model="addEdit.emails" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
-          <el-radio-group v-model="addEdit.status">
-            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
-          </el-radio-group>
+          <el-select class="width200" v-model="addEdit.status">
+            <el-option :label="$t('public.enable')" value="1"/>
+            <el-option :label="$t('public.disable')" value="0"/>
+          </el-select>
+        </el-form-item>
+        <br>
+        <el-form-item :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
+          <el-button type="success" class="queryBtn">选择</el-button>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -231,6 +236,20 @@
       }
     },
     methods: {
+      // 重置新增编辑表单数据
+      resetForm() {
+        var _t = this;
+        _t.addEdit = {
+          organization: '',
+          username: '',
+          loginAccount: '',
+          loginPassword: '',
+          mobileNum: '',
+          emails: '',
+          status: '',
+          assignRole: ''
+        }
+      },
       // 当前选中条数
       selectTableNum(data) {
         var _t = this;
@@ -243,26 +262,39 @@
             break;
           case 1: // 单选
             _t.disableBtn.edit = false;
-            _t.disableBtn.more = false;
             data.forEach(function (item) {
-              if (item.status === 0) {
-                _t.disableBtn.enable = false;
-              } else if (item.status === 1) {
-                _t.disableBtn.disable = false;
+              // 先判断是否选中自己 再判断禁用还是启用
+              if (item.id !== localStorage.getItem('hy-user-id')) {
+                if (item.status === 0) {
+                  _t.disableBtn.enable = false;
+                } else if (item.status === 1) {
+                  _t.disableBtn.disable = false;
+                }
+                // 不可重置自己的密码
+                _t.disableBtn.more = false;
               }
             });
             break;
           default: // 多选
             _t.disableBtn.edit = true;
-            _t.disableBtn.more = false;
-            var disableFlag = 0, enableFlag = 0;
+            var disableFlag = 0, enableFlag = 0, resetFlag = 0;
             for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
                 disableFlag++;
               } else if (data[i].status === 1) {
                 enableFlag++;
               }
+              if (data[i].id == localStorage.getItem('hy-user-id')) {
+                resetFlag++;
+              }
             }
+            // 重置密码判断
+            if (resetFlag > 0) {
+              _t.disableBtn.more = true;
+            } else {
+              _t.disableBtn.more = false;
+            }
+            // 启用禁用判断
             if (disableFlag > 0 && enableFlag > 0) {
               _t.disableBtn.enable = true;
               _t.disableBtn.disable = true;
@@ -286,6 +318,7 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
       },
       // 启用
       enableData() {
@@ -296,9 +329,11 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user', _t.getCookie('hy-token'), {
-            id: _t.checkListValue.join(','),
-            status: 1
+          _t.$api.put('system/user/', {
+            systemUser: {
+              id: _t.checkListValue.join(','),
+              status: 1
+            }
           }, function (res) {
             _t.$store.commit('setLoading', false);
             switch (res.status) {
@@ -331,9 +366,11 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user', _t.getCookie('hy-token'), {
-            id: _t.checkListValue.join(','),
-            status: 0
+          _t.$api.put('system/user/', {
+            systemUser: {
+              status: 0,
+              id: _t.checkListValue.join(',')
+            }
           }, function (res) {
             _t.$store.commit('setLoading', false);
             switch (res.status) {
@@ -364,7 +401,60 @@
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(() => {
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.delete('', {}, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                break;
+              case 1004: // token 失效
+              case 1005: // token 为 null
+              case 1006: // token 不一致
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
+        }).catch(() => {
+          return;
+        });
+      },
+      // 重置密码
+      resetPassword() {
+        var _t = this;
+        _t.$confirm('请问是否重置当前的记录密码?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
+          type: 'warning'
+        }).then(() => {
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/user/', {
+            systemUser: {
+              id: _t.checkListValue.join(',')
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                break;
+              case 1004: // token 失效
+              case 1005: // token 为 null
+              case 1006: // token 不一致
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
         }).catch(() => {
           return;
         });
@@ -415,7 +505,7 @@
       // 查询所属组织
       getOrganization() {
         var _t = this;
-        _t.$api.get('system/organization/all', _t.getCookie('hy-token'), {}, function (res) {
+        _t.$api.get('system/organization/all', {}, function (res) {
           switch (res.status) {
             case 200:
               _t.organizationList = JSON.parse(res.data).children;
@@ -434,7 +524,7 @@
     created() {
       this.$store.commit('setLoading', true);
       this.getData();
-      // this.getOrganization();
+      this.getOrganization();
     }
   }
 </script>
