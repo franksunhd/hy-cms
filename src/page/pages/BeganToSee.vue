@@ -39,7 +39,7 @@
 							</button>
 							<!--表格-->
 							<el-table :data="tableData" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
-								<el-table-column type="selection" width="55">
+								<el-table-column type="selection" width="55" :selectable="selectable">
 								</el-table-column>
 								<el-table-column prop="serialNumber" label="序号" width="120">
 									<!--<template slot-scope="scope">{{ scope.row.date }}</template>-->
@@ -77,7 +77,6 @@
 			return {
 				BeganToSee: '',
 				//表格
-				
 
 				/*currentPage: 1,
 				pagesize: 5,*/
@@ -117,24 +116,27 @@
 				value: '',
 				tableData: [],
 				multipleSelection: [],
-				ips:[]
+				ips: [],
+				Dincome: [],
+				Dincome2: ''
 			}
 		},
 		created() {
+			this.timestampToTime();
 			var _t = this;
 			var optionsData = new Object();
 			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
 			_t.$api.post('/asset/discovery/result', {
 				"sn": optionsData
 			}, function(res) {
-				
+
 				var Income = [];
 				Income = res.data.pageList;
 				console.log(res);
 				for(var i = 0; i < Income.length; i++) {
 					if(Income[i].discovery === true) {
 						Income[i].discovery = "成功"
-					} else if (Income[i].discovery === false) {
+					} else if(Income[i].discovery === false) {
 						Income[i].discovery = "失败"
 					} else {
 						Income[i].discovery = "待发现"
@@ -144,29 +146,64 @@
 						'serialNumber': i + 1,
 						'ip': Income[i].ip,
 						'discovery': Income[i].discovery,
-						'errorText ':Income[i].errorText 
+						'errorText ': Income[i].errorText 
 					})
 
 				}
 				//console.log(_t.tableData);
+				var Dincome = [];
+				Dincome.push({
+					'value': res.data.failDevice,
+					'name': "检测无相应设备地址数"
+				}, {
+					'value': res.data.stayDevice,
+					'name': "待发现地址数"
+				}, {
+					'value': res.data.successDevice,
+					'name': "已发现相应设备地址数"
+				})
+				_t.Dincome = Dincome;
 
+				var Dincome2 = _t.timestampToTime(res.requesttime);
+				console.log(Dincome2);
+				
+				_t.Dincome2=Dincome2;
+
+				_t.drawLine();
 			});
 
 			/*this.BeganToSee = this.$route.query.BeganToSee;
 			console.log(this.BeganToSee);*/
 		},
 		mounted() {
-			this.drawLine();
+			//console.log(this.timestampToTime(1554011267019))
 			/*console.log(this.BeganToSee);*/
 		},
 		methods: {
+			// 时间戳转换成时间
+			
+			timestampToTime(val) {
+				
+				var date = new Date(val) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+				var Y = date.getFullYear() + '年'
+				var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '月'
+				var D = date.getDate() + '日 '
+				var h = date.getHours() + '点'
+				var m = date.getMinutes() + '分'
+				var s = date.getSeconds() +'秒'
+				return Y + M + D + h + m + s
+				
+			},
+
 			drawLine() {
+				var _t = this;
+				console.log(_t.Dincome);
 				var myChart = this.$echarts.init(document.getElementById("echart"))
 				var option = {
 					color: ['#fde33f', '#fb6041', '#40a8ff'],
 					title: {
 						text: '设备发现进度',
-						subtext: '2019年3月25日 09:02',
+						subtext: _t.Dincome2,
 						top: 5,
 						left: 20,
 						textStyle: {
@@ -189,7 +226,8 @@
 						/*y:'center',*/
 						/*left: 400,*/
 						top: 30,
-						data: ['待发现地址数', '已发现相应设备地址数', '检测无相应设备地址数']
+						data: _t.Dincome,
+						/*['待发现地址数', '已发现相应设备地址数', '检测无相应设备地址数']*/
 					},
 					toolbox: {
 						show: true,
@@ -244,7 +282,8 @@
 
 							}
 						},
-						data: [{
+						data: _t.Dincome,
+						/*[{
 								value: 335,
 								name: '待发现地址数'
 							},
@@ -257,29 +296,26 @@
 								name: '检测无相应设备地址数'
 							}
 
-						]
+						]*/
 					}]
 
 				};
 				// 使用刚指定的配置项和数据显示图表。
 				myChart.setOption(option);
-				var _t=this;
+				var _t = this;
 				myChart.on('click', function(param) {
 					var optionsData = new Object();
-			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
+					optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
 					_t.$api.post('/asset/discovery/result', {
-					"sn": optionsData,
-					"status":param.dataIndex-1
-					
-				}, function(res) {
-					console.log(res);
-					
-					
-				});
+						"sn": optionsData,
+						"status": param.dataIndex - 1
+					}, function(res) {
+
+					});
 					alert(status);
 				});
 			},
-			
+
 			// 改变当前页码
 			handleCurrentChange(val) {
 				//console.log(val)
@@ -300,27 +336,35 @@
 			//添加设备
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
-				var int=[];
-				for(var i=0;i<val.length;i++){
+				var int = [];
+				for(var i = 0; i < val.length; i++) {
 					int.push(
 						val[i].ip
 					)
 				}
-				this.ips=int;
+				this.ips = int;
 			},
 			addEquipment() {
-					var _t=this;
-					var optionsData = new Object();
-			optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
-					_t.$api.post('/asset/discovery/insert', {
+				var _t = this;
+				var optionsData = new Object();
+				optionsData = _t.$route.params.resdata ? _t.$route.params.resdata : JSON.parse(localStorage.getItem('hy-resdata'));
+				_t.$api.post('/asset/discovery/insert', {
 					"sn": optionsData,
-					"ips":_t.ips
+					"ips": _t.ips
 				}, function(res) {
-					
+
 					console.log(res);
-					
+
 				});
 			},
+			//表格禁用
+			selectable(row) {
+				if(row.discovery === "成功") {
+					return true
+				} else {
+					return false
+				}
+			}
 
 		},
 		beforeDestroy() {

@@ -89,81 +89,7 @@
 		data() {
 			return {
 				//树形控件
-				/*data: [{
-						id: 1,
-						status: 1,
-						label: '机架/塔式服务器 ',
-						type: 1,
-						children: [{
-							status: 1,
-							id: 6,
-							label: 'IBM',
-							children: [{
-								id: 11,
-								status: 1,
-								label: '101-101'
-							}, {
-								id: 12,
-								status: 1,
-								label: '102-102'
-							}]
-						}, {
-							id: 7,
-							status: 1,
-							label: 'DELL'
-						}]
-					}, {
-						id: 2,
-						status: 2,
-						type: 2,
-						label: '网络设备',
-						children: [{
-							id: 8,
-							status: 2,
-							label: '华为'
-						}, {
-							id: 9,
-							status: 2,
-							label: '锐捷'
-						}]
-					}, {
-						id: 3,
-						status: 3,
-						type: 3,
-						label: '小型机',
-						children: [{
-							id: 10,
-							status: 3,
-							label: '空调',
-							children: [{
-									id: 13,
-									status: 3,
-									label: '格力'
-								},
-								{
-									id: 14,
-									status: 3,
-									label: '美的'
-								}
-							]
-						}, {
-							id: 8,
-							status: 3,
-							label: 'UPS'
-						}]
-					}, {
-						id: 4,
-						status: 4,
-						type: 4,
-						label: '刀片/刀箱'
-					},
-					{
-						id: 5,
-						status: 5,
-						type: 5,
-						label: '存储设备'
-					}
-				],*/
+				
 				da:[],
 				defaultProps: {
 					children: 'children',
@@ -210,14 +136,15 @@
 		},
 		created() {
 			var _t = this;
-			_t.$api.post('/system/basedata/all', {
-				"systemBasedata": {
+			_t.$api.get('/system/basedata/all', {
+				jsonString: JSON.stringify({
 					"dictionaryType": "AssetType",
 					"enable": true,
 					"languageMark": "zh_CN"
-				}
+				})
 			}, function(res) {
-				var datas = JSON.parse(res.data.treeNode);
+				console.log(res);
+				var datas = res.data.treeNode;
 			    var da = datas.children[0].children;
 			    var objArr = new Array()
 			    for(var i=0; i < da.length;i++){
@@ -232,11 +159,7 @@
 		methods: {
 			BeganToSee() {
 				var _t = this;
-				//params.append('token', _t.getCookie('hy-token'));
-				/*params.append('param', _t.lists);
-				params.append('type', _t.type);
-				console.log(_t.type);*/
-				_t.$api.post('/asset/discovery/start', {
+				_t.$api.post('/asset/discovery/start',{
 					param: _t.lists,
 					type: _t.type
 				}, function(response) {
