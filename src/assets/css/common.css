@@ -57,7 +57,7 @@ html,body,.Index-box {
   z-index: 100;
 }
 
-.el-breadcrumb {
+.Breadcrumb .el-breadcrumb {
   height: 52px;
   line-height: 52px;
   display: inline-block;
