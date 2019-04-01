@@ -107,7 +107,6 @@
       }
     },
     mounted() {
-      console.log(1)
       this.dragList();
     },
     methods: {
