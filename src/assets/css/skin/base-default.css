@@ -163,7 +163,8 @@
 
 /*登录页*/
 .login-logoText,
-.login-footer {
+.login-footer,
+.bg-white {
   color: #fff;
 }
 
@@ -199,5 +200,46 @@
 }
 
 .box-search-result-null > span {
+  color: #3f81d0;
+}
+
+/*左侧导航*/
+.box-left-two:hover .bg-white {
+  color: #3f81d0;
+}
+
+.box-left-two:hover {
+  color: #3f81d0;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.box-left-ful:hover {
+  background-color: #3f81d0;
+  color: #fff;
+}
+
+.box-left {
+  color: #e3e5ee;
+}
+
+.box-right {
+  background-color: #fff;
+}
+
+.app-side-ul .el-icon-star-off {
+  color: #f22;
+}
+
+.app-side-ul .el-icon-star-on {
+  color: #f22;
+  background-color: #fff;
+}
+
+.fnlist {
+  border-bottom: 1px solid #ccc;
+}
+
+.fnlist ul li:hover {
   color: #3f81d0;
 }
