@@ -12,7 +12,13 @@
           @mouseover="MouseOverTwo"
           @mouseout="MouseOutTwo">
         <li><i class="el-icon-picture"></i></li>
-        <li v-show="show">{{data.menuName}}</li>
+        <li v-show="show">
+          <router-link
+            class="bg-white"
+            @click.native="hiddenAlert(data.menuId)"
+            :to="{path:data.menuHref,query:{id:data.menuId}}">{{data.menuName}}
+          </router-link>
+        </li>
         <li v-show="mouse"><i class="el-icon-close" @click="delItem(data)"></i></li>
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
@@ -71,13 +77,10 @@
     <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
-        <div class="box-batchEditor">
-          <span><i class="el-icon-setting"></i></span><span>批量编辑</span>
-        </div>
       </div>
       <div class="fnlist" v-for="(value,index) in selectArr" :key="index">
         <span class="fnspan">{{value.menuName}}</span>
-        <ul>
+        <ul class="app-side-ul">
           <li v-for="(item,index) in value.systemMenuAndLanguageRelationChildList" :item="item" :key="index">
             <router-link @click.native="hiddenAlert(item.id)" :to="{path:item.menuHref,query:{id:item.id}}">
               {{ item.menuName }}
@@ -92,8 +95,6 @@
   </div>
 </template>
 <script>
-  import menuData from '../../assets/js/menuData';
-
   export default {
     name: 'app-side',
     data() {
@@ -304,6 +305,16 @@
   }
 </script>
 <style scoped>
+  .box {
+    overflow: hidden;
+    z-index: 1031;
+    height: 100%;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    bottom: 0;
+  }
+
   .box-right-box {
     width: 840px;
     height: 100%;
@@ -342,18 +353,6 @@
   .box-search-result-null > span {
     font-size: 20px;
   }
-</style>
-
-<style scoped>
-  .box {
-    overflow: hidden;
-    z-index: 1031;
-    height: 100%;
-    position: fixed;
-    top: 52px;
-    left: 0;
-    bottom: 0;
-  }
 
   .box-right {
     width: 584px;
@@ -361,7 +360,7 @@
     padding-right: 14px;
     float: left;
     overflow: hidden;
-    background-color: #fff;
+
     position: relative;
     height: 444px;
   }
@@ -370,7 +369,6 @@
     overflow: hidden;
     padding-top: 20px;
     width: 556px;
-    border-bottom: 1px solid #ccc;
   }
 
   .fnspan {
@@ -394,21 +392,6 @@
   .fnlist ul li:hover {
     width: 125px;
     cursor: pointer;
-    color: #3f81d0;
-  }
-
-  .el-icon-star-off {
-    color: #f22;
-  }
-
-  .el-icon-star-on {
-    color: #f22;
-    background-color: #fff;
-  }
-
-  .selectActive {
-    color: #f22;
-    background-color: #fff;
   }
 
   .box-left {
@@ -417,7 +400,6 @@
     z-index: 1001;
     height: 100%;
     overflow: hidden;
-    color: #e3e5ee;
   }
 
   .box-left-ful {
@@ -431,8 +413,6 @@
   .box-left-ful:hover {
     height: 50px;
     line-height: 50px;
-    background-color: #3f81d0;
-    color: #fff;
     cursor: pointer;
   }
 
@@ -468,8 +448,6 @@
   }
 
   .box-left-two:hover {
-    color: #3f81d0;
-    background-color: #fff;
     cursor: pointer;
   }
 
