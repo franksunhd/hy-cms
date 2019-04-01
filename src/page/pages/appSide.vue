@@ -93,6 +93,7 @@
 </template>
 <script>
   import menuData from '../../assets/js/menuData';
+
   export default {
     name: 'app-side',
     data() {
@@ -113,19 +114,15 @@
       // 拖拽导航
       dragList() {
         var _t = this;
-        var dragListEnd = new Array();
-        _t.$dragging.$on('dragged', ({value}) => {
-          dragListEnd = value.list;
-        });
         _t.$dragging.$on('dragend', (val) => {
           if (val.group === 'data') {
+            var dragListEnd = _t.activeClass;
             var listEndIds = new Array();
             var listEndNames = new Array();
             dragListEnd.forEach(function (item) {
               listEndIds.push(item.id);
               listEndNames.push(item.menuName);
             });
-            // console.log(listEndNames.join(','));
             _t.updateMenuData(listEndIds.join(','));
           }
         });
