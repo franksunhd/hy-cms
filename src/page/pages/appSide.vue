@@ -101,21 +101,37 @@
         mouse: false,
         show: false,
         activeClass: [],
-        Income: [],
         selectArr: [],
-        search: ''
+        search: '',
+        dragListEnd: []
       }
     },
     mounted() {
-      // 拖拽
-      var _t = this;
-      _t.$dragging.$on('dragged', ({value}) => {
-
-      });
-      _t.$dragging.$on('dragend', (val) => {
-      });
+      console.log(1)
+      this.dragList();
     },
     methods: {
+      // 拖拽导航
+      dragList() {
+        var _t = this;
+        var dragListEnd = new Array();
+        _t.$dragging.$on('dragged', ({value}) => {
+          dragListEnd = value.list;
+        });
+        _t.$dragging.$on('dragend', (val) => {
+          if (val.group === 'data') {
+            var listEndIds = new Array();
+            var listEndNames = new Array();
+            dragListEnd.forEach(function (item) {
+              listEndIds.push(item.id);
+              listEndNames.push(item.menuName);
+            });
+            // console.log(listEndNames.join(','));
+            _t.updateMenuData(listEndIds.join(','));
+          }
+        });
+      },
+      // 锚点链接
       resultTip(data) {
         document.querySelector('#' + data).scrollIntoView(true);
       },
@@ -125,10 +141,12 @@
         this.rshow = false;
         localStorage.setItem('hy-menu-id', val);
       },
+      // 鼠标移入功能导航菜单
       MouseOverFul() {
         this.show = true;
         this.rshow = true;
       },
+      // 鼠标移入便捷菜单
       MouseOverTwo() {
         if (this.rshow == true) {
           this.mouse = true;
@@ -137,8 +155,8 @@
           this.mouse = true;
           this.show = true;
         }
-
       },
+      // 鼠标移出便捷菜单
       MouseOutTwo() {
         if (this.rshow == true) {
           this.mouse = false;
@@ -147,7 +165,6 @@
           this.mouse = false;
           this.show = false;
         }
-
       },
       // 点击关闭弹出层
       ClickClose() {
@@ -198,7 +215,6 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              console.log(res.data)
               _t.activeClass = res.data;
               break;
             case 1003: // 无操作权限
@@ -243,7 +259,6 @@
       },
       // 删除便捷菜单
       delItem(data) {
-        console.log(data);
         var _t = this;
         _t.$api.delete('system/userShortcutMenu/' + data.id, {}, function (res) {
           switch (res.status) {
@@ -263,6 +278,28 @@
           }
         })
       },
+      // 便捷菜单排序后发送请求
+      updateMenuData(val) {
+        var _t = this;
+        _t.$api.put('system/userShortcutMenu/', {
+          idStr: val,
+          userId: localStorage.getItem('hy-user-id')
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      }
     },
     created() {
       this.getData();
