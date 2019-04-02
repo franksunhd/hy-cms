@@ -516,7 +516,9 @@
                 _t.exclude(_t, res.message);
                 break;
               case 2007: // 删除失败
-                _t.$alert(res.message);
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
                 break;
               default:
                 break;
@@ -604,6 +606,10 @@
                 }
               });
               _t.tableData = res.data.list;
+              _t.disableBtn.edit = true;
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+              _t.disableBtn.more = true;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -615,6 +621,10 @@
               _t.tableData = [];
               _t.options.currentPage = 1;
               _t.options.total = 0;
+              _t.disableBtn.edit = true;
+              _t.disableBtn.enable = true;
+              _t.disableBtn.disable = true;
+              _t.disableBtn.more = true;
               break;
           }
         });

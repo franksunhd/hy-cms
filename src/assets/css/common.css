@@ -182,3 +182,7 @@ html,body,.Index-box {
   width: auto;
   line-height: 22px;
 }
+
+.el-input__icon {
+  line-height: 30px;
+}
