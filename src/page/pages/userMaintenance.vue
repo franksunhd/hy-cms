@@ -128,7 +128,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form :model="addEdit" inline label-width="150px" :rules="rules" ref="ruleForm">
-        <el-form-item :required="true" :label="$t('userMaintenance.organization') + '：'" prop="organization">
+        <el-form-item class="star" :label="$t('userMaintenance.organization') + '：'" prop="organization">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -148,29 +148,29 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.username') + '：'" prop="username">
+        <el-form-item class="star" :label="$t('userMaintenance.username') + '：'" prop="username">
           <el-input v-model="addEdit.username" class="width200"/>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
+        <el-form-item class="star" :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
           <el-input v-model="addEdit.loginAccount" class="width200"/>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
+        <el-form-item class="star" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
           <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
+        <el-form-item class="star" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
           <el-input v-model="addEdit.mobileNum" class="width200"/>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.emails') + '：'" prop="emails">
+        <el-form-item class="star" :label="$t('userMaintenance.emails') + '：'" prop="emails">
           <el-input v-model="addEdit.emails" class="width200"/>
         </el-form-item>
-        <el-form-item :required="true" :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
+        <el-form-item class="star" :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
           <el-select class="width200" v-model="addEdit.status">
             <el-option :label="$t('public.enable')" value="1"/>
             <el-option :label="$t('public.disable')" value="0"/>
           </el-select>
         </el-form-item>
         <br>
-        <el-form-item :required="true" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
+        <el-form-item class="star" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
           <el-button type="success" class="queryBtn">选择</el-button>
         </el-form-item>
       </el-form>
@@ -194,12 +194,11 @@
 
 <script>
   import Box from '../../components/Box';
-  import selectTree from '../../components/selectTree';
   import {isNotNull} from "../../assets/js/validator";
 
   export default {
     name: "user-maintenance",
-    components: {Box, selectTree},
+    components: {Box},
     data() {
       return {
         // 查询表单
@@ -491,7 +490,6 @@
       // 删除
       deleteData() {
         var _t = this;
-        console.log(_t.checkRoleIds)
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),

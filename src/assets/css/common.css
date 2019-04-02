@@ -161,3 +161,9 @@ html,body,.Index-box {
 .el-form-item__content {
   line-height: 30px;
 }
+
+/*star*/
+.star label::before {
+  content: '*';
+  margin-right: 4px;
+}

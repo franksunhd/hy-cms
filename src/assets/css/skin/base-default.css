@@ -251,3 +251,7 @@
 .assignRole-box {
   background-color: #ddd;
 }
+
+.star label::before {
+  color: #F56C6C;
+}
