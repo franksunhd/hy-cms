@@ -262,9 +262,8 @@
       return {
         // 查询表单
         formItem: {
-          roleName: '',
-          dateTime: '',
-          endTime: '',
+          roleName: null,
+          dateTime: null,
         },
         // 全局按钮 是否禁用
         disableBtn:{
@@ -274,7 +273,6 @@
           more:true
         },
         checked:false,
-
         dialogVisible:false,
         outerVisible:false,
         innerVisible:false,
@@ -361,6 +359,7 @@
       handleCurrentChange(val){
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
       },
       // 内层 改变当前页码
       innerOptionsHandleCurrentChange(val){
@@ -448,8 +447,14 @@
         _t.$store.commit('setLoading', true);
         _t.$api.get('system/role/all', {
           jsonString: JSON.stringify({
-            systemRole: {},
-            languageMark: localStorage.getItem('hy-language')
+            systemRole: {
+              roleName: _t.formItem.roleName == null ? null : _t.formItem.roleName.trim(),
+              startTime: _t.formItem.roleName == null ? null : _t.formItem.dateTime[0].getTime(),
+              endTime: _t.formItem.roleName == null ? null : _t.formItem.dateTime[1].getTime(),
+              languageMark: localStorage.getItem('hy-language')
+            },
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize
           }),
           currentPage: _t.options.currentPage,
           pageSize: _t.options.pageSize,
@@ -482,8 +487,8 @@
       }
     },
     created(){
-      // this.$store.commit('setLoading',true);
-      // this.getData();
+      this.$store.commit('setLoading', true);
+      this.getData();
     },
   }
 </script>
