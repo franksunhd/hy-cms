@@ -15,8 +15,24 @@
           <el-input v-model="formItem.username" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.organization') + '：'">
-          <selectTree width="200" :options="organizationList" @selectedId="selectTreeNum"
-                      :modelValue="formItem.organization"/>
+          <el-popover
+            trigger="click"
+            v-model="isShowFormPopover"
+            placement="bottom-start"
+            ref="popover">
+            <el-tree
+              :data="organizationList"
+              highlight-current
+              :expand-on-click-node="false"
+              @node-click="clickNode"
+              :props="defaultProps"/>
+            <el-input
+              v-model="formItem.organization"
+              style="width: 200px;"
+              suffix-icon="el-icon-arrow-down"
+              readonly
+              slot="reference"/>
+          </el-popover>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.status') + '：'">
           <el-select v-model="formItem.status" class="width200">
@@ -39,7 +55,7 @@
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button :disabled="disableBtn.edit" @click="dialogVisible = true" class="queryBtn">
+        <el-button :disabled="disableBtn.edit" @click="editData" class="queryBtn">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
@@ -113,8 +129,24 @@
       :close-on-press-escape="false">
       <el-form :model="addEdit" inline label-width="150px" :rules="rules" ref="ruleForm">
         <el-form-item :required="true" :label="$t('userMaintenance.organization') + '：'" prop="organization">
-          <selectTree width="200" :options="organizationList" @selectedId="selectTreeNum"
-                      v-model="addEdit.organization"/>
+          <el-popover
+            trigger="click"
+            placement="bottom-start"
+            v-model="isShowEditPopover"
+            ref="popover">
+            <el-tree
+              :data="organizationList"
+              highlight-current
+              :expand-on-click-node="false"
+              @node-click="clickNodeAlert"
+              :props="defaultProps"/>
+            <el-input
+              v-model="addEdit.organization"
+              style="width: 200px;"
+              suffix-icon="el-icon-arrow-down"
+              readonly
+              slot="reference"/>
+          </el-popover>
         </el-form-item>
         <el-form-item :required="true" :label="$t('userMaintenance.username') + '：'" prop="username">
           <el-input v-model="addEdit.username" class="width200"/>
@@ -148,7 +180,8 @@
           <el-breadcrumb-item>上海分部</el-breadcrumb-item>
         </el-breadcrumb>
         <el-checkbox-group class="assignRole-group-box" v-model="addEdit.assignRole">
-          <el-checkbox-button v-for="role in assignRoleList" :label="role" :key="role">{{role}}</el-checkbox-button>
+          <el-checkbox-button v-for="role in assignRoleList" :label="role.id" :key="role.id">{{role.roleName}}
+          </el-checkbox-button>
         </el-checkbox-group>
       </div>
       <span slot="footer">
@@ -173,11 +206,13 @@
         formItem: {
           organization: null,
           status: null,
-          username: null
+          username: null,
+          organizationId: null
         },
         // 新增 编辑表单
         addEdit: {
           organization: '',
+          organizationId: '',
           username: '',
           loginAccount: '',
           loginPassword: '',
@@ -194,6 +229,8 @@
           more: true
         },
         dialogVisible: false,
+        isShowFormPopover: false,
+        isShowEditPopover: false,
         tableData: [],
         statusList: [
           {label: '启用', value: 1},
@@ -201,7 +238,9 @@
         ],
         // 表格选中之后数据接收
         checkListValue: [],
-        assignRoleList: ['上海', '北京北京', '广州', '深圳', '上海上海', '北京', '广州上海', '深圳', '上海上海', '北京', '广州', '深圳'],
+        // 删除数据传参
+        checkRoleIds: [],
+        assignRoleList: [],
         // 分页
         options: {
           total: 0, // 总条数
@@ -212,7 +251,7 @@
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
           value: 'id',          // 唯一标识
-          label: 'label',       // 标签显示
+          label: 'nodeName',       // 标签显示
           children: 'children', // 子级
         },
         organizationList: [],
@@ -245,8 +284,45 @@
       }
     },
     methods: {
-      selectTreeNum(val) {
-        // console.log(val)
+      // 查询表单所属组织下拉框
+      clickNode(val) {
+        this.formItem.organization = val.nodeName;
+        this.formItem.organizationId = val.nodeId;
+        this.isShowFormPopover = false;
+      },
+      // 新增编辑弹出层所属组织下拉框
+      clickNodeAlert(val) {
+        var _t = this;
+        _t.addEdit.organization = val.nodeName;
+        _t.addEdit.organizationId = val.nodeId;
+        _t.isShowEditPopover = false;
+        _t.getRoleWithOrgId(_t.addEdit.organizationId);
+      },
+      // 根据组织id查询 角色列表
+      getRoleWithOrgId(val) {
+        var _t = this;
+        _t.$api.get('system/role/all/', {
+          jsonString: JSON.stringify({
+            systemRole: {
+              organizationId: val
+            }
+          })
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.assignRoleList = res.data.list;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.assignRoleList = [];
+              break;
+          }
+        });
       },
       // 重置新增编辑表单数据
       resetForm() {
@@ -321,9 +397,15 @@
         }
         // 选中数据 获取id 存储
         var checkValue = new Array();
+        var checkRoleIds = new Array();
         data.forEach(function (item) {
           checkValue.push(item.id);
+          var obj = new Object();
+          obj.roleId = item.roleList;
+          obj.userId = item.id;
+          checkRoleIds.push(obj);
         });
+        _t.checkRoleIds = checkRoleIds;
         _t.checkListValue = checkValue;
       },
       // 改变当前页码
@@ -392,9 +474,10 @@
                 });
                 _t.getData();
                 break;
-              case 1004: // token 失效
-              case 1005: // token 为 null
-              case 1006: // token 不一致
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
                 _t.exclude(_t, res.message);
                 break;
               default:
@@ -408,25 +491,34 @@
       // 删除
       deleteData() {
         var _t = this;
+        console.log(_t.checkRoleIds)
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.delete('', {}, function (res) {
+          _t.$api.delete('system/user/', {
+            jsonString: JSON.stringify({
+              userRoleParmArray: _t.checkRoleIds
+            })
+          }, function (res) {
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getData();
                 break;
-              case 1004: // token 失效
-              case 1005: // token 为 null
-              case 1006: // token 不一致
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
                 _t.exclude(_t, res.message);
+                break;
+              case 2007: // 删除失败
+                _t.$alert(res.message);
                 break;
               default:
                 break;
@@ -474,13 +566,12 @@
       // 查询数据
       getData() {
         var _t = this;
-        console.log(_t.formItem.organization)
         _t.$store.commit('setLoading', true);
         _t.$api.get('system/user/pagelist', {
           jsonString: JSON.stringify({
             systemUser: {
               username: _t.formItem.username,
-              organizationId: _t.formItem.organization,
+              organizationId: _t.formItem.organizationId,
               status: _t.formItem.status,
               languageMark: localStorage.getItem('hy-language')
             },
@@ -491,13 +582,35 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              _t.tableData = res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
+              var lists = res.data.list;
+              lists.forEach(function (item) {
+                if (item.roleList !== null) {
+                  if (item.roleList.length !== 0) {
+                    var roleName = new Array();
+                    var roleIds = new Array();
+                    item.roleList.forEach(function (data) {
+                      roleName.push(data.roleName);
+                      roleIds.push(data.id);
+                    });
+                    item.roleName = roleName.join(',');
+                    item.roleListIds = roleIds.join(',');
+                  } else {
+                    item.roleName = '';
+                    item.roleListIds = null;
+                  }
+                } else {
+                  item.roleName = '';
+                  item.roleListIds = null;
+                }
+              });
+              _t.tableData = res.data.list;
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:
@@ -513,7 +626,39 @@
         var _t = this;
         _t.$refs[formName].validate((valid) => {
           if (valid) {
-
+            _t.$api.post('system/user/', {
+              systemUser: {
+                organizationId: _t.addEdit.organizationId,
+                username: _t.addEdit.loginAccount,
+                password: _t.addEdit.loginPassword,
+                displayName: _t.addEdit.username,
+                email: _t.addEdit.emails,
+                mobile: _t.addEdit.mobileNum,
+                status: _t.addEdit.status,
+                createBy: localStorage.getItem('hy-user-name'),
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: _t.addEdit.assignRole.join(',')
+            }, function (res) {
+              switch (res.status) {
+                case 200:
+                  _t.dialogVisible = false;
+                  _t.getData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 2005:
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  _t.dialogVisible = false;
+                  break;
+              }
+            });
           }
         });
       },
@@ -525,16 +670,54 @@
             case 200:
               _t.organizationList = JSON.parse(res.data).children;
               break;
-            case 1004: // token 失效
-            case 1005: // token 为 null
-            case 1006: // token 不一致
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
             default:
               break;
           }
         });
-      }
+      },
+      // 编辑数据
+      editData() {
+        var _t = this;
+        _t.$api.put('system/user/', {
+          systemUser: {
+            id: 'bb6c161ddb4240ffa78bef522c874653',
+            organizationId: 'org_01_02',
+            username: 'huanhang',
+            password: '123456',
+            displayName: '换行1',
+            email: 'aaa@qq.com',
+            mobile: '123',
+            status: 0,
+            languageMark: localStorage.getItem('hy-language')
+          },
+          roleId: 'role_01'
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.dialogVisible = false;
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            case 2006:
+              _t.$alert(res.message);
+              break;
+            default:
+              _t.dialogVisible = false;
+              break;
+          }
+        });
+      },
     },
     created() {
       this.$store.commit('setLoading', true);
