@@ -149,3 +149,15 @@ html,body,.Index-box {
   height: 40px;
   padding-left: 40px;
 }
+
+.userMaintenance-dialog .el-dialog__body {
+  padding: 20px 0 0 0;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+.el-form-item__content {
+  line-height: 30px;
+}

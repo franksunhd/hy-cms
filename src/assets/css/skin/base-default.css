@@ -23,7 +23,7 @@
 }
 
 .box-wrap {
-  background-color: #f0f0f0;
+  background-color: #fff;
 }
 
 /*面包屑*/
@@ -242,4 +242,12 @@
 
 .fnlist ul li:hover {
   color: #3f81d0;
+}
+
+.userMaintenance-dialog .el-dialog__header {
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.assignRole-box {
+  background-color: #ddd;
 }
