@@ -24,7 +24,7 @@
             :placeholder="$t('public.selectDate')" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="queryBtn" @click="log">{{$t('public.query')}}</el-button>
+          <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -479,11 +479,6 @@
               break;
           }
         });
-      },
-      log() {
-        var date = this.formItem.dateTime;
-        console.log(date[0].getTime());
-        console.log(date[1].getTime());
       }
     },
     created(){
