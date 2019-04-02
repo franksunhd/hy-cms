@@ -52,6 +52,7 @@ Vue.prototype.exclude = (name, message) => {
       localStorage.removeItem('hy-organization-id');
       localStorage.removeItem('hy-token');
       localStorage.removeItem('hy-user-id');
+      localStorage.removeItem('hy-user-name');
     }
   });
 };

@@ -126,6 +126,7 @@
         _t.$api.get('login/userInfo', {}, function (res) {
           switch (res.status) {
             case 200:
+              localStorage.setItem('hy-user-name', res.data.displayName);
               localStorage.setItem('hy-language', res.data.languageMark);
               localStorage.setItem('hy-organization-id', res.data.organizationId);
               localStorage.setItem('hy-user-id', res.data.id);
