@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
           <el-date-picker
-            v-model="formItem.startTime"
+            v-model="formItem.dateTime"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -68,7 +68,7 @@
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center" />
         <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="center" align="center"/>
-        <el-table-column prop="organizationId" :label="$t('roleMaintenance.organization')" header-align="center"
+        <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="center"
                          align="center"/>
         <el-table-column prop="" :label="$t('roleMaintenance.userNum')" header-align="center" align="center"/>
         <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center">
@@ -79,12 +79,18 @@
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="center"
                          align="center"/>
-        <el-table-column prop="createTime" :label="$t('roleMaintenance.createTime')" header-align="center"
-                         align="center"/>
+        <el-table-column :label="$t('roleMaintenance.createTime')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime | dateFilter}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="center"
                          align="center"/>
-        <el-table-column prop="lastModifyTime" :label="$t('roleMaintenance.updateTime')" width="200"
-                         header-align="center" align="center"/>
+        <el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.lastModifyTime | dateFilter}}</span>
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页-->
       <pages
@@ -257,7 +263,7 @@
         // 查询表单
         formItem: {
           roleName: '',
-          startTime: '',
+          dateTime: '',
           endTime: '',
         },
         // 全局按钮 是否禁用
@@ -274,7 +280,7 @@
         innerVisible:false,
         dialogVisibleFunction:false,
         dialogVisibleData:false,
-        tableData: [],
+        tableData: [{}, {}],
         innerTableData: [],
         options:{
           total: 0, // 总条数
@@ -442,10 +448,11 @@
         _t.$store.commit('setLoading', true);
         _t.$api.get('system/role/all', {
           jsonString: JSON.stringify({
-            currentPage: _t.options.currentPage,
-            pageSize: _t.options.pageSize,
+            systemRole: {},
             languageMark: localStorage.getItem('hy-language')
-          })
+          }),
+          currentPage: _t.options.currentPage,
+          pageSize: _t.options.pageSize,
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -469,10 +476,9 @@
         });
       },
       log() {
-        var _t = this;
-        console.log(_t.formItem.startTime);
-        console.log(_t.formItem.startTime[0]);
-        console.log(_t.formItem.startTime[1]);
+        var date = this.formItem.dateTime;
+        console.log(date[0].getTime());
+        console.log(date[1].getTime());
       }
     },
     created(){

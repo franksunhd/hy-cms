@@ -15,7 +15,8 @@
           <el-input v-model="formItem.username" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.organization') + '：'">
-          <selectTree width="200" :options="organizationList" v-model="formItem.organization"/>
+          <selectTree width="200" :options="organizationList" @selectedId="selectTreeNum"
+                      :modelValue="formItem.organization"/>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.status') + '：'">
           <el-select v-model="formItem.status" class="width200">
@@ -104,41 +105,52 @@
     </div>
     <!--新增编辑-->
     <el-dialog
+      class="userMaintenance-dialog"
       append-to-body
       :title="$t('userMaintenance.createUpdateUserInfo')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form :model="addEdit" inline label-width="150px" :rules="rules" ref="ruleForm">
-        <el-form-item :label="$t('userMaintenance.organization') + '：'" prop="organization">
-          <selectTree width="200" :options="organizationList" v-model="addEdit.organization"/>
+        <el-form-item :required="true" :label="$t('userMaintenance.organization') + '：'" prop="organization">
+          <selectTree width="200" :options="organizationList" @selectedId="selectTreeNum"
+                      v-model="addEdit.organization"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.username') + '：'" prop="username">
+        <el-form-item :required="true" :label="$t('userMaintenance.username') + '：'" prop="username">
           <el-input v-model="addEdit.username" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
+        <el-form-item :required="true" :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
           <el-input v-model="addEdit.loginAccount" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
+        <el-form-item :required="true" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
           <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
+        <el-form-item :required="true" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
           <el-input v-model="addEdit.mobileNum" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.emails') + '：'" prop="emails">
+        <el-form-item :required="true" :label="$t('userMaintenance.emails') + '：'" prop="emails">
           <el-input v-model="addEdit.emails" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
+        <el-form-item :required="true" :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
           <el-select class="width200" v-model="addEdit.status">
             <el-option :label="$t('public.enable')" value="1"/>
             <el-option :label="$t('public.disable')" value="0"/>
           </el-select>
         </el-form-item>
         <br>
-        <el-form-item :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
+        <el-form-item :required="true" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
           <el-button type="success" class="queryBtn">选择</el-button>
         </el-form-item>
       </el-form>
+      <div class="assignRole-box">
+        <el-breadcrumb style="margin-bottom: 10px;">
+          <el-breadcrumb-item>集团亚洲总部</el-breadcrumb-item>
+          <el-breadcrumb-item>上海分部</el-breadcrumb-item>
+        </el-breadcrumb>
+        <el-checkbox-group class="assignRole-group-box" v-model="addEdit.assignRole">
+          <el-checkbox-button v-for="role in assignRoleList" :label="role" :key="role">{{role}}</el-checkbox-button>
+        </el-checkbox-group>
+      </div>
       <span slot="footer">
         <el-button class="queryBtn" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
@@ -172,7 +184,7 @@
           mobileNum: '',
           emails: '',
           status: '',
-          assignRole: ''
+          assignRole: []
         },
         // 控制全局按钮 是否禁用
         disableBtn: {
@@ -189,10 +201,7 @@
         ],
         // 表格选中之后数据接收
         checkListValue: [],
-        checkList: [
-          {label: '系统管理员', value: 1},
-          {label: '区域经理', value: 2}
-        ],
+        assignRoleList: ['上海', '北京北京', '广州', '深圳', '上海上海', '北京', '广州上海', '深圳', '上海上海', '北京', '广州', '深圳'],
         // 分页
         options: {
           total: 0, // 总条数
@@ -236,6 +245,9 @@
       }
     },
     methods: {
+      selectTreeNum(val) {
+        // console.log(val)
+      },
       // 重置新增编辑表单数据
       resetForm() {
         var _t = this;
@@ -247,7 +259,7 @@
           mobileNum: '',
           emails: '',
           status: '',
-          assignRole: ''
+          assignRole: []
         }
       },
       // 当前选中条数
@@ -433,7 +445,7 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user/', {
+          _t.$api.put('system/user/resetPassword', {
             systemUser: {
               id: _t.checkListValue.join(',')
             }
@@ -441,7 +453,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                _t.$alert('重置密码成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getData();
@@ -462,15 +474,18 @@
       // 查询数据
       getData() {
         var _t = this;
+        console.log(_t.formItem.organization)
         _t.$store.commit('setLoading', true);
         _t.$api.get('system/user/pagelist', {
           jsonString: JSON.stringify({
-            username: _t.formItem.username,
-            organizationId: _t.formItem.organization,
-            status: _t.formItem.status,
+            systemUser: {
+              username: _t.formItem.username,
+              organizationId: _t.formItem.organization,
+              status: _t.formItem.status,
+              languageMark: localStorage.getItem('hy-language')
+            },
             currentPage: _t.options.currentPage,
-            pageSize: _t.options.pageSize,
-            languageMark: localStorage.getItem('hy-language')
+            pageSize: _t.options.pageSize
           })
         }, function (res) {
           _t.$store.commit('setLoading', false);
@@ -529,6 +544,19 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .assignRole-box {
+    min-height: 72px;
+    max-height: 152px;
+    padding: 10px 0 0 50px;
+  }
 
+  .assignRole-group-box .el-checkbox-button {
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+
+  .assignRole-group-box .el-checkbox-button__inner {
+    border-radius: 2px !important;
+  }
 </style>
