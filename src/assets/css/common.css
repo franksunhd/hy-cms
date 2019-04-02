@@ -167,3 +167,18 @@ html,body,.Index-box {
   content: '*';
   margin-right: 4px;
 }
+
+.el-form-item__label {
+  height: 30px;
+  line-height: 30px;
+}
+
+.el-date-editor .el-range__icon,
+.el-date-editor .el-range__close-icon {
+  line-height: 22px;
+}
+
+.el-date-editor .el-range-separator {
+  width: auto;
+  line-height: 22px;
+}
