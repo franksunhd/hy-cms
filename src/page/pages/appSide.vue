@@ -299,8 +299,16 @@
       }
     },
     created() {
-      this.getData();
-      this.getMenuData();
+      var _t = this;
+      if (localStorage.getItem('hy-language') == null || localStorage.getItem('hy-user-id') == null) {
+        setTimeout(function () {
+          _t.getData();
+          _t.getMenuData();
+        }, 1000);
+      } else {
+        _t.getData();
+        _t.getMenuData();
+      }
     }
   }
 </script>
