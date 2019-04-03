@@ -272,6 +272,8 @@
 <script>
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
+  import {dateFilter} from '../../assets/js/filters';
+
   export default {
     name: "role-maintenance",
     components: {Box},
@@ -354,15 +356,13 @@
           jsonString: JSON.stringify({
             systemRole: {
               roleName: _t.formItem.roleName == null ? null : _t.formItem.roleName.trim(),
-              createTime: _t.formItem.dateTime == null ? null : _t.formItem.dateTime[0].getTime(),
-              lastModifyTime: _t.formItem.dateTime == null ? null : _t.formItem.dateTime[1].getTime(),
+              createTime: _t.formItem.dateTime == null ? null : dateFilter(_t.formItem.dateTime[0].getTime()),
+              lastModifyTime: _t.formItem.dateTime == null ? null : dateFilter(_t.formItem.dateTime[1].getTime()),
               languageMark: localStorage.getItem('hy-language')
             },
             currentPage: _t.options.currentPage,
             pageSize: _t.options.pageSize
-          }),
-          currentPage: _t.options.currentPage,
-          pageSize: _t.options.pageSize,
+          })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
