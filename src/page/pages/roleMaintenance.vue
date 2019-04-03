@@ -307,7 +307,7 @@
         dialogVisible:false,
         outerVisible:false,
         innerVisible:false,
-        dialogVisibleFunction: true,
+        dialogVisibleFunction: false,
         dialogVisibleData:false,
         isShowEditPopover: false,
         tableData: [],
