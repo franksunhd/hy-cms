@@ -198,7 +198,7 @@
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
-        dialogVisible: true,
+        dialogVisible: false,
         // 数据默认字段
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
