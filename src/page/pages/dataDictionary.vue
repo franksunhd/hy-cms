@@ -41,7 +41,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+              <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -112,8 +112,6 @@
             :total='options.total'
             :currentPage='options.currentPage'
             :pageSize='options.pageSize'
-            :firstPage='options.firstPage'
-            :lastPage='options.lastPage'
             @handleCurrentChangeSub="handleCurrentChange" />
         </div>
       </el-col>
@@ -337,6 +335,9 @@
           jsonString: JSON.stringify({
             systemBasedata: {
               id: _t.formItem.nodeId,
+              basedataName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
+              dictionaryCode: _t.formItem.businessCode == null ? null : _t.formItem.businessCode.trim(),
+              enable: _t.formItem.enable == null ? null : (_t.formItem.enable == 1 ? true : false),
               languageMark: localStorage.getItem('hy-language')
             },
             currentPage: _t.options.currentPage,
