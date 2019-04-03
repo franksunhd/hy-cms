@@ -11,8 +11,7 @@
     <el-row>
       <el-col :span="4">
         <p class="functionMenuMaintenance-title">
-          <a href="javascript:;"
-             @click="tableData = treeData">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
+          <a href="javascript:;" @click="clickNode">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
         </p>
         <el-tree
           style="width: 200px;"
@@ -25,15 +24,15 @@
       <el-col :span="20">
         <div class="padding20 borderBottom">
           <!--表单-->
-          <el-form inline>
+          <el-form inline :model="formItem">
             <el-form-item :label="$t('functionMenuMaintenance.businessCode') + '：'">
-              <el-input class="width200" />
+              <el-input class="width200" v-model="formItem.businessCode"/>
             </el-form-item>
             <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
-              <el-input class="width200" />
+              <el-input class="width200" v-model="formItem.dictionaryName"/>
             </el-form-item>
             <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
-              <el-select v-model="status" class="width200">
+              <el-select v-model="formItem.status" class="width200">
                 <el-option
                   v-for="item in statusList"
                   :value="item.value"
@@ -212,6 +211,13 @@
     components:{Box},
     data() {
       return {
+        formItem: {
+          nodeId: null,
+          menuLevel: null,
+          businessCode: null,
+          dictionaryName: null,
+          status: null,
+        },
         disableBtn: { // 全局按钮启用禁用判断
           edit:true,
           enable:true,
@@ -290,6 +296,7 @@
       // 改变当前页码
       handleCurrentChange(val){
         this.options.currentPage = val;
+        this.getData();
       },
       // 启用
       enableData() {
@@ -327,7 +334,7 @@
           return;
         });
       },
-      // 获取节点显示数据
+      // 获取节点显示数据 重新封装 by ssy
       getCheckedNodes() {
         this.dialogVisibleAlert = false;
         var listData = new Array(); // 总数据集合
@@ -455,15 +462,8 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              var navBarArr = res.data.rootMenu;
-              if (navBarArr) {
-                navBarArr.forEach(function (item) {
-                  if (item.systemMenuAndLanguageRelationChildList.length === 0) {
-                    item.systemMenuAndLanguageRelationChildList = null;
-                  }
-                });
-                _t.treeData = navBarArr;
-              }
+              _t.treeData = res.data.rootMenu;
+              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -480,22 +480,29 @@
       // 获取选中树形菜单
       getCurrentNode(data) {
         var _t = this;
-        _t.tableData = data.systemMenuAndLanguageRelationChildList;
+        _t.formItem.nodeId = data.id;
+        _t.formItem.menuLevel = data.menuLevel;
+        _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
       getData() {
         var _t = this;
         _t.$api.get('system/menu/', {
           jsonString: JSON.stringify({
-            menuId: '',
-            menuLevel: '1_2_3_4',
-            languageMark: localStorage.getItem('hy-language')
+            menuId: _t.formItem.nodeId,
+            menuLevel: _t.formItem.menuLevel,
+            languageMark: localStorage.getItem('hy-language'),
+            businessCode: _t.formItem.businessCode == null ? null : _t.formItem.businessCode.trim(),
+            dictionaryName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
+            status: _t.formItem.status,
           })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
               _t.tableData = res.data.rootMenu;
+              _t.options.currentPage = res.data.currentPage;
+              _t.options.total = res.data.count;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -505,6 +512,8 @@
               break;
             default:
               _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
               break;
           }
         });
@@ -514,6 +523,14 @@
 
       },
       // 表格数据下移
+      moveDown(data) {
+
+      },
+      // 点击系统功能菜单
+      clickNode() {
+        var _t = this;
+
+      }
     },
     created() {
       this.$store.commit('setLoading', true);
