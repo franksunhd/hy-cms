@@ -11,27 +11,28 @@
     <el-row>
       <el-col :span="4">
         <p class="dataDictionary-title">
-          <a href="javascript:;">{{$t('dataDictionary.systemDataDictionary')}}</a>
+          <a href="javascript:;" @click="clickNode">{{formItem.menuName}}</a>
         </p>
         <el-tree
           style="width: 200px;"
-          :data="treeData"
+          :data="treeData.children"
           @node-click="getCurrentNode"
+          :props="defaultProps"
           :expand-on-click-node="false"
-          :default-expand-all="true"/>
+          :default-expand-all="false"/>
       </el-col>
       <el-col :span="20">
         <div class="padding20 borderBottom">
           <!--表单-->
-          <el-form inline>
+          <el-form :model="formItem" inline>
             <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-              <el-input class="width200" />
+              <el-input class="width200" v-model="formItem.businessCode"/>
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-              <el-input class="width200" />
+              <el-input class="width200" v-model="formItem.dictionaryName"/>
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.status') + '：'">
-              <el-select v-model="status" class="width200">
+              <el-select v-model="formItem.status" class="width200">
                 <el-option
                   v-for="item in statusList"
                   :value="item.value"
@@ -78,19 +79,33 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('dataDictionary.dictionaryType')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.dictionaryName')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.businessCode')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.directoryLevel')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.sort')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.status')" width="150" header-align="center" align="center">
+            <el-table-column prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')" width="150"
+                             header-align="center" align="center"/>
+            <el-table-column prop="basedataName" :label="$t('dataDictionary.dictionaryName')" width="150"
+                             header-align="center" align="center"/>
+            <el-table-column prop="dictionaryCode" :label="$t('dataDictionary.businessCode')" width="150"
+                             header-align="center" align="center"/>
+            <el-table-column prop="level" :label="$t('dataDictionary.directoryLevel')" width="150" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('dataDictionary.sort')" width="150" header-align="center" align="center">
               <template slot-scope="scope">
-                <span v-if="scope.row.status === 1">启用</span>
-                <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('dataDictionary.createName')" width="150" header-align="center" align="center" />
-            <el-table-column :label="$t('dataDictionary.createTime')" width="150" header-align="center" align="center" />
+            <el-table-column :label="$t('dataDictionary.status')" width="150" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.enable === true">启用</span>
+                <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createBy" :label="$t('dataDictionary.createName')" width="150" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('dataDictionary.createTime')" width="155" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.createTime | dateFilter}}</span>
+              </template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <pages
@@ -112,7 +127,7 @@
       :close-on-press-escape="false">
       <el-form label-width="150px">
         <el-form-item :label="$t('dataDictionary.parentDictionary') + '：'">
-          <selectTree width="200" :options="treeData" v-model="organization" />
+          <selectTree width="200" :options="treeData.children" v-model="organization"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.dictionaryType') + '：'">
           <el-input />
@@ -152,6 +167,14 @@
     components:{Box,selectTree},
     data() {
       return {
+        formItem: {
+          nodeId: null,
+          businessCode: null,
+          dictionaryName: null,
+          status: null,
+          menuName: ''
+        },
+        // 全局按钮禁用启用
         disableBtn:{
           edit:true,
           enable:true,
@@ -165,235 +188,17 @@
         ],
         status:'',
         organization:'',
-        treeData:[
-          {
-            id:1,
-            label:'告警严重程度',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:2,
-                label:'紧急',
-                parentId:1,
-                level:2
-              },
-              {
-                id:3,
-                label:'主要',
-                parentId:1,
-                level:2
-              },
-              {
-                id:4,
-                label:'正常',
-                parentId:1,
-                level:2
-              },
-              {
-                id:5,
-                label:'次要',
-                parentId:1,
-                level:2
-              }
-            ]
-          },
-          {
-            id:6,
-            label:'设备资产',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:7,
-                label:'服务器',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:8,
-                    label:'机架式',
-                    parentId:7,
-                    level:3,
-                  },
-                  {
-                    id:9,
-                    label:'刀片机',
-                    parentId:7,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'小型机',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:11,
-                    label:'刀片服务器',
-                    parentId:10,
-                    level:3,
-                  },
-                  {
-                    id:12,
-                    label:'刀箱服务器',
-                    parentId:10,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:13,
-                label:'存储',
-                parentId:6,
-                level:2,
-                children:null
-              },
-              {
-                id:14,
-                label:'备份',
-                parentId:6,
-                level:2,
-                children:null
-              }
-            ]
-          },
-          {
-            id:6,
-            label:'设备资产',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:7,
-                label:'服务器',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:8,
-                    label:'机架式',
-                    parentId:7,
-                    level:3,
-                  },
-                  {
-                    id:9,
-                    label:'刀片机',
-                    parentId:7,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'小型机',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:11,
-                    label:'刀片服务器',
-                    parentId:10,
-                    level:3,
-                  },
-                  {
-                    id:12,
-                    label:'刀箱服务器',
-                    parentId:10,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:13,
-                label:'存储',
-                parentId:6,
-                level:2,
-                children:null
-              },
-              {
-                id:14,
-                label:'备份',
-                parentId:6,
-                level:2,
-                children:null
-              }
-            ]
-          },{
-            id:6,
-            label:'设备资产',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:7,
-                label:'服务器',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:8,
-                    label:'机架式',
-                    parentId:7,
-                    level:3,
-                  },
-                  {
-                    id:9,
-                    label:'刀片机',
-                    parentId:7,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'小型机',
-                parentId:6,
-                level:2,
-                children:[
-                  {
-                    id:11,
-                    label:'刀片服务器',
-                    parentId:10,
-                    level:3,
-                  },
-                  {
-                    id:12,
-                    label:'刀箱服务器',
-                    parentId:10,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:13,
-                label:'存储',
-                parentId:6,
-                level:2,
-                children:null
-              },
-              {
-                id:14,
-                label:'备份',
-                parentId:6,
-                level:2,
-                children:null
-              }
-            ]
-          }
-        ],
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
-        ],
+        treeData: {}, // 左侧导航数据
+        tableData: [], // 表格数据
         options:{
-          total:1000, // 总条数
+          total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
         },
+        defaultProps: {
+          label: 'nodeName',
+          children: 'children'
+        }
       }
     },
     methods: {
@@ -411,9 +216,9 @@
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
             data.forEach(function (item) {
-              if (item.status === 0) {
+              if (item.enable === false) {
                 _t.disableBtn.enable = false;
-              } else if (item.status === 1) {
+              } else if (item.enable === true) {
                 _t.disableBtn.disable = false;
               }
             });
@@ -423,9 +228,9 @@
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
             for (var i = 0;i < data.length;i++){
-              if (data[i].status === 0) {
+              if (data[i].enable === false) {
                 disableFlag++;
-              } else if (data[i].status === 1) {
+              } else if (data[i].enable === true) {
                 enableFlag++;
               }
             }
@@ -444,7 +249,8 @@
       },
       // 改变当前页码
       handleCurrentChange(val){
-        console.log(val)
+        this.options.currentPage = val;
+        this.getData();
       },
       // 启用
       enableData() {
@@ -484,10 +290,91 @@
       },
       // 获取选中的节点
       getCurrentNode(data){
-        console.log(data.label)
+        this.formItem.nodeId = data.nodeId;
+        this.getData();
+      },
+      // 点击系统功能菜单节点
+      clickNode() {
+        var _t = this;
+        _t.formItem.nodeId = _t.treeData.nodeId;
+        _t.getData();
+      },
+      // 获取左侧树状菜单数据
+      getMenuData() {
+        var _t = this;
+        _t.$api.get('system/basedata/all', {
+          jsonString: JSON.stringify({
+            systemBasedata: {
+              languageMark: localStorage.getItem('hy-language')
+            },
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.treeData = res.data.treeNode;
+              _t.formItem.nodeId = res.data.treeNode.nodeId;
+              _t.formItem.menuName = res.data.treeNode.nodeName;
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 获取表格数据
+      getData() {
+        var _t = this;
+        _t.$api.get('system/basedata/pagelist', {
+          jsonString: JSON.stringify({
+            systemBasedata: {
+              id: _t.formItem.nodeId,
+              languageMark: localStorage.getItem('hy-language')
+            },
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize
+          })
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.tableData = res.data.list;
+              _t.options.total = res.data.count;
+              _t.options.currentPage = res.data.currentPage;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.tolal = 0;
+              _t.options.currentPage = 1;
+              break;
+          }
+        });
+      },
+      // 上移
+      moveUp() {
+
+      },
+      // 下移
+      moveDown() {
+
       }
     },
     created() {
+      this.$store.commit('setLoading', true);
+      this.getMenuData();
     }
   }
 </script>
