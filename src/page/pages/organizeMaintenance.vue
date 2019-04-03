@@ -174,11 +174,13 @@
     components: {Box},
     data(){
       return {
+        // 筛选表单
         formItem: {
           dateTime: null,
           organizationName: null,
           organizationId: null
         },
+        // 新增编辑表单
         addEdit: {
           organization: '',
           organizationId: '',
@@ -187,20 +189,22 @@
           description: '',
           orderIndex: ''
         },
-        isShowEditPopover: false,
+        isShowEditPopover: false, // 控制所属组织下拉框的显示隐藏
+        // 操作按钮的禁用启用
         disableBtn:{
           edit:true,
           enable:true,
           disable:true,
           more:true
         },
-        tableData: [],
+        tableData: [], // 表格数据
+        // 分页
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
-        dialogVisible: false,
+        dialogVisible: false, // 新增编辑弹出层
         // 数据默认字段
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
@@ -208,8 +212,10 @@
           label: 'nodeName',       // 标签显示
           children: 'children', // 子级
         },
-        organizationList: [],
-        treeMenuData: {},
+        organizationList: [], // 所属组织集合
+        treeMenuData: {}, // 左侧导航集合
+        checkListIds: [], // 选中表格的数据id
+        // 表单校验规则
         rules: {}
       }
     },
@@ -234,25 +240,35 @@
           case 1: // 单选
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
+            var checkListIds = new Array();
             data.forEach(function (item) {
+              // 启用禁用判断
               if (item.enable === false) {
                 _t.disableBtn.enable = false;
               } else if (item.enable === true) {
                 _t.disableBtn.disable = false;
               }
+              // 获取选照id
+              checkListIds.push(item.id);
             });
+            _t.checkListIds = checkListIds;
             break;
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
+            var checkListIds = new Array();
             for (var i = 0;i < data.length;i++){
+              // 启用禁用判断
               if (data[i].enable === false) {
                 disableFlag++;
               } else if (data[i].enable === true) {
                 enableFlag++;
               }
+              // 获取选中id
+              checkListIds.push(data[i].id);
             }
+            _t.checkListIds = checkListIds;
             if (disableFlag > 0 && enableFlag > 0) {
               _t.disableBtn.enable = true;
               _t.disableBtn.disable = true;
@@ -279,7 +295,39 @@
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/organization/enableOrganization', {
+            systemOrganization: {
+              id: _t.checkListIds.join(','),
+              enable: true
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
@@ -292,7 +340,39 @@
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/organization/enableOrganization', {
+            systemOrganization: {
+              enable: false,
+              id: _t.checkListIds.join(',')
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
@@ -305,7 +385,47 @@
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.delete('system/role/', {
+            jsonString: JSON.stringify({
+              roleId: _t.checkListIds.join(',')
+            })
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              case 2007: // 删除失败
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
