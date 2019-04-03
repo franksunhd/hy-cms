@@ -201,14 +201,14 @@
     components:{Box},
     data() {
       return {
-        disableBtn:{
+        disableBtn: { // 全局按钮启用禁用判断
           edit:true,
           enable:true,
           disable:true,
           more:true
         },
-        dialogVisible:false,
-        dialogVisibleAlert:false,
+        dialogVisible: false, // 新增编辑弹出层
+        dialogVisibleAlert: false, // 选择用户弹出层
         statusList:[
           {label:'启用',value:1},
           {label:'禁用',value:0},
@@ -216,200 +216,13 @@
         status:'',
         organization:'',
         listData:[],
-        selectUser:[
-          {
-            id:1,
-            label:'集团亚洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:2,
-                label:'上海分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:4,
-                    label:'张三',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:5,
-                    label:'李四',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                  {
-                    id:6,
-                    label:'王五',
-                    type:'user',
-                    parentId:2,
-                    level:3,
-                  },
-                ]
-              },
-              {
-                id:3,
-                label:'北京分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
-                  {
-                    id:7,
-                    label:'赵六',
-                    type:'user',
-                    parentId:3,
-                    level:3,
-                  }
-                ]
-              },
-              {
-                id:10,
-                label:'孙强',
-                type:'user',
-                parentId:1,
-                level:2,
-              },
-              {
-                id:13,
-                label:'金流福',
-                type:'user',
-                parentId:1,
-                level:2,
-              }
-            ]
-          },
-          {
-            id:8,
-            label:'集团欧洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:11,
-                label:'雅玛',
-                type:'user',
-                parentId:8,
-                level:2,
-              },
-              {
-                id:14,
-                label:'罗马分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[]
-              },
-              {
-                id:15,
-                label:'英国分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[
-                  {
-                    id:16,
-                    label:'伦敦',
-                    type:'user',
-                    parentId:15,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id:9,
-            label:'集团美洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:12,
-                label:'三丝',
-                type:'user',
-                parentId:9,
-                level:2
-              },
-              {
-                id:17,
-                label:'美国分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[]
-              },
-              {
-                id:18,
-                label:'墨西哥分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[
-                  {
-                    id:19,
-                    label:'摩卡',
-                    type:'user',
-                    parentId:18,
-                    level:3
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        treeData:[
-          {
-            id:1,
-            label:'告警严重程度',
-            parentId:null,
-            level:1,
-            children:[
-              {
-                id:2,
-                label:'紧急',
-                parentId:1,
-                level:2
-              },
-              {
-                id:3,
-                label:'主要',
-                parentId:1,
-                level:2
-              },
-              {
-                id:4,
-                label:'正常',
-                parentId:1,
-                level:2
-              },
-              {
-                id:5,
-                label:'次要',
-                parentId:1,
-                level:2
-              }
-            ]
-          }
-        ],
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
-        ],
+        selectUser: [],
+        treeData: [], // 左侧导航列表
+        tableData: [], //
         options:{
-          total:1000, // 总条数
+          total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
         },
       }
     },
