@@ -11,14 +11,16 @@
     <el-row>
       <el-col :span="4">
         <p class="functionMenuMaintenance-title">
-          <a href="javascript:;">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
+          <a href="javascript:;"
+             @click="tableData = treeData">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
         </p>
         <el-tree
           style="width: 200px;"
           :data="treeData"
+          :props="defaultProps"
           @node-click="getCurrentNode"
           :expand-on-click-node="false"
-          :default-expand-all="true"/>
+          :default-expand-all="false"/>
       </el-col>
       <el-col :span="20">
         <div class="padding20 borderBottom">
@@ -78,28 +80,37 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('functionMenuMaintenance.menuName')" header-align="center" align="center" />
-            <el-table-column :label="$t('functionMenuMaintenance.icon')" header-align="center" align="center" />
-            <el-table-column :label="$t('functionMenuMaintenance.link')" header-align="center" align="center" />
+            <el-table-column prop="menuName" :label="$t('functionMenuMaintenance.menuName')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="menuHref" :label="$t('functionMenuMaintenance.link')" header-align="center"
+                             align="center"/>
             <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="center" align="center" />
-            <el-table-column :label="$t('functionMenuMaintenance.modelLevel')" header-align="center" align="center" />
-            <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="center" align="center" />
+            <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span v-if="scope.row.status === 1">启用</span>
                 <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('functionMenuMaintenance.createName')" header-align="center" align="center" />
-            <el-table-column :label="$t('functionMenuMaintenance.createTime')" header-align="center" align="center" />
+            <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="createTime" :label="$t('functionMenuMaintenance.createTime')" header-align="center"
+                             align="center"/>
           </el-table>
           <!--分页-->
           <pages
             :total='options.total'
             :currentPage='options.currentPage'
             :pageSize='options.pageSize'
-            :firstPage='options.firstPage'
-            :lastPage='options.lastPage'
             @handleCurrentChangeSub="handleCurrentChange" />
         </div>
       </el-col>
@@ -216,7 +227,7 @@
         status:'',
         organization:'',
         listData:[],
-        selectUser: [],
+        selectUser: [], // 选中的用户
         treeData: [], // 左侧导航列表
         tableData: [], //
         options:{
@@ -224,6 +235,10 @@
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
+        defaultProps: {
+          label: 'menuName',
+          children: 'systemMenuAndLanguageRelationChildList'
+        }
       }
     },
     methods: {
@@ -274,7 +289,7 @@
       },
       // 改变当前页码
       handleCurrentChange(val){
-        console.log(val)
+        this.options.currentPage = val;
       },
       // 启用
       enableData() {
@@ -311,10 +326,6 @@
         }).catch(()=>{
           return;
         });
-      },
-      // 获取选中的节点
-      getCurrentNode(data){
-        console.log(data.label)
       },
       // 获取节点显示数据
       getCheckedNodes() {
@@ -409,7 +420,6 @@
             }
           } else {
             // 删除本标签之后删除该区域
-            // console.log(2);
             for (var k = 0;k < headChildren.length;k++){
               if (item.id === headChildren[k].id) {
                 headChildren.splice(k,1);
@@ -432,10 +442,82 @@
             }
           }
         }
-        console.log(allNode);
-      }
+      },
+      // 获取左侧功能菜单列表
+      getMenuData() {
+        var _t = this;
+        _t.$api.get('system/menu/', {
+          jsonString: JSON.stringify({
+            menuLevel: '1_2_3_4',
+            languageMark: localStorage.getItem('hy-language')
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200: // 查询成功
+              var navBarArr = res.data.rootMenu;
+              if (navBarArr) {
+                navBarArr.forEach(function (item) {
+                  if (item.systemMenuAndLanguageRelationChildList.length === 0) {
+                    item.systemMenuAndLanguageRelationChildList = null;
+                  }
+                });
+                _t.treeData = navBarArr;
+              }
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.treeData = [];
+              break;
+          }
+        });
+      },
+      // 获取选中树形菜单
+      getCurrentNode(data) {
+        var _t = this;
+        _t.tableData = data.systemMenuAndLanguageRelationChildList;
+      },
+      // 根据选中菜单id 重新获取子菜单
+      getData() {
+        var _t = this;
+        _t.$api.get('system/menu/', {
+          jsonString: JSON.stringify({
+            menuId: '',
+            menuLevel: '1_2_3_4',
+            languageMark: localStorage.getItem('hy-language')
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200: // 查询成功
+              _t.tableData = res.data.rootMenu;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              break;
+          }
+        });
+      },
+      // 表格数据上移
+      moveUp(data) {
+
+      },
+      // 表格数据下移
     },
     created() {
+      this.$store.commit('setLoading', true);
+      this.getMenuData();
     }
   }
 </script>
