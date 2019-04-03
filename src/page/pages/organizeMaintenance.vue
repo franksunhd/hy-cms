@@ -18,6 +18,7 @@
           :data="treeMenuData.children"
           @node-click="getCurrentNode"
           :props="defaultProps"
+          highlight-current
           :expand-on-click-node="false"
           :default-expand-all="true"/>
       </el-col>
@@ -37,7 +38,7 @@
                 end-placeholder="结束日期"/>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" class="queryBtn" @click="getTreeData">{{$t('public.query')}}</el-button>
+              <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -68,7 +69,7 @@
           <!--表格-->
           <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
             <el-table-column type="selection" fixed header-align="center" align="center"/>
-            <el-table-column :label="$t('public.index')" header-align="center" align="center">
+            <el-table-column fixed :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -138,23 +139,23 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'">
-          <el-input />
+          <el-input class="width200" v-model="addEdit.organizationName"/>
         </el-form-item>
         <el-form-item :label="$t('organizeMaintenance.orderIndex') + '：'">
-          <el-input />
+          <el-input class="width200" v-model="addEdit.orderIndex"/>
         </el-form-item>
         <el-form-item :label="$t('organizeMaintenance.isEnable') + '：'">
-          <el-radio-group v-model="status">
-            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
+          <el-radio-group v-model="addEdit.enable">
+            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'">
-          <el-input type="textarea" :autosize="{ minRows: 3 }" />
+          <el-input type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="queryBtn" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
@@ -164,6 +165,8 @@
 <script>
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
+  import {dateFilter} from "../../assets/js/filters";
+
   export default {
     name: "organize-maintenance",
     components: {Box},
@@ -171,14 +174,16 @@
       return {
         formItem: {
           dateTime: null,
-          organizationName: null
+          organizationName: null,
+          organizationId: null
         },
         addEdit: {
           organization: '',
           organizationId: '',
           organizationName: '',
           enable: '',
-          description: ''
+          description: '',
+          orderIndex: ''
         },
         isShowEditPopover: false,
         disableBtn:{
@@ -187,15 +192,13 @@
           disable:true,
           more:true
         },
-        startTime:'',
-        endTime:'',
         tableData: [],
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
-        dialogVisible:false,
+        dialogVisible: true,
         // 数据默认字段
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
@@ -204,8 +207,6 @@
           children: 'children', // 子级
         },
         organizationList: [],
-        organization:'',
-        status: '',
         treeMenuData: {},
         rules: {}
       }
@@ -216,6 +217,7 @@
         var _t = this;
         _t.addEdit.organization = val.nodeName;
         _t.addEdit.organizationId = val.nodeId;
+        _t.isShowEditPopover = false;
       },
       // 当前选中条数
       selectTableNum(data){
@@ -319,6 +321,10 @@
           switch (res.status) {
             case 200: // 查询成功
               _t.treeMenuData = JSON.parse(res.data);
+              // 获取树形列表第一层id值
+              _t.formItem.organizationId = _t.treeMenuData.nodeId;
+              // 查询表格数据
+              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -327,7 +333,6 @@
               _t.exclude(_t, res.message);
               break;
             default:
-              _t.treeMenuData = [];
               break;
           }
         });
@@ -335,20 +340,25 @@
       // 点击导航节点
       getCurrentNode(val) {
         var _t = this;
-        _t.getData(val.nodeId);
+        _t.formItem.organizationId = val.nodeId;
+        _t.getData();
       },
       // 点击组织结构
       clickNode(val) {
         var _t = this;
-        _t.getData(_t.treeMenuData.nodeId);
+        _t.formItem.organizationId = _t.treeMenuData.nodeId;
+        _t.getData();
       },
       // 根据组织id获取表格数据
-      getData(val) {
+      getData() {
         var _t = this;
         _t.$api.get('system/organization/pagelist', {
           jsonString: JSON.stringify({
             systemOrganization: {
-              id: val,
+              id: _t.formItem.organizationId == null ? null : _t.formItem.organizationId,
+              name: _t.formItem.organizationName == null ? null : _t.formItem.organizationName.trim(),
+              createTime: _t.formItem.dateTime == null ? null : dateFilter(_t.formItem.dateTime[0].getTime()),
+              lastModifyTime: _t.formItem.dateTime == null ? null : dateFilter(_t.formItem.dateTime[1].getTime()),
               languageMark: localStorage.getItem('hy-language')
             },
             currentPage: _t.options.currentPage,
@@ -393,12 +403,44 @@
               break;
           }
         });
+      },
+      // 添加组织
+      addData() {
+        var _t = this;
+        _t.$api.post('system/organization/', {
+          systemOrganization: {
+            parentId: _t.addEdit.organizationId,
+            name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
+            enable: _t.addEdit.enable,
+            createBy: localStorage.getItem('hy-user-name') || '',
+            orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.trim(),
+            description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
+          }
+        }, function (res) {
+          _t.dialogVisible = false;
+          switch (res.status) {
+            case 200:
+              _t.getTreeData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            case 2005:
+              _t.$alert(res.message);
+              break;
+            default:
+              break;
+          }
+        });
       }
     },
     created(){
       this.$store.commit('setLoading', true);
+      // 获取树形列表
       this.getTreeData();
-      this.getData(this.treeMenuData.nodeId);
       this.getOrganization();
     }
   }
