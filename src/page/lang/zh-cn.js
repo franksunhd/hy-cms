@@ -184,7 +184,7 @@ export default {
     account:'账号',
     registerDate:'登记日期',
     setRoleLimit:'设置角色权限',
-    roleLimit:'角色权限',
+    roleLimit: '功能菜单权限',
     setDateLimit:'设置数据权限'
   },
   // 组织维护

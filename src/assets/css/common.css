@@ -57,7 +57,7 @@ html,body,.Index-box {
   z-index: 100;
 }
 
-.el-breadcrumb {
+.Breadcrumb .el-breadcrumb {
   height: 52px;
   line-height: 52px;
   display: inline-block;
@@ -148,4 +148,41 @@ html,body,.Index-box {
   line-height: 40px;
   height: 40px;
   padding-left: 40px;
+}
+
+.userMaintenance-dialog .el-dialog__body {
+  padding: 20px 0 0 0;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+.el-form-item__content {
+  line-height: 30px;
+}
+
+/*star*/
+.star label::before {
+  content: '*';
+  margin-right: 4px;
+}
+
+.el-form-item__label {
+  height: 30px;
+  line-height: 30px;
+}
+
+.el-date-editor .el-range__icon,
+.el-date-editor .el-range__close-icon {
+  line-height: 22px;
+}
+
+.el-date-editor .el-range-separator {
+  width: auto;
+  line-height: 22px;
+}
+
+.el-input__icon {
+  line-height: 30px;
 }

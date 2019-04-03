@@ -1,7 +1,7 @@
 <template>
   <div class="systemSettings-navBarBox">
     <p class="systemSettings-title" :title="titleName">{{titleName}}</p>
-    <div class="systemSettings-navBarContent">
+    <div id="systemSettings-navBarContent" class="systemSettings-navBarContent">
       <el-menu id="system-menu" :default-active="current" :router="true" :unique-opened="false" menu-trigger="click">
         <el-submenu v-for="(item,index) in navBarArr" :index="item.id" :key="index">
           <template slot="title" v-if="item.systemMenuAndLanguageRelationChildList == null">
@@ -155,7 +155,8 @@
   }
 
   .systemSettings-navBarContent .el-submenu i {
-    font-size: 14px !important;
+    font-size: 12px !important;
+    color: #252a2f;
   }
 
   .systemSettings-oddRouter {
@@ -182,5 +183,9 @@
     width: 100%;
     padding-left: 10px;
     display: inline-block;
+  }
+
+  #systemSettings-navBarContent::-webkit-scrollbar {
+    display: none;
   }
 </style>

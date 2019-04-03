@@ -8,85 +8,107 @@
         <el-breadcrumb-item>{{$t('breadcrumb.organizeMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="padding20 borderBottom">
-      <!--表单-->
-      <el-form inline>
-        <el-form-item :label="$t('organizeMaintenance.organizationName') +'：'">
-          <el-input class="width200" />
-        </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.createUpdateDate') +'：'">
-          <el-date-picker
-            class="width120"
-            v-model="startTime"
-            type="date"
-            :placeholder="$t('public.selectDate')" />
-          <span>—</span>
-          <el-date-picker
-            class="width120"
-            v-model="endTime"
-            type="date"
-            :placeholder="$t('public.selectDate')" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="padding20">
-      <!--全局操作-->
-      <div class="marBottom16">
-        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
-          <i class="el-icon-circle-plus-outline"></i>
-          {{$t('public.add')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
-          <i class="el-icon-edit-outline"></i>
-          {{$t('public.edit')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-          <i class="el-icon-circle-check-outline"></i>
-          {{$t('public.enable')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-          <i class="el-icon-circle-close-outline"></i>
-          {{$t('public.disable')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-          <i class="el-icon-delete"></i>
-          {{$t('public.delete')}}
-        </el-button>
-      </div>
-      <!--表格-->
-      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
-          <template slot-scope="scope">
-            <span>
-              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('organizeMaintenance.organizationName')" header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.roleNum')" header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.userNum')" header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('organizeMaintenance.createName')" header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.createTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.updateName')"  header-align="center" align="center" />
-        <el-table-column :label="$t('organizeMaintenance.updateTime')" header-align="center" align="center" />
-      </el-table>
-      <!--分页-->
-      <pages
-        :total='options.total'
-        :currentPage='options.currentPage'
-        :pageSize='options.pageSize'
-        @handleCurrentChangeSub="handleCurrentChange" />
-    </div>
+    <el-row>
+      <el-col :span="4">
+        <p>
+          <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">{{treeMenuData.nodeName}}</a>
+        </p>
+        <el-tree
+          style="width: 200px;"
+          :data="treeMenuData.children"
+          @node-click="getCurrentNode"
+          :props="defaultProps"
+          :expand-on-click-node="false"
+          :default-expand-all="true"/>
+      </el-col>
+      <el-col :span="20">
+        <div class="padding20 borderBottom">
+          <!--表单-->
+          <el-form inline :model="formItem">
+            <el-form-item :label="$t('organizeMaintenance.organizationName') +'：'">
+              <el-input class="width200" v-model="formItem.organizationName"/>
+            </el-form-item>
+            <el-form-item :label="$t('organizeMaintenance.createUpdateDate') +'：'">
+              <el-date-picker
+                v-model="formItem.dateTime"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"/>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" class="queryBtn" @click="getTreeData">{{$t('public.query')}}</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <div class="padding20">
+          <!--全局操作-->
+          <div class="marBottom16">
+            <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+              <i class="el-icon-circle-plus-outline"></i>
+              {{$t('public.add')}}
+            </el-button>
+            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
+              <i class="el-icon-edit-outline"></i>
+              {{$t('public.edit')}}
+            </el-button>
+            <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
+              <i class="el-icon-circle-check-outline"></i>
+              {{$t('public.enable')}}
+            </el-button>
+            <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
+              <i class="el-icon-circle-close-outline"></i>
+              {{$t('public.disable')}}
+            </el-button>
+            <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
+              <i class="el-icon-delete"></i>
+              {{$t('public.delete')}}
+            </el-button>
+          </div>
+          <!--表格-->
+          <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+            <el-table-column type="selection" fixed header-align="center" align="center"/>
+            <el-table-column :label="$t('public.index')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.roleNum')" header-align="center" align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.userNum')" header-align="center" align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.status === 1">启用</span>
+                <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.createTime')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.createTime | dateFilter}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="lastModifyBy" :label="$t('organizeMaintenance.updateName')" header-align="center"
+                             align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.updateTime')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.lastModifyTime | dateFilter}}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--分页-->
+          <pages
+            :total='options.total'
+            :currentPage='options.currentPage'
+            :pageSize='options.pageSize'
+            @handleCurrentChangeSub="handleCurrentChange"/>
+        </div>
+      </el-col>
+    </el-row>
     <!--新增、编辑-->
     <el-dialog
       append-to-body
@@ -94,9 +116,26 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px">
+      <el-form v-model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
         <el-form-item :label="$t('organizeMaintenance.parentOrganization') + '：'">
-          <selectTree width="200" :options="organizationList" v-model="organization" />
+          <el-popover
+            trigger="click"
+            placement="bottom-start"
+            v-model="isShowEditPopover"
+            ref="popover">
+            <el-tree
+              :data="organizationList"
+              highlight-current
+              :expand-on-click-node="false"
+              @node-click="clickNodeAlert"
+              :props="defaultProps"/>
+            <el-input
+              v-model="addEdit.organization"
+              style="width: 200px;"
+              suffix-icon="el-icon-arrow-down"
+              readonly
+              slot="reference"/>
+          </el-popover>
         </el-form-item>
         <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'">
           <el-input />
@@ -124,12 +163,24 @@
 
 <script>
   import Box from '../../components/Box';
-  import selectTree from '../../components/selectTree';
+  import {isNotNull} from "../../assets/js/validator";
   export default {
     name: "organize-maintenance",
-    components:{Box,selectTree},
+    components: {Box},
     data(){
       return {
+        formItem: {
+          dateTime: null,
+          organizationName: null
+        },
+        addEdit: {
+          organization: '',
+          organizationId: '',
+          organizationName: '',
+          enable: '',
+          description: ''
+        },
+        isShowEditPopover: false,
         disableBtn:{
           edit:true,
           enable:true,
@@ -149,15 +200,23 @@
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
           value: 'id',          // 唯一标识
-          label: 'label',       // 标签显示
+          label: 'nodeName',       // 标签显示
           children: 'children', // 子级
         },
         organizationList: [],
         organization:'',
-        status:''
+        status: '',
+        treeMenuData: {},
+        rules: {}
       }
     },
     methods:{
+      // 选中所属组织节点
+      clickNodeAlert(val) {
+        var _t = this;
+        _t.addEdit.organization = val.nodeName;
+        _t.addEdit.organizationId = val.nodeId;
+      },
       // 当前选中条数
       selectTableNum(data){
         var _t = this;
@@ -247,20 +306,57 @@
           return;
         });
       },
-      // 查询组织维护表格数据
-      getData() {
+      // 查询组织维护左侧导航数据
+      getTreeData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.get('', {
+        _t.$api.get('system/organization/all/', {
           jsonString: JSON.stringify({
-            currentPage: _t.options.currentPage,
-            pageSize: _t.options.pageSize,
             languageMark: localStorage.getItem('hy-language')
           })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
+              _t.treeMenuData = JSON.parse(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.treeMenuData = [];
+              break;
+          }
+        });
+      },
+      // 点击导航节点
+      getCurrentNode(val) {
+        var _t = this;
+        _t.getData(val.nodeId);
+      },
+      // 点击组织结构
+      clickNode(val) {
+        var _t = this;
+        _t.getData(_t.treeMenuData.nodeId);
+      },
+      // 根据组织id获取表格数据
+      getData(val) {
+        var _t = this;
+        _t.$api.get('system/organization/pagelist', {
+          jsonString: JSON.stringify({
+            systemOrganization: {
+              id: val,
+              languageMark: localStorage.getItem('hy-language')
+            },
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize
+          })
+        }, function (res) {
+          switch (res.status) {
+            case 200:
               _t.tableData = res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
@@ -278,11 +374,32 @@
               break;
           }
         });
+      },
+      // 查询所属组织
+      getOrganization() {
+        var _t = this;
+        _t.$api.get('system/organization/all', {}, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.organizationList = JSON.parse(res.data).children;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       }
     },
     created(){
-      // this.$store.commit('setLoading', true);
-      // this.getData();
+      this.$store.commit('setLoading', true);
+      this.getTreeData();
+      this.getData(this.treeMenuData.nodeId);
+      this.getOrganization();
     }
   }
 </script>

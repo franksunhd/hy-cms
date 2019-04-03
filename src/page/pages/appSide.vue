@@ -12,7 +12,13 @@
           @mouseover="MouseOverTwo"
           @mouseout="MouseOutTwo">
         <li><i class="el-icon-picture"></i></li>
-        <li v-show="show">{{data.menuName}}</li>
+        <li v-show="show">
+          <router-link
+            class="bg-white"
+            @click.native="hiddenAlert(data.menuId)"
+            :to="{path:data.menuHref,query:{id:data.menuId}}">{{data.menuName}}
+          </router-link>
+        </li>
         <li v-show="mouse"><i class="el-icon-close" @click="delItem(data)"></i></li>
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
@@ -71,13 +77,10 @@
     <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
-        <div class="box-batchEditor">
-          <span><i class="el-icon-setting"></i></span><span>批量编辑</span>
-        </div>
       </div>
       <div class="fnlist" v-for="(value,index) in selectArr" :key="index">
         <span class="fnspan">{{value.menuName}}</span>
-        <ul>
+        <ul class="app-side-ul">
           <li v-for="(item,index) in value.systemMenuAndLanguageRelationChildList" :item="item" :key="index">
             <router-link @click.native="hiddenAlert(item.id)" :to="{path:item.menuHref,query:{id:item.id}}">
               {{ item.menuName }}
@@ -92,7 +95,6 @@
   </div>
 </template>
 <script>
-  import menuData from '../../assets/js/menuData';
   export default {
     name: 'app-side',
     data() {
@@ -101,21 +103,32 @@
         mouse: false,
         show: false,
         activeClass: [],
-        Income: [],
         selectArr: [],
-        search: ''
+        search: '',
+        dragListEnd: []
       }
     },
     mounted() {
-      // 拖拽
-      var _t = this;
-      _t.$dragging.$on('dragged', ({value}) => {
-
-      });
-      _t.$dragging.$on('dragend', (val) => {
-      });
+      this.dragList();
     },
     methods: {
+      // 拖拽导航
+      dragList() {
+        var _t = this;
+        _t.$dragging.$on('dragend', (val) => {
+          if (val.group === 'data') {
+            var dragListEnd = _t.activeClass;
+            var listEndIds = new Array();
+            var listEndNames = new Array();
+            dragListEnd.forEach(function (item) {
+              listEndIds.push(item.id);
+              listEndNames.push(item.menuName);
+            });
+            _t.updateMenuData(listEndIds.join(','));
+          }
+        });
+      },
+      // 锚点链接
       resultTip(data) {
         document.querySelector('#' + data).scrollIntoView(true);
       },
@@ -125,10 +138,12 @@
         this.rshow = false;
         localStorage.setItem('hy-menu-id', val);
       },
+      // 鼠标移入功能导航菜单
       MouseOverFul() {
         this.show = true;
         this.rshow = true;
       },
+      // 鼠标移入便捷菜单
       MouseOverTwo() {
         if (this.rshow == true) {
           this.mouse = true;
@@ -137,8 +152,8 @@
           this.mouse = true;
           this.show = true;
         }
-
       },
+      // 鼠标移出便捷菜单
       MouseOutTwo() {
         if (this.rshow == true) {
           this.mouse = false;
@@ -147,7 +162,6 @@
           this.mouse = false;
           this.show = false;
         }
-
       },
       // 点击关闭弹出层
       ClickClose() {
@@ -198,7 +212,6 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              console.log(res.data)
               _t.activeClass = res.data;
               break;
             case 1003: // 无操作权限
@@ -243,7 +256,6 @@
       },
       // 删除便捷菜单
       delItem(data) {
-        console.log(data);
         var _t = this;
         _t.$api.delete('system/userShortcutMenu/' + data.id, {}, function (res) {
           switch (res.status) {
@@ -263,14 +275,54 @@
           }
         })
       },
+      // 便捷菜单排序后发送请求
+      updateMenuData(val) {
+        var _t = this;
+        _t.$api.put('system/userShortcutMenu/', {
+          idStr: val,
+          userId: localStorage.getItem('hy-user-id')
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      }
     },
     created() {
-      this.getData();
-      this.getMenuData();
+      var _t = this;
+      if (localStorage.getItem('hy-language') == null || localStorage.getItem('hy-user-id') == null) {
+        setTimeout(function () {
+          _t.getData();
+          _t.getMenuData();
+        }, 1000);
+      } else {
+        _t.getData();
+        _t.getMenuData();
+      }
     }
   }
 </script>
 <style scoped>
+  .box {
+    overflow: hidden;
+    z-index: 1031;
+    height: 100%;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    bottom: 0;
+  }
+
   .box-right-box {
     width: 840px;
     height: 100%;
@@ -309,18 +361,6 @@
   .box-search-result-null > span {
     font-size: 20px;
   }
-</style>
-
-<style scoped>
-  .box {
-    overflow: hidden;
-    z-index: 1031;
-    height: 100%;
-    position: fixed;
-    top: 52px;
-    left: 0;
-    bottom: 0;
-  }
 
   .box-right {
     width: 584px;
@@ -328,7 +368,7 @@
     padding-right: 14px;
     float: left;
     overflow: hidden;
-    background-color: #fff;
+
     position: relative;
     height: 444px;
   }
@@ -337,7 +377,6 @@
     overflow: hidden;
     padding-top: 20px;
     width: 556px;
-    border-bottom: 1px solid #ccc;
   }
 
   .fnspan {
@@ -361,21 +400,6 @@
   .fnlist ul li:hover {
     width: 125px;
     cursor: pointer;
-    color: #3f81d0;
-  }
-
-  .el-icon-star-off {
-    color: #f22;
-  }
-
-  .el-icon-star-on {
-    color: #f22;
-    background-color: #fff;
-  }
-
-  .selectActive {
-    color: #f22;
-    background-color: #fff;
   }
 
   .box-left {
@@ -384,7 +408,6 @@
     z-index: 1001;
     height: 100%;
     overflow: hidden;
-    color: #e3e5ee;
   }
 
   .box-left-ful {
@@ -398,8 +421,6 @@
   .box-left-ful:hover {
     height: 50px;
     line-height: 50px;
-    background-color: #3f81d0;
-    color: #fff;
     cursor: pointer;
   }
 
@@ -435,8 +456,6 @@
   }
 
   .box-left-two:hover {
-    color: #3f81d0;
-    background-color: #fff;
     cursor: pointer;
   }
 

@@ -186,7 +186,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1000;
+    z-index: 1001;
     border-radius: 10px;
   }
 
@@ -217,7 +217,7 @@
   #comments-canvas {
     position: absolute;
     right: 0;
-    bottom: 12px;
+    bottom: 4px;
     cursor: pointer;
   }
 
