@@ -78,12 +78,14 @@
             </el-table-column>
             <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center"
                              align="center"/>
-            <el-table-column :label="$t('organizeMaintenance.roleNum')" header-align="center" align="center"/>
-            <el-table-column :label="$t('organizeMaintenance.userNum')" header-align="center" align="center"/>
+            <el-table-column prop="roleCount" :label="$t('organizeMaintenance.roleNum')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center"
+                             align="center"/>
             <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
               <template slot-scope="scope">
-                <span v-if="scope.row.status === 1">启用</span>
-                <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+                <span v-if="scope.row.enable === true">启用</span>
+                <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
             <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center"
@@ -233,9 +235,9 @@
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
             data.forEach(function (item) {
-              if (item.status === 0) {
+              if (item.enable === false) {
                 _t.disableBtn.enable = false;
-              } else if (item.status === 1) {
+              } else if (item.enable === true) {
                 _t.disableBtn.disable = false;
               }
             });
@@ -245,9 +247,9 @@
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
             for (var i = 0;i < data.length;i++){
-              if (data[i].status === 0) {
+              if (data[i].enable === false) {
                 disableFlag++;
-              } else if (data[i].status === 1) {
+              } else if (data[i].enable === true) {
                 enableFlag++;
               }
             }
