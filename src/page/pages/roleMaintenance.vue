@@ -218,10 +218,11 @@
       :visible.sync="dialogVisibleFunction"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="100px">
+      <el-form label-width="120px">
         <el-form-item :label="$t('roleMaintenance.roleLimit') + '：'">
           <el-tree
-            :data="organizationList"
+            :data="selectArr"
+            :props="menuProps"
             show-checkbox
             ref="tree" />
         </el-form-item>
@@ -255,7 +256,8 @@
           <el-tree
             id="dataLimit-box"
             node-key="id"
-            :data="organizationList"
+            :data="selectArr"
+            :props="menuProps"
             :default-expand-all="true"
             show-checkbox
             ref="vueTree" />
@@ -305,7 +307,7 @@
         dialogVisible:false,
         outerVisible:false,
         innerVisible:false,
-        dialogVisibleFunction:false,
+        dialogVisibleFunction: true,
         dialogVisibleData:false,
         isShowEditPopover: false,
         tableData: [],
@@ -328,9 +330,14 @@
           label: 'nodeName',       // 标签显示
           children: 'children', // 子级
         },
+        menuProps: {
+          label: 'menuName',
+          children: 'systemMenuAndLanguageRelationChildList'
+        },
         organizationList: [],
         checkListIds: [], // 选中表格的数据id集合
         checkListOrg: [], // 选中表格的数据组织id集合
+        selectArr: [], // 功能菜单集合
         rules: {
           organization: [
             {validator: isNotNull, trigger: ['blur', 'change']}
@@ -745,12 +752,46 @@
               break;
           }
         });
-      }
+      },
+      // 请求菜单数据
+      getMenuData() {
+        var _t = this;
+        _t.$api.get('system/menu/', {
+          jsonString: JSON.stringify({
+            menuLevel: '1_2_3_4',
+            languageMark: localStorage.getItem('hy-language')
+          })
+        }, function (res) {
+          switch (res.status) {
+            case 200: // 查询成功
+              var navBarArr = res.data.rootMenu;
+              if (navBarArr) {
+                navBarArr.forEach(function (item) {
+                  if (item.systemMenuAndLanguageRelationChildList.length === 0) {
+                    item.systemMenuAndLanguageRelationChildList = null;
+                  }
+                });
+                _t.selectArr = navBarArr;
+              }
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.selectArr = [];
+              break;
+          }
+        });
+      },
     },
     created(){
       this.$store.commit('setLoading', true);
       this.getData();
       this.getOrganization();
+      this.getMenuData();
     },
   }
 </script>
