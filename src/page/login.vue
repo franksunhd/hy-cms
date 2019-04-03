@@ -217,7 +217,7 @@
   #comments-canvas {
     position: absolute;
     right: 0;
-    bottom: 12px;
+    bottom: 4px;
     cursor: pointer;
   }
 
