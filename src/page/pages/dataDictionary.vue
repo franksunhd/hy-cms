@@ -188,6 +188,7 @@
         organization:'',
         treeData: {}, // 左侧导航数据
         tableData: [], // 表格数据
+        checkListIds: [], // 表格选中的数据id集合
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
@@ -213,25 +214,34 @@
           case 1: // 单选
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
+            var checkListIds = new Array();
             data.forEach(function (item) {
+              // 启用禁用判断
               if (item.enable === false) {
                 _t.disableBtn.enable = false;
               } else if (item.enable === true) {
                 _t.disableBtn.disable = false;
               }
+              checkListIds.push(item.id);
             });
+            _t.checkListIds = checkListIds;
             break;
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
+            var checkListIds = new Array();
             for (var i = 0;i < data.length;i++){
+              // 启用禁用判断
               if (data[i].enable === false) {
                 disableFlag++;
               } else if (data[i].enable === true) {
                 enableFlag++;
               }
+              // 选中条数id集合
+              checkListIds.push(data[i].id);
             }
+            _t.checkListIds = checkListIds;
             if (disableFlag > 0 && enableFlag > 0) {
               _t.disableBtn.enable = true;
               _t.disableBtn.disable = true;
@@ -264,12 +274,35 @@
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$api.put('system/basedata/', {
+            systemBasedata: {
+              id: _t.checkListIds.join(','),
+              enable: false
+            }
+          }, function (res) {
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
@@ -337,7 +370,7 @@
               id: _t.formItem.nodeId,
               basedataName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
               dictionaryCode: _t.formItem.businessCode == null ? null : _t.formItem.businessCode.trim(),
-              enable: _t.formItem.enable == null ? null : (_t.formItem.enable == 1 ? true : false),
+              enable: _t.formItem.status == null ? null : (_t.formItem.status == 1 ? true : false),
               languageMark: localStorage.getItem('hy-language')
             },
             currentPage: _t.options.currentPage,
