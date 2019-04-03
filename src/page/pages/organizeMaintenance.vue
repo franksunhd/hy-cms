@@ -70,9 +70,9 @@
             <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
-            <span>
-              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-            </span>
+                <span>
+                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                </span>
               </template>
             </el-table-column>
             <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center"
@@ -306,7 +306,7 @@
           return;
         });
       },
-      // 查询组织维护表格数据
+      // 查询组织维护左侧导航数据
       getTreeData() {
         var _t = this;
         _t.$store.commit('setLoading', true);
@@ -393,7 +393,7 @@
               break;
           }
         });
-      },
+      }
     },
     created(){
       this.$store.commit('setLoading', true);
