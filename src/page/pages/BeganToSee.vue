@@ -71,6 +71,8 @@
 
 <script>
   import Box from '../../components/Box';
+  import {dateFilterSeconds} from "../../assets/js/filters";
+
   export default {
     name: 'BeganToSee',
     components: {Box},
@@ -123,7 +125,6 @@
       }
     },
     created() {
-      this.timestampToTime();
       this.refresh();
     },
     methods: {
@@ -198,7 +199,7 @@
             'name': "已发现相应设备地址数"
           });
           _t.Dincome = Dincome;
-          var Dincome2 = _t.timestampToTime(res.requesttime);
+          var Dincome2 = dateFilterSeconds(res.requesttime);
           _t.Dincome2 = Dincome2;
           _t.drawLine();
         });
@@ -248,21 +249,10 @@
           })
           _t.Dincome = Dincome;
 
-          var Dincome2 = _t.timestampToTime(res.requesttime);
+          var Dincome2 = dateFilterSeconds(res.requesttime);
           _t.Dincome2 = Dincome2;
           _t.drawLine();
         });
-      },
-      // 时间戳转换成时间
-      timestampToTime(val) {
-        var date = new Date(val) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        var Y = date.getFullYear() + '年'
-        var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '月'
-        var D = date.getDate() + '日 '
-        var h = date.getHours() + '点'
-        var m = date.getMinutes() + '分'
-        var s = date.getSeconds() + '秒'
-        return Y + M + D + h + m + s;
       },
       //饼图
       drawLine() {
