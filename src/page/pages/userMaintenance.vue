@@ -118,7 +118,7 @@
         :page-size="options.pageSize"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
-    <!--新增编辑-->
+    <!--新增-->
     <el-dialog
       class="userMaintenance-dialog"
       append-to-body
@@ -173,10 +173,10 @@
         </el-form-item>
         <br>
         <el-form-item class="star" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
-          <el-button type="success" class="queryBtn">选择</el-button>
+          <el-button type="success" class="queryBtn" @click="isShowRole = true">选择</el-button>
         </el-form-item>
       </el-form>
-      <div class="assignRole-box">
+      <div class="assignRole-box" v-show="isShowRole">
         <el-breadcrumb style="margin-bottom: 10px;">
           <el-breadcrumb-item>集团亚洲总部</el-breadcrumb-item>
           <el-breadcrumb-item>上海分部</el-breadcrumb-item>
@@ -187,9 +187,9 @@
         </el-checkbox-group>
       </div>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" type="primary" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetForm">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" v-if="ifAdd == true" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" v-if="ifAdd === false" type="primary" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="resetFormAdd">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -240,6 +240,8 @@
         isShowFormPopover: false,
         // 新增所属组织下拉区域
         isShowEditPopover: false,
+        // 显示角色区域
+        isShowRole: false,
         // 表格数据
         tableData: [],
         statusList: [
@@ -317,22 +319,18 @@
         _t.addEdit.changeSelect = true;
         _t.getRoleWithOrgId(_t.addEdit.organizationId);
       },
-      // 重置新增编辑表单数据
-      resetForm() {
+      // 重置新增表单数据
+      resetFormAdd() {
         var _t = this;
-        _t.dialogVisible = false
-        _t.addEdit = {
-          id: '',
-          organization: '',
-          organizationId: '',
-          username: '',
-          loginAccount: '',
-          loginPassword: '',
-          mobileNum: '',
-          emails: '',
-          status: '',
-          assignRole: []
-        }
+        _t.dialogVisible = false;
+        _t.isShowRole = false;
+        _t.addEdit.organizationId = '';
+        _t.addEdit.username = '';
+        _t.addEdit.loginAccount = '';
+        _t.addEdit.loginPassword = '';
+        _t.addEdit.mobileNum = '';
+        _t.addEdit.status = '';
+        _t.addEdit.emails = '';
       },
       // 当前选中条数
       selectTableNum(data) {
