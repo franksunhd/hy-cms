@@ -25,9 +25,6 @@
         <div class="padding20 borderBottom">
           <!--表单-->
           <el-form inline :model="formItem">
-            <el-form-item :label="$t('functionMenuMaintenance.businessCode') + '：'">
-              <el-input class="width200" v-model="formItem.businessCode"/>
-            </el-form-item>
             <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
               <el-input class="width200" v-model="formItem.dictionaryName"/>
             </el-form-item>
@@ -492,7 +489,6 @@
             menuId: _t.formItem.nodeId,
             menuLevel: _t.formItem.menuLevel,
             languageMark: localStorage.getItem('hy-language'),
-            businessCode: _t.formItem.businessCode == null ? null : _t.formItem.businessCode.trim(),
             dictionaryName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
             status: _t.formItem.status,
           })
