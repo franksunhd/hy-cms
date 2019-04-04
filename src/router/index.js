@@ -64,6 +64,8 @@ const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
 const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection');
 //开始发现
 const BeganToSee = () => import ('@/page/pages/BeganToSee');
+//监测管理
+const monitoringAndControl =() => import ('@/page/pages/monitoringAndControl');
 Vue.use(Router);
 export default new Router({
   routes: [
@@ -108,7 +110,7 @@ export default new Router({
         },
         {path:"/YUser/DeviceManualDetection",name:"DeviceManualDetection",component:DeviceManualDetection},
        {path:"/YUser/DeviceManualDetection/BeganToSee",name:"BeganToSee",component:BeganToSee},
-        
+        {path:"/YUser/monitoringAndControl",name:"monitoringAndControl",component:monitoringAndControl},
       ]
     },
     {path:'/login', name:'Login', component:Login}
