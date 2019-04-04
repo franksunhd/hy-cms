@@ -96,8 +96,6 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
-        :firstPage='options.firstPage'
-        :lastPage='options.lastPage'
         @handleCurrentChangeSub="handleCurrentChange" />
     </div>
     <!--新增/编辑-->
@@ -166,15 +164,11 @@
         ],
         status:'',
         dialogVisible:false,
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
-        ],
+        tableData: [],
         options:{
-          total:1000, // 总条数
+          total: 0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
         },
       }
     },
@@ -299,9 +293,29 @@
         }).catch(()=>{
           return;
         });
+      },
+      // 获取表格数据
+      getData() {
+        var _t = this;
+        _t.$api.get('', {}, function (res) {
+          switch (res.status) {
+            case 200:
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       }
     },
     created() {
+      this.$store.commit('setLoading', true);
+      this.getData();
     }
   }
 </script>
