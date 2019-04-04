@@ -21,7 +21,7 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :placeholder="$t('public.selectDate')" />
+            :placeholder="$t('public.selectDate')"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
@@ -31,11 +31,11 @@
     <div class="padding20">
       <!--全局操作-->
       <div class="marBottom16">
-        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+        <el-button type="warning" class="queryBtn" @click="addRoleDataBtn">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editRoleData">
+        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editRoleDatBtn">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
@@ -65,12 +65,12 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
+      <el-table :data="tableData" stripe @selection-change="selectTableNum">
+        <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="center" align="center"/>
         <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="center"
                          align="center"/>
-        <el-table-column prop="userNum" :label="$t('roleMaintenance.userNum')" header-align="center" align="center"/>
+        <el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="center" align="center"/>
         <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.enable === true">启用</span>
@@ -97,7 +97,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
-        @handleCurrentChangeSub="handleCurrentChange" />
+        @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增/编辑-->
     <el-dialog
@@ -141,7 +141,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" v-if="ifAdd == true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" v-if="ifAdd == false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -166,7 +167,7 @@
             :disable-transitions="true"
             style="margin-right: 20px;"
             closable>
-            {{tag.label}}
+            {{tag.username}}
           </el-tag>
         </el-form-item>
       </el-form>
@@ -184,11 +185,11 @@
             <el-button type="primary" class="queryBtn" @click="selectRole">{{$t('public.query')}}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="innerTableData" stripe>
-          <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table :data="innerTableData" stripe @select="selectTableNumAlert" @select-all="selectTableNumAlert">
+          <el-table-column type="selection" fixed header-align="center" align="center"/>
           <el-table-column prop="displayName" :label="$t('public.name')" header-align="center" align="center"/>
           <el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="center" align="center"/>
-          <el-table-column :label="$t('public.sex')" header-align="center" align="center" />
+          <el-table-column :label="$t('public.sex')" header-align="center" align="center"/>
           <el-table-column :label="$t('roleMaintenance.registerDate')" header-align="center" align="center">
             <template slot-scope="scope">
               <span>{{scope.row.createTime | dateFilter}}</span>
@@ -200,14 +201,14 @@
           :total='innerOptions.total'
           :currentPage='innerOptions.currentPage'
           :pageSize='innerOptions.pageSize'
-          @handleCurrentChangeSub="innerOptionsHandleCurrentChange" />
+          @handleCurrentChangeSub="innerOptionsHandleCurrentChange"/>
         <div slot="footer">
           <el-button class="queryBtn" type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
           <el-button class="queryBtn" @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
         </div>
       </el-dialog>
       <div slot="footer">
-        <el-button class="queryBtn" type="primary" @click="outerVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="userDataForm">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="outerVisible = false">{{$t('public.close')}}</el-button>
       </div>
     </el-dialog>
@@ -223,12 +224,13 @@
           <el-tree
             :data="selectArr"
             :props="menuProps"
+            node-key="id"
             show-checkbox
-            ref="tree" />
+            ref="tree"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="dialogVisibleFunction = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisibleFunction = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -248,7 +250,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item>
-          <el-input class="width200" />
+          <el-input class="width200"/>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
         </el-form-item>
         <el-form-item>
@@ -260,11 +262,12 @@
             :props="menuProps"
             :default-expand-all="true"
             show-checkbox
-            ref="vueTree" />
+            ref="vueTree"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary"
+                   @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -279,7 +282,7 @@
   export default {
     name: "role-maintenance",
     components: {Box},
-    data(){
+    data() {
       return {
         // 查询表单
         formItem: {
@@ -289,39 +292,54 @@
         },
         // 新增编辑表单
         addEdit: {
+          id: '',
           organization: '',
-          organizationId: 'org_01_02',
-          roleName: '23',
-          status: false,
-          description: 'hahha'
+          roleName: '',
+          organizationId: '',
+          status: '',
+          description: ''
         },
         status: '',
         // 全局按钮 是否禁用
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        checked:false,
-        dialogVisible:false,
-        outerVisible:false,
-        innerVisible:false,
+        // 判断视图下全选按钮 是否选中
+        checked: false,
+        // 新增编辑弹出层
+        dialogVisible: false,
+        // 用户授权外层
+        outerVisible: false,
+        // 用户授权内层
+        innerVisible: false,
+        // 功能权限
         dialogVisibleFunction: false,
-        dialogVisibleData:false,
+        // 数据权限
+        dialogVisibleData: false,
+        // 所属组织下拉框
         isShowEditPopover: false,
+        // 是否编辑
+        ifAdd: false,
+        // 表格数据
         tableData: [],
+        // 内层表格数据
         innerTableData: [],
-        options:{
+        // 外层分页
+        options: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
         },
-        innerOptions:{
+        // 内层分页
+        innerOptions: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
         },
+        // 标签
         tags: [],
         // 数据默认字段
         defaultProps: {
@@ -334,10 +352,12 @@
           label: 'menuName',
           children: 'systemMenuAndLanguageRelationChildList'
         },
+        // 所属组织列表
         organizationList: [],
         checkListIds: [], // 选中表格的数据id集合
         checkListOrg: [], // 选中表格的数据组织id集合
         selectArr: [], // 功能菜单集合
+        editDataList: {}, // 编辑选中的集合
         rules: {
           organization: [
             {validator: isNotNull, trigger: ['blur', 'change']}
@@ -351,10 +371,75 @@
           description: [
             {validator: isNotNull, trigger: ['blur']}
           ]
-        }
+        },
+        log: [],
       }
     },
-    methods:{
+    methods: {
+      // 提交授权菜单
+      commitMenuData() {
+        var _t = this;
+        var selectMenu = this.$refs.tree.getCheckedKeys();
+        if (selectMenu.length !== 0) {
+          _t.$api.post('system/role/impowerRoleByMenu', {
+            systemRole: {
+              id: _t.checkListIds.join(',')
+            },
+            menuId: selectMenu.join(',')
+          }, function (res) {
+            switch (res.status) {
+              case 200:
+                _t.dialogVisibleFunction = false;
+                _t.getData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
+        }
+      },
+      // 提交授权用户
+      userDataForm() {
+        var _t = this;
+        if (_t.tags.length !== 0) {
+          var userIds = new Array();
+          _t.tags.forEach(function (item) {
+            userIds.push(item.id);
+          });
+          _t.$api.post('system/role/impowerRoleByUser', {
+            systemRole: {
+              id: _t.checkListIds.join(',')
+            },
+            userId: userIds.join(',')
+          }, function (res) {
+            switch (res.status) {
+              case 200:
+                _t.outerVisible = false;
+                _t.getData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
+        }
+      },
+      // 选中表格内部数据
+      selectTableNumAlert(val) {
+        var _t = this;
+        _t.tags = val;
+      },
       // 查询表格数据
       getData() {
         var _t = this;
@@ -475,8 +560,9 @@
         });
       },
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
+        console.log(data)
         switch (data.length) {
           case 0: // 未选中
             _t.disableBtn.disable = true;
@@ -490,6 +576,7 @@
             var checkListIds = new Array();
             var checkListOrg = new Array();
             data.forEach(function (item) {
+              _t.editDataList = item;
               // 判断启用禁用
               if (item.enable === false) {
                 _t.disableBtn.enable = false;
@@ -506,10 +593,11 @@
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
+            _t.editDataList = {};
             var disableFlag = 0, enableFlag = 0;
             var checkListIds = new Array();
             var checkListOrg = new Array();
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               // 根据选中条数中的状态值判断 启用禁用数量
               if (data[i].enable === false) {
                 disableFlag++;
@@ -536,25 +624,25 @@
         }
       },
       // 外层 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
         _t.getData();
       },
       // 内层 改变当前页码
-      innerOptionsHandleCurrentChange(val){
+      innerOptionsHandleCurrentChange(val) {
         var _t = this;
         _t.innerOptions.currentPage = val;
         _t.selectRole();
       },
       // 删除
-      deleteData(){
+      deleteData() {
         var _t = this;
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           _t.$api.delete('system/role/', {
             jsonString: JSON.stringify({
               roleId: _t.checkListIds.join(',')
@@ -582,43 +670,42 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
-      // 用户授权
-      authorizationData(){
+      // 用户授权 数据回显
+      authorizationData() {
         var _t = this;
         _t.outerVisible = true;
       },
       // 功能权限
-      functionData(){
+      functionData() {
         var _t = this;
         _t.dialogVisibleFunction = true;
       },
       // 数据权限
-      infoData(){
+      infoData() {
         var _t = this;
         _t.dialogVisibleData = true;
       },
       // 关闭标签
-      handleClose(tag){
+      handleClose(tag) {
         var _t = this;
         for (var i = 0; i < _t.tags.length; i++) {
           if (tag.id === _t.tags[i].id) {
             _t.tags.splice(i, 1);
           }
         }
-        console.log(_t.tags);
       },
       // 全选和取消全选
-      checkedAll(){
+      checkedAll() {
         var _t = this;
         _t.checked = !_t.checked;
         if (_t.checked) {
           //全选
           _t.$refs.vueTree.setCheckedNodes(_t.organizationList);
-        }else{
+        } else {
           //取消选中
           _t.$refs.vueTree.setCheckedKeys([]);
         }
@@ -649,6 +736,11 @@
           }
         });
       },
+      // 新增角色按钮
+      addRoleDataBtn() {
+        this.ifAdd = true;
+        this.dialogVisible = true;
+      },
       // 新增角色
       addRoleData(formName) {
         var _t = this;
@@ -659,7 +751,9 @@
                 organizationId: _t.addEdit.organizationId,
                 roleName: _t.addEdit.roleName === null ? null : _t.addEdit.roleName.trim(),
                 enable: _t.addEdit.status,
-                description: _t.addEdit.description === null ? null : _t.addEdit.description.trim()
+                description: _t.addEdit.description === null ? null : _t.addEdit.description.trim(),
+                createBy: localStorage.getItem('hy-user-name'),
+                languageMark: localStorage.getItem('hy-language')
               }
             }, function (res) {
               _t.dialogVisible = false;
@@ -683,41 +777,55 @@
           }
         });
       },
+      // 编辑角色按钮
+      editRoleDatBtn() {
+        var _t = this;
+        _t.ifAdd = false;
+        _t.dialogVisible = true;
+        _t.addEdit.id = _t.editDataList.id;
+        _t.addEdit.roleName = _t.editDataList.roleName;
+        _t.addEdit.organization = _t.editDataList.organizationName;
+        _t.addEdit.organizationId = _t.editDataList.organizationId;
+        _t.addEdit.status = _t.editDataList.enable == true ? 1 : 0;
+        _t.addEdit.description = _t.editDataList.description;
+      },
       // 编辑角色
       editRoleData(formName) {
         var _t = this;
-        // _t.$refs[formName].validate((valid) => {
-        //   if (valid) {
-        _t.$api.put('system/role/', {
-          systemRole: {
-            id: 'b548994283b54b7982066e1b914872a1',
-            organizationId: _t.addEdit.organizationId,
-            roleName: _t.addEdit.roleName === null ? null : _t.addEdit.roleName.trim(),
-            enable: _t.addEdit.status,
-            description: _t.addEdit.description === null ? null : _t.addEdit.description.trim()
-          }
-        }, function (res) {
-          _t.dialogVisible = false;
-          switch (res.status) {
-            case 200:
-              _t.getData();
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            case 2006:
-              _t.$alert(res.message);
-              break;
-            default:
-              break;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            _t.$api.put('system/role/', {
+              systemRole: {
+                id: _t.addEdit.id,
+                organizationId: _t.addEdit.organizationId,
+                roleName: _t.addEdit.roleName === null ? null : _t.addEdit.roleName.trim(),
+                enable: _t.addEdit.status,
+                description: _t.addEdit.description === null ? null : _t.addEdit.description.trim(),
+                lastModified: localStorage.getItem('hy-user-name'),
+                languageMark: localStorage.getItem('hy-language')
+              }
+            }, function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 2006:
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
           }
         });
       },
-      // });
-      // },
       // 根据组织id查询用户列表
       selectRole() {
         var _t = this;
@@ -787,7 +895,7 @@
         });
       },
     },
-    created(){
+    created() {
       this.$store.commit('setLoading', true);
       this.getData();
       this.getOrganization();
