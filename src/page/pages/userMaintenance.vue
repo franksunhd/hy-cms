@@ -51,11 +51,11 @@
     <div class="padding20">
       <!--全局操作-->
       <div class="marBottom16">
-        <el-button type="warning" @click="dialogVisible = true" class="queryBtn">
+        <el-button type="warning" @click="AddDataBtn" class="queryBtn">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button :disabled="disableBtn.edit" @click="editData" class="queryBtn">
+        <el-button :disabled="disableBtn.edit" @click="editDataBtn" class="queryBtn">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
         </el-button>
@@ -105,8 +105,7 @@
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="center"
                          align="center"/>
-        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center"
-                         align="center">
+        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center" align="center">
           <template slot-scope="scope">
             {{scope.row.createTime | dateFilter}}
           </template>
@@ -165,8 +164,11 @@
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
           <el-select class="width200" v-model="addEdit.status">
-            <el-option :label="$t('public.enable')" value="1"/>
-            <el-option :label="$t('public.disable')" value="0"/>
+            <el-option
+              v-for="(item,index) in statusList"
+              :value="item.value"
+              :key="index"
+              :label="item.label"/>
           </el-select>
         </el-form-item>
         <br>
@@ -185,8 +187,9 @@
         </el-checkbox-group>
       </div>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" type="primary" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" type="primary" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="resetForm">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -210,6 +213,7 @@
         },
         // 新增 编辑表单
         addEdit: {
+          id: '',
           organization: '',
           organizationId: '',
           username: '',
@@ -218,7 +222,8 @@
           mobileNum: '',
           emails: '',
           status: '',
-          assignRole: []
+          assignRole: [],
+          changeSelect: false
         },
         // 控制全局按钮 是否禁用
         disableBtn: {
@@ -227,9 +232,15 @@
           disable: true,
           more: true
         },
+        // 新增弹出层
         dialogVisible: false,
+        // 判断弹出层是新增还是编辑
+        ifAdd: false,
+        // 表单所属组织下拉区域
         isShowFormPopover: false,
+        // 新增所属组织下拉区域
         isShowEditPopover: false,
+        // 表格数据
         tableData: [],
         statusList: [
           {label: '启用', value: 1},
@@ -239,6 +250,9 @@
         checkListValue: [],
         // 删除数据传参
         checkRoleIds: [],
+        // 编辑数据集合
+        editDataList: {},
+        // 角色列表
         assignRoleList: [],
         // 分页
         options: {
@@ -283,6 +297,11 @@
       }
     },
     methods: {
+      // 新增按钮弹出层
+      AddDataBtn() {
+        this.dialogVisible = true;
+        this.ifAdd = true;
+      },
       // 查询表单所属组织下拉框
       clickNode(val) {
         this.formItem.organization = val.nodeName;
@@ -295,39 +314,17 @@
         _t.addEdit.organization = val.nodeName;
         _t.addEdit.organizationId = val.nodeId;
         _t.isShowEditPopover = false;
+        _t.addEdit.changeSelect = true;
         _t.getRoleWithOrgId(_t.addEdit.organizationId);
-      },
-      // 根据组织id查询 角色列表
-      getRoleWithOrgId(val) {
-        var _t = this;
-        _t.$api.get('system/role/all/', {
-          jsonString: JSON.stringify({
-            systemRole: {
-              organizationId: val
-            }
-          })
-        }, function (res) {
-          switch (res.status) {
-            case 200:
-              _t.assignRoleList = res.data.list;
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.assignRoleList = [];
-              break;
-          }
-        });
       },
       // 重置新增编辑表单数据
       resetForm() {
         var _t = this;
+        _t.dialogVisible = false
         _t.addEdit = {
+          id: '',
           organization: '',
+          organizationId: '',
           username: '',
           loginAccount: '',
           loginPassword: '',
@@ -350,6 +347,7 @@
           case 1: // 单选
             _t.disableBtn.edit = false;
             data.forEach(function (item) {
+              _t.editDataList = item;
               // 先判断是否选中自己 再判断禁用还是启用
               if (item.id !== localStorage.getItem('hy-user-id')) {
                 if (item.status === 0) {
@@ -364,6 +362,7 @@
             break;
           default: // 多选
             _t.disableBtn.edit = true;
+            _t.editDataList = {};
             var disableFlag = 0, enableFlag = 0, resetFlag = 0;
             for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
@@ -689,27 +688,26 @@
           }
         });
       },
-      // 编辑数据
-      editData() {
+      // 根据组织id查询 角色列表
+      getRoleWithOrgId(val) {
         var _t = this;
-        _t.$api.put('system/user/', {
-          systemUser: {
-            id: 'bb6c161ddb4240ffa78bef522c874653',
-            organizationId: 'org_01_02',
-            username: 'huanhang',
-            password: '123456',
-            displayName: '换行1',
-            email: 'aaa@qq.com',
-            mobile: '123',
-            status: 0,
-            languageMark: localStorage.getItem('hy-language')
-          },
-          roleId: 'role_01'
+        _t.$api.get('system/role/all/', {
+          jsonString: JSON.stringify({
+            systemRole: {
+              organizationId: val
+            }
+          })
         }, function (res) {
           switch (res.status) {
             case 200:
-              _t.dialogVisible = false;
-              _t.getData();
+              _t.assignRoleList = res.data.list;
+              if (_t.ifAdd) {
+                _t.addEdit.assignRole = [];
+              } else if (_t.ifAdd == false && _t.addEdit.changeSelect == false) {
+                _t.addEdit.assignRole = _t.editDataList.roleListIds.split(',');
+              } else if (_t.ifAdd == false && _t.addEdit.changeSelect == true) {
+                _t.addEdit.assignRole = [];
+              }
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -717,12 +715,74 @@
             case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
-            case 2006:
-              _t.$alert(res.message);
-              break;
             default:
-              _t.dialogVisible = false;
+              _t.assignRoleList = [];
+              if (_t.ifAdd) {
+                _t.addEdit.assignRole = [];
+              } else {
+                console.log(_t.addEdit.assignRole)
+                _t.addEdit.assignRole = _t.editDataList.roleListIds.split(',');
+              }
               break;
+          }
+        });
+      },
+      // 编辑数据按钮
+      editDataBtn() {
+        var _t = this;
+        _t.ifAdd = false;
+        _t.addEdit.id = _t.editDataList.id;
+        _t.addEdit.organization = _t.editDataList.organizationName;
+        _t.addEdit.organizationId = _t.editDataList.organizationId;
+        _t.addEdit.username = _t.editDataList.displayName;
+        _t.addEdit.loginAccount = _t.editDataList.username;
+        // _t.addEdit.loginPassword = _t.editDataList.password;
+        _t.addEdit.mobileNum = _t.editDataList.mobile;
+        _t.addEdit.emails = _t.editDataList.email;
+        _t.addEdit.status = _t.editDataList.status;
+        _t.getRoleWithOrgId(_t.addEdit.organizationId);
+        _t.dialogVisible = true;
+      },
+      // 编辑数据
+      editData(formName) {
+        var _t = this;
+        console.log(_t.addEdit.assignRole)
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            _t.$api.put('system/user/', {
+              systemUser: {
+                id: _t.addEdit.id,
+                organizationId: _t.addEdit.organizationId,
+                username: _t.addEdit.loginAccount == null ? null : _t.addEdit.loginAccount.trim(),
+                password: _t.addEdit.loginPassword == null ? null : _t.addEdit.loginPassword.trim(),
+                displayName: _t.addEdit.username == null ? null : _t.addEdit.username.trim(),
+                email: _t.addEdit.emails == null ? null : _t.addEdit.emails.trim(),
+                mobile: _t.addEdit.mobileNum == null ? null : _t.addEdit.mobileNum.trim(),
+                status: _t.addEdit.status,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: _t.addEdit.assignRole.join(',')
+            }, function (res) {
+              switch (res.status) {
+                case 200:
+                  _t.dialogVisible = false;
+                  _t.getData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 2006:
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  _t.getData();
+                  _t.dialogVisible = false;
+                  break;
+              }
+            });
           }
         });
       },
