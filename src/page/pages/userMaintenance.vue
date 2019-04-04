@@ -719,9 +719,10 @@
               _t.assignRoleList = [];
               if (_t.ifAdd) {
                 _t.addEdit.assignRole = [];
-              } else {
-                console.log(_t.addEdit.assignRole)
+              } else if (_t.ifAdd == false && _t.addEdit.changeSelect == false) {
                 _t.addEdit.assignRole = _t.editDataList.roleListIds.split(',');
+              } else if (_t.ifAdd == false && _t.addEdit.changeSelect == true) {
+                _t.addEdit.assignRole = [];
               }
               break;
           }
@@ -746,7 +747,6 @@
       // 编辑数据
       editData(formName) {
         var _t = this;
-        console.log(_t.addEdit.assignRole)
         _t.$refs[formName].validate((valid) => {
           if (valid) {
             _t.$api.put('system/user/', {
