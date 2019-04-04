@@ -45,11 +45,11 @@
         <div class="padding20">
           <!--全局操作-->
           <div class="marBottom16">
-            <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+            <el-button type="warning" class="queryBtn" @click="addDataBtn">
               <i class="el-icon-circle-plus-outline"></i>
               {{$t('public.add')}}
             </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
+            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
               <i class="el-icon-edit-outline"></i>
               {{$t('public.edit')}}
             </el-button>
@@ -157,7 +157,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
@@ -182,6 +183,7 @@
         },
         // 新增编辑表单
         addEdit: {
+          id: '',
           organization: '',
           organizationId: '',
           organizationName: '',
@@ -205,6 +207,7 @@
           pageSize:10, // 每页显示条数
         },
         dialogVisible: false, // 新增编辑弹出层
+        ifAdd: false,
         // 数据默认字段
         defaultProps: {
           parent: 'parentId',   // 父级唯一标识
@@ -215,6 +218,7 @@
         organizationList: [], // 所属组织集合
         treeMenuData: {}, // 左侧导航集合
         checkListIds: [], // 选中表格的数据id
+        checkListValue: [], // 选中的表格集合
         // 表单校验规则
         rules: {}
       }
@@ -243,9 +247,9 @@
             var checkListIds = new Array();
             data.forEach(function (item) {
               // 启用禁用判断
-              if (item.enable === false) {
+              if (item.enable == false) {
                 _t.disableBtn.enable = false;
-              } else if (item.enable === true) {
+              } else if (item.enable == true) {
                 _t.disableBtn.disable = false;
               }
               // 获取选照id
@@ -281,6 +285,8 @@
             }
             break;
         }
+        // 选中的表格集合
+        _t.checkListValue = data;
       },
       // 外层 改变当前页码
       handleCurrentChange(val){
@@ -386,9 +392,9 @@
           type: 'warning'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
-          _t.$api.delete('system/role/', {
+          _t.$api.delete('system/organization/', {
             jsonString: JSON.stringify({
-              roleId: _t.checkListIds.join(',')
+              id: _t.checkListIds.join(',')
             })
           }, function (res) {
             _t.$store.commit('setLoading', false);
@@ -397,7 +403,7 @@
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
-                _t.getData();
+                _t.getTreeData();
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
@@ -526,6 +532,12 @@
           }
         });
       },
+      // 添加组织按钮
+      addDataBtn() {
+        var _t = this;
+        _t.dialogVisible = true;
+        _t.ifAdd = true;
+      },
       // 添加组织
       addData() {
         var _t = this;
@@ -534,7 +546,7 @@
             parentId: _t.addEdit.organizationId,
             name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
             enable: _t.addEdit.enable,
-            createBy: localStorage.getItem('hy-user-name') || '',
+            createBy: localStorage.getItem('hy-user-name'),
             orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.trim(),
             description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
           }
@@ -552,6 +564,67 @@
               break;
             case 2005:
               _t.$alert(res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 编辑组织按钮
+      editDataBtn() {
+        var _t = this;
+        _t.dialogVisible = true;
+        _t.ifAdd = false;
+        _t.addEdit.id = _t.checkListValue[0].id;
+        _t.addEdit.organization = organization(_t.organizationList, _t.checkListValue[0].parentId);
+        _t.addEdit.organizationId = _t.checkListValue[0].parentId;
+        _t.addEdit.organizationName = _t.checkListValue[0].name;
+        _t.addEdit.orderIndex = _t.checkListValue[0].orderMark;
+        _t.addEdit.enable = _t.checkListValue[0].enable == true ? 1 : 0;
+        _t.addEdit.description = _t.checkListValue[0].description;
+
+        // 递归查找组织名
+        function organization(data, index) {
+          var result, temp; //返回值和临时变量
+          for (var i in data) {
+            temp = data[i];
+            if (temp['nodeName'] && temp['nodeId'] == index) {
+              result = temp['nodeName'];
+              break; //如果已经返回了就中止
+            }
+            //如果还没有找到则遍历menus参数下的数据
+            if (typeof result == 'undefined' && temp['children']) {
+              result = organization(temp['children'], index);
+            }
+          }
+          return result;
+        }
+      },
+      // 编辑组织
+      editData(formName) {
+        var _t = this;
+        _t.$api.put('system/organization/', {
+          systemOrganization: {
+            id: _t.addEdit.id,
+            parentId: _t.addEdit.organizationId,
+            name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
+            enable: _t.addEdit.enable,
+            lastModifyBy: localStorage.getItem('hy-user-name'),
+            languageMark: localStorage.getItem('hy-language'),
+            orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.toString().trim(),
+            description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
+          }
+        }, function (res) {
+          _t.dialogVisible = false;
+          switch (res.status) {
+            case 200:
+              _t.getTreeData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
               break;
             default:
               break;
