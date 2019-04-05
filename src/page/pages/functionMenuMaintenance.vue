@@ -118,23 +118,26 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px" v-model="addEdit">
-        <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'">
-          <el-input v-model="addEdit.menuName[0]" placeholder="中文简体" class="width200"/>
-          <br><br>
-          <el-input v-model="addEdit.menuName[1]" placeholder="英文" class="width200"/>
-          <br><br>
-          <el-input v-model="addEdit.menuName[2]" placeholder="中文繁体" class="width200"/>
+      <el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
+        <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'" prop="menuNameZh">
+          <el-input v-model="addEdit.menuNameZh" placeholder="中文简体" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
+        <el-form-item prop="menuNameEn">
+          <el-input v-model="addEdit.menuNameEn" placeholder="英文" class="width200"/>
+        </el-form-item>
+        <!--<el-form-item prop="menuNameTw">-->
+        <!--<el-input v-model="addEdit.menuNameTw" placeholder="中文繁体" class="width200"/>-->
+        <!--</el-form-item>-->
+        <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'" prop="menuIcon">
           <el-upload action="">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
+          <el-input v-if="false" v-model="addEdit.menuIcon"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
+        <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
           <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
+        <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'" prop="jumpType">
           <el-radio-group v-model="addEdit.jumpType">
             <el-radio :label="0">framename</el-radio>
             <el-radio :label="1">_blank</el-radio>
@@ -164,13 +167,13 @@
             </el-tag>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'">
+        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
           <el-input v-model="addEdit.menuLevel" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'">
+        <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'">
+        <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
@@ -197,7 +200,8 @@
         </span>
       </el-dialog>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -206,6 +210,7 @@
 
 <script>
   import Box from '../../components/Box';
+  import {isNotNull} from "../../assets/js/validator";
   export default {
     name: "functionMenuMaintenance",
     components:{Box},
@@ -218,9 +223,11 @@
         },
         addEdit: {
           parentId: '',
-          menuName: ['', '', ''],
-          menuLanguage: ['(中-简)', '(英)', '(中-繁)'],
+          menuNameZh: '',
+          menuNameEn: '',
+          menuNameTw: '',
           menuLevel: '',
+          menuIcon: '',
           menuHref: '',
           menuIcon: '',
           jumpType: '',
@@ -233,8 +240,9 @@
           disable:true,
           more:true
         },
-        dialogVisible: false, // 新增编辑弹出层
+        dialogVisible: true, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
+        ifAdd: false, // 是否新增
         statusList:[
           {label:'启用',value:1},
           {label:'禁用',value:0},
@@ -258,6 +266,35 @@
         defaultPropsUser: {
           label: 'nodeName',
           children: 'children'
+        },
+        rules: {
+          menuLevel: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          orderMark: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          enable: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          menuHref: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          jumpType: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          menuIcon: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          menuNameZh: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          menuNameEn: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          menuNameTw: [
+            {validator: isNotNull, trigger: ['blur']}
+          ]
         }
       }
     },
@@ -655,43 +692,46 @@
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = true;
-        _t.addData();
       },
       // 新增提交
-      addData() {
+      addData(formName) {
         var _t = this;
-        var menuNameArr = new Array();
-        _t.addEdit.menuName.forEach(function (item, index) {
-          menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
-        });
-        var selectRoleList = new Array();
-        _t.selectUser.forEach(function (item) {
-          selectRoleList.push(item.id);
-        });
-        _t.$api.post('system/menu/', {
-          systemMenu: {
-            parentId: _t.addEdit.parentId,
-            menuName: menuNameArr.join(','),
-            menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
-            orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
-            menuLevel: _t.addEdit.menuLevel,
-            enable: _t.addEdit.enable == 1 ? true : false,
-            languageMark: localStorage.getItem('hy-language')
-          },
-          roleId: selectRoleList.join(',')
-        }, function (res) {
-          switch (res.status) {
-            case 200:
-              _t.getMenuData();
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              break;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            var menuNameArr = new Array();
+            menuNameArr[0] = _t.addEdit.menuNameZh.trim() + '(中-简)';
+            menuNameArr[1] = _t.addEdit.menuNameEn.trim() + '(英)';
+            // menuNameArr[2] = _t.addEdit.menuNameTw.trim() + '(中-繁)';
+            var selectRoleList = new Array();
+            _t.selectUser.forEach(function (item) {
+              selectRoleList.push(item.id);
+            });
+            _t.$api.post('system/menu/', {
+              systemMenu: {
+                parentId: _t.addEdit.parentId,
+                menuName: menuNameArr.join(','),
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
+                menuLevel: _t.addEdit.menuLevel,
+                enable: _t.addEdit.enable == 1 ? true : false,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: selectRoleList.join(',')
+            }, function (res) {
+              switch (res.status) {
+                case 200:
+                  _t.getMenuData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
           }
         });
       },
@@ -700,35 +740,59 @@
         var _t = this;
         _t.ifAdd = false;
         _t.dialogVisible = true;
-        _t.editData();
       },
       // 编辑提交
-      editData() {
+      editData(formName) {
         var _t = this;
-        var menuNameArr = new Array();
-        _t.addEdit.menuName.forEach(function (item, index) {
-          menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            var menuNameArr = new Array();
+            _t.addEdit.menuName.forEach(function (item, index) {
+              menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
+            });
+            var selectRoleList = new Array();
+            _t.selectUser.forEach(function (item) {
+              selectRoleList.push(item.id);
+            });
+            _t.$api.post('system/menu/', {
+              systemMenu: {
+                id: _t.checkListIds.join(','),
+                parentId: _t.addEdit.parentId,
+                menuName: menuNameArr.join(','),
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
+                menuLevel: _t.addEdit.menuLevel,
+                enable: _t.addEdit.enable == 1 ? true : false,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: selectRoleList.join(',')
+            }, function (res) {
+              switch (res.status) {
+                case 200:
+                  _t.getMenuData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
+          }
         });
-        var selectRoleList = new Array();
-        _t.selectUser.forEach(function (item) {
-          selectRoleList.push(item.id);
-        });
-        _t.$api.post('system/menu/', {
-          systemMenu: {
-            id: _t.checkListIds.join(','),
-            parentId: _t.addEdit.parentId,
-            menuName: menuNameArr.join(','),
-            menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
-            orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
-            menuLevel: _t.addEdit.menuLevel,
-            enable: _t.addEdit.enable == 1 ? true : false,
-            languageMark: localStorage.getItem('hy-language')
-          },
-          roleId: selectRoleList.join(',')
-        }, function (res) {
+      },
+      // 表格数据上移
+      moveUp(data) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        _t.$api.put('', {}, function (res) {
+          _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
-              _t.getMenuData();
+              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -741,13 +805,26 @@
           }
         });
       },
-      // 表格数据上移
-      moveUp(data) {
-
-      },
       // 表格数据下移
       moveDown(data) {
-
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        _t.$api.put('', {}, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 选择用户
       selectUserBtn() {
