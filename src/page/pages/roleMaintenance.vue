@@ -169,6 +169,7 @@
             closable>
             {{tag.username}}
           </el-tag>
+          <div style="height: 20px;" v-if="tagsLength">必填项不能为空</div>
         </el-form-item>
       </el-form>
       <el-dialog
@@ -209,7 +210,7 @@
       </el-dialog>
       <div slot="footer">
         <el-button class="queryBtn" type="primary" @click="userDataForm">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="outerVisible = false">{{$t('public.close')}}</el-button>
+        <el-button class="queryBtn" @click="outerVisible = false;tagsLength = false;">{{$t('public.close')}}</el-button>
       </div>
     </el-dialog>
     <!--功能权限-->
@@ -228,10 +229,13 @@
             show-checkbox
             ref="tree"/>
         </el-form-item>
+        <el-form-item style="margin-bottom: 0;">
+          <div v-if="selectMenuMark">必填项不能为空</div>
+        </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button class="queryBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleFunction = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisibleFunction = false; selectMenuMark = false;">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--数据权限-->
@@ -316,13 +320,17 @@
         // 用户授权内层
         innerVisible: false,
         // 功能权限
-        dialogVisibleFunction: false,
+        dialogVisibleFunction: true,
         // 数据权限
         dialogVisibleData: false,
         // 所属组织下拉框
         isShowEditPopover: false,
         // 是否编辑
         ifAdd: false,
+        // 是否提交用户授权
+        tagsLength: false,
+        // 是否提交功能权限
+        selectMenuMark: false,
         // 表格数据
         tableData: [],
         // 内层表格数据
@@ -370,6 +378,9 @@
           ],
           description: [
             {validator: isNotNull, trigger: ['blur']}
+          ],
+          tags: [
+            {validator: isNotNull, trigger: ['blur']}
           ]
         },
         log: [],
@@ -381,6 +392,7 @@
         var _t = this;
         var selectMenu = this.$refs.tree.getCheckedKeys();
         if (selectMenu.length !== 0) {
+          _t.selectMenuMark = false;
           _t.$api.post('system/role/impowerRoleByMenu', {
             systemRole: {
               id: _t.checkListIds.join(',')
@@ -402,12 +414,15 @@
                 break;
             }
           });
+        } else {
+          _t.selectMenuMark = true;
         }
       },
       // 提交授权用户
       userDataForm() {
         var _t = this;
         if (_t.tags.length !== 0) {
+          _t.tagsLength = false;
           var userIds = new Array();
           _t.tags.forEach(function (item) {
             userIds.push(item.id);
@@ -433,6 +448,8 @@
                 break;
             }
           });
+        } else {
+          _t.tagsLength = true;
         }
       },
       // 选中表格内部数据
