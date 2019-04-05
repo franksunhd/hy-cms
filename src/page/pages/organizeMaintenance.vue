@@ -119,7 +119,7 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form v-model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
+      <el-form :model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
         <el-form-item :label="$t('organizeMaintenance.parentOrganization') + '：'">
           <el-popover
             trigger="click"
@@ -140,19 +140,19 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'">
+        <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'" prop="organizationName">
           <el-input class="width200" v-model="addEdit.organizationName"/>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.orderIndex') + '：'">
+        <el-form-item :label="$t('organizeMaintenance.orderIndex') + '：'" prop="orderIndex">
           <el-input class="width200" v-model="addEdit.orderIndex"/>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.isEnable') + '：'">
+        <el-form-item :label="$t('organizeMaintenance.isEnable') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'">
+        <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'" prop="description">
           <el-input type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
         </el-form-item>
       </el-form>
@@ -169,7 +169,6 @@
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
   import {dateFilter} from "../../assets/js/filters";
-
   export default {
     name: "organize-maintenance",
     components: {Box},
@@ -220,7 +219,20 @@
         checkListIds: [], // 选中表格的数据id
         checkListValue: [], // 选中的表格集合
         // 表单校验规则
-        rules: {}
+        rules: {
+          organizationName: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          orderIndex: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          enable: [
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          description: [
+            {validator: isNotNull, trigger: ['blur']}
+          ]
+        }
       }
     },
     methods:{
@@ -539,34 +551,38 @@
         _t.ifAdd = true;
       },
       // 添加组织
-      addData() {
+      addData(formName) {
         var _t = this;
-        _t.$api.post('system/organization/', {
-          systemOrganization: {
-            parentId: _t.addEdit.organizationId,
-            name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
-            enable: _t.addEdit.enable,
-            createBy: localStorage.getItem('hy-user-name'),
-            orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.trim(),
-            description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
-          }
-        }, function (res) {
-          _t.dialogVisible = false;
-          switch (res.status) {
-            case 200:
-              _t.getTreeData();
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            case 2005:
-              _t.$alert(res.message);
-              break;
-            default:
-              break;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            _t.$api.post('system/organization/', {
+              systemOrganization: {
+                parentId: _t.addEdit.organizationId,
+                name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
+                enable: _t.addEdit.enable,
+                createBy: localStorage.getItem('hy-user-name'),
+                orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.trim(),
+                description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
+              }
+            }, function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getTreeData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 2005:
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
           }
         });
       },
@@ -603,38 +619,41 @@
       // 编辑组织
       editData(formName) {
         var _t = this;
-        _t.$api.put('system/organization/', {
-          systemOrganization: {
-            id: _t.addEdit.id,
-            parentId: _t.addEdit.organizationId,
-            name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
-            enable: _t.addEdit.enable,
-            lastModifyBy: localStorage.getItem('hy-user-name'),
-            languageMark: localStorage.getItem('hy-language'),
-            orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.toString().trim(),
-            description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
-          }
-        }, function (res) {
-          _t.dialogVisible = false;
-          switch (res.status) {
-            case 200:
-              _t.getTreeData();
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              break;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            _t.$api.put('system/organization/', {
+              systemOrganization: {
+                id: _t.addEdit.id,
+                parentId: _t.addEdit.organizationId,
+                name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
+                enable: _t.addEdit.enable,
+                lastModifyBy: localStorage.getItem('hy-user-name'),
+                languageMark: localStorage.getItem('hy-language'),
+                orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.toString().trim(),
+                description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
+              }
+            }, function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getTreeData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
           }
         });
       }
     },
     created(){
       this.$store.commit('setLoading', true);
-      // 获取树形列表
       this.getTreeData();
       this.getOrganization();
     }
