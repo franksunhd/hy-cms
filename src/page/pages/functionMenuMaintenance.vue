@@ -240,7 +240,7 @@
           disable:true,
           more:true
         },
-        dialogVisible: true, // 新增编辑弹出层
+        dialogVisible: false, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
         ifAdd: false, // 是否新增
         statusList:[
