@@ -38,18 +38,18 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" class="queryBtn">{{$t('public.query')}}</el-button>
+              <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
             </el-form-item>
           </el-form>
         </div>
         <div class="padding20">
           <!--全局操作-->
           <div class="marBottom16">
-            <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+            <el-button type="warning" class="queryBtn" @click="addDataBtn">
               <i class="el-icon-circle-plus-outline"></i>
               {{$t('public.add')}}
             </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
+            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
               <i class="el-icon-edit-outline"></i>
               {{$t('public.edit')}}
             </el-button>
@@ -93,8 +93,8 @@
             </el-table-column>
             <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="center" align="center">
               <template slot-scope="scope">
-                <span v-if="scope.row.status === 1">启用</span>
-                <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+                <span v-if="scope.row.enable === true">启用</span>
+                <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
             <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="center"
@@ -143,7 +143,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.roleMenu') + '：'">
-          <el-button class="queryBtn" type="primary" @click="dialogVisibleAlert = true">{{$t('functionMenuMaintenance.selectUser')}}</el-button>
+          <el-button class="queryBtn" type="primary" @click="selectUserBtn">
+            {{$t('functionMenuMaintenance.selectUser')}}
+          </el-button>
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
             <p>
@@ -181,11 +183,12 @@
         append-to-body>
         <el-tree
           :data="selectUser"
+          :props="defaultPropsUser"
           show-checkbox
           ref="tree">
-         <span slot-scope="{ node, data }">
-           <i v-if="data.type !== 'user'" class="el-icon-document"></i>{{ node.label }}
-        </span>
+          <!--<span slot-scope="{ node, data }">-->
+          <!--<i v-if="data.type !== 1" class="el-icon-document"></i>{{ node.nodeName }}-->
+          <!--</span>-->
         </el-tree>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
@@ -209,9 +212,7 @@
     data() {
       return {
         formItem: {
-          nodeId: null,
-          menuLevel: null,
-          businessCode: null,
+          nodeId: '0',
           dictionaryName: null,
           status: null,
         },
@@ -233,6 +234,7 @@
         selectUser: [], // 选中的用户
         treeData: [], // 左侧导航列表
         tableData: [], //
+        checkListIds: [], // 选中数据集合的id
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
@@ -241,6 +243,10 @@
         defaultProps: {
           label: 'menuName',
           children: 'systemMenuAndLanguageRelationChildList'
+        },
+        defaultPropsUser: {
+          label: 'nodeName',
+          children: 'children'
         }
       }
     },
@@ -258,25 +264,33 @@
           case 1: // 单选
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
+            var checkListIds = new Array();
             data.forEach(function (item) {
-              if (item.status === 0) {
+              // 启用禁用判断
+              if (item.enable === false) {
                 _t.disableBtn.enable = false;
-              } else if (item.status === 1) {
+              } else if (item.enable === true) {
                 _t.disableBtn.disable = false;
               }
+              checkListIds.push(item.id);
             });
+            _t.checkListIds = checkListIds;
             break;
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
+            var checkListIds = new Array();
             for (var i = 0;i < data.length;i++){
-              if (data[i].status === 0) {
+              // 启用禁用判断
+              if (data[i].enable === false) {
                 disableFlag++;
-              } else if (data[i].status === 1) {
+              } else if (data[i].enable === true) {
                 enableFlag++;
               }
+              checkListIds.push(data[i].id);
             }
+            _t.checkListIds = checkListIds;
             if (disableFlag > 0 && enableFlag > 0) {
               _t.disableBtn.enable = true;
               _t.disableBtn.disable = true;
@@ -297,36 +311,143 @@
       },
       // 启用
       enableData() {
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/menu/enableMenu', {
+            systemMenu: {
+              id: _t.checkListIds.join(','),
+              enable: true
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
       },
       // 禁用
       disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/menu/enableMenu', {
+            systemMenu: {
+              id: _t.checkListIds.join(','),
+              enable: false
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
       },
       // 删除
       deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-
+          _t.$store.commit('setLoading', true);
+          _t.$api.delete('system/menu/', {
+            jsonString: JSON.stringify({
+              id: _t.checkListIds.join(',')
+            })
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getMenuData();
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              case 2007: // 删除失败
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+              default:
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                break;
+            }
+          });
         }).catch(()=>{
           return;
         });
@@ -460,6 +581,7 @@
           switch (res.status) {
             case 200: // 查询成功
               _t.treeData = res.data.rootMenu;
+              _t.formItem.nodeId = '0';
               _t.getData();
               break;
             case 1003: // 无操作权限
@@ -478,25 +600,27 @@
       getCurrentNode(data) {
         var _t = this;
         _t.formItem.nodeId = data.id;
-        _t.formItem.menuLevel = data.menuLevel;
         _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
       getData() {
         var _t = this;
-        _t.$api.get('system/menu/', {
+        _t.$api.get('system/menu/pagelist', {
           jsonString: JSON.stringify({
-            menuId: _t.formItem.nodeId,
-            menuLevel: _t.formItem.menuLevel,
-            languageMark: localStorage.getItem('hy-language'),
-            dictionaryName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
-            status: _t.formItem.status,
+            systemMenu: {
+              id: _t.formItem.nodeId,
+              menuName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
+              languageMark: localStorage.getItem('hy-language'),
+              status: _t.formItem.status == null ? null : _t.formItem.status
+            },
+            currentPage: _t.options.currentPage,
+            pageSize: _t.options.pageSize
           })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              _t.tableData = res.data.rootMenu;
+              _t.tableData = res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
@@ -514,6 +638,81 @@
           }
         });
       },
+      // 新增按钮
+      addDataBtn() {
+        var _t = this;
+        _t.ifAdd = true;
+        _t.dialogVisible = true;
+        _t.addData();
+      },
+      // 新增提交
+      addData() {
+        var _t = this;
+        _t.$api.post('system/menu/', {
+          systemMenu: {
+            parentId: 'f56414c699f7443ba451b29230253a73',
+            menuName: "测试菜单2(中-简),测试菜单2(英),测试菜单2(中-繁)",
+            menuHref: "www.cctv.com",
+            orderMark: "1",
+            menuLevel: "2",
+            enable: true,
+            languageMark: localStorage.getItem('hy-language')
+          },
+          roleId: "role_01,role_03,role_02"
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 编辑按钮
+      editDataBtn() {
+        var _t = this;
+        _t.ifAdd = false;
+        _t.dialogVisible = true;
+        _t.editData();
+      },
+      // 编辑提交
+      editData() {
+        var _t = this;
+        _t.$api.post('system/menu/', {
+          systemMenu: {
+            id: 'bec92d5a574a44a78c019349ad5332a0',
+            parentId: 'f56414c699f7443ba451b29230253a73',
+            menuName: "菜单2(中-简),菜单2(英),菜单2(中-繁)",
+            menuHref: "www.cctv.com",
+            orderMark: "1",
+            menuLevel: "2",
+            enable: true,
+            languageMark: localStorage.getItem('hy-language')
+          },
+          roleId: "role_01,role_02"
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
       // 表格数据上移
       moveUp(data) {
 
@@ -522,10 +721,33 @@
       moveDown(data) {
 
       },
+      // 选择用户
+      selectUserBtn() {
+        var _t = this;
+        _t.dialogVisibleAlert = true;
+        _t.$api.get('system/menu/getOrgRole', {}, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.selectUser = JSON.parse(res.data.list).children;
+              console.log(_t.selectUser)
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.selectUser = [];
+              break;
+          }
+        });
+      },
       // 点击系统功能菜单
       clickNode() {
         var _t = this;
-
+        _t.formItem.nodeId = '0';
+        _t.getData();
       }
     },
     created() {
