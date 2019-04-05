@@ -118,23 +118,24 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px">
+      <el-form label-width="150px" v-model="addEdit">
         <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'">
-          <el-input />
-          <el-input />
-          <el-input />
+          <el-input v-model="addEdit.menuName[0]" placeholder="中文简体" class="width200"/>
+          <br><br>
+          <el-input v-model="addEdit.menuName[1]" placeholder="英文" class="width200"/>
+          <br><br>
+          <el-input v-model="addEdit.menuName[2]" placeholder="中文繁体" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
-          <el-upload
-          action="">
+          <el-upload action="">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
-          <el-radio-group>
+          <el-radio-group v-model="addEdit.jumpType">
             <el-radio :label="0">framename</el-radio>
             <el-radio :label="1">_blank</el-radio>
             <el-radio :label="2">_self</el-radio>
@@ -164,15 +165,15 @@
           </div>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.menuLevel" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.orderMark" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'">
-          <el-radio-group v-model="status">
-            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
+          <el-radio-group v-model="addEdit.enable">
+            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -196,11 +197,10 @@
         </span>
       </el-dialog>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" class="queryBtn" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
-
   </Box>
 </template>
 
@@ -216,13 +216,24 @@
           dictionaryName: null,
           status: null,
         },
+        addEdit: {
+          parentId: '',
+          menuName: ['', '', ''],
+          menuLanguage: ['(中-简)', '(英)', '(中-繁)'],
+          menuLevel: '',
+          menuHref: '',
+          menuIcon: '',
+          jumpType: '',
+          enable: '',
+          orderMark: '',
+        },
         disableBtn: { // 全局按钮启用禁用判断
           edit:true,
           enable:true,
           disable:true,
           more:true
         },
-        dialogVisible: false, // 新增编辑弹出层
+        dialogVisible: true, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
         statusList:[
           {label:'启用',value:1},
@@ -600,6 +611,7 @@
       getCurrentNode(data) {
         var _t = this;
         _t.formItem.nodeId = data.id;
+        _t.addEdit.parentId = data.id;
         _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
@@ -648,17 +660,25 @@
       // 新增提交
       addData() {
         var _t = this;
+        var menuNameArr = new Array();
+        _t.addEdit.menuName.forEach(function (item, index) {
+          menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
+        });
+        var selectRoleList = new Array();
+        _t.selectUser.forEach(function (item) {
+          selectRoleList.push(item.id);
+        });
         _t.$api.post('system/menu/', {
           systemMenu: {
-            parentId: 'f56414c699f7443ba451b29230253a73',
-            menuName: "测试菜单2(中-简),测试菜单2(英),测试菜单2(中-繁)",
-            menuHref: "www.cctv.com",
-            orderMark: "1",
-            menuLevel: "2",
-            enable: true,
+            parentId: _t.addEdit.parentId,
+            menuName: menuNameArr.join(','),
+            menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
+            orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
+            menuLevel: _t.addEdit.menuLevel,
+            enable: _t.addEdit.enable == 1 ? true : false,
             languageMark: localStorage.getItem('hy-language')
           },
-          roleId: "role_01,role_03,role_02"
+          roleId: selectRoleList.join(',')
         }, function (res) {
           switch (res.status) {
             case 200:
@@ -685,18 +705,26 @@
       // 编辑提交
       editData() {
         var _t = this;
+        var menuNameArr = new Array();
+        _t.addEdit.menuName.forEach(function (item, index) {
+          menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
+        });
+        var selectRoleList = new Array();
+        _t.selectUser.forEach(function (item) {
+          selectRoleList.push(item.id);
+        });
         _t.$api.post('system/menu/', {
           systemMenu: {
-            id: 'bec92d5a574a44a78c019349ad5332a0',
-            parentId: 'f56414c699f7443ba451b29230253a73',
-            menuName: "菜单2(中-简),菜单2(英),菜单2(中-繁)",
-            menuHref: "www.cctv.com",
-            orderMark: "1",
-            menuLevel: "2",
-            enable: true,
+            id: _t.checkListIds.join(','),
+            parentId: _t.addEdit.parentId,
+            menuName: menuNameArr.join(','),
+            menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
+            orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
+            menuLevel: _t.addEdit.menuLevel,
+            enable: _t.addEdit.enable == 1 ? true : false,
             languageMark: localStorage.getItem('hy-language')
           },
-          roleId: "role_01,role_02"
+          roleId: selectRoleList.join(',')
         }, function (res) {
           switch (res.status) {
             case 200:
@@ -747,6 +775,7 @@
       clickNode() {
         var _t = this;
         _t.formItem.nodeId = '0';
+        _t.addEdit.parentId = null;
         _t.getData();
       }
     },
