@@ -1,191 +1,193 @@
-[
-  {
-    "nodeId": "0",
-    "nodeName": "组织结构",
-    "childrenNode": [
-      {
-        "type": "2",
-        "nodeId": "org_01",
-        "nodeName": "集团亚洲总部",
-        "parentNodeId": "0",
-        "childrenNode": [
-          {
-            "type": "1",
-            "nodeId": "role_01",
-            "parentNodeId": "org_01",
-            "nodeName": "亚洲总部经理"
-          },
-          {
-            "type": "1",
-            "nodeId": "role_02",
-            "parentNodeId": "org_01",
-            "nodeName": "亚洲总部分管副总"
-          },
-          {
-            "type": "1",
-            "nodeId": "role_03",
-            "parentNodeId": "org_01",
-            "nodeName": "亚洲总部采购总监"
-          },
-          {
-            "type": "2",
-            "nodeId": "org_01_01",
-            "nodeName": "中国总部",
-            "parentNodeId": "org_01",
-            "childrenNode": [
-              {
-                "type": "2",
-                "nodeId": "org_01_01_01",
-                "nodeName": "广州分部",
-                "parentNodeId": "org_01_01",
-                "childrenNode": []
-              },
-              {
-                "type": "2",
-                "nodeId": "org_01_01_02",
-                "nodeName": "上海分部",
-                "parentNodeId": "org_01_01",
-                "childrenNode": [
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_02_01",
-                    "parentNodeId": "org_01_01_02",
-                    "nodeName": "上海分部副总"
-                  },
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_02_02",
-                    "parentNodeId": "org_01_01_02",
-                    "nodeName": "上海技术经理"
-                  }
-                ]
-              },
-              {
-                "type": "2",
-                "nodeId": "org_01_01_03",
-                "nodeName": "北京分部",
-                "parentNodeId": "org_01_01",
-                "childrenNode": [
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_03_01",
-                    "parentNodeId": "org_01_01_03",
-                    "nodeName": "北京分部副总"
-                  },
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_03_02",
-                    "parentNodeId": "org_01_01_03",
-                    "nodeName": "北京技术经理"
-                  }
-                ]
-              },
-              {
-                "type": "2",
-                "nodeId": "org_01_01_04",
-                "nodeName": "杭州分部",
-                "parentNodeId": "org_01_01",
-                "childrenNode": [
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_04_01",
-                    "parentNodeId": "org_01_01_04",
-                    "nodeName": "杭州分部副总"
-                  },
-                  {
-                    "type": "1",
-                    "nodeId": "role_01_01_04_02",
-                    "parentNodeId": "org_01_01_04",
-                    "nodeName": "杭州技术经理"
-                  }
-                ]
-              },
-              {
-                "type": "2",
-                "nodeId": "org_01_01_05",
-                "nodeName": "温州分部",
-                "parentNodeId": "org_01_01",
-                "childrenNode": [
-                  {
-                    "type": "2",
-                    "nodeId": "org_01_01_05_01",
-                    "nodeName": "义务分部",
-                    "parentNodeId": "org_01_01_05",
-                    "childrenNode": [
-                      {
-                        "type": "1",
-                        "nodeId": "role_01_01_05_01",
-                        "parentNodeId": "org_01_01_05_01",
-                        "nodeName": "义务技术经理"
-                      },
-                      {
-                        "type": "1",
-                        "nodeId": "role_01_01_05_02",
-                        "parentNodeId": "org_01_01_05_01",
-                        "nodeName": "义务产品经理"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "2",
-        "nodeId": "org_02",
-        "nodeName": "集团欧洲总部",
-        "parentNodeId": "0",
-        "childrenNode": [
-          {
-            "type": "2",
-            "nodeId": "org_02_01",
-            "nodeName": "瑞士分部",
-            "parentNodeId": "org_02",
-            "childrenNode": [
-              {
-                "type": "1",
-                "nodeId": "role_02_01_01",
-                "parentNodeId": "org_02_01",
-                "nodeName": "瑞士部门经理"
-              },
-              {
-                "type": "1",
-                "nodeId": "role_02_01_02",
-                "parentNodeId": "org_02_01",
-                "nodeName": "瑞士总监"
-              }
-            ]
-          },
-          {
-            "type": "2",
-            "nodeId": "org_02_02",
-            "nodeName": "意大利分部",
-            "parentNodeId": "org_02",
-            "childrenNode": [
-              {
-                "type": "1",
-                "nodeId": "role_02_02_01",
-                "nodeName": "意大利运营部经理",
-                "parentNodeId": "org_02_02"
-              }
-            ]
-          },
-          {
-            "type": "1",
-            "nodeId": "role_02_01",
-            "nodeName": "欧洲总部分区副总",
-            "parentNodeId": "org_02"
-          },
-          {
-            "type": "1",
-            "nodeId": "role_02_02",
-            "nodeName": "欧洲总部市场部经理",
-            "parentNodeId": "org_02"
-          }
-        ]
-      }
-    ]
-  }
-]
+{
+  "orgRole": [
+    {
+      "nodeId": "0",
+      "nodeName": "组织结构",
+      "childrenNode": [
+        {
+          "type": "2",
+          "nodeId": "org_01",
+          "nodeName": "集团亚洲总部",
+          "parentNodeId": "0",
+          "childrenNode": [
+            {
+              "type": "1",
+              "nodeId": "role_01",
+              "parentNodeId": "org_01",
+              "nodeName": "亚洲总部经理"
+            },
+            {
+              "type": "1",
+              "nodeId": "role_02",
+              "parentNodeId": "org_01",
+              "nodeName": "亚洲总部分管副总"
+            },
+            {
+              "type": "1",
+              "nodeId": "role_03",
+              "parentNodeId": "org_01",
+              "nodeName": "亚洲总部采购总监"
+            },
+            {
+              "type": "2",
+              "nodeId": "org_01_01",
+              "nodeName": "中国总部",
+              "parentNodeId": "org_01",
+              "childrenNode": [
+                {
+                  "type": "2",
+                  "nodeId": "org_01_01_01",
+                  "nodeName": "广州分部",
+                  "parentNodeId": "org_01_01",
+                  "childrenNode": []
+                },
+                {
+                  "type": "2",
+                  "nodeId": "org_01_01_02",
+                  "nodeName": "上海分部",
+                  "parentNodeId": "org_01_01",
+                  "childrenNode": [
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_02_01",
+                      "parentNodeId": "org_01_01_02",
+                      "nodeName": "上海分部副总"
+                    },
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_02_02",
+                      "parentNodeId": "org_01_01_02",
+                      "nodeName": "上海技术经理"
+                    }
+                  ]
+                },
+                {
+                  "type": "2",
+                  "nodeId": "org_01_01_03",
+                  "nodeName": "北京分部",
+                  "parentNodeId": "org_01_01",
+                  "childrenNode": [
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_03_01",
+                      "parentNodeId": "org_01_01_03",
+                      "nodeName": "北京分部副总"
+                    },
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_03_02",
+                      "parentNodeId": "org_01_01_03",
+                      "nodeName": "北京技术经理"
+                    }
+                  ]
+                },
+                {
+                  "type": "2",
+                  "nodeId": "org_01_01_04",
+                  "nodeName": "杭州分部",
+                  "parentNodeId": "org_01_01",
+                  "childrenNode": [
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_04_01",
+                      "parentNodeId": "org_01_01_04",
+                      "nodeName": "杭州分部副总"
+                    },
+                    {
+                      "type": "1",
+                      "nodeId": "role_01_01_04_02",
+                      "parentNodeId": "org_01_01_04",
+                      "nodeName": "杭州技术经理"
+                    }
+                  ]
+                },
+                {
+                  "type": "2",
+                  "nodeId": "org_01_01_05",
+                  "nodeName": "温州分部",
+                  "parentNodeId": "org_01_01",
+                  "childrenNode": [
+                    {
+                      "type": "2",
+                      "nodeId": "org_01_01_05_01",
+                      "nodeName": "义务分部",
+                      "parentNodeId": "org_01_01_05",
+                      "childrenNode": [
+                        {
+                          "type": "1",
+                          "nodeId": "role_01_01_05_01",
+                          "parentNodeId": "org_01_01_05_01",
+                          "nodeName": "义务技术经理"
+                        },
+                        {
+                          "type": "1",
+                          "nodeId": "role_01_01_05_02",
+                          "parentNodeId": "org_01_01_05_01",
+                          "nodeName": "义务产品经理"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "2",
+          "nodeId": "org_02",
+          "nodeName": "集团欧洲总部",
+          "parentNodeId": "0",
+          "childrenNode": [
+            {
+              "type": "2",
+              "nodeId": "org_02_01",
+              "nodeName": "瑞士分部",
+              "parentNodeId": "org_02",
+              "childrenNode": [
+                {
+                  "type": "1",
+                  "nodeId": "role_02_01_01",
+                  "parentNodeId": "org_02_01",
+                  "nodeName": "瑞士部门经理"
+                },
+                {
+                  "type": "1",
+                  "nodeId": "role_02_01_02",
+                  "parentNodeId": "org_02_01",
+                  "nodeName": "瑞士总监"
+                }
+              ]
+            },
+            {
+              "type": "2",
+              "nodeId": "org_02_02",
+              "nodeName": "意大利分部",
+              "parentNodeId": "org_02",
+              "childrenNode": [
+                {
+                  "type": "1",
+                  "nodeId": "role_02_02_01",
+                  "nodeName": "意大利运营部经理",
+                  "parentNodeId": "org_02_02"
+                }
+              ]
+            },
+            {
+              "type": "1",
+              "nodeId": "role_02_01",
+              "nodeName": "欧洲总部分区副总",
+              "parentNodeId": "org_02"
+            },
+            {
+              "type": "1",
+              "nodeId": "role_02_02",
+              "nodeName": "欧洲总部市场部经理",
+              "parentNodeId": "org_02"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

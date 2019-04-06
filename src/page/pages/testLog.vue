@@ -61,7 +61,7 @@
     components:{Box},
     data() {
       return {
-        treeData: orgArr[0].childrenNode,
+        treeData: orgArr.orgRole[0].childrenNode,
         defaultProps: {
           label: 'nodeName',
           children: 'childrenNode'
@@ -73,7 +73,7 @@
       // 点击获取节点
       clickNode() {
         var _t = this;
-        _t.selectArr = queryOrgWithRole(orgArr, this.$refs.tree.getCheckedNodes(), 1);
+        _t.selectArr = queryOrgWithRole(orgArr.orgRole, this.$refs.tree.getCheckedNodes(), 1);
       },
       // 删除节点
       handleClose(tag) {
