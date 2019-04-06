@@ -189,5 +189,97 @@
         }
       ]
     }
-  ]
+  ],
+  "organizationList": {
+    "nodeId": "0",
+    "nodeName": "组织结构",
+    "parentId": null,
+    "children": [
+      {
+        "nodeId": "org_01",
+        "nodeName": "集团欧洲总部",
+        "parentId": "0",
+        "children": [
+          {
+            "nodeId": "org_01_01",
+            "nodeName": "瑞士分部",
+            "parentId": "org_01",
+            "children": []
+          },
+          {
+            "nodeId": "org_01_02",
+            "nodeName": "意大利总部",
+            "parentId": "org_01",
+            "children": [
+              {
+                "nodeId": "org_01_02_01",
+                "nodeName": "罗马分部",
+                "parentId": "org_01_02",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nodeId": "org_02",
+        "nodeName": "集团欧洲总部",
+        "parentId": "0",
+        "children": [
+          {
+            "nodeId": "org_02_01",
+            "nodeName": "中国总部",
+            "parentId": "org_02",
+            "children": [
+              {
+                "nodeId": "org_02_01_01",
+                "nodeName": "北京分部",
+                "parentId": "org_02_01",
+                "children": [
+                  {
+                    "nodeId": "org_02_01_01_01",
+                    "nodeName": "朝阳区",
+                    "parentId": "org_02_01_01",
+                    "children": []
+                  },
+                  {
+                    "nodeId": "org_02_01_01_02",
+                    "nodeName": "海淀区",
+                    "parentId": "org_02_01_01",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "nodeId": "org_02_01_02",
+                "nodeName": "上海分部",
+                "parentId": "org_02_01",
+                "children": []
+              }
+            ]
+          },
+          {
+            "nodeId": "org_02_02",
+            "nodeName": "俄罗斯总部",
+            "parentId": "org_02",
+            "children": [
+              {
+                "nodeId": "org_02_02_01",
+                "nodeName": "莫斯科总部",
+                "parentId": "org_02_02",
+                "children": [
+                  {
+                    "nodeId": "org_02_02_01_01",
+                    "nodeName": "干涸分部",
+                    "parentId": "org_02_02_01",
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

@@ -8,6 +8,31 @@
         <el-breadcrumb-item>{{$t('breadcrumb.testLog')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
+    <el-row :gutter="30">
+      <el-col :span="12">
+        <div style="border: 1px solid red;padding: 20px;margin-right: 20px;margin-bottom: 20px;">
+          <el-tree
+            ref="orgList"
+            node-key="nodeId"
+            @node-click="clickNodeAlert"
+            default-expand-all
+            :expand-on-click-node="false"
+            :props="orgList"
+            :data="organizationList"/>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div style="border: 1px solid red;padding: 20px;margin-right: 20px;margin-bottom: 20px;">
+          <p style="font-size: 16px;">
+            <template v-for="(item,index) in organizationName">
+              <span>{{item}}</span>
+              <i v-if="index !== organizationName.length - 1" class="el-icon-arrow-right"></i>
+            </template>
+          </p>
+        </div>
+      </el-col>
+    </el-row>
+
     <el-button type="primary" @click="clickNode">点击</el-button>
     <el-row>
       <el-col :span="8">
@@ -54,7 +79,7 @@
 <script>
   import Box from '../../components/Box';
   import orgArr from '../../assets/js/orga_role';
-  import {queryOrgWithRole} from "../../assets/js/recursive";
+  import {queryOrgWithRole, orgBreadcrumb} from "../../assets/js/recursive";
 
   export default {
     name: "testLog",
@@ -66,7 +91,13 @@
           label: 'nodeName',
           children: 'childrenNode'
         },
-        selectArr: [], // 选中的结构
+        orgList: {
+          label: 'nodeName',
+          children: 'children',
+        },
+        selectArr: [], // 选中组织角色的结构
+        organizationList: orgArr.organizationList.children, // 所属组织下拉列表
+        organizationName: []
       }
     },
     methods: {
@@ -114,6 +145,11 @@
           }
         });
         return nodeArr;
+      },
+      // 点击树节点
+      clickNodeAlert(val) {
+        var _t = this;
+        _t.organizationName = orgBreadcrumb(orgArr.organizationList.children, val.nodeId);
       }
     },
     created() {

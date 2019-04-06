@@ -1,4 +1,5 @@
 /*
+* 功能: 返回选中组织结构下的角色列表集合
 * 传入参数:
 *   allNodes: [type:Array] 所有树节点
 *   allSelectedNodes:[type:Array] 树选中的所有节点
@@ -18,7 +19,6 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
         var ObjTag = new Object();
         // 以父id为参数
         buildParentList(allNodes);
-        // by ssy
         findParent(item.nodeId);
         ObjTag.titleThis = parentIdArr.reverse();
         ObjTag.tagThis = item;
@@ -105,4 +105,64 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
     });
   });
   return selectArr;
+};
+
+/*
+ * 功能: 根据传入的组织id 返回 组织级别 面包屑
+ */
+
+export function orgBreadcrumb(allNodes, nodeId) {
+  var organizationArr = new Array();
+  organizationArr.push(recursive(allNodes, 'nodeId', nodeId).nodeName);
+  var list = new Array();
+  buildParentList(allNodes);
+  findParent(nodeId);
+
+
+  // 递归找到 id 所对应的 父 id
+  function buildParentList(arr) {
+    arr.forEach(g => {
+      if (g.parentId != undefined) {
+        // by ssy
+        let oid = g['nodeId']
+        // by ssy
+        list[oid] = g['parentId'];
+      }
+      if (g.children != undefined) {
+        buildParentList(g['children'])
+      }
+    });
+  }
+
+  // 在新数组中找出
+  function findParent(idx) {
+    if (list[idx] != undefined) {
+      let pid = list[idx];
+      // 根节点id 为0
+      if (pid != '0') {
+        organizationArr.push(recursive(allNodes, 'nodeId', pid).nodeName);
+      }
+      findParent(pid)
+    }
+  }
+
+  // 递归寻找节点 recursive(要查找的集合,要匹配的字段,要匹配的值)
+  function recursive(data, node, index) {
+    var result, temp; // 返回值和临时变量
+    for (var i = 0; i < data.length; i++) {
+      temp = data[i]; // 临时缓存
+      if (temp[node] == index) {
+        result = temp;
+        break;
+      }
+      // 没有找到 继续往下找
+      if (typeof result == 'undefined' && temp['children']) {
+        result = recursive(temp['children'], node, index);
+      }
+    }
+    return result;
+  }
+
+  // console.log(organizationArr);
+  return organizationArr.reverse();
 }
