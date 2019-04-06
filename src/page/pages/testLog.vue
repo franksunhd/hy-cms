@@ -14,7 +14,7 @@
         <el-tree
           ref="tree"
           show-checkbox
-          node-key="id"
+          node-key="nodeId"
           default-expand-all
           :props="defaultProps"
           :data="treeData">
@@ -42,7 +42,7 @@
               :key="tag.id"
               @close="handleClose(tag)"
               closable>
-              {{tag.label}}
+              {{tag.nodeName}}
             </el-tag>
           </div>
         </div>
@@ -54,15 +54,17 @@
 <script>
   import Box from '../../components/Box';
   import orgArr from '../../assets/js/orga_role';
+  import {queryOrgWithRole} from "../../assets/js/recursive";
+
   export default {
     name: "testLog",
     components:{Box},
     data() {
       return {
-        treeData: orgArr[0].children,
+        treeData: orgArr[0].childrenNode,
         defaultProps: {
-          label: 'label',
-          children: 'children'
+          label: 'nodeName',
+          children: 'childrenNode'
         },
         selectArr: [], // 选中的结构
       }
@@ -71,104 +73,7 @@
       // 点击获取节点
       clickNode() {
         var _t = this;
-        var allNodes = this.$refs.tree.getCheckedNodes(); // 选中的节点
-        var selectArr = new Array(); // 最终拼接渲染的数据
-        var roleListData = new Array(); // 选中的角色集合
-        if (allNodes.length !== 0) { // 选中节点不为空
-          allNodes.forEach(function (item) {
-            // 节点过滤 过滤 组织节点
-            if (item.type == 1) { // 角色节点
-              var list = new Array();
-              var parentIdArr = new Array();
-              var ObjTag = new Object();
-              // 以父id为参数
-              buildParentList(orgArr);
-              findParent(item.id);
-              ObjTag.titleThis = parentIdArr.reverse();
-              ObjTag.tagThis = item;
-              ObjTag.parentId = recursive(orgArr, 'parentId', item.parentId).parentId;
-              roleListData.push(ObjTag);
-
-              // 递归找到 id 所对应的 父 id
-              function buildParentList(arr) {
-                arr.forEach(g => {
-                  if (g.parentId != undefined) {
-                    let oid = g['id']
-                    list[oid] = g['parentId'];
-                  }
-                  if (g.children != undefined)
-                    buildParentList(g['children'])
-                });
-              }
-
-              // 在新数组中找出
-              function findParent(idx) {
-                if (list[idx] != undefined) {
-                  let pid = list[idx];
-                  // 根节点id 为0
-                  if (pid != '0') {
-                    parentIdArr.push(recursive(orgArr, 'id', pid).label);
-                  }
-                  findParent(pid)
-                }
-              }
-
-              // 递归寻找节点 recursive(要查找的集合,要匹配的字段,要匹配的值)
-              function recursive(data, node, index) {
-                var result, temp; // 返回值和临时变量
-                for (var i = 0; i < data.length; i++) {
-                  temp = data[i]; // 临时缓存
-                  if (temp[node] == index) {
-                    result = temp;
-                    break;
-                  }
-                  // 没有找到 继续往下找
-                  if (typeof result == 'undefined' && temp['children']) {
-                    result = recursive(temp['children'], node, index);
-                  }
-                }
-                return result;
-              }
-            }
-          });
-        }
-        var roleParentIdList = new Array();
-        roleListData.forEach(function (item) {
-          roleParentIdList.push(item.parentId);
-        });
-        // 数组去重 得到去重后的数组
-        roleParentIdList = uniq(roleParentIdList);
-
-        function uniq(array) {
-          var temp = []; //一个新的临时数组
-          for (var i = 0; i < array.length; i++) {
-            if (temp.indexOf(array[i]) == -1) {
-              temp.push(array[i]);
-            }
-          }
-          return temp;
-        }
-
-        roleParentIdList.forEach(function (item) {
-          var titleName = new Object();
-          titleName.parentId = item;
-          titleName.tags = [];
-          titleName.title = [];
-          selectArr.push(titleName);
-        });
-        // console.log(selectArr)
-        roleListData.forEach(function (data) {
-          selectArr.forEach(function (val) {
-            if (data.parentId == val.parentId) {
-              val.tags.push(data.tagThis);
-              val.title = data.titleThis;
-            }
-          });
-          // console.log(item.tagThis);
-        });
-        _t.selectArr = selectArr;
-        // console.log(selectArr);
-        console.log(_t.getResultNode())
+        _t.selectArr = queryOrgWithRole(orgArr, this.$refs.tree.getCheckedNodes(), 1);
       },
       // 删除节点
       handleClose(tag) {
