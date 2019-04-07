@@ -320,7 +320,7 @@
         // 用户授权内层
         innerVisible: false,
         // 功能权限
-        dialogVisibleFunction: true,
+        dialogVisibleFunction: false,
         // 数据权限
         dialogVisibleData: false,
         // 所属组织下拉框
