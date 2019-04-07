@@ -80,8 +80,7 @@ export default new Router({
     {path: "/", redirect: "/YUser/index"},
     {path: "/YUser", redirect: "/YUser/index"},
     {
-      path: '/YUser', name: 'index', component: Index,
-      children: [
+      path: '/YUser', name: 'index', component: Index, children: [
         {path: "/YUser/index", name: 'Home', component: Home},
         {
           path: "/YUser/systemSettings",
