@@ -13,6 +13,9 @@ import echarts from 'echarts';
 import md5 from 'js-md5';
 import * as custom from './assets/js/filters';
 
+import tagsview from './assets/js/tagsview';
+import getters from './assets/js/getters';
+
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
 import './assets/css/common.css';
@@ -61,6 +64,10 @@ const store = new Vuex.Store({
   state: {
     loading: false,
   },
+  modules:{
+    tagsview
+  },
+  getters,
   mutations: {
     setLoading(state, value) {
       state.loading = value;

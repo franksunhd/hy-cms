@@ -65,35 +65,79 @@ const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection'
 //开始发现
 const BeganToSee = () => import ('@/page/pages/BeganToSee');
 //监测管理
-const monitoringAndControl =() => import ('@/page/pages/monitoringAndControl');
+const monitoringAndControl = () => import ('@/page/pages/monitoringAndControl');
+
+
+const monitoringAndControl1 = () => import ('@/page/pages/monitoringAndControl1');
+const monitoringAndControl2 = () => import ('@/page/pages/monitoringAndControl2');
+const monitoringAndControl3 = () => import ('@/page/pages/monitoringAndControl3');
+
+
 Vue.use(Router);
 export default new Router({
   routes: [
     // 首页重定向
     {path: "/", redirect: "/YUser/index"},
     {path: "/YUser", redirect: "/YUser/index"},
-    {path: '/YUser', name: 'index', component: Index,
-      children:[
+    {
+      path: '/YUser', name: 'index', component: Index,
+      children: [
         {path: "/YUser/index", name: 'Home', component: Home},
-        {path: "/YUser/systemSettings", redirect: "/YUser/systemSettings/licenseInformation", name: 'systemSettings', component: systemSettings,
-          children:[
-            {path: "/YUser/systemSettings/licenseInformation", name: 'licenseInformation', component: licenseInformation},
-            {path: "/YUser/systemSettings/platformInformation", name: 'platformInformation', component: platformInformation},
+        {
+          path: "/YUser/systemSettings",
+          redirect: "/YUser/systemSettings/licenseInformation",
+          name: 'systemSettings',
+          component: systemSettings,
+          children: [
+            {
+              path: "/YUser/systemSettings/licenseInformation",
+              name: 'licenseInformation',
+              component: licenseInformation
+            },
+            {
+              path: "/YUser/systemSettings/platformInformation",
+              name: 'platformInformation',
+              component: platformInformation
+            },
             {path: "/YUser/systemSettings/platformLanguage", name: 'platformLanguage', component: platformLanguage},
             {path: "/YUser/systemSettings/dataDictionary", name: 'dataDictionary', component: dataDictionary},
             {path: "/YUser/systemSettings/licenseNotice", name: 'licenseNotice', component: licenseNotice},
             {path: "/YUser/systemSettings/interfaceTest", name: 'interfaceTest', component: interfaceTest},
             {path: "/YUser/systemSettings/userMaintenance", name: 'userMaintenance', component: userMaintenance},
             {path: "/YUser/systemSettings/roleMaintenance", name: 'roleMaintenance', component: roleMaintenance},
-            {path: "/YUser/systemSettings/organizeMaintenance", name: 'organizeMaintenance', component: organizeMaintenance},
+            {
+              path: "/YUser/systemSettings/organizeMaintenance",
+              name: 'organizeMaintenance',
+              component: organizeMaintenance
+            },
             {path: "/YUser/systemSettings/dataBaseBackUp", name: 'dataBaseBackUp', component: dataBaseBackUp},
             {path: "/YUser/systemSettings/backUpTimer", name: 'backUpTimer', component: backUpTimer},
             {path: "/YUser/systemSettings/dataBaseRestore", name: 'dataBaseRestore', component: dataBaseRestore},
-            {path: "/YUser/systemSettings/nodeGroupMaintenance", name: 'nodeGroupMaintenance', component: nodeGroupMaintenance},
-            {path: "/YUser/systemSettings/functionMenuMaintenance", name: 'functionMenuMaintenance', component: functionMenuMaintenance},
-            {path: "/YUser/systemSettings/acquisitionNodeManagement", name: 'acquisitionNodeManagement', component: acquisitionNodeManagement},
-            {path: "/YUser/systemSettings/collectionTaskAssignment", name: 'collectionTaskAssignment', component: collectionTaskAssignment},
-            {path: "/YUser/systemSettings/acquisitionNodeState", name: 'acquisitionNodeState', component: acquisitionNodeState},
+            {
+              path: "/YUser/systemSettings/nodeGroupMaintenance",
+              name: 'nodeGroupMaintenance',
+              component: nodeGroupMaintenance
+            },
+            {
+              path: "/YUser/systemSettings/functionMenuMaintenance",
+              name: 'functionMenuMaintenance',
+              component: functionMenuMaintenance
+            },
+            {
+              path: "/YUser/systemSettings/acquisitionNodeManagement",
+              name: 'acquisitionNodeManagement',
+              component: acquisitionNodeManagement
+            },
+            {
+              path: "/YUser/systemSettings/collectionTaskAssignment",
+              name: 'collectionTaskAssignment',
+              component: collectionTaskAssignment
+            },
+            {
+              path: "/YUser/systemSettings/acquisitionNodeState",
+              name: 'acquisitionNodeState',
+              component: acquisitionNodeState
+            },
             {path: "/YUser/systemSettings/loginLog", name: 'loginLog', component: loginLog},
             {path: "/YUser/systemSettings/operationLog", name: 'operationLog', component: operationLog},
             {path: "/YUser/systemSettings/jobLog", name: 'jobLog', component: jobLog},
@@ -101,18 +145,35 @@ export default new Router({
             {path: "/YUser/systemSettings/testLog", name: 'testLog', component: testLog},
           ]
         },
-        {path: "/YUser/systemSettingsMonitoring", redirect: "/YUser/systemSettingsMonitoring/WebApplication", name: 'systemSettingsMonitoring', component: systemSettingsMonitoring,
-            children:[
+        {
+          path: "/YUser/systemSettingsMonitoring",
+          redirect: "/YUser/systemSettingsMonitoring/WebApplication",
+          name: 'systemSettingsMonitoring',
+          component: systemSettingsMonitoring,
+          children: [
             {path: "/YUser/systemSettingsMonitoring/WebApplication", name: 'WebApplication', component: WebApplication},
-            {path: "/YUser/systemSettingsMonitoring/DatabaseApplication", name: 'DatabaseApplication', component: DatabaseApplication},
-            {path: "/YUser/systemSettingsMonitoring/CollectorApplication", name: 'CollectorApplication', component: CollectorApplication},
+            {
+              path: "/YUser/systemSettingsMonitoring/DatabaseApplication",
+              name: 'DatabaseApplication',
+              component: DatabaseApplication
+            },
+            {
+              path: "/YUser/systemSettingsMonitoring/CollectorApplication",
+              name: 'CollectorApplication',
+              component: CollectorApplication
+            },
           ]
         },
-        {path:"/YUser/DeviceManualDetection",name:"DeviceManualDetection",component:DeviceManualDetection},
-       {path:"/YUser/DeviceManualDetection/BeganToSee",name:"BeganToSee",component:BeganToSee},
-        {path:"/YUser/monitoringAndControl",name:"monitoringAndControl",component:monitoringAndControl},
+        {path: "/YUser/DeviceManualDetection", name: "DeviceManualDetection", component: DeviceManualDetection},
+        {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
+        {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl,children:[
+            {path: "/YUser/monitoringAndControl/monitoringAndControl1", name: 'monitoringAndControl1',component: monitoringAndControl1},
+            {path: "/YUser/monitoringAndControl/monitoringAndControl2", name: 'monitoringAndControl2',component: monitoringAndControl2},
+            {path: "/YUser/monitoringAndControl/monitoringAndControl3", name: 'monitoringAndControl3',component: monitoringAndControl3}
+          ]
+        },
       ]
     },
-    {path:'/login', name:'Login', component:Login}
+    {path: '/login', name: 'Login', component: Login}
   ]
 });
