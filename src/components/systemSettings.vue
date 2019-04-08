@@ -28,7 +28,7 @@
       clickInset() {
         this.isShow = false;
         document.getElementById('systemSettings-navBar-outSet').style.display = 'inline-block';
-        document.getElementById('systemSettings-routerView').style.left= '0';
+        document.getElementById('systemSettings-routerView').style.left = '0';
       },
       // 展开
       clickOutset() {

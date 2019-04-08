@@ -17,9 +17,7 @@
     name: "jobLog",
     components:{Box},
     data() {
-      return {
-
-      }
+      return {}
     },
     methods: {
 

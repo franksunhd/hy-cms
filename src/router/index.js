@@ -165,10 +165,26 @@ export default new Router({
         },
         {path: "/YUser/DeviceManualDetection", name: "DeviceManualDetection", component: DeviceManualDetection},
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
-        {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl,children:[
-            {path: "/YUser/monitoringAndControl/monitoringAndControl1", name: 'monitoringAndControl1',component: monitoringAndControl1},
-            {path: "/YUser/monitoringAndControl/monitoringAndControl2", name: 'monitoringAndControl2',component: monitoringAndControl2},
-            {path: "/YUser/monitoringAndControl/monitoringAndControl3", name: 'monitoringAndControl3',component: monitoringAndControl3}
+        {
+          path: "/YUser/monitoringAndControl",
+          name: "monitoringAndControl",
+          component: monitoringAndControl,
+          children: [
+            {
+              path: "/YUser/monitoringAndControl/monitoringAndControl1",
+              name: 'monitoringAndControl1',
+              component: monitoringAndControl1
+            },
+            {
+              path: "/YUser/monitoringAndControl/monitoringAndControl2",
+              name: 'monitoringAndControl2',
+              component: monitoringAndControl2
+            },
+            {
+              path: "/YUser/monitoringAndControl/monitoringAndControl3",
+              name: 'monitoringAndControl3',
+              component: monitoringAndControl3
+            }
           ]
         },
       ]

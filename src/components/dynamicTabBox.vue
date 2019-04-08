@@ -14,8 +14,7 @@
   export default {
     name: "dynamic-tab-box",
     data() {
-      return {
-      }
+      return {}
     },
     // watch:{
     //   $route(){
@@ -24,7 +23,7 @@
     //   }
     // },
     computed: {
-      visitedViews(){//store中取值
+      visitedViews() {//store中取值
         return this.$store.state.tagsview.visitedviews
       }
     },
@@ -32,13 +31,13 @@
       isActive(route) {
         return route.path === this.$route.path
       },
-      delSelectTag(route){
-        this.$store.dispatch('delVisitedViews',route).then((views)=>{
-          if(this.isActive(route)){//只有在关闭当前打开的标签页才会有影响
+      delSelectTag(route) {
+        this.$store.dispatch('delVisitedViews', route).then((views) => {
+          if (this.isActive(route)) {//只有在关闭当前打开的标签页才会有影响
             let lastView = views.visitedviews.slice(-1)[0];//选取路由数组中的最后一位
-            if(lastView){
+            if (lastView) {
               this.$router.push(lastView);
-            }else{
+            } else {
               this.$router.push('/');
             }
           }

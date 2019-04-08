@@ -64,7 +64,7 @@ const store = new Vuex.Store({
   state: {
     loading: false,
   },
-  modules:{
+  modules: {
     tagsview
   },
   getters,
