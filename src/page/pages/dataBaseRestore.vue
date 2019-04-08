@@ -12,25 +12,25 @@
       <!--表单-->
       <el-form inline>
         <el-form-item :label="$t('dataBaseRestore.backUpObject') + '：'">
-          <el-input class="width200" />
+          <el-input class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('dataBaseRestore.backUpTime') + '：'">
           <el-date-picker
             class="width120"
             v-model="startTime"
             type="date"
-            :placeholder="$t('public.selectDate')" />
+            :placeholder="$t('public.selectDate')"/>
           <span>—</span>
           <el-date-picker
             class="width120"
             v-model="endTime"
             type="date"
-            :placeholder="$t('public.selectDate')" />
+            :placeholder="$t('public.selectDate')"/>
         </el-form-item>
         <el-form-item :label="$t('dataBaseRestore.backUpType') + '：'">
           <el-select v-model="status" class="width200">
-            <el-option value="0" :label="$t('dataBaseRestore.singleTable')" />
-            <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')" />
+            <el-option value="0" :label="$t('dataBaseRestore.singleTable')"/>
+            <el-option value="1" :label="$t('dataBaseRestore.wholeLibrary')"/>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -52,26 +52,26 @@
         <el-button @click="restoreHistory" :disabled="disableBtn.edit">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('dataBaseRestore.restoreHistory')}}
-          </el-button>
+        </el-button>
         <el-button @click="backUpRole" :disabled="disableBtn.edit">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('dataBaseRestore.backUpRole')}}
-          </el-button>
+        </el-button>
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center" />
+        <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center"/>
+        <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center"/>
+        <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center"/>
+        <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center"/>
+        <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center"/>
       </el-table>
       <!--分页-->
       <pages
@@ -80,7 +80,7 @@
         :pageSize='options.pageSize'
         :firstPage='options.firstPage'
         :lastPage='options.lastPage'
-        @handleCurrentChangeSub="handleCurrentChange" />
+        @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--还原的执行史-->
     <el-dialog
@@ -98,7 +98,7 @@
               :timestamp="item.label"
               placement="top"
               size="large"
-              icon="el-icon-more" />
+              icon="el-icon-more"/>
             <el-timeline-item v-else :timestamp="item.label" placement="top" size="normal">
               <p>{{item.des}}</p>
             </el-timeline-item>
@@ -143,52 +143,89 @@
 <script>
   import Box from '../../components/Box';
   import myCron from '../../components/cron';
+
   export default {
     name: "dataBaseRestore",
-    components:{Box,myCron},
+    components: {Box, myCron},
     data() {
       return {
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        status:'',
-        radio:'',
-        startTime:'',
-        endTime:'',
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
+        status: '',
+        radio: '',
+        startTime: '',
+        endTime: '',
+        tableData: [
+          {status: 1}, {status: 0}, {status: 1}, {status: 0}, {status: 1}, {status: 1}
         ],
-        options:{
-          total:1000, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
+        options: {
+          total: 1000, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
+          firstPage: 1, // 首页
+          lastPage: 100 // 末页
         },
-        dialogVisible:false,
-        dialogVisibleAlert:false,
-        timelineData:[
-          {label:'2019年2月1日', level:1, des:null},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019年1月31日', level:1, des:null},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019年1月30日', level:1, des:null},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',},
-          {label:'2019-02-01 23:16:18', level:2, des:'用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',}
+        dialogVisible: false,
+        dialogVisibleAlert: false,
+        timelineData: [
+          {label: '2019年2月1日', level: 1, des: null},
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {label: '2019年1月31日', level: 1, des: null},
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {label: '2019年1月30日', level: 1, des: null},
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          },
+          {
+            label: '2019-02-01 23:16:18',
+            level: 2,
+            des: '用户admin 利用 /mysql-5.7.12-winx64/backup/20190306/bsmdb_20190306230345.sql 进行了 bsmdb整库 还原',
+          }
         ]
       }
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -212,7 +249,7 @@
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
                 disableFlag++;
               } else if (data[i].status === 1) {
@@ -233,23 +270,23 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         console.log(val)
       },
       // 执行还原
-      runRestore(){
+      runRestore() {
 
       },
       // 删除
-      deleteRestore(){
+      deleteRestore() {
 
       },
       // 还原的执行历史
-      restoreHistory(){
+      restoreHistory() {
         this.dialogVisible = true;
       },
       // 备份文件的清理规则
-      backUpRole(){
+      backUpRole() {
         this.dialogVisibleAlert = true;
       }
     },

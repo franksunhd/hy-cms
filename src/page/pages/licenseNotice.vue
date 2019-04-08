@@ -21,7 +21,8 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('licenseNotice.licenseUser') + '：'">
-          <el-button class="queryBtn" type="primary" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}</el-button>
+          <el-button class="queryBtn" type="primary" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}
+          </el-button>
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
             <p>
@@ -74,160 +75,161 @@
 
 <script>
   import Box from '../../components/Box';
+
   export default {
     name: "lisence-notice",
-    components:{Box},
-    data(){
+    components: {Box},
+    data() {
       return {
-        radio:'',
-        noticeWay:'',
-        dialogVisible:false,
-        listData:[],
-        treeData:[
+        radio: '',
+        noticeWay: '',
+        dialogVisible: false,
+        listData: [],
+        treeData: [
           {
-            id:1,
-            label:'集团亚洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
+            id: 1,
+            label: '集团亚洲总部',
+            type: 'branch',
+            parentId: null,
+            level: 1,
+            children: [
               {
-                id:2,
-                label:'上海分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
+                id: 2,
+                label: '上海分部',
+                type: 'branch',
+                parentId: 1,
+                level: 2,
+                children: [
                   {
-                    id:4,
-                    label:'张三',
-                    type:'user',
-                    parentId:2,
-                    level:3,
+                    id: 4,
+                    label: '张三',
+                    type: 'user',
+                    parentId: 2,
+                    level: 3,
                   },
                   {
-                    id:5,
-                    label:'李四',
-                    type:'user',
-                    parentId:2,
-                    level:3,
+                    id: 5,
+                    label: '李四',
+                    type: 'user',
+                    parentId: 2,
+                    level: 3,
                   },
                   {
-                    id:6,
-                    label:'王五',
-                    type:'user',
-                    parentId:2,
-                    level:3,
+                    id: 6,
+                    label: '王五',
+                    type: 'user',
+                    parentId: 2,
+                    level: 3,
                   },
                 ]
               },
               {
-                id:3,
-                label:'北京分部',
-                type:'branch',
-                parentId:1,
-                level:2,
-                children:[
+                id: 3,
+                label: '北京分部',
+                type: 'branch',
+                parentId: 1,
+                level: 2,
+                children: [
                   {
-                    id:7,
-                    label:'赵六',
-                    type:'user',
-                    parentId:3,
-                    level:3,
+                    id: 7,
+                    label: '赵六',
+                    type: 'user',
+                    parentId: 3,
+                    level: 3,
                   }
                 ]
               },
               {
-                id:10,
-                label:'孙强',
-                type:'user',
-                parentId:1,
-                level:2,
+                id: 10,
+                label: '孙强',
+                type: 'user',
+                parentId: 1,
+                level: 2,
               },
               {
-                id:13,
-                label:'金流福',
-                type:'user',
-                parentId:1,
-                level:2,
+                id: 13,
+                label: '金流福',
+                type: 'user',
+                parentId: 1,
+                level: 2,
               }
             ]
           },
           {
-            id:8,
-            label:'集团欧洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
+            id: 8,
+            label: '集团欧洲总部',
+            type: 'branch',
+            parentId: null,
+            level: 1,
+            children: [
               {
-                id:11,
-                label:'雅玛',
-                type:'user',
-                parentId:8,
-                level:2,
+                id: 11,
+                label: '雅玛',
+                type: 'user',
+                parentId: 8,
+                level: 2,
               },
               {
-                id:14,
-                label:'罗马分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[]
+                id: 14,
+                label: '罗马分部',
+                type: 'branch',
+                parentId: 8,
+                level: 2,
+                children: []
               },
               {
-                id:15,
-                label:'英国分部',
-                type:'branch',
-                parentId:8,
-                level:2,
-                children:[
+                id: 15,
+                label: '英国分部',
+                type: 'branch',
+                parentId: 8,
+                level: 2,
+                children: [
                   {
-                    id:16,
-                    label:'伦敦',
-                    type:'user',
-                    parentId:15,
-                    level:3
+                    id: 16,
+                    label: '伦敦',
+                    type: 'user',
+                    parentId: 15,
+                    level: 3
                   }
                 ]
               }
             ]
           },
           {
-            id:9,
-            label:'集团美洲总部',
-            type:'branch',
-            parentId:null,
-            level:1,
-            children:[
+            id: 9,
+            label: '集团美洲总部',
+            type: 'branch',
+            parentId: null,
+            level: 1,
+            children: [
               {
-                id:12,
-                label:'三丝',
-                type:'user',
-                parentId:9,
-                level:2
+                id: 12,
+                label: '三丝',
+                type: 'user',
+                parentId: 9,
+                level: 2
               },
               {
-                id:17,
-                label:'美国分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[]
+                id: 17,
+                label: '美国分部',
+                type: 'branch',
+                parentId: 9,
+                level: 2,
+                children: []
               },
               {
-                id:18,
-                label:'墨西哥分部',
-                type:'branch',
-                parentId:9,
-                level:2,
-                children:[
+                id: 18,
+                label: '墨西哥分部',
+                type: 'branch',
+                parentId: 9,
+                level: 2,
+                children: [
                   {
-                    id:19,
-                    label:'摩卡',
-                    type:'user',
-                    parentId:18,
-                    level:3
+                    id: 19,
+                    label: '摩卡',
+                    type: 'user',
+                    parentId: 18,
+                    level: 3
                   }
                 ]
               }
@@ -236,11 +238,11 @@
         ]
       }
     },
-    methods:{
-      changeTime(){
+    methods: {
+      changeTime() {
         console.log(this.radio);
       },
-      changeWay(){
+      changeWay() {
         console.log(this.noticeWay);
       },
       // 获取节点显示数据
@@ -252,18 +254,18 @@
           var headOffice = new Array(); // 全体总部人员集合
           var branchOffice = new Array(); // 全体分部人员集合
           // 判断是否 隶属总部 level 2总部 3分部
-          for (var i = 0;i < allNodes.length;i++){
+          for (var i = 0; i < allNodes.length; i++) {
             if (allNodes[i].level === 2 && allNodes[i].type === 'user') {
               headOffice.push(allNodes[i]);
-            } else if (allNodes[i].level === 3 && allNodes[i].type === 'user'){
+            } else if (allNodes[i].level === 3 && allNodes[i].type === 'user') {
               branchOffice.push(allNodes[i]);
             }
           }
           // 总部
-          for (var j = 0;j < this.treeData.length;j++){
+          for (var j = 0; j < this.treeData.length; j++) {
             var obj = new Object();
             var headOfficeArr = new Array();
-            for (var k = 0;k < headOffice.length;k++){
+            for (var k = 0; k < headOffice.length; k++) {
               if (headOffice[k].parentId === this.treeData[j].id) {
                 // 拼接各总部直属人员数组
                 headOfficeArr.push(headOffice[k]);
@@ -281,9 +283,9 @@
           // 分部
           // 查询原数组中所有的分部集合
           var branchNameArr = new Array();
-          for (var m = 0;m < this.treeData.length;m++){
+          for (var m = 0; m < this.treeData.length; m++) {
             if (this.treeData[m].children.length !== 0) {
-              for (var n = 0;n < this.treeData[m].children.length;n++){
+              for (var n = 0; n < this.treeData[m].children.length; n++) {
                 if (this.treeData[m].children[n].type !== 'user') {
                   branchNameArr.push(this.treeData[m].children[n]);
                 }
@@ -291,11 +293,11 @@
             }
           }
           // 拼接各总部下属各分部的数据
-          for (var p = 0;p < branchNameArr.length;p++){
+          for (var p = 0; p < branchNameArr.length; p++) {
             var objBranch = new Object();
             var branchOfficeArr = new Array();
             // 拼接各分部人员数据
-            for (var q = 0;q < branchOffice.length;q++){
+            for (var q = 0; q < branchOffice.length; q++) {
               if (branchOffice[q].parentId === branchNameArr[p].id) {
                 branchOfficeArr.push(branchOffice[q]);
               }
@@ -307,7 +309,7 @@
             // 各分部人员集合
             objBranch.headChildren = branchOfficeArr;
             // 查找该条数据对应的 总部
-            for (var x = 0;x < this.treeData.length;x++){
+            for (var x = 0; x < this.treeData.length; x++) {
               if (branchNameArr[p].parentId === this.treeData[x].id) {
                 objBranch.headName = this.treeData[x].label;
               }
@@ -322,14 +324,14 @@
         }
       },
       // 删除标签
-      handleClose(item){
-        for (var i = 0;i < this.listData.length;i++){
+      handleClose(item) {
+        for (var i = 0; i < this.listData.length; i++) {
           var headChildren = this.listData[i].headChildren;
           if (headChildren.length > 1) {
             // 删除本标签
-            for (var j = 0;j < headChildren.length;j++){
+            for (var j = 0; j < headChildren.length; j++) {
               if (item.id === headChildren[j].id) {
-                headChildren.splice(j,1);
+                headChildren.splice(j, 1);
                 this.result();
                 return false;
               }
@@ -337,10 +339,10 @@
           } else {
             // 删除本标签之后删除该区域
             // console.log(2);
-            for (var k = 0;k < headChildren.length;k++){
+            for (var k = 0; k < headChildren.length; k++) {
               if (item.id === headChildren[k].id) {
-                headChildren.splice(k,1);
-                this.listData.splice(i,1);
+                headChildren.splice(k, 1);
+                this.listData.splice(i, 1);
                 this.result();
                 return false;
               }
@@ -354,9 +356,9 @@
       result() {
         // 所有展示的人员集合
         var allNode = new Array();
-        for (var i = 0;i < this.listData.length;i++){
-          if (this.listData[i].headChildren.length !== 0){
-            for (var j = 0;j < this.listData[i].headChildren.length;j++){
+        for (var i = 0; i < this.listData.length; i++) {
+          if (this.listData[i].headChildren.length !== 0) {
+            for (var j = 0; j < this.listData[i].headChildren.length; j++) {
               allNode.push(this.listData[i].headChildren[j]);
             }
           }
@@ -364,7 +366,7 @@
         console.log(allNode);
       }
     },
-    created(){
+    created() {
 
     }
   }

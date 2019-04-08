@@ -13,13 +13,8 @@
         <p class="dataDictionary-title">
           <a href="javascript:;" @click="clickNode">{{formItem.menuName}}</a>
         </p>
-        <el-tree
-          style="width: 200px;"
-          :data="treeData.children"
-          @node-click="getCurrentNode"
-          :props="defaultProps"
-          :expand-on-click-node="false"
-          :default-expand-all="false"/>
+        <el-tree style="width: 200px;" :data="treeData.children" @node-click="getCurrentNode" :props="defaultProps"
+                 :expand-on-click-node="false" :default-expand-all="false"/>
       </el-col>
       <el-col :span="20">
         <div class="padding20 borderBottom">
@@ -33,11 +28,7 @@
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.status') + '：'">
               <el-select v-model="formItem.status" class="width200">
-                <el-option
-                  v-for="item in statusList"
-                  :value="item.value"
-                  :key="item.key"
-                  :label="item.label" />
+                <el-option v-for="item in statusList" :value="item.value" :key="item.key" :label="item.label"/>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -49,32 +40,27 @@
           <!--全局操作-->
           <div class="marBottom16">
             <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
-              <i class="el-icon-circle-plus-outline"></i>
-              {{$t('public.add')}}
+              <i class="el-icon-circle-plus-outline"></i> {{$t('public.add')}}
             </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
-              <i class="el-icon-edit-outline"></i>
-              {{$t('public.edit')}}
+            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
+              <i class="el-icon-edit-outline"></i> {{$t('public.edit')}}
             </el-button>
             <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-              <i class="el-icon-circle-check-outline"></i>
-              {{$t('public.enable')}}
+              <i class="el-icon-circle-check-outline"></i> {{$t('public.enable')}}
             </el-button>
             <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-              <i class="el-icon-circle-close-outline"></i>
-              {{$t('public.disable')}}
+              <i class="el-icon-circle-close-outline"></i> {{$t('public.disable')}}
             </el-button>
             <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-              <i class="el-icon-delete"></i>
-              {{$t('public.delete')}}
+              <i class="el-icon-delete"></i> {{$t('public.delete')}}
             </el-button>
           </div>
           <!--表格-->
           <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-            <el-table-column type="selection" fixed header-align="center" align="center" />
+            <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
-                <span>
+								<span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
               </template>
@@ -108,49 +94,48 @@
             </el-table-column>
           </el-table>
           <!--分页-->
-          <pages
-            :total='options.total'
-            :currentPage='options.currentPage'
-            :pageSize='options.pageSize'
-            @handleCurrentChangeSub="handleCurrentChange" />
+          <pages :total='options.total' :currentPage='options.currentPage' :pageSize='options.pageSize'
+                 @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
       </el-col>
     </el-row>
     <!--新增编辑-->
-    <el-dialog
-      append-to-body
-      :title="$t('dataDictionary.createUpdateDictionary')"
-      :visible.sync="dialogVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false">
-      <el-form label-width="150px">
+    <el-dialog append-to-body :title="$t('dataDictionary.createUpdateDictionary')" :visible.sync="dialogVisible"
+               :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form :model="addEdit" inline label-width="150px" :rules="addEdit" ref="ruleForm">
         <el-form-item :label="$t('dataDictionary.parentDictionary') + '：'">
-          <selectTree width="200" :options="treeData.children" v-model="organization"/>
+          <el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover">
+            <el-tree :data="treeData.children" highlight-current :expand-on-click-node="false"
+                     @node-click="clickNodeAlert" :props="defaultProps"/>
+            <el-input v-model="addEdit.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly
+                      slot="reference"/>
+          </el-popover>
+
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.dictionaryType') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.dictionaryType"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.dictionaryCode"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-          <el-input type="password" />
+          <el-input v-model="addEdit.systemBasedataLanguageList[0].basedataName"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.directoryLevel') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.level"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.orderIndex') + '：'">
-          <el-input />
+          <el-input v-model="addEdit.orderMark"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.statusAlert') + '：'">
-          <el-radio-group v-model="status">
-            <el-radio :label="0">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="1">{{$t('public.disable')}}</el-radio>
+          <el-radio-group v-model="addEdit.enable[0].value">
+            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" @click="addData">{{$t('public.confirm')}}</el-button>
         <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -160,49 +145,104 @@
 <script>
   import Box from '../../components/Box';
   import selectTree from '../../components/selectTree';
+
   export default {
     name: "dataDictionary",
-    components:{Box,selectTree},
+    components: {
+      Box,
+      selectTree
+    },
     data() {
       return {
         formItem: {
+          parentId: '',
           nodeId: null,
           businessCode: null,
           dictionaryName: null,
           status: null,
           menuName: ''
         },
-        // 全局按钮禁用启用
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        // 数据默认字段
+        defaultProps: {
+          parentId: 'parentId', // 父级唯一标识
+          value: 'id', // 唯一标识
+          label: 'nodeName', // 标签显示
+          children: 'children', // 子级
         },
-        dialogVisible:false,
-        statusList:[
-          {label:'启用',value:1},
-          {label:'禁用',value:0},
+        // 新增 编辑表单
+        addEdit: {
+          nodeName: '', //字典名称
+          parentId: "", //父级Id
+          nodeId: '', //字典项ID
+          level: '', //目录级别
+          dictionaryCode: '', //字典项编码
+          dictionaryType: '', //字典项类型
+          orderMark: '', //顺序
+          //状态
+          enable: [{
+            label: '启用',
+            value: 1
+          },
+            {
+              label: '禁用',
+              value: 0
+            },
+          ],
+          //status: null,
+          systemBasedataLanguageList: [{
+            id: "", //字典语言项的ID
+            basedataId: "", //字典项的语言ID
+            basedataName: "", //字典语言项的语言名称
+            languageMark: "zh_CN", //字典语言项的语言标识
+            orderMark: 2 //字典语言项的显示顺序
+          }]
+        },
+
+        // 全局按钮禁用启用
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
+        },
+        dialogVisible: false,
+        isShowEditPopover: false,
+        organizationList: [],
+        statusList: [{
+          label: '启用',
+          value: 1
+        },
+          {
+            label: '禁用',
+            value: 0
+          },
         ],
-        status:'',
-        organization:'',
+        status: '',
+
         treeData: {}, // 左侧导航数据
         tableData: [], // 表格数据
+        // 表格选中之后数据接收
+        checkListValue: [],
         checkListIds: [], // 表格选中的数据id集合
-        options:{
+        // 删除数据传参
+        checkRoleIds: [],
+        assignRoleList: [],
+        options: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
         },
-        defaultProps: {
-          label: 'nodeName',
-          children: 'children'
-        }
+        /*
+                        defaultProps: {
+                          label: 'nodeName',
+                          children: 'children'
+                        }*/
+
       }
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -229,9 +269,10 @@
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
-            var disableFlag = 0, enableFlag = 0;
+            var disableFlag = 0,
+              enableFlag = 0;
             var checkListIds = new Array();
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               // 启用禁用判断
               if (data[i].enable === false) {
                 disableFlag++;
@@ -256,30 +297,57 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         this.options.currentPage = val;
         this.getData();
       },
       // 启用
       enableData() {
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
-
-        }).catch(()=>{
+        }).then(() => {
+          _t.$store.commit('setLoading', true);
+          _t.$api.put('system/basedata/', {
+            systemBasedata: {
+              id: _t.checkListIds.join(','),
+              enable: "true"
+            }
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.getMenuData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          })
+        }).catch(() => {
           return;
         });
       },
       // 禁用
-      disableData(){
+      disableData() {
         var _t = this;
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
+          _t.$store.commit('setLoading', true);
           _t.$api.put('system/basedata/', {
             systemBasedata: {
               id: _t.checkListIds.join(','),
@@ -292,6 +360,7 @@
                   confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getData();
+                _t.getMenuData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -303,24 +372,56 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 删除
-      deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+      deleteData() {
+        //debugger;
+        var _t = this;
+        console.log(_t.checkListIds);
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
-
-        }).catch(()=>{
+        }).then(() => {
+          _t.$store.commit('setLoading', true);
+          _t.$api.delete('system/basedata/', {
+            jsonString: JSON.stringify({
+              basedataIds: _t.checkListIds
+            })
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
+                _t.getMenuData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              case 2007: // 删除失败
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                break;
+              default:
+                break;
+            }
+          })
+        }).catch(() => {
           return;
         });
       },
       // 获取选中的节点
-      getCurrentNode(data){
+      getCurrentNode(data) {
         this.formItem.nodeId = data.nodeId;
         this.getData();
       },
@@ -336,12 +437,14 @@
         _t.$api.get('system/basedata/all', {
           jsonString: JSON.stringify({
             systemBasedata: {
+              /*dictionaryType:"",*/
               languageMark: localStorage.getItem('hy-language')
             },
             currentPage: _t.options.currentPage,
             pageSize: _t.options.pageSize
           })
         }, function (res) {
+          console.log(res);
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
@@ -361,13 +464,67 @@
           }
         });
       },
+      // 新增编辑弹出层所属组织下拉框
+      clickNodeAlert(val) {
+        //console.log(val)
+        /*console.log(val)
+                var _t = this;
+                _t.addEdit.parentId = val.nodeId;
+                _t.addEdit.nodeName = val.nodeName;
+                _t.addEdit.level = val.level + 1;
+                _t.isShowEditPopover = false;*/
+      },
+      //新增表格数据
+      addData() {
+        var _t = this;
+        _t.$api.post('system/basedata/', {
+          "systemBasedata": {
+            "id": _t.addEdit.nodeId,
+            "parentId": _t.addEdit.parentId,
+            "dictionaryCode": _t.addEdit.dictionaryCode,
+            "dictionaryType": _t.addEdit.dictionaryType,
+            "orderMark": _t.addEdit.orderMark,
+            'level': _t.addEdit.level,
+            "enable": _t.addEdit.enable[0].value == null ? null : (_t.addEdit.enable[0].value == 1 ? true : false),
+            "systemBasedataLanguageList": [{
+              "id": null,
+              "basedataId": null,
+              "basedataName": _t.addEdit.systemBasedataLanguageList[0].basedataName == null ? null : _t.addEdit.systemBasedataLanguageList[0].basedataName.trim(),
+              "languageMark": localStorage.getItem('hy-language'),
+              "orderMark": 2
+            }]
+          }
+        }, function (res) {
+          _t.dialogVisible = false;
+          switch (res.status) {
+            case 200:
+              _t.getMenuData();
+              console.log(res);
+              _t.tableData = res.data.list;
+              _t.options.total = res.data.count;
+              _t.options.currentPage = res.data.currentPage;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.tolal = 0;
+              _t.options.currentPage = 1;
+              break;
+          }
+        })
+      },
       // 获取表格数据
       getData() {
         var _t = this;
         _t.$api.get('system/basedata/pagelist', {
           jsonString: JSON.stringify({
             systemBasedata: {
-              id: _t.formItem.nodeId,
+              parentId: _t.formItem.nodeId,
               basedataName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
               dictionaryCode: _t.formItem.businessCode == null ? null : _t.formItem.businessCode.trim(),
               enable: _t.formItem.status == null ? null : (_t.formItem.status == 1 ? true : false),
@@ -377,8 +534,10 @@
             pageSize: _t.options.pageSize
           })
         }, function (res) {
+
           switch (res.status) {
             case 200:
+              //console.log(res);
               _t.tableData = res.data.list;
               _t.options.total = res.data.count;
               _t.options.currentPage = res.data.currentPage;
@@ -404,8 +563,53 @@
       // 下移
       moveDown() {
 
-      }
+      },
+      //编辑查询
+      editDataBtn() {
+      },
+      // 编辑数据
+      editData() {
+        var _t = this;
+        _t.$api.put('system/basedata/', {
+          "systemBasedata": {
+            "id": _t.addEdit.nodeId,
+            "parentId": _t.addEdit.parentId,
+            "dictionaryCode": _t.addEdit.dictionaryCode,
+            "dictionaryType": _t.addEdit.dictionaryType,
+            "orderMark": _t.addEdit.orderMark,
+            'level': _t.addEdit.level,
+            "enable": _t.addEdit.enable[0].value == null ? null : (_t.addEdit.enable[0].value == 1 ? true : false),
+            "systemBasedataLanguageList": [{
+              "id": null,
+              "basedataId": null,
+              "basedataName": _t.addEdit.systemBasedataLanguageList[0].basedataName == null ? null : _t.addEdit.systemBasedataLanguageList[0].basedataName.trim(),
+              "languageMark": localStorage.getItem('hy-language'),
+              "orderMark": 2
+            }]
+          }
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.dialogVisible = false;
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            case 2006:
+              _t.$alert(res.message);
+              break;
+            default:
+              _t.dialogVisible = false;
+              break;
+          }
+        });
+      },
     },
+
     created() {
       this.$store.commit('setLoading', true);
       this.getMenuData();

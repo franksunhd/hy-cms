@@ -16,24 +16,24 @@
             class="width120"
             v-model="startTime"
             type="date"
-            :placeholder="$t('public.selectDate')" />
+            :placeholder="$t('public.selectDate')"/>
           <span>—</span>
           <el-date-picker
             class="width120"
             v-model="endTime"
             type="date"
-            :placeholder="$t('public.selectDate')" />
+            :placeholder="$t('public.selectDate')"/>
         </el-form-item>
         <el-form-item :label="$t('backUpTimer.backUpType') + '：'">
           <el-select v-model="backUpType" class="width200">
-            <el-option value="0" :label="$t('backUpTimer.singleTable')" />
-            <el-option value="1" :label="$t('backUpTimer.wholeLibrary')" />
+            <el-option value="0" :label="$t('backUpTimer.singleTable')"/>
+            <el-option value="1" :label="$t('backUpTimer.wholeLibrary')"/>
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('backUpTimer.backUpStatus') + '：'">
           <el-select v-model="backUpStatus" class="width200">
-            <el-option value="0" :label="$t('backUpTimer.running')" />
-            <el-option value="1" :label="$t('backUpTimer.stopped')" />
+            <el-option value="0" :label="$t('backUpTimer.running')"/>
+            <el-option value="1" :label="$t('backUpTimer.stopped')"/>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -63,7 +63,7 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
             <span>
@@ -71,17 +71,17 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('backUpTimer.taskName')" header-align="center" align="center" />
-        <el-table-column :label="$t('backUpTimer.createTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('backUpTimer.backUpObject')" header-align="center" align="center" />
-        <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="center" align="center" />
+        <el-table-column :label="$t('backUpTimer.taskName')" header-align="center" align="center"/>
+        <el-table-column :label="$t('backUpTimer.createTime')" header-align="center" align="center"/>
+        <el-table-column :label="$t('backUpTimer.backUpObject')" header-align="center" align="center"/>
+        <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="center" align="center"/>
         <el-table-column :label="$t('backUpTimer.status')" header-align="center" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('backUpTimer.note')" header-align="center" align="center" />
+        <el-table-column :label="$t('backUpTimer.note')" header-align="center" align="center"/>
       </el-table>
       <!--分页-->
       <pages
@@ -90,7 +90,7 @@
         :pageSize='options.pageSize'
         :firstPage='options.firstPage'
         :lastPage='options.lastPage'
-        @handleCurrentChangeSub="handleCurrentChange" />
+        @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
     <el-dialog
@@ -113,7 +113,7 @@
           </el-select>
         </el-form-item>
         <el-form-item slot="footers" :label="$t('backUpTimer.ruleDescription') + '：'">
-          <el-input type="textarea" :autosize="{ minRows: 3}" />
+          <el-input type="textarea" :autosize="{ minRows: 3}"/>
         </el-form-item>
       </my-cron>
       <span slot="footer">
@@ -127,37 +127,38 @@
 <script>
   import Box from '../../components/Box';
   import myCron from '../../components/cron';
+
   export default {
     name: "backUpTimer",
-    components:{Box,myCron},
+    components: {Box, myCron},
     data() {
       return {
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        startTime:'',
-        endTime:'',
-        backUpType:'',
-        backUpStatus:'',
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
+        startTime: '',
+        endTime: '',
+        backUpType: '',
+        backUpStatus: '',
+        tableData: [
+          {status: 1}, {status: 0}, {status: 1}, {status: 0}, {status: 1}, {status: 1}
         ],
-        options:{
-          total:1000, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
+        options: {
+          total: 1000, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
+          firstPage: 1, // 首页
+          lastPage: 100 // 末页
         },
-        dialogVisibleAlert:false,
+        dialogVisibleAlert: false,
       }
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -181,7 +182,7 @@
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
                 disableFlag++;
               } else if (data[i].status === 1) {
@@ -202,23 +203,23 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         console.log(val)
       },
       // 新增定时器
-      addTimer(){
+      addTimer() {
         this.dialogVisibleAlert = true;
       },
       // 编辑定时器
-      editTimer(){
+      editTimer() {
         this.dialogVisibleAlert = true;
       },
       // 运行定时器
-      runTimer(){
+      runTimer() {
 
       },
       // 删除
-      deleteTimer(){
+      deleteTimer() {
 
       }
     },
