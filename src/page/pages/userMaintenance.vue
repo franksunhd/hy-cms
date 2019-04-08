@@ -177,10 +177,10 @@
         </el-form-item>
       </el-form>
       <div class="assignRole-box" v-show="isShowRole">
-        <el-breadcrumb style="margin-bottom: 10px;">
-          <el-breadcrumb-item>集团亚洲总部</el-breadcrumb-item>
-          <el-breadcrumb-item>上海分部</el-breadcrumb-item>
-        </el-breadcrumb>
+        <template v-for="(item,index) in organizationName">
+          <span>{{item}}</span>
+          <i v-if="index !== organizationName.length - 1" class="el-icon-arrow-right"></i>
+        </template>
         <el-checkbox-group class="assignRole-group-box" v-model="addEdit.assignRole">
           <el-checkbox-button v-for="role in assignRoleList" :label="role.id" :key="role.id">{{role.roleName}}
           </el-checkbox-button>
@@ -198,6 +198,7 @@
 <script>
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
+  import {orgBreadcrumb} from "../../assets/js/recursive";
 
   export default {
     name: "user-maintenance",
@@ -256,6 +257,8 @@
         editDataList: {},
         // 角色列表
         assignRoleList: [],
+        // 组织层级
+        organizationName: [],
         // 分页
         options: {
           total: 0, // 总条数
@@ -317,6 +320,7 @@
         _t.addEdit.organizationId = val.nodeId;
         _t.isShowEditPopover = false;
         _t.addEdit.changeSelect = true;
+        _t.organizationName = orgBreadcrumb(_t.organizationList, val.nodeId);
         _t.getRoleWithOrgId(_t.addEdit.organizationId);
       },
       // 重置新增表单数据

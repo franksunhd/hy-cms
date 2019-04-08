@@ -13,7 +13,7 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
   if (allSelectedNodes.length !== 0) { // 选中节点不为空
     allSelectedNodes.forEach(function (item) {
       // 节点过滤 过滤 组织节点
-      if (item.type == roleType) { // 角色节点
+      if (item.level == roleType) { // 角色节点
         var list = new Array();
         var parentIdArr = new Array();
         var ObjTag = new Object();
@@ -35,8 +35,8 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
               // by ssy
               list[oid] = g['parentNodeId'];
             }
-            if (g.childrenNode != undefined) {
-              buildParentList(g['childrenNode'])
+            if (g.children != undefined) {
+              buildParentList(g['children'])
             }
           });
         }
@@ -63,8 +63,8 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
               break;
             }
             // 没有找到 继续往下找
-            if (typeof result == 'undefined' && temp['childrenNode']) {
-              result = recursive(temp['childrenNode'], node, index);
+            if (typeof result == 'undefined' && temp['children']) {
+              result = recursive(temp['children'], node, index);
             }
           }
           return result;
@@ -122,11 +122,9 @@ export function orgBreadcrumb(allNodes, nodeId) {
   // 递归找到 id 所对应的 父 id
   function buildParentList(arr) {
     arr.forEach(g => {
-      if (g.parentId != undefined) {
-        // by ssy
+      if (g.parentNodeId != undefined) {
         let oid = g['nodeId']
-        // by ssy
-        list[oid] = g['parentId'];
+        list[oid] = g['parentNodeId'];
       }
       if (g.children != undefined) {
         buildParentList(g['children'])
@@ -162,7 +160,5 @@ export function orgBreadcrumb(allNodes, nodeId) {
     }
     return result;
   }
-
-  // console.log(organizationArr);
   return organizationArr.reverse();
 }
