@@ -20,7 +20,65 @@
       </el-col>
     </el-row>
     <!--表格-->
-
+    <el-row>
+      <el-col :span="24" style="padding: 10px">
+        <div class="whiteBg">
+          <!--标题-->
+          <div class="clearfix">
+            <span>最新告警列表</span>
+            <el-select class="fr" v-model="addEdit.sortValue">
+              <el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value"/>
+            </el-select>
+            <el-popover
+              class="fr"
+              trigger="click"
+              placement="bottom-start"
+              v-model="isShowEditPopover"
+              ref="popover">
+              <el-tree
+                :data="organizationList"
+                highlight-current
+                :expand-on-click-node="false"
+                @node-click="clickNodeAlert"
+                :props="defaultProps"/>
+              <el-input
+                v-model="addEdit.organizationName"
+                style="width: 200px;"
+                suffix-icon="el-icon-arrow-down"
+                readonly
+                slot="reference"/>
+            </el-popover>
+          </div>
+          <!--表格-->
+          <el-table :data="tableData" stripe>
+            <el-table-column :label="$t('public.index')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>
+                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" header-align="center" align="center"/>
+            <el-table-column label="设备名称" header-align="center" align="center"/>
+            <el-table-column label="告警内容" header-align="center" align="center"/>
+            <el-table-column label="最新告警时间" header-align="center" align="center"/>
+            <el-table-column label="状态汇总" header-align="center" align="center"/>
+            <el-table-column label="机房" header-align="center" align="center"/>
+            <el-table-column label="机架" header-align="center" align="center"/>
+            <el-table-column label="位置" header-align="center" align="center"/>
+            <el-table-column label="IP" header-align="center" align="center"/>
+            <el-table-column label="设备类型" header-align="center" align="center"/>
+            <el-table-column label="处理状态" header-align="center" align="center"/>
+          </el-table>
+          <!--分页-->
+          <pages
+            :total='options.total'
+            :currentPage='options.currentPage'
+            :page-size="options.pageSize"
+            @handleCurrentChangeSub="handleCurrentChange"/>
+        </div>
+      </el-col>
+    </el-row>
   </Box>
 </template>
 
@@ -33,6 +91,30 @@
     components: {Box},
     data() {
       return {
+        sortArr: [
+          {label: 'Top10', value: 10},
+          {label: 'Top15', value: 15},
+          {label: 'Top20', value: 20},
+          {label: 'Top30', value: 30},
+        ], // 排序
+        addEdit: {
+          sortValue: 10, // 绑定的pageSize值
+          organizationName: '', // 树形下拉框绑定的值
+          organizationId: '', // 树形下拉框的绑定的id
+        },
+        defaultProps: {
+          label: 'label',
+          children: 'children'
+        },
+        // 分页
+        options: {
+          total: 0, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 显示条数
+        },
+        isShowEditPopover: false, // 控制树形下拉框的显示隐藏
+        organizationList: [], // 树形下拉框的数据
+        tableData: [{}, {}], // 最新告警列表表格数据
         // 千层饼图
         optionsPuff: {
           // 标题
@@ -162,6 +244,16 @@
       }
     },
     methods: {
+      // 点击下拉框的节点
+      clickNodeAlert() {
+
+      },
+      // 改变当前页码
+      handleCurrentChange(val) {
+        var _t = this;
+        _t.options.currentPage = val;
+        _t.getData();
+      },
       // 请求数据
       getData() {
         var _t = this;
