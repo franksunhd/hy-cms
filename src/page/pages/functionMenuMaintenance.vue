@@ -14,7 +14,6 @@
           <a href="javascript:;" @click="clickNode">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
         </p>
         <el-tree
-          style="width: 200px;"
           :data="treeData"
           :props="defaultProps"
           @node-click="getCurrentNode"
@@ -222,6 +221,7 @@
           status: null,
         },
         addEdit: {
+          id: '',
           parentId: '',
           menuNameZh: '',
           menuNameEn: '',
@@ -254,6 +254,7 @@
         treeData: [], // 左侧导航列表
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
+        checkValueList: {}, // 选中数据集合 编辑时
         options:{
           total: 0, // 总条数
           currentPage:1, // 当前页码
@@ -313,6 +314,7 @@
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
             var checkListIds = new Array();
+            var checkValueList = new Array();
             data.forEach(function (item) {
               // 启用禁用判断
               if (item.enable === false) {
@@ -321,8 +323,10 @@
                 _t.disableBtn.disable = false;
               }
               checkListIds.push(item.id);
+              checkValueList.push(item);
             });
             _t.checkListIds = checkListIds;
+            _t.checkValueList = checkValueList;
             break;
           default: // 多选
             _t.disableBtn.edit = true;
@@ -740,6 +744,11 @@
         var _t = this;
         _t.ifAdd = false;
         _t.dialogVisible = true;
+        _t.addEdit.id = _t.checkValueList.id;
+        _t.addEdit.parentId = _t.checkValueList.parentId;
+        _t.addEdit.menuNameZh = _t.checkValueList.menuName.split(',')[0];
+        _t.addEdit.menuNameEn = _t.checkValueList.menuName.split(',')[1];
+        _t.addEdit.menuHref = _t.checkValueList.menuHref;
       },
       // 编辑提交
       editData(formName) {
