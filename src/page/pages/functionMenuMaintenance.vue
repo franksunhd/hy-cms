@@ -229,7 +229,6 @@
           menuLevel: '',
           menuIcon: '',
           menuHref: '',
-          menuIcon: '',
           jumpType: '',
           enable: '',
           orderMark: '',
@@ -314,8 +313,8 @@
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
             var checkListIds = new Array();
-            var checkValueList = new Array();
             data.forEach(function (item) {
+              _t.checkValueList = item;
               // 启用禁用判断
               if (item.enable === false) {
                 _t.disableBtn.enable = false;
@@ -323,12 +322,11 @@
                 _t.disableBtn.disable = false;
               }
               checkListIds.push(item.id);
-              checkValueList.push(item);
             });
             _t.checkListIds = checkListIds;
-            _t.checkValueList = checkValueList;
             break;
           default: // 多选
+            _t.checkValueList = {};
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
@@ -749,6 +747,8 @@
         _t.addEdit.menuNameZh = _t.checkValueList.menuName.split(',')[0];
         _t.addEdit.menuNameEn = _t.checkValueList.menuName.split(',')[1];
         _t.addEdit.menuHref = _t.checkValueList.menuHref;
+        _t.addEdit.menuLevel = _t.checkValueList.menuLevel;
+        _t.addEdit.menuIcon = _t.checkValueList.menuIcon;
       },
       // 编辑提交
       editData(formName) {
