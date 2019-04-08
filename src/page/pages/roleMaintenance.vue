@@ -155,7 +155,10 @@
       :close-on-press-escape="false">
       <el-form label-width="150px">
         <el-form-item :label="$t('roleMaintenance.roleOrganization') + '：'">
-          <span>集团亚洲总部-->上海分部</span>
+          <template v-for="(item,index) in organizationName">
+            <span>{{item}}</span>
+            <i v-if="index !== organizationName.length - 1" class="el-icon-arrow-right"></i>
+          </template>
         </el-form-item>
         <el-form-item :label="$t('roleMaintenance.pleaseSelectUser') + '：'">
           <el-button type="primary" class="queryBtn" @click="selectRole">{{$t('roleMaintenance.select')}}</el-button>
@@ -282,6 +285,7 @@
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
   import {dateFilter} from '../../assets/js/filters';
+  import {orgBreadcrumb} from "../../assets/js/recursive";
 
   export default {
     name: "role-maintenance",
@@ -335,6 +339,8 @@
         tableData: [],
         // 内层表格数据
         innerTableData: [],
+        // 组织结构名
+        organizationName: [],
         // 外层分页
         options: {
           total: 0, // 总条数
@@ -383,7 +389,6 @@
             {validator: isNotNull, trigger: ['blur']}
           ]
         },
-        log: [],
       }
     },
     methods: {
@@ -579,7 +584,6 @@
       // 当前选中条数
       selectTableNum(data) {
         var _t = this;
-        console.log(data)
         switch (data.length) {
           case 0: // 未选中
             _t.disableBtn.disable = true;
@@ -694,6 +698,7 @@
       // 用户授权 数据回显
       authorizationData() {
         var _t = this;
+        _t.organizationName = orgBreadcrumb(_t.organizationList, _t.editDataList.organizationId);
         _t.outerVisible = true;
       },
       // 功能权限
