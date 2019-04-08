@@ -568,46 +568,46 @@
       editDataBtn() {
       },
       // 编辑数据
-      /* editData() {
-         var _t = this;
-         _t.$api.put('system/basedata/', {
-                     "systemBasedata": {
-                         "id": _t.addEdit.nodeId,
-                         "parentId": _t.addEdit.parentId,
-                         "dictionaryCode": _t.addEdit.dictionaryCode,
-                         "dictionaryType": _t.addEdit.dictionaryType,
-                         "orderMark": _t.addEdit.orderMark,
-                         'level':_t.addEdit.level,
-                         "enable": _t.addEdit.enable[0].value == null ? null : (_t.addEdit.enable[0].value == 1 ? true : false),
-                         "systemBasedataLanguageList": [{
-                             "id": null,
-                             "basedataId": null,
-                             "basedataName": _t.addEdit.systemBasedataLanguageList[0].basedataName == null ? null : _t.addEdit.systemBasedataLanguageList[0].basedataName.trim(),
-                             "languageMark": localStorage.getItem('hy-language'),
-                             "orderMark": 2
-                         }]
-                     }
-                 }, function (res) {
-           switch (res.status) {
-             case 200:
-               _t.dialogVisible = false;
-               _t.getData();
-               break;
-             case 1003: // 无操作权限
-             case 1004: // 登录过期
-             case 1005: // token过期
-             case 1006: // token不通过
-               _t.exclude(_t, res.message);
-               break;
-             case 2006:
-               _t.$alert(res.message);
-               break;
-             default:
-               _t.dialogVisible = false;
-               break;
-           }
-         });
-       },*/
+      editData() {
+        var _t = this;
+        _t.$api.put('system/basedata/', {
+          "systemBasedata": {
+            "id": _t.addEdit.nodeId,
+            "parentId": _t.addEdit.parentId,
+            "dictionaryCode": _t.addEdit.dictionaryCode,
+            "dictionaryType": _t.addEdit.dictionaryType,
+            "orderMark": _t.addEdit.orderMark,
+            'level': _t.addEdit.level,
+            "enable": _t.addEdit.enable[0].value == null ? null : (_t.addEdit.enable[0].value == 1 ? true : false),
+            "systemBasedataLanguageList": [{
+              "id": null,
+              "basedataId": null,
+              "basedataName": _t.addEdit.systemBasedataLanguageList[0].basedataName == null ? null : _t.addEdit.systemBasedataLanguageList[0].basedataName.trim(),
+              "languageMark": localStorage.getItem('hy-language'),
+              "orderMark": 2
+            }]
+          }
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.dialogVisible = false;
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            case 2006:
+              _t.$alert(res.message);
+              break;
+            default:
+              _t.dialogVisible = false;
+              break;
+          }
+        });
+      },
     },
 
     created() {
