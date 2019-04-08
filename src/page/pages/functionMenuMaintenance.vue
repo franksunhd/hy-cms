@@ -127,7 +127,7 @@
         <!--<el-form-item prop="menuNameTw">-->
         <!--<el-input v-model="addEdit.menuNameTw" placeholder="中文繁体" class="width200"/>-->
         <!--</el-form-item>-->
-        <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'" prop="menuIcon">
+        <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
           <el-upload action="">
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
@@ -136,7 +136,7 @@
         <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
           <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'" prop="jumpType">
+        <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
           <el-radio-group v-model="addEdit.jumpType">
             <el-radio :label="0">framename</el-radio>
             <el-radio :label="1">_blank</el-radio>
@@ -150,21 +150,25 @@
             {{$t('functionMenuMaintenance.selectUser')}}
           </el-button>
           <!--展示选择的用户数据-->
-          <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
-            <p>
-              <span>{{item.headName}}</span>
-              <span v-if="item.branchName !== null">></span>
-              <span v-if="item.branchName !== null">{{item.branchName}}</span>
+          <div v-for="(item,index) in listData" :key="index">
+            <!--标题部分循环-->
+            <p style="font-size: 16px;">
+              <template v-for="(k,i) in item.title">
+                <span>{{k}}</span>
+                <i v-if="i !== item.title.length - 1" class="el-icon-arrow-right"></i>
+              </template>
             </p>
+            <!--标签部分循环-->
             <el-tag
-              v-for="(tag,index) in item.headChildren"
+              style="margin: 10px 10px 0 0;"
+              v-for="tag in item.tags"
               :key="tag.id"
               @close="handleClose(tag)"
-              :disable-transitions="true"
               closable>
-              {{tag.label}}
+              {{tag.nodeName}}
             </el-tag>
           </div>
+          <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
           <el-input v-model="addEdit.menuLevel" class="width200"/>
@@ -174,8 +178,8 @@
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
-            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
+            <el-radio :label="'1'">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="'0'">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -188,11 +192,7 @@
           :data="selectUser"
           :props="defaultPropsUser"
           show-checkbox
-          ref="tree">
-          <!--<span slot-scope="{ node, data }">-->
-          <!--<i v-if="data.type !== 1" class="el-icon-document"></i>{{ node.nodeName }}-->
-          <!--</span>-->
-        </el-tree>
+          ref="tree"/>
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
           <el-button @click="dialogVisibleAlert = false" size="small">{{$t('public.cancel')}}</el-button>
@@ -210,6 +210,7 @@
 <script>
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
+  import {queryOrgWithRole} from "../../assets/js/recursive";
 
   export default {
     name: "functionMenuMaintenance",
@@ -243,6 +244,7 @@
         dialogVisible: false, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
         ifAdd: false, // 是否新增
+        selectUserIsNull: false, // 选中用户是否为空
         statusList: [
           {label: '启用', value: 1},
           {label: '禁用', value: 0},
@@ -276,7 +278,7 @@
             {validator: isNotNull, trigger: ['blur']}
           ],
           enable: [
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur', 'change']}
           ],
           menuHref: [
             {validator: isNotNull, trigger: ['blur']}
@@ -381,7 +383,7 @@
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
-                _t.getData();
+                _t.getMenuData();
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
@@ -426,7 +428,7 @@
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
-                _t.getData();
+                _t.getMenuData();
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
@@ -503,121 +505,52 @@
           return;
         });
       },
-      // 获取节点显示数据 重新封装 by ssy
+      // 获取节点显示数据
       getCheckedNodes() {
-        this.dialogVisibleAlert = false;
-        var listData = new Array(); // 总数据集合
-        var allNodes = this.$refs.tree.getCheckedNodes(); // 选中的节点
-        if (allNodes.length !== 0) {
-          var headOffice = new Array(); // 全体总部人员集合
-          var branchOffice = new Array(); // 全体分部人员集合
-          // 判断是否 隶属总部 level 2总部 3分部
-          for (var i = 0; i < allNodes.length; i++) {
-            if (allNodes[i].level === 2 && allNodes[i].type === 'user') {
-              headOffice.push(allNodes[i]);
-            } else if (allNodes[i].level === 3 && allNodes[i].type === 'user') {
-              branchOffice.push(allNodes[i]);
-            }
-          }
-          // 总部
-          for (var j = 0; j < this.selectUser.length; j++) {
-            var obj = new Object();
-            var headOfficeArr = new Array();
-            for (var k = 0; k < headOffice.length; k++) {
-              if (headOffice[k].parentId === this.selectUser[j].id) {
-                // 拼接各总部直属人员数组
-                headOfficeArr.push(headOffice[k]);
-              }
-            }
-            obj.headName = this.selectUser[j].label;
-            obj.headChildren = headOfficeArr;
-            obj.branchName = null;
-            obj.branchId = null;
-            // 过滤总部下属人员为空的情况
-            if (obj.headChildren.length !== 0) {
-              listData.push(obj);
-            }
-          }
-          // 分部
-          // 查询原数组中所有的分部集合
-          var branchNameArr = new Array();
-          for (var m = 0; m < this.selectUser.length; m++) {
-            if (this.selectUser[m].children.length !== 0) {
-              for (var n = 0; n < this.selectUser[m].children.length; n++) {
-                if (this.selectUser[m].children[n].type !== 'user') {
-                  branchNameArr.push(this.selectUser[m].children[n]);
-                }
-              }
-            }
-          }
-          // 拼接各总部下属各分部的数据
-          for (var p = 0; p < branchNameArr.length; p++) {
-            var objBranch = new Object();
-            var branchOfficeArr = new Array();
-            // 拼接各分部人员数据
-            for (var q = 0; q < branchOffice.length; q++) {
-              if (branchOffice[q].parentId === branchNameArr[p].id) {
-                branchOfficeArr.push(branchOffice[q]);
-              }
-            }
-            // 各分部 id
-            objBranch.branchId = branchNameArr[p].id;
-            // 各分部名称
-            objBranch.branchName = branchNameArr[p].label;
-            // 各分部人员集合
-            objBranch.headChildren = branchOfficeArr;
-            // 查找该条数据对应的 总部
-            for (var x = 0; x < this.selectUser.length; x++) {
-              if (branchNameArr[p].parentId === this.selectUser[x].id) {
-                objBranch.headName = this.selectUser[x].label;
-              }
-            }
-            // 过滤分部人员为空的情况
-            if (branchOfficeArr.length !== 0) {
-              listData.push(objBranch);
-            }
-          }
-          this.listData = listData;
-          this.result();
-        }
+        var _t = this;
+        _t.dialogVisibleAlert = false;
+        _t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
+        console.log(_t.result());
       },
       // 删除标签
-      handleClose(item) {
-        for (var i = 0; i < this.listData.length; i++) {
-          var headChildren = this.listData[i].headChildren;
-          if (headChildren.length > 1) {
-            // 删除本标签
-            for (var j = 0; j < headChildren.length; j++) {
-              if (item.id === headChildren[j].id) {
-                headChildren.splice(j, 1);
-                this.result();
+      handleClose(tag) {
+        var _t = this;
+        var listData = _t.listData;
+        listData.forEach(function (item, index) {
+          var tags = item.tags;
+          if (tags.length > 1) { // 该区域删除之后还有标签
+            tags.forEach(function (val, i) {
+              if (tag.nodeId == tags[i].nodeId) {
+                tags.splice(i, 1);
+                _t.result();
                 return false;
               }
-            }
-          } else {
-            // 删除本标签之后删除该区域
-            for (var k = 0; k < headChildren.length; k++) {
-              if (item.id === headChildren[k].id) {
-                headChildren.splice(k, 1);
-                this.listData.splice(i, 1);
-                this.result();
+            });
+          } else { // 该区域删除之后没有标签了 删除该区域
+            tags.forEach(function (val, i) {
+              if (tag.nodeId == tags[i].nodeId) {
+                tags.splice(i, 1);
+                listData.splice(index, 1);
+                _t.result();
                 return false;
               }
-            }
+            });
           }
-        }
+        });
       },
       // 剩余人员
       result() {
-        // 所有展示的人员集合
-        var allNode = new Array();
-        for (var i = 0; i < this.listData.length; i++) {
-          if (this.listData[i].headChildren.length !== 0) {
-            for (var j = 0; j < this.listData[i].headChildren.length; j++) {
-              allNode.push(this.listData[i].headChildren[j]);
-            }
+        var _t = this;
+        var listData = _t.listData;
+        var nodeArr = new Array();
+        listData.forEach(function (item) {
+          if (item.tags.length !== 0) {
+            item.tags.forEach(function (val) {
+              nodeArr.push(val);
+            });
           }
-        }
+        });
+        return nodeArr;
       },
       // 获取左侧功能菜单列表
       getMenuData() {
@@ -699,23 +632,28 @@
       // 新增提交
       addData(formName) {
         var _t = this;
+        _t.dialogVisible = false;
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        } else {
+          _t.selectUserIsNull = false;
+        }
         _t.$refs[formName].validate((valid) => {
-          if (valid) {
+          if (valid && _t.selectUserIsNull == false) {
             var menuNameArr = new Array();
-            menuNameArr[0] = _t.addEdit.menuNameZh.trim() + '(中-简)';
-            menuNameArr[1] = _t.addEdit.menuNameEn.trim() + '(英)';
-            // menuNameArr[2] = _t.addEdit.menuNameTw.trim() + '(中-繁)';
+            menuNameArr.push(_t.menuNameZh);
+            menuNameArr.push(_t.menuNameEn);
             var selectRoleList = new Array();
-            _t.selectUser.forEach(function (item) {
-              selectRoleList.push(item.id);
+            _t.result().forEach(function (item) {
+              selectRoleList.push(item.nodeId);
             });
             _t.$api.post('system/menu/', {
               systemMenu: {
                 parentId: _t.addEdit.parentId,
                 menuName: menuNameArr.join(','),
-                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
-                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
-                menuLevel: _t.addEdit.menuLevel,
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -743,39 +681,48 @@
         var _t = this;
         _t.ifAdd = false;
         _t.dialogVisible = true;
+        console.log(_t.checkValueList);
         _t.addEdit.id = _t.checkValueList.id;
         _t.addEdit.parentId = _t.checkValueList.parentId;
-        _t.addEdit.menuNameZh = _t.checkValueList.menuName.split(',')[0];
-        _t.addEdit.menuNameEn = _t.checkValueList.menuName.split(',')[1];
-        _t.addEdit.menuHref = _t.checkValueList.menuHref;
-        _t.addEdit.menuLevel = _t.checkValueList.menuLevel;
-        _t.addEdit.menuIcon = _t.checkValueList.menuIcon;
+        _t.addEdit.menuNameZh = _t.checkValueList.menuName.split(',')[0] == undefined ? '' : _t.checkValueList.menuName.split(',')[0];
+        _t.addEdit.menuNameEn = _t.checkValueList.menuName.split(',')[1] == undefined ? '' : _t.checkValueList.menuName.split(',')[1];
+        _t.addEdit.menuHref = _t.checkValueList.menuHref == null ? '' : _t.checkValueList.menuHref;
+        _t.addEdit.menuLevel = _t.checkValueList.menuLevel == null ? '' : _t.checkValueList.menuLevel;
+        _t.addEdit.menuIcon = _t.checkValueList.menuIcon == null ? '' : _t.checkValueList.menuIcon;
+        _t.addEdit.orderMark = _t.checkValueList.orderMark == null ? '' : _t.checkValueList.orderMark;
+        _t.addEdit.enable = _t.checkValueList.enable == true ? '1' : '0';
       },
       // 编辑提交
       editData(formName) {
         var _t = this;
+        _t.dialogVisible = false;
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        } else {
+          _t.selectUserIsNull = false;
+        }
         _t.$refs[formName].validate((valid) => {
-          if (valid) {
+          if (valid && _t.selectUserIsNull == false) {
             var menuNameArr = new Array();
-            _t.addEdit.menuName.forEach(function (item, index) {
-              menuNameArr.push(item + _t.addEdit.menuLanguage[index]);
+            menuNameArr.push(_t.addEdit.menuNameZh);
+            menuNameArr.push(_t.addEdit.menuNameEn);
+            var selectUserList = new Array();
+            _t.result().forEach(function (item) {
+              selectUserList.push(item.nodeId);
             });
-            var selectRoleList = new Array();
-            _t.selectUser.forEach(function (item) {
-              selectRoleList.push(item.id);
-            });
-            _t.$api.post('system/menu/', {
+
+            _t.$api.put('system/menu/', {
               systemMenu: {
                 id: _t.checkListIds.join(','),
                 parentId: _t.addEdit.parentId,
                 menuName: menuNameArr.join(','),
-                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.trim(),
-                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
-                menuLevel: _t.addEdit.menuLevel,
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
-              roleId: selectRoleList.join(',')
+              roleId: selectUserList.join(',')
             }, function (res) {
               switch (res.status) {
                 case 200:
@@ -843,8 +790,9 @@
         _t.$api.get('system/menu/getOrgRole', {}, function (res) {
           switch (res.status) {
             case 200:
-              _t.selectUser = JSON.parse(res.data.list).children;
-              console.log(_t.selectUser)
+              var selectUser = new Array();
+              selectUser.push(JSON.parse(res.data));
+              _t.selectUser = selectUser[0].children;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
