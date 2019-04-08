@@ -367,10 +367,8 @@
     padding-left: 14px;
     padding-right: 14px;
     float: left;
-    overflow: hidden;
-
+    overflow-y: scroll;
     position: relative;
-    height: 444px;
   }
 
   .fnlist {
