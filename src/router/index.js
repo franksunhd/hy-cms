@@ -72,6 +72,9 @@ const monitoringAndControl1 = () => import ('@/page/pages/monitoringAndControl1'
 const monitoringAndControl2 = () => import ('@/page/pages/monitoringAndControl2');
 const monitoringAndControl3 = () => import ('@/page/pages/monitoringAndControl3');
 
+// 告警管理
+const alarmManagement = () => import ('@/page/pages/alarmManagement');
+
 
 Vue.use(Router);
 export default new Router({
@@ -185,6 +188,14 @@ export default new Router({
               name: 'monitoringAndControl3',
               component: monitoringAndControl3
             }
+          ]
+        },
+        {
+          path: "/YUser/alarmManagement",
+          redirect: "/YUser/alarmManagement/alarmManagement",
+          name: "alarmManagementBox",
+          children: [
+            {path: "/YUser/alarmManagement/alarmManagement", name: "alarmManagement", component: alarmManagement}
           ]
         },
       ]
