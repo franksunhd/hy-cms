@@ -37,7 +37,7 @@
                   v-for="item in statusList"
                   :value="item.value"
                   :key="item.key"
-                  :label="item.label" />
+                  :label="item.label"/>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -71,7 +71,7 @@
           </div>
           <!--表格-->
           <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-            <el-table-column type="selection" fixed header-align="center" align="center" />
+            <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span>
@@ -112,7 +112,7 @@
             :total='options.total'
             :currentPage='options.currentPage'
             :pageSize='options.pageSize'
-            @handleCurrentChangeSub="handleCurrentChange" />
+            @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
       </el-col>
     </el-row>
@@ -128,19 +128,19 @@
           <selectTree width="200" :options="treeData.children" v-model="organization"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.dictionaryType') + '：'">
-          <el-input />
+          <el-input/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-          <el-input />
+          <el-input/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-          <el-input type="password" />
+          <el-input type="password"/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.directoryLevel') + '：'">
-          <el-input />
+          <el-input/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.orderIndex') + '：'">
-          <el-input />
+          <el-input/>
         </el-form-item>
         <el-form-item :label="$t('dataDictionary.statusAlert') + '：'">
           <el-radio-group v-model="status">
@@ -160,9 +160,10 @@
 <script>
   import Box from '../../components/Box';
   import selectTree from '../../components/selectTree';
+
   export default {
     name: "dataDictionary",
-    components:{Box,selectTree},
+    components: {Box, selectTree},
     data() {
       return {
         formItem: {
@@ -173,26 +174,26 @@
           menuName: ''
         },
         // 全局按钮禁用启用
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        dialogVisible:false,
-        statusList:[
-          {label:'启用',value:1},
-          {label:'禁用',value:0},
+        dialogVisible: false,
+        statusList: [
+          {label: '启用', value: 1},
+          {label: '禁用', value: 0},
         ],
-        status:'',
-        organization:'',
+        status: '',
+        organization: '',
         treeData: {}, // 左侧导航数据
         tableData: [], // 表格数据
         checkListIds: [], // 表格选中的数据id集合
-        options:{
+        options: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
         },
         defaultProps: {
           label: 'nodeName',
@@ -202,7 +203,7 @@
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -231,7 +232,7 @@
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
             var checkListIds = new Array();
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               // 启用禁用判断
               if (data[i].enable === false) {
                 disableFlag++;
@@ -256,30 +257,30 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         this.options.currentPage = val;
         this.getData();
       },
       // 启用
       enableData() {
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+        this.$confirm('请问是否确认启用当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 禁用
-      disableData(){
+      disableData() {
         var _t = this;
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           _t.$api.put('system/basedata/', {
             systemBasedata: {
               id: _t.checkListIds.join(','),
@@ -303,24 +304,24 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 删除
-      deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+      deleteData() {
+        this.$confirm('请问是否确认删除当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 获取选中的节点
-      getCurrentNode(data){
+      getCurrentNode(data) {
         this.formItem.nodeId = data.nodeId;
         this.getData();
       },

@@ -33,7 +33,7 @@
                   v-for="item in statusList"
                   :value="item.value"
                   :key="item.key"
-                  :label="item.label" />
+                  :label="item.label"/>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -67,7 +67,7 @@
           </div>
           <!--表格-->
           <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-            <el-table-column type="selection" fixed header-align="center" align="center" />
+            <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span>
@@ -81,7 +81,7 @@
                              align="center"/>
             <el-table-column prop="menuHref" :label="$t('functionMenuMaintenance.link')" header-align="center"
                              align="center"/>
-            <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="center" align="center" />
+            <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="center" align="center"/>
             <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="center"
                              align="center"/>
             <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="center" align="center">
@@ -106,7 +106,7 @@
             :total='options.total'
             :currentPage='options.currentPage'
             :pageSize='options.pageSize'
-            @handleCurrentChangeSub="handleCurrentChange" />
+            @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
       </el-col>
     </el-row>
@@ -210,9 +210,10 @@
 <script>
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
+
   export default {
     name: "functionMenuMaintenance",
-    components:{Box},
+    components: {Box},
     data() {
       return {
         formItem: {
@@ -234,30 +235,30 @@
           orderMark: '',
         },
         disableBtn: { // 全局按钮启用禁用判断
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
         dialogVisible: false, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
         ifAdd: false, // 是否新增
-        statusList:[
-          {label:'启用',value:1},
-          {label:'禁用',value:0},
+        statusList: [
+          {label: '启用', value: 1},
+          {label: '禁用', value: 0},
         ],
-        status:'',
-        organization:'',
-        listData:[],
+        status: '',
+        organization: '',
+        listData: [],
         selectUser: [], // 选中的用户
         treeData: [], // 左侧导航列表
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
         checkValueList: {}, // 选中数据集合 编辑时
-        options:{
+        options: {
           total: 0, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
         },
         defaultProps: {
           label: 'menuName',
@@ -300,7 +301,7 @@
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -331,7 +332,7 @@
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
             var checkListIds = new Array();
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               // 启用禁用判断
               if (data[i].enable === false) {
                 disableFlag++;
@@ -355,7 +356,7 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         this.options.currentPage = val;
         this.getData();
       },
@@ -366,7 +367,7 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
             systemMenu: {
@@ -400,18 +401,18 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 禁用
-      disableData(){
+      disableData() {
         var _t = this;
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
             systemMenu: {
@@ -445,18 +446,18 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 删除
-      deleteData(){
+      deleteData() {
         var _t = this;
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/menu/', {
             jsonString: JSON.stringify({
@@ -498,7 +499,7 @@
                 break;
             }
           });
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
@@ -511,18 +512,18 @@
           var headOffice = new Array(); // 全体总部人员集合
           var branchOffice = new Array(); // 全体分部人员集合
           // 判断是否 隶属总部 level 2总部 3分部
-          for (var i = 0;i < allNodes.length;i++){
+          for (var i = 0; i < allNodes.length; i++) {
             if (allNodes[i].level === 2 && allNodes[i].type === 'user') {
               headOffice.push(allNodes[i]);
-            } else if (allNodes[i].level === 3 && allNodes[i].type === 'user'){
+            } else if (allNodes[i].level === 3 && allNodes[i].type === 'user') {
               branchOffice.push(allNodes[i]);
             }
           }
           // 总部
-          for (var j = 0;j < this.selectUser.length;j++){
+          for (var j = 0; j < this.selectUser.length; j++) {
             var obj = new Object();
             var headOfficeArr = new Array();
-            for (var k = 0;k < headOffice.length;k++){
+            for (var k = 0; k < headOffice.length; k++) {
               if (headOffice[k].parentId === this.selectUser[j].id) {
                 // 拼接各总部直属人员数组
                 headOfficeArr.push(headOffice[k]);
@@ -540,9 +541,9 @@
           // 分部
           // 查询原数组中所有的分部集合
           var branchNameArr = new Array();
-          for (var m = 0;m < this.selectUser.length;m++){
+          for (var m = 0; m < this.selectUser.length; m++) {
             if (this.selectUser[m].children.length !== 0) {
-              for (var n = 0;n < this.selectUser[m].children.length;n++){
+              for (var n = 0; n < this.selectUser[m].children.length; n++) {
                 if (this.selectUser[m].children[n].type !== 'user') {
                   branchNameArr.push(this.selectUser[m].children[n]);
                 }
@@ -550,11 +551,11 @@
             }
           }
           // 拼接各总部下属各分部的数据
-          for (var p = 0;p < branchNameArr.length;p++){
+          for (var p = 0; p < branchNameArr.length; p++) {
             var objBranch = new Object();
             var branchOfficeArr = new Array();
             // 拼接各分部人员数据
-            for (var q = 0;q < branchOffice.length;q++){
+            for (var q = 0; q < branchOffice.length; q++) {
               if (branchOffice[q].parentId === branchNameArr[p].id) {
                 branchOfficeArr.push(branchOffice[q]);
               }
@@ -566,7 +567,7 @@
             // 各分部人员集合
             objBranch.headChildren = branchOfficeArr;
             // 查找该条数据对应的 总部
-            for (var x = 0;x < this.selectUser.length;x++){
+            for (var x = 0; x < this.selectUser.length; x++) {
               if (branchNameArr[p].parentId === this.selectUser[x].id) {
                 objBranch.headName = this.selectUser[x].label;
               }
@@ -581,24 +582,24 @@
         }
       },
       // 删除标签
-      handleClose(item){
-        for (var i = 0;i < this.listData.length;i++){
+      handleClose(item) {
+        for (var i = 0; i < this.listData.length; i++) {
           var headChildren = this.listData[i].headChildren;
           if (headChildren.length > 1) {
             // 删除本标签
-            for (var j = 0;j < headChildren.length;j++){
+            for (var j = 0; j < headChildren.length; j++) {
               if (item.id === headChildren[j].id) {
-                headChildren.splice(j,1);
+                headChildren.splice(j, 1);
                 this.result();
                 return false;
               }
             }
           } else {
             // 删除本标签之后删除该区域
-            for (var k = 0;k < headChildren.length;k++){
+            for (var k = 0; k < headChildren.length; k++) {
               if (item.id === headChildren[k].id) {
-                headChildren.splice(k,1);
-                this.listData.splice(i,1);
+                headChildren.splice(k, 1);
+                this.listData.splice(i, 1);
                 this.result();
                 return false;
               }
@@ -610,9 +611,9 @@
       result() {
         // 所有展示的人员集合
         var allNode = new Array();
-        for (var i = 0;i < this.listData.length;i++){
-          if (this.listData[i].headChildren.length !== 0){
-            for (var j = 0;j < this.listData[i].headChildren.length;j++){
+        for (var i = 0; i < this.listData.length; i++) {
+          if (this.listData[i].headChildren.length !== 0) {
+            for (var j = 0; j < this.listData[i].headChildren.length; j++) {
               allNode.push(this.listData[i].headChildren[j]);
             }
           }

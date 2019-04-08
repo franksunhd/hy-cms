@@ -33,10 +33,10 @@
 <script>
   export default {
     name: "system-settings-navbar",
-    data(){
+    data() {
       return {
-        titleName:'',
-        navBarArr:[],
+        titleName: '',
+        navBarArr: [],
       }
     },
     methods: {
@@ -79,9 +79,9 @@
       },
       clickNode() {
         var node = document.querySelectorAll('#system-menu li.el-submenu');
-        for (var i = 0;i < node.length;i++) {
+        for (var i = 0; i < node.length; i++) {
           var classArr = node[i].getAttribute('class').split(' ');
-          for (var j = 0;j < classArr.length;j++){
+          for (var j = 0; j < classArr.length; j++) {
             if (classArr[j] === 'is-opened') {
               node[i].childNodes[0].childNodes[0].childNodes[0].className = 'el-icon-minus';
             }
@@ -89,9 +89,9 @@
         }
         // 点击菜单
         var titleMenu = document.querySelectorAll('#system-menu li.el-submenu .el-submenu__title');
-        for (var k = 0;k < titleMenu.length;k++){
+        for (var k = 0; k < titleMenu.length; k++) {
           titleMenu[k].onclick = function () {
-            if (this.childNodes[0].className !== 'el-icon-minus')  {
+            if (this.childNodes[0].className !== 'el-icon-minus') {
               this.childNodes[0].childNodes[0].className = this.childNodes[0].childNodes[0].className === 'el-icon-plus' ? 'el-icon-minus' : 'el-icon-plus';
             }
           }

@@ -12,13 +12,13 @@
       <!--表单-->
       <el-form inline>
         <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" />
+          <el-input class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" />
+          <el-input class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" />
+          <el-input class="width200"/>
         </el-form-item>
         <br>
         <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
@@ -79,28 +79,28 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
+        <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeType')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.equipmentNumber')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeType')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.equipmentNumber')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center"/>
         <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="center" align="center">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center"/>
       </el-table>
       <!--分页-->
       <pages
@@ -109,7 +109,7 @@
         :pageSize='options.pageSize'
         :firstPage='options.firstPage'
         :lastPage='options.lastPage'
-        @handleCurrentChangeSub="handleCurrentChange" />
+        @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
     <el-dialog
@@ -122,12 +122,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'">
-              <el-input />
+              <el-input/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'">
-              <el-input />
+              <el-input/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -141,7 +141,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'">
-              <el-input />
+              <el-input/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -165,7 +165,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item :label="$t('acquisitionNodeManagement.ruleDes') + '：'">
-              <el-input type="textarea" :autosize="{minRows:3}" />
+              <el-input type="textarea" :autosize="{minRows:3}"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -230,34 +230,35 @@
 
 <script>
   import Box from '../../components/Box';
+
   export default {
     name: "acquisitionNodeManagement",
-    components:{Box},
+    components: {Box},
     data() {
       return {
-        disableBtn:{
-          edit:true,
-          enable:true,
-          disable:true,
-          more:true
+        disableBtn: {
+          edit: true,
+          enable: true,
+          disable: true,
+          more: true
         },
-        tableData:[
-          {status:1},{status:0},{status:1},{status:0},{status:1},{status:1}
+        tableData: [
+          {status: 1}, {status: 0}, {status: 1}, {status: 0}, {status: 1}, {status: 1}
         ],
-        options:{
-          total:1000, // 总条数
-          currentPage:1, // 当前页码
-          pageSize:10, // 每页显示条数
-          firstPage:1, // 首页
-          lastPage:100 // 末页
+        options: {
+          total: 1000, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
+          firstPage: 1, // 首页
+          lastPage: 100 // 末页
         },
-        dialogVisible:false,
-        dialogVisibleAlert:false
+        dialogVisible: false,
+        dialogVisibleAlert: false
       }
     },
     methods: {
       // 当前选中条数
-      selectTableNum(data){
+      selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
@@ -281,7 +282,7 @@
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
             var disableFlag = 0, enableFlag = 0;
-            for (var i = 0;i < data.length;i++){
+            for (var i = 0; i < data.length; i++) {
               if (data[i].status === 0) {
                 disableFlag++;
               } else if (data[i].status === 1) {
@@ -302,77 +303,77 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
+      handleCurrentChange(val) {
         console.log(val)
       },
       // 启用
       enableData() {
-        this.$confirm('请问是否确认启用当前的记录?',this.$t('public.confirmTip'),{
+        this.$confirm('请问是否确认启用当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 禁用
-      disableData(){
-        this.$confirm('请问是否确认禁用当前的记录?',this.$t('public.confirmTip'),{
+      disableData() {
+        this.$confirm('请问是否确认禁用当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 删除
-      deleteData(){
-        this.$confirm('请问是否确认删除当前的记录?',this.$t('public.confirmTip'),{
+      deleteData() {
+        this.$confirm('请问是否确认删除当前的记录?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning'
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 执行监测
-      runMonitoring(){
-        this.$confirm('请问是否确认立即开始执行监测?',this.$t('public.confirmTip'),{
+      runMonitoring() {
+        this.$confirm('请问是否确认立即开始执行监测?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning',
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 停止监测
-      stopMonitoring(){
-        this.$confirm('请问是否确认要停止正在执行的监测?',this.$t('public.confirmTip'),{
+      stopMonitoring() {
+        this.$confirm('请问是否确认要停止正在执行的监测?', this.$t('public.confirmTip'), {
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning',
 
-        }).then(()=>{
+        }).then(() => {
 
-        }).catch(()=>{
+        }).catch(() => {
           return;
         });
       },
       // 分配设备监测任务
-      assignedTasks(){
+      assignedTasks() {
         this.dialogVisibleAlert = true;
       }
     },
