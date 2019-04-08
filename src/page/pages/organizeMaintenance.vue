@@ -14,7 +14,6 @@
           <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">{{treeMenuData.nodeName}}</a>
         </p>
         <el-tree
-          style="width: 200px;"
           :data="treeMenuData.children"
           @node-click="getCurrentNode"
           :props="defaultProps"
