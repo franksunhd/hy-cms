@@ -99,7 +99,8 @@ export default {
     AutomaticDeviceDiscovery: '设备自动发现',
     DeviceManualDetection: '设备手动发现',
     DeviceType: '设备类型',
-    rackTowerServer: '【机架/塔式服务器】'
+    rackTowerServer: '【机架/塔式服务器】',
+    alarmManagement: '告警管理'
   },
   // 许可证信息维护
   license: {

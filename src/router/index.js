@@ -192,11 +192,8 @@ export default new Router({
         },
         {
           path: "/YUser/alarmManagement",
-          redirect: "/YUser/alarmManagement/alarmManagement",
-          name: "alarmManagementBox",
-          children: [
-            {path: "/YUser/alarmManagement/alarmManagement", name: "alarmManagement", component: alarmManagement}
-          ]
+          name: "alarmManagement",
+          component: alarmManagement
         },
       ]
     },

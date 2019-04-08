@@ -22,7 +22,11 @@
   background-color: #f6f9f9;
 }
 
-.box-wrap {
+.grayBg {
+  background-color: #f0f0f0;
+}
+
+.whiteBg {
   background-color: #fff;
 }
 

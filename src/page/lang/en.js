@@ -99,7 +99,8 @@ export default {
     AutomaticDeviceDiscovery: 'AutomaticDeviceDiscovery',
     DeviceManualDetection: 'DeviceManualDetection',
     DeviceType: 'DeviceType',
-    rackTowerServer: 'rackTowerServer'
+    rackTowerServer: 'rackTowerServer',
+    alarmManagement: 'alarmManagement'
   },
   // 许可证信息维护
   license: {
