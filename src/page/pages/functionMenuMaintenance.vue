@@ -669,6 +669,9 @@
                 case 1006: // token不通过
                   _t.exclude(_t, res.message);
                   break;
+                case 3004: // 操作失败
+                  _t.$alert(res.message);
+                  break;
                 default:
                   break;
               }
@@ -733,6 +736,9 @@
                 case 1005: // token过期
                 case 1006: // token不通过
                   _t.exclude(_t, res.message);
+                  break;
+                case 3004: // 操作失败
+                  _t.$alert(res.message);
                   break;
                 default:
                   break;
