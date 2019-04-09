@@ -497,9 +497,14 @@
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading', true);
+          var checkRoleIds = new Array();
+          _t.checkRoleIds.forEach(function (item) {
+            checkRoleIds.push(item.userId);
+          });
+          console.log(checkRoleIds);
           _t.$api.delete('system/user/', {
             jsonString: JSON.stringify({
-              userRoleParmArray: _t.checkRoleIds
+              userId: checkRoleIds.join(',')
             })
           }, function (res) {
             _t.$store.commit('setLoading', false);
