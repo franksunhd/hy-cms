@@ -308,6 +308,7 @@
               languageList = res.data.list;
               languageList.forEach(function (item) {
                 item.menuName = '';
+                item.languageMark = item.languageCode;
                 item.flag = false;
               });
               _t.languageList = languageList;
