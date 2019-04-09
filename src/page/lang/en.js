@@ -428,6 +428,7 @@ export default {
     location: 'location',
     equipmentType: 'equipmentType',
     processStatus: 'processStatus',
-    Ip: 'IP'
+    Ip: 'IP',
+    addUpdateAlarm:'addUpdateRole'
   }
 }

@@ -248,8 +248,12 @@
   color: #3f81d0;
 }
 
-.userMaintenance-dialog .el-dialog__header {
+.el-dialog__header {
   border-bottom: 1px solid #c1c1c1;
+}
+
+.el-dialog__footer {
+  border-top: 1px solid #c1c1c1;
 }
 
 .assignRole-box {
@@ -283,4 +287,8 @@
 
 .iconfontDisable {
   color: #C0C0C0;
+}
+
+.dialogTitle {
+  background-color: #c1c1c1;
 }

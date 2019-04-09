@@ -192,3 +192,10 @@ html,body,.Index-box {
 .el-table .el-table__body div.cell span {
   white-space: nowrap;
 }
+
+.dialogTitle {
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  padding-left: 20px;
+}

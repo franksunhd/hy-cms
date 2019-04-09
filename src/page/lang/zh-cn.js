@@ -428,6 +428,7 @@ export default {
     location: '位置',
     equipmentType: '设备类型',
     processStatus: '处理状态',
-    Ip: 'IP'
+    Ip: 'IP',
+    addUpdateAlarm:'设备告警详情'
   }
 }
