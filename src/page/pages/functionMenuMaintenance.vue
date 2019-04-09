@@ -353,17 +353,13 @@
         _t.$refs[formName].validate((valid) => {
           if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
             var selectRoleList = new Array();
-            var menuNameArr = new Array();
             _t.result().forEach(function (item) {
               selectRoleList.push(item.nodeId);
-            });
-            _t.languageList.forEach(function (item) {
-              menuNameArr.push(item.menuName);
             });
             _t.$api.post('system/menu/', {
               systemMenu: {
                 parentId: _t.addEdit.parentId,
-                menuName: menuNameArr.join(','),
+                menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
                 menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
@@ -426,21 +422,16 @@
         });
         _t.$refs[formName].validate((valid) => {
           if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
-            var menuNameArr = new Array();
             var selectUserList = new Array();
             // 用户集合
             _t.result().forEach(function (item) {
               selectUserList.push(item.nodeId);
             });
-            // 菜单名称集合
-            _t.languageList.forEach(function (item) {
-              menuNameArr.push(item.menuName);
-            });
             _t.$api.put('system/menu/', {
               systemMenu: {
                 id: _t.checkListIds.join(','),
                 parentId: _t.addEdit.parentId,
-                menuName: menuNameArr.join(','),
+                menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
                 menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
