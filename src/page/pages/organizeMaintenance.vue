@@ -434,12 +434,24 @@
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
                 _t.disableBtn.more = true;
+                _t.getTreeData();
+                break;
+              case 3005: // 数据关联不能删除
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.disableBtn.edit = true;
+                _t.disableBtn.enable = true;
+                _t.disableBtn.disable = true;
+                _t.disableBtn.more = true;
+                _t.getTreeData();
                 break;
               default:
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
                 _t.disableBtn.more = true;
+                _t.getTreeData();
                 break;
             }
           });
