@@ -50,7 +50,8 @@ export default {
     YES: 'YES',
     NO: 'NO',
     resultTip: 'resultTip',
-    permanent: 'permanent'
+    permanent: 'permanent',
+    isNotNull:'isNotNull'
   },
   // 系统设置模块
   system: {

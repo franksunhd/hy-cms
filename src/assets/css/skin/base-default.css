@@ -260,7 +260,8 @@
   background-color: #ddd;
 }
 
-.star label::before {
+.star label::before,
+.isNotNull {
   color: #F56C6C;
 }
 
@@ -277,6 +278,8 @@
   color: #C0C0C0;
 }
 
+
+/*字体图标库代码*/
 .iconfontError {
   color: #f22;
 }

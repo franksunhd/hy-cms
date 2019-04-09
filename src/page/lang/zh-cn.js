@@ -50,7 +50,8 @@ export default {
     YES: '是',
     NO: '否',
     resultTip: '结果提示',
-    permanent: '永久保存'
+    permanent: '永久保存',
+    isNotNull:'必填项不能为空'
   },
   // 系统设置模块 导航
   system: {

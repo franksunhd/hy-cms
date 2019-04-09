@@ -61,13 +61,13 @@
             <el-table-column :label="$t('alarmManagement.status')" header-align="center" align="center">
               <template slot-scope="scope">
                 <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
-                  <span class="iconfont iconfontError" @click="clickStatus(scope.row)">&#xe609;</span>
+                  <span class="iconfont iconfontError">&#xe609;</span>
                 </el-tooltip>
                 <el-tooltip v-if="scope.row.status == 2" effect="dark" content="警告" placement="top-start">
-                  <span class="iconfont iconfontWarn" @click="clickStatus(scope.row)">&#xe608;</span>
+                  <span class="iconfont iconfontWarn">&#xe608;</span>
                 </el-tooltip>
                 <el-tooltip v-if="scope.row.status == 3" effect="dark" content="忽略" placement="top-start">
-                  <span class="iconfont iconfontDisable" @click="clickStatus(scope.row)">&#xe60a;</span>
+                  <span class="iconfont iconfontDisable">&#xe60a;</span>
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -136,7 +136,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <div class="dialogTitle">设备基本信息</div>
-      <el-form :model="equipmentData" inline>
+      <el-form :model="equipmentData" inline label-position="right" label-width="76px">
         <el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
         <el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
         <el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
@@ -154,15 +154,15 @@
         <el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
       </el-form>
       <div class="dialogTitle">告警信息</div>
-      <el-form inline>
-        <p><strong>告警字段</strong></p>
+      <el-form inline label-position="right" label-width="76px">
+        <p class="paddingLeft-10"><strong>告警字段</strong></p>
         <el-form-item label="状态:">Down != Up</el-form-item>
-        <p><strong>当前状态</strong></p>
+        <p class="paddingLeft-10"><strong>当前状态</strong></p>
         <el-form-item style="width: 50%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item label="状态::Down">Down</el-form-item>
-        <p><strong>附加字段</strong></p>
+        <el-form-item label="状态:">Down</el-form-item>
+        <p class="paddingLeft-10"><strong>附加字段</strong></p>
         <el-form-item label="状态:">Down != Up</el-form-item>
-        <p><strong>附加信息</strong></p>
+        <p class="paddingLeft-10"><strong>附加信息</strong></p>
         <el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
         <el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
         <br>
@@ -177,7 +177,7 @@
         <el-button class="queryBtn" type="primary">忽略告警</el-button>
         <el-button class="queryBtn" type="primary">确认告警</el-button>
         <el-button class="queryBtn" type="primary">转保修</el-button>
-        <el-button class="queryBtn">取消</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -199,6 +199,7 @@
           {label: 'Top30', value: 30},
         ], // 排序
         addEdit: {
+          id:'',
           sortValue: 10, // 绑定的pageSize值
           organizationName: '', // 树形下拉框绑定的值
           organizationId: '', // 树形下拉框的绑定的id
@@ -216,9 +217,7 @@
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
         dialogVisible:false, // 设备告警详情弹出层
         organizationList: [], // 树形下拉框的数据
-        equipmentData:{
-
-        }, // 设备告警详情
+        equipmentData:{}, // 设备告警详情
         tableData: [
           {
             id:1,
@@ -397,7 +396,8 @@
         var _t = this;
         // 点击状态列
         if (column.label == _t.$t('alarmManagement.status')) {
-          console.log('状态' + row.id);
+          _t.dialogVisible = true;
+          _t.addEdit.id = row.id;
         }
         // 点击设备名称列
         if (column.label == _t.$t('alarmManagement.equipmentName')) {
@@ -405,20 +405,20 @@
         }
         // 点击告警内容列
         if (column.label == _t.$t('alarmManagement.alarmContent')) {
-          console.log('告警内容' + row.id);
+          _t.dialogVisible = true;
+          _t.addEdit.id = row.id;
         }
         // 点击最新告警时间列
         if (column.label == _t.$t('alarmManagement.lastAlarmTime')) {
           console.log('最新告警时间' + row.id);
         }
       },
-      // 点击表格状态显示设备告警详情
-      clickStatus(data) {
-
-      },
       // 点击下拉框的节点
-      clickNodeAlert() {
-
+      clickNodeAlert(val) {
+        var _t = this;
+        _t.addEdit.organizationName = val.nodeName;
+        _t.addEdit.organizationId = val.id;
+        _t.getData();
       },
       // 改变当前页码
       handleCurrentChange(val) {
