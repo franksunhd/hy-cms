@@ -473,10 +473,6 @@
                   confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getMenuData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -488,19 +484,22 @@
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
+                _t.getMenuData();
+                break;
+              case 3005: // 菜单管理其他菜单
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getMenuData();
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
           });
+          _t.disableBtn.edit = true;
+          _t.disableBtn.enable = true;
+          _t.disableBtn.disable = true;
+          _t.disableBtn.more = true;
         }).catch(() => {
           return;
         });
@@ -632,7 +631,6 @@
       // 新增提交
       addData(formName) {
         var _t = this;
-        _t.dialogVisible = false;
         if (_t.listData.length == 0) {
           _t.selectUserIsNull = true;
         } else {
@@ -659,6 +657,7 @@
               },
               roleId: selectRoleList.join(',')
             }, function (res) {
+              _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
                   _t.getMenuData();
@@ -698,7 +697,6 @@
       // 编辑提交
       editData(formName) {
         var _t = this;
-        _t.dialogVisible = false;
         if (_t.listData.length == 0) {
           _t.selectUserIsNull = true;
         } else {
@@ -727,6 +725,7 @@
               },
               roleId: selectUserList.join(',')
             }, function (res) {
+              _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
                   _t.getMenuData();
