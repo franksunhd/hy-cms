@@ -186,3 +186,31 @@ html,body,.Index-box {
 .el-input__icon {
   line-height: 30px;
 }
+
+
+/*表格*/
+.el-table .el-table__body div.cell span {
+  white-space: nowrap;
+}
+
+.dialogTitle {
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  padding-left: 10px;
+  font-weight: bold;
+}
+
+/*必填项不能为空*/
+.isNotNull {
+  line-height: 1;
+  font-size: 12px;
+  margin-top: 4px;
+  position: absolute;
+  top: 30px;
+  left: 0;
+}
+
+.paddingLeft-10 {
+  padding-left: 10px;
+}

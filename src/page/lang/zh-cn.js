@@ -50,7 +50,8 @@ export default {
     YES: '是',
     NO: '否',
     resultTip: '结果提示',
-    permanent: '永久保存'
+    permanent: '永久保存',
+    isNotNull:'必填项不能为空'
   },
   // 系统设置模块 导航
   system: {
@@ -428,6 +429,7 @@ export default {
     location: '位置',
     equipmentType: '设备类型',
     processStatus: '处理状态',
-    Ip: 'IP'
+    Ip: 'IP',
+    addUpdateAlarm:'设备告警详情'
   }
 }

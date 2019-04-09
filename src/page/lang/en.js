@@ -50,7 +50,8 @@ export default {
     YES: 'YES',
     NO: 'NO',
     resultTip: 'resultTip',
-    permanent: 'permanent'
+    permanent: 'permanent',
+    isNotNull:'isNotNull'
   },
   // 系统设置模块
   system: {
@@ -428,6 +429,7 @@ export default {
     location: 'location',
     equipmentType: 'equipmentType',
     processStatus: 'processStatus',
-    Ip: 'IP'
+    Ip: 'IP',
+    addUpdateAlarm:'addUpdateRole'
   }
 }

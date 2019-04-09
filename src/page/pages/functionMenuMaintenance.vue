@@ -118,15 +118,12 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
-        <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'" prop="menuNameZh">
-          <el-input v-model="addEdit.menuNameZh" placeholder="中文简体" class="width200"/>
+        <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
+          <div style="position: relative;" v-for="(item,index) in languageList">
+            <el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;" class="width200" :placeholder="item.languageName" />
+            <span class="isNotNull" v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
+          </div>
         </el-form-item>
-        <el-form-item prop="menuNameEn">
-          <el-input v-model="addEdit.menuNameEn" placeholder="英文" class="width200"/>
-        </el-form-item>
-        <!--<el-form-item prop="menuNameTw">-->
-        <!--<el-input v-model="addEdit.menuNameTw" placeholder="中文繁体" class="width200"/>-->
-        <!--</el-form-item>-->
         <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
           <el-upload action="">
             <el-button size="small" type="primary">点击上传</el-button>
@@ -225,9 +222,6 @@
         addEdit: {
           id: '',
           parentId: '',
-          menuNameZh: '',
-          menuNameEn: '',
-          menuNameTw: '',
           menuLevel: '',
           menuIcon: '',
           menuHref: '',
@@ -257,6 +251,7 @@
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
         checkValueList: {}, // 选中数据集合 编辑时
+        languageList:[],
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -288,20 +283,184 @@
           ],
           menuIcon: [
             {validator: isNotNull, trigger: ['blur']}
-          ],
-          menuNameZh: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
-          menuNameEn: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
-          menuNameTw: [
-            {validator: isNotNull, trigger: ['blur']}
           ]
         }
       }
     },
     methods: {
+      // 输入框菜单名称校验
+      menuNameInput(data){
+        if (data.menuName.trim() == '') {
+          data.flag = true;
+          document.getElementById(data.id).style.borderColor = '#F56C6C';
+        } else {
+          data.flag = false;
+          document.getElementById(data.id).style.borderColor = '#DCDFE6';
+        }
+      },
+      // 查询当前支持的语言
+      getLanguage(){
+        var _t = this;
+        _t.$api.get('system/language/all',{},function (res) {
+          switch (res.status) {
+            case 200:
+              var languageList = '';
+              languageList = res.data.list;
+              languageList.forEach(function (item) {
+                item.menuName = '';
+                item.flag = false;
+              });
+              _t.languageList = languageList;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.languageList = [];
+              break;
+          }
+        });
+      },
+      // 新增按钮
+      addDataBtn() {
+        var _t = this;
+        _t.ifAdd = true;
+        _t.dialogVisible = true;
+        _t.getLanguage();
+      },
+      // 新增提交
+      addData(formName) {
+        var _t = this;
+        // 选择用户为空的情况
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        } else {
+          _t.selectUserIsNull = false;
+        }
+        // 菜单名称有为空的情况
+        var isNullNum = 0;
+        _t.languageList.forEach(function (item) {
+          if (item.menuName == '') {
+            item.flag = true;
+            document.getElementById(item.id).style.borderColor = 'red';
+          } else {
+            isNullNum += 1;
+          }
+        });
+        _t.$refs[formName].validate((valid) => {
+          if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+            var selectRoleList = new Array();
+            _t.result().forEach(function (item) {
+              selectRoleList.push(item.nodeId);
+            });
+            _t.$api.post('system/menu/', {
+              systemMenu: {
+                parentId: _t.addEdit.parentId,
+                menuName: _t.languageList,
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                enable: _t.addEdit.enable == 1 ? true : false,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: selectRoleList.join(',')
+            }, function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getMenuData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 3004: // 操作失败
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
+          }
+        });
+      },
+      // 编辑按钮
+      editDataBtn() {
+        var _t = this;
+        _t.ifAdd = false;
+        _t.dialogVisible = true;
+        _t.addEdit.id = _t.checkValueList.id;
+        _t.addEdit.parentId = _t.checkValueList.parentId;
+        _t.addEdit.menuHref = _t.checkValueList.menuHref == null ? '' : _t.checkValueList.menuHref;
+        _t.addEdit.menuLevel = _t.checkValueList.menuLevel == null ? '' : _t.checkValueList.menuLevel;
+        _t.addEdit.menuIcon = _t.checkValueList.menuIcon == null ? '' : _t.checkValueList.menuIcon;
+        _t.addEdit.orderMark = _t.checkValueList.orderMark == null ? '' : _t.checkValueList.orderMark;
+        _t.addEdit.enable = _t.checkValueList.enable == true ? '1' : '0';
+      },
+      // 编辑提交
+      editData(formName) {
+        var _t = this;
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        } else {
+          _t.selectUserIsNull = false;
+        }
+        // 菜单名称有为空的情况
+        var isNullNum = 0;
+        _t.languageList.forEach(function (item) {
+          if (item.menuName == '') {
+            item.flag = true;
+            document.getElementById(item.id).style.borderColor = 'red';
+          } else {
+            isNullNum += 1;
+          }
+        });
+        _t.$refs[formName].validate((valid) => {
+          if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+            var selectUserList = new Array();
+            // 用户集合
+            _t.result().forEach(function (item) {
+              selectUserList.push(item.nodeId);
+            });
+            _t.$api.put('system/menu/', {
+              systemMenu: {
+                id: _t.checkListIds.join(','),
+                parentId: _t.addEdit.parentId,
+                menuName: _t.languageList,
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                enable: _t.addEdit.enable == 1 ? true : false,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: selectUserList.join(',')
+            }, function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getMenuData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 3004: // 操作失败
+                  _t.$alert(res.message);
+                  break;
+                default:
+                  break;
+              }
+            });
+          }
+        });
+      },
       // 当前选中条数
       selectTableNum(data) {
         var _t = this;
@@ -473,10 +632,6 @@
                   confirmButtonText: _t.$t('public.confirm')
                 });
                 _t.getMenuData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -488,19 +643,22 @@
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
+                _t.getMenuData();
+                break;
+              case 3005: // 菜单管理其他菜单
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getMenuData();
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
           });
+          _t.disableBtn.edit = true;
+          _t.disableBtn.enable = true;
+          _t.disableBtn.disable = true;
+          _t.disableBtn.more = true;
         }).catch(() => {
           return;
         });
@@ -510,7 +668,6 @@
         var _t = this;
         _t.dialogVisibleAlert = false;
         _t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
-        console.log(_t.result());
       },
       // 删除标签
       handleClose(tag) {
@@ -623,135 +780,16 @@
           }
         });
       },
-      // 新增按钮
-      addDataBtn() {
-        var _t = this;
-        _t.ifAdd = true;
-        _t.dialogVisible = true;
-      },
-      // 新增提交
-      addData(formName) {
-        var _t = this;
-        _t.dialogVisible = false;
-        if (_t.listData.length == 0) {
-          _t.selectUserIsNull = true;
-        } else {
-          _t.selectUserIsNull = false;
-        }
-        _t.$refs[formName].validate((valid) => {
-          if (valid && _t.selectUserIsNull == false) {
-            var menuNameArr = new Array();
-            menuNameArr.push(_t.menuNameZh);
-            menuNameArr.push(_t.menuNameEn);
-            var selectRoleList = new Array();
-            _t.result().forEach(function (item) {
-              selectRoleList.push(item.nodeId);
-            });
-            _t.$api.post('system/menu/', {
-              systemMenu: {
-                parentId: _t.addEdit.parentId,
-                menuName: menuNameArr.join(','),
-                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
-                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
-                enable: _t.addEdit.enable == 1 ? true : false,
-                languageMark: localStorage.getItem('hy-language')
-              },
-              roleId: selectRoleList.join(',')
-            }, function (res) {
-              switch (res.status) {
-                case 200:
-                  _t.getMenuData();
-                  break;
-                case 1003: // 无操作权限
-                case 1004: // 登录过期
-                case 1005: // token过期
-                case 1006: // token不通过
-                  _t.exclude(_t, res.message);
-                  break;
-                case 3004: // 操作失败
-                  _t.$alert(res.message);
-                  break;
-                default:
-                  break;
-              }
-            });
-          }
-        });
-      },
-      // 编辑按钮
-      editDataBtn() {
-        var _t = this;
-        _t.ifAdd = false;
-        _t.dialogVisible = true;
-        console.log(_t.checkValueList);
-        _t.addEdit.id = _t.checkValueList.id;
-        _t.addEdit.parentId = _t.checkValueList.parentId;
-        _t.addEdit.menuNameZh = _t.checkValueList.menuName.split(',')[0] == undefined ? '' : _t.checkValueList.menuName.split(',')[0];
-        _t.addEdit.menuNameEn = _t.checkValueList.menuName.split(',')[1] == undefined ? '' : _t.checkValueList.menuName.split(',')[1];
-        _t.addEdit.menuHref = _t.checkValueList.menuHref == null ? '' : _t.checkValueList.menuHref;
-        _t.addEdit.menuLevel = _t.checkValueList.menuLevel == null ? '' : _t.checkValueList.menuLevel;
-        _t.addEdit.menuIcon = _t.checkValueList.menuIcon == null ? '' : _t.checkValueList.menuIcon;
-        _t.addEdit.orderMark = _t.checkValueList.orderMark == null ? '' : _t.checkValueList.orderMark;
-        _t.addEdit.enable = _t.checkValueList.enable == true ? '1' : '0';
-      },
-      // 编辑提交
-      editData(formName) {
-        var _t = this;
-        _t.dialogVisible = false;
-        if (_t.listData.length == 0) {
-          _t.selectUserIsNull = true;
-        } else {
-          _t.selectUserIsNull = false;
-        }
-        _t.$refs[formName].validate((valid) => {
-          if (valid && _t.selectUserIsNull == false) {
-            var menuNameArr = new Array();
-            menuNameArr.push(_t.addEdit.menuNameZh);
-            menuNameArr.push(_t.addEdit.menuNameEn);
-            var selectUserList = new Array();
-            _t.result().forEach(function (item) {
-              selectUserList.push(item.nodeId);
-            });
-
-            _t.$api.put('system/menu/', {
-              systemMenu: {
-                id: _t.checkListIds.join(','),
-                parentId: _t.addEdit.parentId,
-                menuName: menuNameArr.join(','),
-                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
-                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
-                enable: _t.addEdit.enable == 1 ? true : false,
-                languageMark: localStorage.getItem('hy-language')
-              },
-              roleId: selectUserList.join(',')
-            }, function (res) {
-              switch (res.status) {
-                case 200:
-                  _t.getMenuData();
-                  break;
-                case 1003: // 无操作权限
-                case 1004: // 登录过期
-                case 1005: // token过期
-                case 1006: // token不通过
-                  _t.exclude(_t, res.message);
-                  break;
-                case 3004: // 操作失败
-                  _t.$alert(res.message);
-                  break;
-                default:
-                  break;
-              }
-            });
-          }
-        });
-      },
       // 表格数据上移
       moveUp(data) {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.put('', {}, function (res) {
+        _t.$api.put('system/menu/enableMenu', {
+          systemMenu:{
+            id:data.id
+          },
+          upOrDown:'up'
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
@@ -772,7 +810,12 @@
       moveDown(data) {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.put('', {}, function (res) {
+        _t.$api.put('system/menu/enableMenu', {
+          systemMenu:{
+            id:data.id
+          },
+          upOrDown:'down'
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
