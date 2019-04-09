@@ -58,17 +58,42 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column label="状态" header-align="center" align="center"/>
-            <el-table-column label="设备名称" header-align="center" align="center"/>
-            <el-table-column label="告警内容" header-align="center" align="center"/>
-            <el-table-column label="最新告警时间" header-align="center" align="center"/>
-            <el-table-column label="状态汇总" header-align="center" align="center"/>
-            <el-table-column label="机房" header-align="center" align="center"/>
-            <el-table-column label="机架" header-align="center" align="center"/>
-            <el-table-column label="位置" header-align="center" align="center"/>
-            <el-table-column label="IP" header-align="center" align="center"/>
-            <el-table-column label="设备类型" header-align="center" align="center"/>
-            <el-table-column label="处理状态" header-align="center" align="center"/>
+            <el-table-column :label="$t('alarmManagement.status')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span @click="clickStatus(scope.row)"></span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('alarmManagement.equipmentName')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.equipmentName}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('alarmManagement.alarmContent')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.alarmContent}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('alarmManagement.lastAlarmTime')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span>{{scope.row.lastModifiedTime | dateFilter}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column :label="$t('alarmManagement.statusAll')" header-align="center" align="center">
+              <template slot-scope="scope">
+
+              </template>
+            </el-table-column>
+            <el-table-column prop="computerRoomName" :label="$t('alarmManagement.computerRoomName')"
+                             header-align="center" align="center"/>
+            <el-table-column prop="rackName" :label="$t('alarmManagement.rackName')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="location" :label="$t('alarmManagement.location')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="ip" :label="$t('alarmManagement.Ip')" header-align="center" align="center"/>
+            <el-table-column prop="equipmentType" :label="$t('alarmManagement.equipmentType')" header-align="center"
+                             align="center"/>
+            <el-table-column prop="processStatus" :label="$t('alarmManagement.processStatus')" header-align="center"
+                             align="center"/>
           </el-table>
           <!--分页-->
           <pages
@@ -84,7 +109,7 @@
 
 <script>
   import Box from '../../components/Box';
-  import {dateFilterSeconds} from "../../assets/js/filters";
+  import {dateFilterSeconds, dateFilter} from "../../assets/js/filters";
 
   export default {
     name: "alarmManagement",
@@ -114,7 +139,16 @@
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
         organizationList: [], // 树形下拉框的数据
-        tableData: [{}, {}], // 最新告警列表表格数据
+        tableData: [
+          {
+            status: 1,
+            equipmentName: '惠普',
+            alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+            lastModifiedTime: '2019-02-10 12:22:11',
+
+          },
+          {}
+        ], // 最新告警列表表格数据
         // 千层饼图
         optionsPuff: {
           // 标题
@@ -244,6 +278,10 @@
       }
     },
     methods: {
+      // 点击表格状态显示设备告警详情
+      clickStatus(data) {
+
+      },
       // 点击下拉框的节点
       clickNodeAlert() {
 

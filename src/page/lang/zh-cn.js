@@ -415,5 +415,19 @@ export default {
     orderIndex: '显示顺序',
     statusAlert: '启用状态',
     selectUser: '选择用户',
+  },
+  // 告警管理
+  alarmManagement: {
+    status: '状态',
+    equipmentName: '设备名称',
+    alarmContent: '告警内容',
+    lastAlarmTime: '最新告警时间',
+    statusAll: '状态汇总',
+    computerRoomName: '机房',
+    rackName: '机架',
+    location: '位置',
+    equipmentType: '设备类型',
+    processStatus: '处理状态',
+    Ip: 'IP'
   }
 }

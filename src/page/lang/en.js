@@ -415,5 +415,19 @@ export default {
     orderIndex: 'orderIndex',
     statusAlert: 'statusAlert',
     selectUser: 'selectUser',
+  },
+  // 告警管理
+  alarmManagement: {
+    status: 'status',
+    equipmentName: 'equipmentName',
+    alarmContent: 'alarmContent',
+    lastAlarmTime: 'lastAlarmTime',
+    statusAll: 'statusAll',
+    computerRoomName: 'computerRoomName',
+    rackName: 'rackName',
+    location: 'location',
+    equipmentType: 'equipmentType',
+    processStatus: 'processStatus',
+    Ip: 'IP'
   }
 }
