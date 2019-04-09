@@ -793,7 +793,12 @@
       moveUp(data) {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.put('', {}, function (res) {
+        _t.$api.put('system/menu/enableMenu', {
+          systemMenu:{
+            id:data.id
+          },
+          upOrDown:'up'
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
@@ -814,7 +819,12 @@
       moveDown(data) {
         var _t = this;
         _t.$store.commit('setLoading', true);
-        _t.$api.put('', {}, function (res) {
+        _t.$api.put('system/menu/enableMenu', {
+          systemMenu:{
+            id:data.id
+          },
+          upOrDown:'down'
+        }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
