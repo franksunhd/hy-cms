@@ -520,10 +520,22 @@
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm')
                 });
+                _t.getData();
+                break;
+              case 3005: //
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm')
+                });
+                _t.getData();
                 break;
               default:
+                _t.getData();
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
         }).catch(() => {
           return;
