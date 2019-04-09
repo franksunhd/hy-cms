@@ -66,12 +66,6 @@ const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection'
 const BeganToSee = () => import ('@/page/pages/BeganToSee');
 //监测管理
 const monitoringAndControl = () => import ('@/page/pages/monitoringAndControl');
-
-
-const monitoringAndControl1 = () => import ('@/page/pages/monitoringAndControl1');
-const monitoringAndControl2 = () => import ('@/page/pages/monitoringAndControl2');
-const monitoringAndControl3 = () => import ('@/page/pages/monitoringAndControl3');
-
 // 告警管理
 const alarmManagement = () => import ('@/page/pages/alarmManagement');
 
@@ -171,24 +165,7 @@ export default new Router({
         {
           path: "/YUser/monitoringAndControl",
           name: "monitoringAndControl",
-          component: monitoringAndControl,
-          children: [
-            {
-              path: "/YUser/monitoringAndControl/monitoringAndControl1",
-              name: 'monitoringAndControl1',
-              component: monitoringAndControl1
-            },
-            {
-              path: "/YUser/monitoringAndControl/monitoringAndControl2",
-              name: 'monitoringAndControl2',
-              component: monitoringAndControl2
-            },
-            {
-              path: "/YUser/monitoringAndControl/monitoringAndControl3",
-              name: 'monitoringAndControl3',
-              component: monitoringAndControl3
-            }
-          ]
+          component: monitoringAndControl
         },
         {
           path: "/YUser/alarmManagement",
