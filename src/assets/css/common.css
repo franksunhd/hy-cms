@@ -186,3 +186,9 @@ html,body,.Index-box {
 .el-input__icon {
   line-height: 30px;
 }
+
+
+/*表格*/
+.el-table .el-table__body div.cell span {
+  white-space: nowrap;
+}

@@ -60,7 +60,9 @@
             </el-table-column>
             <el-table-column :label="$t('alarmManagement.status')" header-align="center" align="center">
               <template slot-scope="scope">
-                <span @click="clickStatus(scope.row)"></span>
+                <span class="iconfont iconfontError" v-if="scope.row.status == 1" @click="clickStatus(scope.row)">&#xe609;</span>
+                <span class="iconfont iconfontWarn" v-if="scope.row.status == 2" @click="clickStatus(scope.row)">&#xe608;</span>
+                <span class="iconfont iconfontDisable" v-if="scope.row.status == 3" @click="clickStatus(scope.row)">&#xe60a;</span>
               </template>
             </el-table-column>
             <el-table-column :label="$t('alarmManagement.equipmentName')" header-align="center" align="center">
@@ -80,7 +82,18 @@
             </el-table-column>
             <el-table-column :label="$t('alarmManagement.statusAll')" header-align="center" align="center">
               <template slot-scope="scope">
-
+                <span>
+                  <span class="iconfont iconfontError">&#xe609;</span>
+                  <span>22</span>
+                </span>
+                <span>
+                  <span class="iconfont iconfontWarn">&#xe608;</span>
+                  <span>222</span>
+                </span>
+                <span>
+                  <span class="iconfont iconfontDisable">&#xe60a;</span>
+                  <span>12</span>
+                </span>
               </template>
             </el-table-column>
             <el-table-column prop="computerRoomName" :label="$t('alarmManagement.computerRoomName')"
@@ -97,6 +110,7 @@
           </el-table>
           <!--分页-->
           <pages
+            v-if="tableData.length > 10"
             :total='options.total'
             :currentPage='options.currentPage'
             :page-size="options.pageSize"
@@ -147,7 +161,30 @@
             lastModifiedTime: '2019-02-10 12:22:11',
 
           },
-          {}
+          {
+            status: 2,
+            equipmentName: '惠普',
+            alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+            lastModifiedTime: '2019-02-10 12:22:11',
+          },
+          {
+            status: 3,
+            equipmentName: '惠普',
+            alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+            lastModifiedTime: '2019-02-10 12:22:11',
+          },
+          {
+            status: 1,
+            equipmentName: '惠普',
+            alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+            lastModifiedTime: '2019-02-10 12:22:11',
+          },
+          {
+            status: 2,
+            equipmentName: '惠普',
+            alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+            lastModifiedTime: '2019-02-10 12:22:11',
+          },
         ], // 最新告警列表表格数据
         // 千层饼图
         optionsPuff: {

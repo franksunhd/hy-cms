@@ -365,20 +365,4 @@
     display: inline-block;
     border-bottom: 4px solid #99A9BF;
   }
-
-
-
-
-  .el-icon-error{
-    color: #f22;
-  }
-  .el-icon-warning{
-    color: #FFFF00;
-  }
-  .el-icon-info{
-    color: #FF9500;
-  }
-  .el-icon-remove{
-    color: #C0C0C0;
-  }
 </style>

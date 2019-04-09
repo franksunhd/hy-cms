@@ -259,3 +259,28 @@
 .star label::before {
   color: #F56C6C;
 }
+
+.el-icon-error{
+  color: #f22;
+}
+.el-icon-warning{
+  color: #FFFF00;
+}
+.el-icon-info{
+  color: #FF9500;
+}
+.el-icon-remove{
+  color: #C0C0C0;
+}
+
+.iconfontError {
+  color: #f22;
+}
+
+.iconfontWarn {
+  color: #FFFF00;
+}
+
+.iconfontDisable {
+  color: #C0C0C0;
+}
