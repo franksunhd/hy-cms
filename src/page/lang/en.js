@@ -51,7 +51,10 @@ export default {
     NO: 'NO',
     resultTip: 'resultTip',
     permanent: 'permanent',
-    isNotNull:'isNotNull'
+    isNotNull:'isNotNull',
+    ignoreAlarm:'ignoreAlarm',
+    confirmAlarm:'confirmAlarm',
+    toWarranty:'toWarranty'
   },
   // 系统设置模块
   system: {
@@ -431,7 +434,30 @@ export default {
     equipmentType: 'equipmentType',
     processStatus: 'processStatus',
     Ip: 'IP',
-    addUpdateAlarm:'addUpdateRole'
+    addUpdateAlarm:'addUpdateRole',
+    lastAlarmList:'lastAlarmList',
+    equipmentInfo:'equipmentInfo',
+    productName:'productName',
+    equipmentIp:'equipmentIp',
+    UUID:'UUID',
+    equipmentVendor:'equipmentVendor',
+    serialNumber:'serialNumber',
+    objectType:'objectType',
+    severityLevel:'severityLevel',
+    alarmNumber:'alarmNumber',
+    eventType:'eventType',
+    createTime:'createTime',
+    lastTime:'lastTime',
+    alarmInfo:'alarmInfo',
+    macLocation:'macLocation',
+    alarmField:'alarmField',
+    addField:'addField',
+    addInfo:'addInfo',
+    name:'name',
+    alarmDescription:'alarmDescription',
+    AutoNegotiation:'AutoNegotiation',
+    linkSpeed:'linkSpeed',
+    currentStatus:'currentStatus'
   },
 
   // 当前告警

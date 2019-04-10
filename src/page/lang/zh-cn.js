@@ -51,7 +51,10 @@ export default {
     NO: '否',
     resultTip: '结果提示',
     permanent: '永久保存',
-    isNotNull:'必填项不能为空'
+    isNotNull:'必填项不能为空',
+    ignoreAlarm:'忽略告警',
+    confirmAlarm:'确认告警',
+    toWarranty:'转保修'
   },
   // 系统设置模块 导航
   system: {
@@ -431,7 +434,30 @@ export default {
     equipmentType: '设备类型',
     processStatus: '处理状态',
     Ip: 'IP',
-    addUpdateAlarm:'设备告警详情'
+    addUpdateAlarm:'设备告警详情',
+    lastAlarmList:'最新告警列表',
+    equipmentInfo:'设备基本信息',
+    productName:'产品名称',
+    equipmentIp:'设备IP',
+    UUID:'UUID',
+    equipmentVendor:'设备厂商',
+    serialNumber:'序列号',
+    objectType:'对象类型',
+    severityLevel:'严重级别',
+    alarmNumber:'告警次数',
+    eventType:'事件类别',
+    createTime:'起始时间',
+    lastTime:'最新时间',
+    alarmInfo:'告警信息',
+    macLocation:'MAC地址',
+    alarmField:'告警字段',
+    addField:'附加字段',
+    addInfo:'附加信息',
+    name:'名称',
+    alarmDescription:'告警评注',
+    AutoNegotiation:'自动协商',
+    linkSpeed:'链路速度',
+    currentStatus:'当前状态'
   },
   // 当前告警
   alarmCurrent: {
