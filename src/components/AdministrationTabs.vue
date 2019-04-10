@@ -1,13 +1,17 @@
 <template>
-  <p>
-    <!--<span>页面类型:  {{tagType}}</span>-->
-    <span>页面id: {{pagesId}}</span>
-  </p>
+  <Box class="administration-box">
+    <!--整屏,超出滚动-->
+    <div>
+
+    </div>
+  </Box>
 </template>
 
 <script>
+  import Box from '../components/Box';
   export default {
     name: "AdministrationTabs",
+    components:{Box},
     data() {
       return {
 
@@ -31,6 +35,8 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+  .administration-box .box-wrap {
+    padding: 30px 10px 0 10px;
+  }
 </style>

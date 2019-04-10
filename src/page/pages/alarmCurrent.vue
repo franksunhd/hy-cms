@@ -299,7 +299,7 @@
         isShowTypePopover:false, // 控制设备类型下拉框的显示隐藏
         isShowComputerPopover:false, // 控制机房下拉框的显示隐藏
         isShowTabBox:true, // 控制标签页内容是否显示
-        isShowTabBox_tab:false, // 控制标签页区域是否显示
+        isShowTabBox_tab:true, // 控制标签页区域是否显示
         dialogVisible:false, // 设备详情信息弹出层
         dialogVisibleOwnerInfo:false, // 业务责任人信息弹出层
         defaultProps:{},
@@ -309,9 +309,15 @@
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
-        editableTabsValue:'', // 当前页签
-        editableTabs:[], // 页面集合
-        tabIndex: 0, // 页签序号
+        editableTabsValue:'1', // 当前页签
+        editableTabs:[
+          {
+            name:'1',
+            title:'标题1',
+            content:'1'
+          }
+        ], // 页面集合
+        tabIndex: 1, // 页签序号
       }
     },
     methods: {
@@ -447,6 +453,7 @@
     left: 80px;
     top: 118px;
     z-index: 1100;
+    border: 1px solid #000;
   }
 
   #alarmCurrent-tabs .el-tabs__header.is-bottom {
