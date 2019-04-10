@@ -20,13 +20,13 @@
       </el-col>
     </el-row>
     <!--表格-->
-    <el-row>
+    <el-row style="margin-bottom: 50px;">
       <el-col :span="24" style="padding: 10px">
         <div class="whiteBg">
           <!--标题-->
           <div class="clearfix alarmTitleBox">
             <span class="title">最新告警列表</span>
-            <el-select class="fr selectArr" v-model="addEdit.sortValue">
+            <el-select class="fr selectArr" v-model="addEdit.sortValue" @change="options.pageSize = addEdit.sortValue">
               <el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value"/>
             </el-select>
             <el-popover
@@ -182,17 +182,28 @@
     </el-dialog>
     <!--标签页-->
     <el-tabs
+      v-if="isShowTabBox_tab"
       v-model="editableTabsValue"
       type="card"
+      class="whiteBg"
+      id="alarmManagement-tabs"
       tab-position="bottom"
       closable
+      @tab-click="clickTabs"
       @tab-remove="removeTab">
       <el-tab-pane
         :key="index"
+        stretch
         v-for="(item, index) in editableTabs"
         :name="item.name"
         :label="item.title">
-        <AdministrationTags :pages-id="item.content" />
+        <div class="alarmManagement-btn">
+          <!--收起-->
+          <span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+          <!--关闭弹出层-->
+          <span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+        </div>
+        <AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
       </el-tab-pane>
     </el-tabs>
   </Box>
@@ -235,13 +246,15 @@
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
         dialogVisible:false, // 设备告警详情弹出层
+        isShowTabBox:true, // 控制标签页内容是否显示
+        isShowTabBox_tab:false,
         organizationList: [], // 树形下拉框的数据
         equipmentData:{}, // 设备告警详情
         tableData: [
           {
             id:'1',
             status: 1,
-            equipmentName: '惠普',
+            equipmentName: '惠普1',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
 
@@ -249,28 +262,28 @@
           {
             id:'2',
             status: 2,
-            equipmentName: '惠普',
+            equipmentName: '惠普2',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'3',
             status: 3,
-            equipmentName: '惠普',
+            equipmentName: '惠普3',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'4',
             status: 1,
-            equipmentName: '惠普',
+            equipmentName: '惠普4',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'5',
             status: 2,
-            equipmentName: '惠普',
+            equipmentName: '惠普5',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
@@ -429,7 +442,7 @@
         }
         // 点击最新告警时间列
         if (column.label == _t.$t('alarmManagement.lastAlarmTime')) {
-          console.log('最新告警时间' + row.id);
+          _t.addTab(row.equipmentName,row.id);
         }
       },
       // 点击下拉框的节点
@@ -497,6 +510,8 @@
               var nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
                 activeName = nextTab.name;
+              } else {
+                _t.isShowTabBox_tab = false;
               }
             }
           });
@@ -515,9 +530,37 @@
           content: id
         });
         _t.editableTabsValue = newTabName;
+        _t.isShowTabBox = true;
+        _t.isShowTabBox_tab = true;
+        if (_t.editableTabs.length > 1) {
+          document.getElementById('alarmManagement-tabs').style.top = '118px';
+        }
       },
+      // 收起
+      packUp(){
+        var _t = this;
+        _t.isShowTabBox = false;
+        document.getElementById('alarmManagement-tabs').style.top = 'initial';
+        _t.editableTabsValue = '';
+      },
+      // 关闭标签页
+      closeTab(){
+        var _t = this;
+        _t.editableTabsValue = '';
+        _t.editableTabs = [];
+        _t.tabIndex = 0;
+        _t.isShowTabBox_tab = false;
+        _t.isShowTabBox = false;
+      },
+      // 点击标签页
+      clickTabs(){
+        var _t = this;
+        _t.isShowTabBox = true;
+        document.getElementById('alarmManagement-tabs').style.top = '118px';
+      }
     },
     created() {
+      // this.$store.commit('setLoading',true);
       this.getData();
     }
   }
@@ -536,6 +579,12 @@
   .alarmTitleBox .selectArr {
     margin-left: 20px;
   }
+
+  .alarmManagement-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 </style>
 <style>
   .alarmMessageBox .el-dialog {
@@ -548,5 +597,27 @@
 
   .alarmMessageBox .el-form--inline .el-form-item {
     margin: 0;
+  }
+
+  #alarmManagement-tabs {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    left: 80px;
+    top: 118px;
+    z-index: 1100;
+  }
+
+  #alarmManagement-tabs .el-tabs__header.is-bottom {
+    margin-top: 0;
+    position: absolute;
+    bottom: 0;
+    left: -24px;
+    right: -20px;
+    background-color: gray;
+  }
+
+  #alarmManagement-tabs .el-tabs__content {
+    overflow: visible;
   }
 </style>
