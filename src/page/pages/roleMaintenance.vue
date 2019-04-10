@@ -513,7 +513,9 @@
         _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/role/enableRole', {
@@ -526,7 +528,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -550,7 +553,9 @@
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/role/enableRole', {
@@ -563,7 +568,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -662,7 +668,9 @@
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$api.delete('system/role/', {
             jsonString: JSON.stringify({
@@ -672,7 +680,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -684,13 +693,15 @@
                 break;
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
               case 3005: // 角色关联用户不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -814,14 +825,34 @@
       // 编辑角色按钮
       editRoleDatBtn() {
         var _t = this;
+        // 新增编辑判断
         _t.ifAdd = false;
-        _t.dialogVisible = true;
         _t.addEdit.id = _t.editDataList.id;
-        _t.addEdit.roleName = _t.editDataList.roleName;
-        _t.addEdit.organization = _t.editDataList.organizationName;
-        _t.addEdit.organizationId = _t.editDataList.organizationId;
-        _t.addEdit.status = _t.editDataList.enable == true ? 1 : 0;
-        _t.addEdit.description = _t.editDataList.description;
+        _t.getEditRoleListById(_t.addEdit.id);
+      },
+      // 编辑时根据id查询数据
+      getEditRoleListById(val){
+        var _t = this;
+        _t.$api.get('system/role/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.addEdit.roleName = res.data.roleName;
+              _t.addEdit.organization = res.data.organizationName;
+              _t.addEdit.organizationId = res.data.organizationId;
+              _t.addEdit.status = res.data.enable == true ? 1 : 0;
+              _t.addEdit.description = res.data.description;
+              _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 编辑角色
       editRoleData(formName) {
