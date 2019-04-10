@@ -10,7 +10,7 @@
     <div class="padding20">
       <!--表单-->
       <el-form :model="formItem" inline label-width="150px">
-        <el-form-item label="设备分类/类型:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + ':'" style="width: 30%">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -30,13 +30,13 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item label="设备名称/资产信息:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + ':'" style="width: 30%">
           <el-input v-model="formItem.equipmentName" class="width200" />
         </el-form-item>
-        <el-form-item label="序列号:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.serialNumber') + ':'" style="width: 30%">
           <el-input v-model="formItem.serialNumber" class="width200" />
         </el-form-item>
-        <el-form-item label="机房:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.computerRoomName') + ':'" style="width: 30%">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -56,27 +56,27 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item label="机架/机柜:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.rackNameInfo') + ':'" style="width: 30%">
           <el-select v-model="formItem.rackName" class="width200">
             <el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="关联业务:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.relateBusiness') + ':'" style="width: 30%">
           <el-input v-model="formItem.business" />
         </el-form-item>
-        <el-form-item label="设备状态:" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + ':'" style="width: 30%">
           <el-select v-model="formItem.equipmentStatus" class="width200">
             <el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="处理状态:" style="width: 30%;">
+        <el-form-item :label="$t('alarmCurrent.processStatus') + ':'" style="width: 30%;">
           <el-select v-model="formItem.dealWithStatus" class="width200">
             <el-option v-for="(item,index) in dealWithStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
-          <el-button type="primary" @click="downloadData">导出Excel</el-button>
+          <el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>
         </el-form-item>
       </el-form>
       <!--表格-->
@@ -158,46 +158,46 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <div class="dialogTitle">设备基本信息</div>
+      <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
       <el-form :model="equipmentData" inline label-position="right" label-width="76px">
-        <el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
-        <el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
-        <el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
-        <el-form-item style="width: 33%;" label="UUID:"></el-form-item>
-        <el-form-item style="width: 33%;" label="设备厂商:"></el-form-item>
-        <el-form-item style="width: 33%;" label="序列号:"></el-form-item>
-        <el-form-item style="width: 33%;" label="对象类型:"></el-form-item>
-        <el-form-item style="width: 33%;" label="严重级别:"></el-form-item>
-        <el-form-item style="width: 33%;" label="告警次数:"></el-form-item>
-        <el-form-item style="width: 33%;" label="事件类别:"></el-form-item>
-        <el-form-item style="width: 33%;" label="起始时间:"></el-form-item>
-        <el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentName') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.productName') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentIp') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.UUID') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentVendor') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.serialNumber') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.objectType') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.severityLevel') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.alarmNumber') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.eventType') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.createTime') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.lastTime') + ':'"></el-form-item>
       </el-form>
-      <div class="dialogTitle">告警信息</div>
+      <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
       <el-form inline label-position="right" label-width="76px">
-        <p class="paddingLeft-10"><strong>告警字段</strong></p>
-        <el-form-item label="状态:">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>当前状态</strong></p>
-        <el-form-item style="width: 50%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item label="状态:">Down</el-form-item>
-        <p class="paddingLeft-10"><strong>附加字段</strong></p>
-        <el-form-item label="状态:">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>附加信息</strong></p>
-        <el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.alarmField')}}</strong></p>
+        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.currentStatus')}}</strong></p>
+        <el-form-item style="width: 50%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addField')}}</strong></p>
+        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addInfo')}}</strong></p>
+        <el-form-item style="width: 60%;" :label="$t('alarmCurrent.productName') + ':'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.name') + ':'">NIC.Integrated.1-3-1</el-form-item>
         <br>
-        <el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
-        <el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
-        <el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item label="告警评注:">
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.AutoNegotiation') + ':'">Enabled</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.linkSpeed') + ':'">Unknown</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.alarmDescription') + ':'">
           <el-input type="textarea" style="width: 734px;" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary">忽略告警</el-button>
-        <el-button class="queryBtn" type="primary">确认告警</el-button>
-        <el-button class="queryBtn" type="primary">转保修</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary">{{$t('public.ignoreAlarm')}}</el-button>
+        <el-button type="primary">{{$t('public.confirmAlarm')}}</el-button>
+        <el-button type="primary">{{$t('public.toWarranty')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--设备责任人弹出层-->
@@ -208,15 +208,15 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item label="姓名:"></el-form-item>
-        <el-form-item label="所属组织/部门:"></el-form-item>
-        <el-form-item label="负责业务:"></el-form-item>
-        <el-form-item label="电子邮箱:"></el-form-item>
-        <el-form-item label="联系电话:"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.userName') + ':'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.organizationName') + ':'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.businessCode') + ':'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.email') + ':'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.phoneNumber') + ':'"></el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary">确认</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleOwnerInfo = false">取消</el-button>
+        <el-button class="queryBtn" type="primary">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisibleOwnerInfo = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--标签页-->
