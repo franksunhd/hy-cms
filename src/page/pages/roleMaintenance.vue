@@ -374,7 +374,7 @@
         editDataList: {}, // 编辑选中的集合
         rules: {
           organization: [
-            {validator: isNotNull, trigger: ['blur', 'change']}
+            {validator: isNotNull, trigger: ['blur']}
           ],
           roleName: [
             {validator: isNotNull, trigger: ['blur']}
