@@ -76,7 +76,7 @@
           {{$t('public.delete')}}
         </el-button>
       </div>
-      <el-table :data="tableData" stripe @selection-change="selectTableNum">
+      <el-table :data="tableData" stripe ref="table" @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
@@ -173,7 +173,7 @@
         </el-form-item>
         <br>
         <el-form-item class="star" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
-          <el-button type="success" class="queryBtn" @click="isShowRole = true">选择</el-button>
+          <el-button type="success" class="queryBtn" @click="selectRoleList">选择</el-button>
         </el-form-item>
       </el-form>
       <div class="assignRole-box" v-show="isShowRole">
@@ -302,6 +302,13 @@
       }
     },
     methods: {
+      // 选择组织下拉框中的角色
+      selectRoleList(){
+        var _t = this;
+        if (_t.addEdit.organizationId !== '' || _t.addEdit.organizationName !== '') {
+          _t.isShowRole = true
+        }
+      },
       // 新增按钮弹出层
       AddDataBtn() {
         this.dialogVisible = true;
@@ -335,6 +342,7 @@
         _t.addEdit.mobileNum = '';
         _t.addEdit.status = '';
         _t.addEdit.emails = '';
+        _t.$refs.table.clearSelection();
       },
       // 当前选中条数
       selectTableNum(data) {
@@ -420,10 +428,12 @@
         _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          cancelButtonClass:'queryBtn',
+          confirmButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user/', {
+          _t.$api.put('system/user/updateSystemUserStatus', {
             systemUser: {
               id: _t.checkListValue.join(','),
               status: 1
@@ -433,7 +443,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -457,10 +468,12 @@
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          cancelButtonClass:'queryBtn',
+          confirmButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
-          _t.$api.put('system/user/', {
+          _t.$api.put('system/user/updateSystemUserStatus', {
             systemUser: {
               status: 0,
               id: _t.checkListValue.join(',')
@@ -470,7 +483,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn',
                 });
                 _t.getData();
                 break;
@@ -494,7 +508,9 @@
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           var checkRoleIds = new Array();
@@ -511,7 +527,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -523,13 +540,15 @@
                 break;
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
               case 3005: //
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -552,7 +571,9 @@
         _t.$confirm('请问是否重置当前的记录密码?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/user/resetPassword', {
@@ -564,7 +585,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('重置密码成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 break;
@@ -750,18 +772,39 @@
       // 编辑数据按钮
       editDataBtn() {
         var _t = this;
+        // 新增编辑类型判断
         _t.ifAdd = false;
         _t.addEdit.id = _t.editDataList.id;
-        _t.addEdit.organization = _t.editDataList.organizationName;
-        _t.addEdit.organizationId = _t.editDataList.organizationId;
-        _t.addEdit.username = _t.editDataList.displayName;
-        _t.addEdit.loginAccount = _t.editDataList.username;
-        // _t.addEdit.loginPassword = _t.editDataList.password;
-        _t.addEdit.mobileNum = _t.editDataList.mobile;
-        _t.addEdit.emails = _t.editDataList.email;
-        _t.addEdit.status = _t.editDataList.status;
-        _t.getRoleWithOrgId(_t.addEdit.organizationId);
-        _t.dialogVisible = true;
+        _t.getEditDataById(_t.addEdit.id);
+      },
+      // 编辑时通过id重新请求数据 防止数据滞后
+      getEditDataById(val){
+        var _t = this;
+        _t.$api.get('system/user/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.addEdit.organization = res.data.organizationName;
+              _t.addEdit.organizationId = res.data.organizationId;
+              _t.addEdit.username = res.data.displayName;
+              _t.addEdit.loginAccount = res.data.username;
+              // _t.addEdit.loginPassword = res.data.password;
+              _t.addEdit.mobileNum = res.data.mobile;
+              _t.addEdit.emails = res.data.email;
+              _t.addEdit.status = res.data.status;
+              _t.getRoleWithOrgId(res.data.organizationId);
+              _t.organizationName = orgBreadcrumb(_t.organizationList,res.data.organizationId);
+              _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 编辑数据
       editData(formName) {
