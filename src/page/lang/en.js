@@ -432,5 +432,23 @@ export default {
     processStatus: 'processStatus',
     Ip: 'IP',
     addUpdateAlarm:'addUpdateRole'
+  },
+
+  // 当前告警
+  alarmCurrent: {
+    status: 'status',
+    equipmentName: 'equipmentName',
+    alarmContent: 'alarmContent',
+    lastAlarmTime: 'lastAlarmTime',
+    statusAll: 'statusAll',
+    computerRoomName: 'computerRoomName',
+    rackName: 'rackName',
+    location: 'location',
+    equipmentType: 'equipmentType',
+    processStatus: 'processStatus',
+    Ip: 'IP',
+    addUpdateAlarm:'addUpdateRole',
+    equipmentOwner:'equipmentOwner',
+    ownerInfo:'ownerInfo'
   }
 }

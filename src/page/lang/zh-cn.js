@@ -432,5 +432,22 @@ export default {
     processStatus: '处理状态',
     Ip: 'IP',
     addUpdateAlarm:'设备告警详情'
+  },
+  // 当前告警
+  alarmCurrent: {
+    status: '状态',
+    equipmentName: '设备名称',
+    alarmContent: '告警内容',
+    lastAlarmTime: '最新告警时间',
+    statusAll: '状态汇总',
+    computerRoomName: '机房',
+    rackName: '机架',
+    location: '位置',
+    equipmentType: '设备类型',
+    processStatus: '处理状态',
+    Ip: 'IP',
+    addUpdateAlarm:'设备告警详情',
+    equipmentOwner:'设备责任人',
+    ownerInfo:'业务负责人信息'
   }
 }
