@@ -167,9 +167,9 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
-          <el-input v-model="addEdit.menuLevel" class="width200"/>
-        </el-form-item>
+        <!--<el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">-->
+          <!--<el-input v-model="addEdit.menuLevel" class="width200"/>-->
+        <!--</el-form-item>-->
         <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200"/>
         </el-form-item>
@@ -222,7 +222,7 @@
         addEdit: {
           id: '',
           parentId: '',
-          menuLevel: '',
+          menuLevel: 0,
           menuIcon: '',
           menuHref: '',
           jumpType: '',
@@ -363,7 +363,7 @@
                 menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel + 1,
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -435,7 +435,7 @@
                 menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel + 1,
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -743,6 +743,7 @@
         var _t = this;
         _t.formItem.nodeId = data.id;
         _t.addEdit.parentId = data.id;
+        _t.addEdit.menuLevel = data.menuLevel;
         _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
@@ -861,6 +862,7 @@
         var _t = this;
         _t.formItem.nodeId = '0';
         _t.addEdit.parentId = null;
+        _t.addEdit.menuLevel = 0;
         _t.getData();
       }
     },
