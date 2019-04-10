@@ -209,6 +209,7 @@ export default {
     orderIndex: '显示顺序',
     isEnable: '是否启用',
     organizationDes: '组织描述',
+    sort:'排序'
   },
   // 平台语言设置
   platformLanguage: {

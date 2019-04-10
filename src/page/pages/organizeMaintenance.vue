@@ -75,30 +75,25 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="roleCount" :label="$t('organizeMaintenance.roleNum')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center"
-                             align="center"/>
+            <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center" align="center"/>
+            <el-table-column prop="roleCount" :label="$t('organizeMaintenance.roleNum')" header-align="center" align="center"/>
+            <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center" align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.sort')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span v-if="scope.row.enable === true">启用</span>
                 <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center"
-                             align="center"/>
+            <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center" align="center"/>
             <el-table-column :label="$t('organizeMaintenance.createTime')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span>{{scope.row.createTime | dateFilter}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="lastModifyBy" :label="$t('organizeMaintenance.updateName')" header-align="center"
-                             align="center"/>
-            <el-table-column :label="$t('organizeMaintenance.updateTime')" header-align="center" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.lastModifyTime | dateFilter}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -696,6 +691,54 @@
                   break;
               }
             });
+          }
+        });
+      },
+      // 上移
+      moveUp(data){
+        var _t = this;
+        _t.$api.put('system/organization/enableOrganization',{
+          systemOrganization:{
+            id:data.id
+          },
+          upOrDown:"up"
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 下移
+      moveDown(data){
+        var _t = this;
+        _t.$api.put('system/organization/enableOrganization',{
+          systemOrganization:{
+            id:data.id
+          },
+          upOrDown:"down"
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
           }
         });
       }

@@ -209,6 +209,7 @@ export default {
     orderIndex: 'orderIndex',
     isEnable: 'isEnable',
     organizationDes: 'organizationDes',
+    sort:'sort'
   },
   // 平台语言设置
   platformLanguage: {
