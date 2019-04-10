@@ -180,18 +180,37 @@
         <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <!--标签页-->
+    <el-tabs
+      v-model="editableTabsValue"
+      type="card"
+      tab-position="bottom"
+      closable
+      @tab-remove="removeTab">
+      <el-tab-pane
+        :key="index"
+        v-for="(item, index) in editableTabs"
+        :name="item.name"
+        :label="item.title">
+        <AdministrationTags :pages-id="item.content" />
+      </el-tab-pane>
+    </el-tabs>
   </Box>
 </template>
 
 <script>
   import Box from '../../components/Box';
   import {dateFilterSeconds, dateFilter} from "../../assets/js/filters";
+  import AdministrationTags from '../../components/AdministrationTabs';
 
   export default {
     name: "alarmManagement",
-    components: {Box},
+    components: {Box,AdministrationTags},
     data() {
       return {
+        editableTabsValue:'', // 当前页签
+        editableTabs:[], // 页面集合
+        tabIndex: 0, // 页签序号
         sortArr: [
           {label: 'Top10', value: 10},
           {label: 'Top15', value: 15},
@@ -220,7 +239,7 @@
         equipmentData:{}, // 设备告警详情
         tableData: [
           {
-            id:1,
+            id:'1',
             status: 1,
             equipmentName: '惠普',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
@@ -228,28 +247,28 @@
 
           },
           {
-            id:2,
+            id:'2',
             status: 2,
             equipmentName: '惠普',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
-            id:3,
+            id:'3',
             status: 3,
             equipmentName: '惠普',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
-            id:4,
+            id:'4',
             status: 1,
             equipmentName: '惠普',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
-            id:5,
+            id:'5',
             status: 2,
             equipmentName: '惠普',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
@@ -401,7 +420,7 @@
         }
         // 点击设备名称列
         if (column.label == _t.$t('alarmManagement.equipmentName')) {
-          console.log('设备名称' + row.id);
+          _t.addTab(row.equipmentName,row.id);
         }
         // 点击告警内容列
         if (column.label == _t.$t('alarmManagement.alarmContent')) {
@@ -464,7 +483,39 @@
         var _t = this;
         var myChart = this.$echarts.init(document.getElementById('alarmLine'));
         myChart.setOption(_t.optionLine, true);
-      }
+      },
+      // 删除页签
+      removeTab(targetName){
+        var _t = this;
+        // 获取页面集合
+        var tabs = _t.editableTabs;
+        // 获取当前选中的页签
+        var activeName = _t.editableTabsValue;
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              var nextTab = tabs[index + 1] || tabs[index - 1];
+              if (nextTab) {
+                activeName = nextTab.name;
+              }
+            }
+          });
+        }
+        // 删除之后的页签
+        _t.editableTabsValue = activeName;
+        _t.editableTabs = tabs.filter(tab => tab.name !== targetName);
+      },
+      // 添加页签
+      addTab(title,id) {
+        var _t = this;
+        var newTabName = ++_t.tabIndex + '';
+        _t.editableTabs.push({
+          title: title,
+          name:newTabName,
+          content: id
+        });
+        _t.editableTabsValue = newTabName;
+      },
     },
     created() {
       this.getData();
