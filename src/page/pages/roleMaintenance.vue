@@ -65,7 +65,7 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe @selection-change="selectTableNum">
+      <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="center" align="center"/>
         <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="center"
@@ -143,7 +143,7 @@
       <span slot="footer">
         <el-button class="queryBtn" type="primary" v-if="ifAdd == true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" type="primary" v-if="ifAdd == false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--用户授权-->
@@ -392,6 +392,18 @@
       }
     },
     methods: {
+      // 重置表单
+      resetFormData(){
+        var _t = this;
+        _t.addEdit.id =  '';
+        _t.addEdit.organization = '';
+        _t.addEdit.roleName = '';
+        _t.addEdit.organizationId = '';
+        _t.addEdit.status = '';
+        _t.addEdit.description = '';
+        _t.$refs.table.clearSelection();
+        _t.dialogVisible = false;
+      },
       // 提交授权菜单
       commitMenuData() {
         var _t = this;
@@ -805,6 +817,7 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -814,8 +827,10 @@
                   break;
                 case 2005:
                   _t.$alert(res.message);
+                  _t.resetFormData();
                   break;
                 default:
+                  _t.resetFormData();
                   break;
               }
             });
@@ -874,6 +889,7 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -883,8 +899,10 @@
                   break;
                 case 2006:
                   _t.$alert(res.message);
+                  _t.resetFormData();
                   break;
                 default:
+                  _t.resetFormData();
                   break;
               }
             });
