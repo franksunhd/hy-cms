@@ -68,7 +68,8 @@ const BeganToSee = () => import ('@/page/pages/BeganToSee');
 const monitoringAndControl = () => import ('@/page/pages/monitoringAndControl');
 // 告警管理
 const alarmManagement = () => import ('@/page/pages/alarmManagement');
-
+// 当前告警
+const alarmCurrent = () => import ('@/page/pages/alarmCurrent');
 
 Vue.use(Router);
 export default new Router({
@@ -162,16 +163,9 @@ export default new Router({
         },
         {path: "/YUser/DeviceManualDetection", name: "DeviceManualDetection", component: DeviceManualDetection},
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
-        {
-          path: "/YUser/monitoringAndControl",
-          name: "monitoringAndControl",
-          component: monitoringAndControl
-        },
-        {
-          path: "/YUser/alarmManagement",
-          name: "alarmManagement",
-          component: alarmManagement
-        },
+        {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
+        {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
+        {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent}
       ]
     },
     {path: '/login', name: 'Login', component: Login}

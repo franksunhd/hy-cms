@@ -101,7 +101,8 @@ export default {
     DeviceManualDetection: 'DeviceManualDetection',
     DeviceType: 'DeviceType',
     rackTowerServer: 'rackTowerServer',
-    alarmManagement: 'alarmManagement'
+    alarmManagement: 'alarmManagement',
+    alarmCurrent:'alarmCurrent'
   },
   // 许可证信息维护
   license: {
