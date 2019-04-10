@@ -189,6 +189,7 @@ html,body,.Index-box {
 
 
 /*表格*/
+.el-table .el-table__body div.cell,
 .el-table .el-table__body div.cell span {
   white-space: nowrap;
 }
