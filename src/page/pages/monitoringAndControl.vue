@@ -23,22 +23,21 @@
 			<ul class="clearfix">
 				<li><span>最新告警设备列表</span></li>
 				<li>
-					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover1" ref="popover" style="float: left;">
-						<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert1" :props="defaultProps" />
-						<el-input v-model="value1" style="width: 130px; height: 30px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
-					</el-popover>
+					<el-select class="fr selectArr" v-model="addEdit.sortValue">
+						<el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value" />
+					</el-select>
 				</li>
 				<li>
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover" style="float: left;">
 						<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
-						<el-input v-model="value" style="width: 230px; height: 30px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+						<el-input v-model="addEdit.organizationName" style="width: 230px; height: 30px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 					</el-popover>
 				</li>
 			</ul>
 		</div>
 		<div class="equipmentList clearfix">
-			<el-table :data="tableData" style="width: 100%;" stripe>
-				<el-table-column prop="number" label="序号" width="180">
+			<el-table :data="tableData" style="width: 100%;" stripe @cell-click="cellClickColumn">
+				<el-table-column prop="number" label="序号" width="180" header-align="center" align="center">
 					<template slot-scope="scope">
 						<span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -47,17 +46,17 @@
 				</el-table-column>
 				<el-table-column prop="state" label="状态" width="180" header-align="center" align="center">
 					<template slot-scope="scope">
-                <el-tooltip v-if="scope.row.state == 1" effect="dark" content="紧急" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <el-tooltip v-if="scope.row.state == 2" effect="dark" content="警告" placement="top-start">
-                  <span class="iconfont iconfontWarn">&#xe608;</span>
-                </el-tooltip>
-                <el-tooltip v-if="scope.row.state == 3" effect="dark" content="忽略" placement="top-start">
-                  <span class="iconfont iconfontDisable">&#xe60a;</span>
-                </el-tooltip>
-              </template>
-			</el-table-column>
+						<el-tooltip v-if="scope.row.state == 1" effect="dark" content="紧急" placement="top-start">
+							<span class="iconfont iconfontError">&#xe609;</span>
+						</el-tooltip>
+						<el-tooltip v-if="scope.row.state == 2" effect="dark" content="警告" placement="top-start">
+							<span class="iconfont iconfontWarn">&#xe608;</span>
+						</el-tooltip>
+						<el-tooltip v-if="scope.row.state == 3" effect="dark" content="忽略" placement="top-start">
+							<span class="iconfont iconfontDisable">&#xe60a;</span>
+						</el-tooltip>
+					</template>
+				</el-table-column>
 				<el-table-column prop="DeviceName" label="设备名称" width="180" header-align="center" align="center" />
 
 				<el-table-column prop="alarmContent" label="告警内容" width="180" header-align="center" align="center" />
@@ -66,29 +65,29 @@
 
 				<el-table-column prop="StatusSummary" label="状态汇总" width="180" header-align="center" align="center">
 					<template slot-scope="scope">
-                <el-tooltip effect="dark" content="紧急" placement="top-start">
-                	<span>
+						<el-tooltip effect="dark" content="紧急" placement="top-start">
+							<span>
                 		<span class="iconfont iconfontError">&#xe609;</span>
-                		<span>10</span>
-                	</span>
-                  
-                </el-tooltip>
-                <el-tooltip effect="dark" content="警告" placement="top-start">
-                	<span>
+							<span>10</span>
+							</span>
+
+						</el-tooltip>
+						<el-tooltip effect="dark" content="警告" placement="top-start">
+							<span>
                 		<span class="iconfont iconfontWarn">&#xe608;</span>
-                		<span>5</span>
-                	</span>
-                  
-                </el-tooltip>
-                <el-tooltip effect="dark" content="忽略" placement="top-start">
-                	<span>
+							<span>5</span>
+							</span>
+
+						</el-tooltip>
+						<el-tooltip effect="dark" content="忽略" placement="top-start">
+							<span>
                 		<span class="iconfont iconfontDisable">&#xe60a;</span>
-                		<span>2</span>
-                	</span>
-                  
-                </el-tooltip>
-              </template>
-        </el-table-column>
+							<span>2</span>
+							</span>
+
+						</el-tooltip>
+					</template>
+				</el-table-column>
 				<el-table-column prop="ComputerRoom" label="机房" width="180" header-align="center" align="center" />
 
 				<el-table-column prop="rack" label="机架" width="180" header-align="center" align="center" />
@@ -101,9 +100,56 @@
 			<!--分页-->
 			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 		</div>
+		<!--设备告警详情弹出层-->
+		<el-dialog class="alarmMessageBox" :title="$t('alarmManagement.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+			<div class="dialogTitle">设备基本信息</div>
+			<el-form :model="equipmentData" inline label-position="right" label-width="76px">
+				<el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
+				<el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
+				<el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
+
+				<el-form-item style="width: 33%;" label="UUID:"></el-form-item>
+				<el-form-item style="width: 33%;" label="设备厂商:"></el-form-item>
+				<el-form-item style="width: 33%;" label="序列号:"></el-form-item>
+
+				<el-form-item style="width: 33%;" label="对象类型:"></el-form-item>
+				<el-form-item style="width: 33%;" label="严重级别:"></el-form-item>
+				<el-form-item style="width: 33%;" label="告警次数:"></el-form-item>
+
+				<el-form-item style="width: 33%;" label="事件类别:"></el-form-item>
+				<el-form-item style="width: 33%;" label="起始时间:"></el-form-item>
+				<el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
+			</el-form>
+			<div class="dialogTitle">告警信息</div>
+			<el-form inline label-position="right" label-width="76px">
+				<p class="paddingLeft-10"><strong>告警字段</strong></p>
+				<el-form-item label="状态:">Down != Up</el-form-item>
+				<p class="paddingLeft-10"><strong>当前状态</strong></p>
+				<el-form-item style="width: 50%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
+				<el-form-item label="状态:">Down</el-form-item>
+				<p class="paddingLeft-10"><strong>附加字段</strong></p>
+				<el-form-item label="状态:">Down != Up</el-form-item>
+				<p class="paddingLeft-10"><strong>附加信息</strong></p>
+				<el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
+				<el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
+				<br>
+				<el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
+				<el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
+				<el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
+				<el-form-item label="告警评注:">
+					<el-input type="textarea" style="width: 734px;" />
+				</el-form-item>
+			</el-form>
+			<span slot="footer">
+        <el-button class="queryBtn" type="primary">忽略告警</el-button>
+        <el-button class="queryBtn" type="primary">确认告警</el-button>
+        <el-button class="queryBtn" type="primary">转保修</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
+      </span>
+		</el-dialog>
+		
 	</Box>
 </template>
-
 <script>
 	import Box from '../../components/Box';
 
@@ -114,16 +160,53 @@
 		},
 		data() {
 			return {
+
 				/*分页*/
 				options: {
 					total: 0, //总条数
 					currentPage: 1, //当前页码
 					pageSize: 10, //显示条数
 				},
+				sortArr: [{
+						label: 'Top10',
+						value: 10
+					},
+					{
+						label: 'Top15',
+						value: 15
+					},
+					{
+						label: 'Top20',
+						value: 20
+					},
+					{
+						label: 'Top30',
+						value: 30
+					},
+				], // 排序
+
+				addEdit: {
+					id: '',
+					sortValue: 10, // 绑定的pageSize值
+					organizationName: '', // 树形下拉框绑定的值
+					organizationId: '', // 树形下拉框的绑定的id
+				},
 				/*表格数据*/
 				tableData: [{
-					number: '1',
+					id: '1',
 					state: '1',
+					DeviceName: 'H3C',
+					alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
+					LatestAlarmTime: '2019-01-31',
+					StatusSummary: '1 2 3 4',
+					ComputerRoom: '苏州',
+					rack: 'A8-3',
+					location: 'U22',
+					operation: '详情'
+
+				}, {
+					id: '2',
+					state: '2',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
 					LatestAlarmTime: '2019-01-31',
@@ -134,19 +217,7 @@
 					operation: '详情'
 
 				}, {
-					number: '2',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-
-				}, {
-					number: '3',
+					id: '3',
 					state: '3',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
@@ -158,18 +229,7 @@
 					operation: '详情'
 
 				}, {
-					number: '4',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '5',
+					id: '4',
 					state: '1',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
@@ -180,7 +240,18 @@
 					location: 'U22',
 					operation: '详情'
 				}, {
-					number: '6',
+					id: '5',
+					state: '1',
+					DeviceName: 'H3C',
+					alarmContent: '告警内容',
+					LatestAlarmTime: '2019-01-31',
+					StatusSummary: '1 2 3 4',
+					ComputerRoom: '苏州',
+					rack: 'A8-3',
+					location: 'U22',
+					operation: '详情'
+				}, {
+					id: '6',
 					state: '2',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
@@ -191,7 +262,7 @@
 					location: 'U22',
 					operation: '详情'
 				}, {
-					number: '7',
+					id: '7',
 					state: '3',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
@@ -202,29 +273,7 @@
 					location: 'U22',
 					operation: '详情'
 				}, {
-					number: '8',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '9',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '10',
+					id: '8',
 					state: '2',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
@@ -235,217 +284,30 @@
 					location: 'U22',
 					operation: '详情'
 				}, {
-					number: '11',
+					id: '9',
+					state: '1',
+					DeviceName: 'H3C',
+					alarmContent: '告警内容',
+					LatestAlarmTime: '2019-01-31',
+					StatusSummary: '1 2 3 4',
+					ComputerRoom: '苏州',
+					rack: 'A8-3',
+					location: 'U22',
+					operation: '详情'
+				}, {
+					id: '10',
+					state: '2',
+					DeviceName: 'H3C',
+					alarmContent: '告警内容',
+					LatestAlarmTime: '2019-01-31',
+					StatusSummary: '1 2 3 4',
+					ComputerRoom: '苏州',
+					rack: 'A8-3',
+					location: 'U22',
+					operation: '详情'
+				}, {
+					id: '11',
 					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '12',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '13',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '14',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '15',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '16',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '17',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '18',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '19',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '20',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '21',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '22',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '23',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '24',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '25',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '26',
-					state: '4',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '27',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '28',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '29',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					number: '30',
-					state: '4',
 					DeviceName: 'H3C',
 					alarmContent: '告警内容',
 					LatestAlarmTime: '2019-01-31',
@@ -455,9 +317,6 @@
 					location: 'U22',
 					operation: '详情'
 				}],
-
-				value: '',
-				value1: '',
 				treeData: [{
 					label: '一级 1',
 					children: [{
@@ -497,8 +356,10 @@
 					children: 'children',
 					label: 'label'
 				},
-				isShowEditPopover: false,
-				isShowEditPopover1: false,
+				isShowEditPopover: false, // 控制树形下拉框的显示隐藏
+				dialogVisible: false, // 设备告警详情弹出层
+				organizationList: [], // 树形下拉框的数据
+				equipmentData: {}, // 设备告警详情
 
 			}
 		},
@@ -510,14 +371,9 @@
 			clickNodeAlert(val) {
 				var _t = this;
 				console.log(val);
-				_t.value = val.label;
+				_t.addEdit.organizationName = val.label;
+				//_t.addEdit.organizationId = val.id;
 				_t.isShowEditPopover = false;
-			},
-			clickNodeAlert1(val) {
-				var _t = this;
-				//console.log(val);
-				_t.value1 = val.label;
-				_t.isShowEditPopover1 = false;
 			},
 			drawLine2() {
 				var _t = this;
@@ -714,24 +570,39 @@
 								]
 							})
 						}
+
 						series[0].markPoint = {
-							symbol: 'emptyCircle',
+							symbol: 'image://https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554907158685&di=3ed03cd97d6ac71f30e51dab04c93403&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F19f7a76f9205e1452eb958e75739d95ee05fc5e04a4bf-yHYrfg_fw658',
 							symbolSize: series[0].radius[0],
-							animation: false,
-							effect: {
+							//effect: {
 								show: true,
-								scaleSize: 12,
-								color: 'red',
-								shadowBlur: 10,
-								trailLength: 0,
-								period: 6
-							},
+								animation: true,
+								animationThreshold: '2000',
+								animationDuration: '1000',
+								
+								//scaleSize: 120,
+								//symbolSize:'50',
+								//symbolOffset:[0,1],
+								color: 'rgba(250,225,50,0.8)',
+								
+								
+							//},
 							data: [{
 								x: '50%',
-								y: '50%'
+								y: '50%',
+								symbol:'emptyCircle',
+								symbolSize:'50',
+								itemStyle:{
+									shadowBlur: '300',
+									shadowColor:'rgba(250,225,50,0.8)',
+									//period: '300',
+								},
+								label:{
+									textBorderWidth:"350",
+									textShadowBlur: "200"
+								}
 							}]
 						};
-						//console.log(series[0])
 						return series;
 					})()
 				};
@@ -784,7 +655,28 @@
 				var _t = this;
 				_t.options.currentPage = val;
 
-			}
+			},
+			cellClickColumn(row, column) {
+				var _t = this;
+				// 点击状态列
+				if(column.label == '状态') {
+					_t.dialogVisible = true;
+					_t.addEdit.id = row.id;
+				}
+				// 点击设备名称列
+				if(column.label == "设备名称") {
+					_t.addTab(row.DeviceName, row.id);
+				}
+				// 点击告警内容列
+				if(column.label == "告警内容") {
+					_t.dialogVisible = true;
+					_t.addEdit.id = row.id;
+				}
+				// 点击最新告警时间列
+				if(column.label == "最新告警时间") {
+					console.log('最新告警时间' + row.id);
+				}
+			},
 		}
 	}
 </script>
