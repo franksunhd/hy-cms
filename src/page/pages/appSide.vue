@@ -519,4 +519,8 @@
     font-size: 25px;
     cursor: pointer;
   }
+
+  .app-side-ul {
+    min-height: 20px;
+  }
 </style>

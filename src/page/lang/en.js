@@ -51,7 +51,10 @@ export default {
     NO: 'NO',
     resultTip: 'resultTip',
     permanent: 'permanent',
-    isNotNull:'isNotNull'
+    isNotNull:'isNotNull',
+    ignoreAlarm:'ignoreAlarm',
+    confirmAlarm:'confirmAlarm',
+    toWarranty:'toWarranty'
   },
   // 系统设置模块
   system: {
@@ -101,7 +104,8 @@ export default {
     DeviceManualDetection: 'DeviceManualDetection',
     DeviceType: 'DeviceType',
     rackTowerServer: 'rackTowerServer',
-    alarmManagement: 'alarmManagement'
+    alarmManagement: 'alarmManagement',
+    alarmCurrent:'alarmCurrent'
   },
   // 许可证信息维护
   license: {
@@ -205,6 +209,7 @@ export default {
     orderIndex: 'orderIndex',
     isEnable: 'isEnable',
     organizationDes: 'organizationDes',
+    sort:'sort'
   },
   // 平台语言设置
   platformLanguage: {
@@ -430,6 +435,81 @@ export default {
     equipmentType: 'equipmentType',
     processStatus: 'processStatus',
     Ip: 'IP',
-    addUpdateAlarm:'addUpdateRole'
+    addUpdateAlarm:'addUpdateRole',
+    lastAlarmList:'lastAlarmList',
+    equipmentInfo:'equipmentInfo',
+    productName:'productName',
+    equipmentIp:'equipmentIp',
+    UUID:'UUID',
+    equipmentVendor:'equipmentVendor',
+    serialNumber:'serialNumber',
+    objectType:'objectType',
+    severityLevel:'severityLevel',
+    alarmNumber:'alarmNumber',
+    eventType:'eventType',
+    createTime:'createTime',
+    lastTime:'lastTime',
+    alarmInfo:'alarmInfo',
+    macLocation:'macLocation',
+    alarmField:'alarmField',
+    addField:'addField',
+    addInfo:'addInfo',
+    name:'name',
+    alarmDescription:'alarmDescription',
+    AutoNegotiation:'AutoNegotiation',
+    linkSpeed:'linkSpeed',
+    currentStatus:'currentStatus'
+  },
+
+  // 当前告警
+  alarmCurrent: {
+    status: 'status',
+    equipmentName: 'equipmentName',
+    alarmContent: 'alarmContent',
+    lastAlarmTime: 'lastAlarmTime',
+    statusAll: 'statusAll',
+    computerRoomName: 'computerRoomName',
+    rackName: 'rackName',
+    location: 'location',
+    equipmentType: 'equipmentType',
+    processStatus: 'processStatus',
+    Ip: 'IP',
+    addUpdateAlarm:'addUpdateRole',
+    equipmentOwner:'equipmentOwner',
+    ownerInfo:'ownerInfo',
+    lastAlarmList:'lastAlarmList',
+    equipmentInfo:'equipmentInfo',
+    productName:'productName',
+    equipmentIp:'equipmentIp',
+    UUID:'UUID',
+    equipmentVendor:'equipmentVendor',
+    serialNumber:'serialNumber',
+    objectType:'objectType',
+    severityLevel:'severityLevel',
+    alarmNumber:'alarmNumber',
+    eventType:'eventType',
+    createTime:'createTime',
+    lastTime:'lastTime',
+    alarmInfo:'alarmInfo',
+    macLocation:'macLocation',
+    alarmField:'alarmField',
+    addField:'addField',
+    addInfo:'addInfo',
+    name:'name',
+    alarmDescription:'alarmDescription',
+    AutoNegotiation:'AutoNegotiation',
+    linkSpeed:'linkSpeed',
+    currentStatus:'currentStatus',
+    equipmentTypeInfo: 'equipmentTypeInfo',
+    equipmentNameInfo:'equipmentNameInfo',
+    rackNameInfo:'rackNameInfo',
+    equipmentStatus:'equipmentStatus',
+    relateBusiness:'relateBusiness',
+    exportExcel:'exportExcel',
+    userName:'userName',
+    organizationName: 'organizationName',
+    businessCode:'businessCode',
+    email:'email',
+    phoneNumber:'phoneNumber',
   }
 }

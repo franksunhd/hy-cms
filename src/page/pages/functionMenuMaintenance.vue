@@ -167,16 +167,16 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
-          <el-input v-model="addEdit.menuLevel" class="width200"/>
-        </el-form-item>
+        <!--<el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">-->
+          <!--<el-input v-model="addEdit.menuLevel" class="width200"/>-->
+        <!--</el-form-item>-->
         <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
-            <el-radio :label="'1'">{{$t('public.enable')}}</el-radio>
-            <el-radio :label="'0'">{{$t('public.disable')}}</el-radio>
+            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -221,8 +221,8 @@
         },
         addEdit: {
           id: '',
-          parentId: '',
-          menuLevel: '',
+          parentId: null,
+          menuLevel: 0,
           menuIcon: '',
           menuHref: '',
           jumpType: '',
@@ -304,8 +304,7 @@
         _t.$api.get('system/language/all',{},function (res) {
           switch (res.status) {
             case 200:
-              var languageList = '';
-              languageList = res.data.list;
+              var languageList = res.data.list;
               languageList.forEach(function (item) {
                 item.menuName = '';
                 item.languageMark = item.languageCode;
@@ -363,7 +362,7 @@
                 menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel + 1,
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -393,15 +392,40 @@
       // 编辑按钮
       editDataBtn() {
         var _t = this;
+        // 新增编辑判断
         _t.ifAdd = false;
-        _t.dialogVisible = true;
         _t.addEdit.id = _t.checkValueList.id;
-        _t.addEdit.parentId = _t.checkValueList.parentId;
-        _t.addEdit.menuHref = _t.checkValueList.menuHref == null ? '' : _t.checkValueList.menuHref;
-        _t.addEdit.menuLevel = _t.checkValueList.menuLevel == null ? '' : _t.checkValueList.menuLevel;
-        _t.addEdit.menuIcon = _t.checkValueList.menuIcon == null ? '' : _t.checkValueList.menuIcon;
-        _t.addEdit.orderMark = _t.checkValueList.orderMark == null ? '' : _t.checkValueList.orderMark;
-        _t.addEdit.enable = _t.checkValueList.enable == true ? '1' : '0';
+        _t.getEditData(_t.addEdit.id);
+      },
+      // 根据菜单id查询需要编辑的数据
+      getEditData(data){
+        var _t = this;
+        _t.$api.get('system/menu/' + data,{},function (res) {
+          switch (res.status) {
+            case 200:
+              var languageList = res.data.systemMenuLanguageList;
+              languageList.forEach(function (item) {
+                item.languageName = item.createBy;
+              });
+              _t.languageList = languageList;
+              _t.addEdit.parentId = res.data.parentId;
+              _t.addEdit.menuHref = res.data.menuHref;
+              _t.addEdit.menuLevel = Number(res.data.menuLevel);
+              _t.addEdit.menuIcon = res.data.menuIcon;
+              _t.addEdit.orderMark = res.data.orderMark;
+              _t.addEdit.enable = res.data.enable == true ? 1 : 0;
+              _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 编辑提交
       editData(formName) {
@@ -435,7 +459,7 @@
                 menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel == null ? null : _t.addEdit.menuLevel.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel,
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -743,6 +767,7 @@
         var _t = this;
         _t.formItem.nodeId = data.id;
         _t.addEdit.parentId = data.id;
+        _t.addEdit.menuLevel = data.menuLevel;
         _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
@@ -861,6 +886,7 @@
         var _t = this;
         _t.formItem.nodeId = '0';
         _t.addEdit.parentId = null;
+        _t.addEdit.menuLevel = 0;
         _t.getData();
       }
     },

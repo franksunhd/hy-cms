@@ -20,13 +20,13 @@
       </el-col>
     </el-row>
     <!--表格-->
-    <el-row>
+    <el-row style="margin-bottom: 50px;">
       <el-col :span="24" style="padding: 10px">
         <div class="whiteBg">
           <!--标题-->
           <div class="clearfix alarmTitleBox">
-            <span class="title">最新告警列表</span>
-            <el-select class="fr selectArr" v-model="addEdit.sortValue">
+            <span class="title">{{$t('alarmManagement.lastAlarmList')}}</span>
+            <el-select class="fr selectArr" v-model="addEdit.sortValue" @change="options.pageSize = addEdit.sortValue">
               <el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value"/>
             </el-select>
             <el-popover
@@ -135,64 +135,72 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <div class="dialogTitle">设备基本信息</div>
+      <div class="dialogTitle">{{$t('alarmManagement.equipmentInfo')}}</div>
       <el-form :model="equipmentData" inline label-position="right" label-width="76px">
-        <el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
-        <el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
-        <el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
-
-        <el-form-item style="width: 33%;" label="UUID:"></el-form-item>
-        <el-form-item style="width: 33%;" label="设备厂商:"></el-form-item>
-        <el-form-item style="width: 33%;" label="序列号:"></el-form-item>
-
-        <el-form-item style="width: 33%;" label="对象类型:"></el-form-item>
-        <el-form-item style="width: 33%;" label="严重级别:"></el-form-item>
-        <el-form-item style="width: 33%;" label="告警次数:"></el-form-item>
-
-        <el-form-item style="width: 33%;" label="事件类别:"></el-form-item>
-        <el-form-item style="width: 33%;" label="起始时间:"></el-form-item>
-        <el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentName') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.productName') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentIp') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.UUID') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentVendor') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.serialNumber') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.objectType') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.severityLevel') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.alarmNumber') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.eventType') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.createTime') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmManagement.lastTime') + ':'"></el-form-item>
       </el-form>
-      <div class="dialogTitle">告警信息</div>
+      <div class="dialogTitle">{{$t('alarmManagement.alarmInfo')}}</div>
       <el-form inline label-position="right" label-width="76px">
-        <p class="paddingLeft-10"><strong>告警字段</strong></p>
-        <el-form-item label="状态:">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>当前状态</strong></p>
-        <el-form-item style="width: 50%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item label="状态:">Down</el-form-item>
-        <p class="paddingLeft-10"><strong>附加字段</strong></p>
-        <el-form-item label="状态:">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>附加信息</strong></p>
-        <el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.alarmField')}}</strong></p>
+        <el-form-item :label="$t('alarmManagement.status') + ':'">Down != Up</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.currentStatus')}}</strong></p>
+        <el-form-item style="width: 50%;" :label="$t('alarmManagement.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.status') + ':'">Down</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.addField')}}</strong></p>
+        <el-form-item :label="$t('alarmManagement.status') + ':'">Down != Up</el-form-item>
+        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.addInfo')}}</strong></p>
+        <el-form-item style="width: 60%;" :label="$t('alarmManagement.productName') + ':'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmManagement.name') + ':'">NIC.Integrated.1-3-1</el-form-item>
         <br>
-        <el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
-        <el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
-        <el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item label="告警评注:">
+        <el-form-item style="width: 30%;" :label="$t('alarmManagement.AutoNegotiation') + ':'">Enabled</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmManagement.linkSpeed') + ':'">Unknown</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmManagement.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.alarmDescription') + ':'">
           <el-input type="textarea" style="width: 734px;" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary">忽略告警</el-button>
-        <el-button class="queryBtn" type="primary">确认告警</el-button>
-        <el-button class="queryBtn" type="primary">转保修</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary">{{$t('public.ignoreAlarm')}}</el-button>
+        <el-button type="primary">{{$t('public.confirmAlarm')}}</el-button>
+        <el-button type="primary">{{$t('public.toWarranty')}}</el-button>
+        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--标签页-->
     <el-tabs
+      v-if="isShowTabBox_tab"
       v-model="editableTabsValue"
       type="card"
+      class="whiteBg"
+      id="alarmManagement-tabs"
       tab-position="bottom"
       closable
+      @tab-click="clickTabs"
       @tab-remove="removeTab">
       <el-tab-pane
         :key="index"
+        stretch
         v-for="(item, index) in editableTabs"
         :name="item.name"
         :label="item.title">
-        <AdministrationTags :pages-id="item.content" />
+        <div class="alarmManagement-btn">
+          <!--收起-->
+          <span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+          <!--关闭弹出层-->
+          <span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+        </div>
+        <AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
       </el-tab-pane>
     </el-tabs>
   </Box>
@@ -235,13 +243,15 @@
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
         dialogVisible:false, // 设备告警详情弹出层
+        isShowTabBox:true, // 控制标签页内容是否显示
+        isShowTabBox_tab:false,
         organizationList: [], // 树形下拉框的数据
         equipmentData:{}, // 设备告警详情
         tableData: [
           {
             id:'1',
             status: 1,
-            equipmentName: '惠普',
+            equipmentName: '惠普1',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
 
@@ -249,28 +259,28 @@
           {
             id:'2',
             status: 2,
-            equipmentName: '惠普',
+            equipmentName: '惠普2',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'3',
             status: 3,
-            equipmentName: '惠普',
+            equipmentName: '惠普3',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'4',
             status: 1,
-            equipmentName: '惠普',
+            equipmentName: '惠普4',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
           {
             id:'5',
             status: 2,
-            equipmentName: '惠普',
+            equipmentName: '惠普5',
             alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
             lastModifiedTime: '2019-02-10 12:22:11',
           },
@@ -429,7 +439,7 @@
         }
         // 点击最新告警时间列
         if (column.label == _t.$t('alarmManagement.lastAlarmTime')) {
-          console.log('最新告警时间' + row.id);
+          _t.addTab(row.equipmentName,row.id);
         }
       },
       // 点击下拉框的节点
@@ -497,6 +507,8 @@
               var nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
                 activeName = nextTab.name;
+              } else {
+                _t.isShowTabBox_tab = false;
               }
             }
           });
@@ -515,9 +527,37 @@
           content: id
         });
         _t.editableTabsValue = newTabName;
+        _t.isShowTabBox = true;
+        _t.isShowTabBox_tab = true;
+        if (_t.editableTabs.length > 1) {
+          document.getElementById('alarmManagement-tabs').style.top = '118px';
+        }
       },
+      // 收起
+      packUp(){
+        var _t = this;
+        _t.isShowTabBox = false;
+        document.getElementById('alarmManagement-tabs').style.top = 'initial';
+        _t.editableTabsValue = '';
+      },
+      // 关闭标签页
+      closeTab(){
+        var _t = this;
+        _t.editableTabsValue = '';
+        _t.editableTabs = [];
+        _t.tabIndex = 0;
+        _t.isShowTabBox_tab = false;
+        _t.isShowTabBox = false;
+      },
+      // 点击标签页
+      clickTabs(){
+        var _t = this;
+        _t.isShowTabBox = true;
+        document.getElementById('alarmManagement-tabs').style.top = '118px';
+      }
     },
     created() {
+      // this.$store.commit('setLoading',true);
       this.getData();
     }
   }
@@ -536,6 +576,12 @@
   .alarmTitleBox .selectArr {
     margin-left: 20px;
   }
+
+  .alarmManagement-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 </style>
 <style>
   .alarmMessageBox .el-dialog {
@@ -548,5 +594,27 @@
 
   .alarmMessageBox .el-form--inline .el-form-item {
     margin: 0;
+  }
+
+  #alarmManagement-tabs {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    left: 80px;
+    top: 118px;
+    z-index: 1100;
+  }
+
+  #alarmManagement-tabs .el-tabs__header.is-bottom {
+    margin-top: 0;
+    position: absolute;
+    bottom: 0;
+    left: -24px;
+    right: -20px;
+    background-color: gray;
+  }
+
+  #alarmManagement-tabs .el-tabs__content {
+    overflow: visible;
   }
 </style>

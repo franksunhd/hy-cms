@@ -66,7 +66,7 @@
             </el-button>
           </div>
           <!--表格-->
-          <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+          <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
             <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column fixed :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
@@ -75,30 +75,25 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="roleCount" :label="$t('organizeMaintenance.roleNum')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center"
-                             align="center"/>
+            <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center" align="center"/>
+            <el-table-column prop="roleCount" :label="$t('organizeMaintenance.roleNum')" header-align="center" align="center"/>
+            <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center" align="center"/>
+            <el-table-column :label="$t('organizeMaintenance.sort')" header-align="center" align="center">
+              <template slot-scope="scope">
+                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+              </template>
+            </el-table-column>
             <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span v-if="scope.row.enable === true">启用</span>
                 <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center"
-                             align="center"/>
+            <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="center" align="center"/>
             <el-table-column :label="$t('organizeMaintenance.createTime')" header-align="center" align="center">
               <template slot-scope="scope">
                 <span>{{scope.row.createTime | dateFilter}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="lastModifyBy" :label="$t('organizeMaintenance.updateName')" header-align="center"
-                             align="center"/>
-            <el-table-column :label="$t('organizeMaintenance.updateTime')" header-align="center" align="center">
-              <template slot-scope="scope">
-                <span>{{scope.row.lastModifyTime | dateFilter}}</span>
               </template>
             </el-table-column>
           </el-table>
@@ -158,7 +153,7 @@
       <span slot="footer">
         <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.close')}}</el-button>
+        <el-button class="queryBtn" @click="resetFormData">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -177,7 +172,7 @@
         formItem: {
           dateTime: null,
           organizationName: null,
-          organizationId: null
+          organizationId: '0'
         },
         // 新增编辑表单
         addEdit: {
@@ -235,6 +230,19 @@
       }
     },
     methods:{
+      // 重置表单
+      resetFormData(){
+        var _t = this;
+        _t.addEdit.id = '';
+        _t.addEdit.organization = '';
+        _t.addEdit.organizationId = '';
+        _t.addEdit.organizationName = '';
+        _t.addEdit.enable = '';
+        _t.addEdit.description = '';
+        _t.addEdit.orderIndex = '';
+        _t.dialogVisible = false;
+        _t.$refs.table.clearSelection();
+      },
       // 选中所属组织节点
       clickNodeAlert(val) {
         var _t = this;
@@ -310,7 +318,9 @@
         _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/organization/enableOrganization', {
@@ -323,7 +333,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 _t.disableBtn.edit = true;
@@ -355,7 +366,9 @@
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/organization/enableOrganization', {
@@ -368,7 +381,8 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getData();
                 _t.disableBtn.edit = true;
@@ -400,7 +414,9 @@
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/organization/', {
@@ -412,8 +428,10 @@
             switch (res.status) {
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
+                _t.getData();
                 _t.getTreeData();
                 break;
               case 1003: // 无操作权限
@@ -424,17 +442,22 @@
                 break;
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
+                _t.getData();
                 _t.getTreeData();
                 break;
               case 3005: // 数据关联不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
+                _t.getData();
                 _t.getTreeData();
                 break;
               default:
+                _t.getData();
                 _t.getTreeData();
                 break;
             }
@@ -460,10 +483,6 @@
           switch (res.status) {
             case 200: // 查询成功
               _t.treeMenuData = JSON.parse(res.data);
-              // 获取树形列表第一层id值
-              _t.formItem.organizationId = _t.treeMenuData.nodeId;
-              // 查询表格数据
-              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -567,6 +586,7 @@
               _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
+                  _t.getData();
                   _t.getTreeData();
                   break;
                 case 1003: // 无操作权限
@@ -588,16 +608,39 @@
       // 编辑组织按钮
       editDataBtn() {
         var _t = this;
-        _t.dialogVisible = true;
+        // 新增编辑判断
         _t.ifAdd = false;
         _t.addEdit.id = _t.checkListValue[0].id;
-        _t.addEdit.organization = organization(_t.organizationList, _t.checkListValue[0].parentId);
-        _t.addEdit.organizationId = _t.checkListValue[0].parentId;
-        _t.addEdit.organizationName = _t.checkListValue[0].name;
-        _t.addEdit.orderIndex = _t.checkListValue[0].orderMark;
-        _t.addEdit.enable = _t.checkListValue[0].enable == true ? 1 : 0;
-        _t.addEdit.description = _t.checkListValue[0].description;
-
+        _t.getEditOrgData(_t.addEdit.id);
+      },
+      // 编辑时根据数据id查询编辑数据
+      getEditOrgData(val){
+        var _t = this;
+        _t.$api.get('system/organization/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              if (res.data.parentId !== null) {
+                _t.addEdit.organization = organization(_t.organizationList, res.data.parentId);
+              } else {
+                _t.addEdit.organization = '';
+              }
+              _t.addEdit.organizationId = res.data.parentId;
+              _t.addEdit.organizationName = res.data.name;
+              _t.addEdit.orderIndex = res.data.orderMark;
+              _t.addEdit.enable = res.data.enable == true ? 1 : 0;
+              _t.addEdit.description = res.data.description;
+              _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
         // 递归查找组织名
         function organization(data, index) {
           var result, temp; //返回值和临时变量
@@ -635,6 +678,7 @@
               _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
+                  _t.getData();
                   _t.getTreeData();
                   break;
                 case 1003: // 无操作权限
@@ -649,11 +693,60 @@
             });
           }
         });
+      },
+      // 上移
+      moveUp(data){
+        var _t = this;
+        _t.$api.put('system/organization/enableOrganization',{
+          systemOrganization:{
+            id:data.id
+          },
+          upOrDown:"up"
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 下移
+      moveDown(data){
+        var _t = this;
+        _t.$api.put('system/organization/enableOrganization',{
+          systemOrganization:{
+            id:data.id
+          },
+          upOrDown:"down"
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       }
     },
     created(){
       this.$store.commit('setLoading', true);
       this.getTreeData();
+      this.getData();
       this.getOrganization();
     }
   }
