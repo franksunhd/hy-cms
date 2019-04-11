@@ -50,7 +50,7 @@
           <i class="el-icon-circle-close-outline"></i>
           {{$t('public.disable')}}
         </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="deleteData">
+        <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
@@ -521,7 +521,7 @@
         }).then(()=>{
           _t.$api.delete('system/language/', {
             jsonString: JSON.stringify({
-              roleId: _t.checkListIds.join(',')
+              id: _t.checkListIds.join(',')
             })
           }, function (res) {
             switch (res.status) {
@@ -606,27 +606,41 @@
       },
       // 导入功能菜单
       importFunction(){
-        this.$confirm('请问是否确认下载选中记录的相应文件?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          type: 'warning'
+        var _t = this;
+        _t.$confirm('请问是否确认下载选中记录的相应文件?',_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
+          type: 'warning',
+          cancelButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(()=>{
 
         }).catch(()=>{
           return;
         });
+        _t.disableBtn.edit = true;
+        _t.disableBtn.enable = true;
+        _t.disableBtn.disable = true;
+        _t.disableBtn.more = true;
+        _t.disableBtn.default = true;
       },
       // 导入数据字典菜单
       importData(){
-        this.$confirm('请问是否确认下载选中记录的相应文件?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+        var _t = this;
+        _t.$confirm('请问是否确认下载选中记录的相应文件?',_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
 
         }).catch(()=>{
           return;
         });
+        _t.disableBtn.edit = true;
+        _t.disableBtn.enable = true;
+        _t.disableBtn.disable = true;
+        _t.disableBtn.more = true;
+        _t.disableBtn.default = true;
       },
       // 获取表格数据
       getData() {
