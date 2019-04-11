@@ -66,7 +66,7 @@
             </el-button>
           </div>
           <!--表格-->
-          <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+          <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
             <el-table-column type="selection" fixed header-align="center" align="center"/>
             <el-table-column :label="$t('public.index')" header-align="center" align="center">
               <template slot-scope="scope">
@@ -126,7 +126,7 @@
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
           <el-upload action="">
-            <el-button size="small" type="primary">点击上传</el-button>
+            <el-button class="queryBtn" size="small" type="primary">点击上传</el-button>
           </el-upload>
           <el-input v-if="false" v-model="addEdit.menuIcon"/>
         </el-form-item>
@@ -189,16 +189,18 @@
           :data="selectUser"
           :props="defaultPropsUser"
           show-checkbox
+          node-key="nodeId"
+          :default-checked-keys="checkedKeysArr"
           ref="tree"/>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
-          <el-button @click="dialogVisibleAlert = false" size="small">{{$t('public.cancel')}}</el-button>
+          <el-button type="primary" @click="getCheckedNodes" class="queryBtn">{{$t('public.confirm')}}</el-button>
+          <el-button @click="dialogVisibleAlert = false" class="queryBtn">{{$t('public.cancel')}}</el-button>
         </span>
       </el-dialog>
       <span slot="footer">
         <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
         <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -251,7 +253,8 @@
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
         checkValueList: {}, // 选中数据集合 编辑时
-        languageList:[],
+        languageList:[], // 当前系统支持的语言列表
+        checkedKeysArr:[], // 选择用户树形控件默认选中的节点组
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -288,6 +291,20 @@
       }
     },
     methods: {
+      // 重置表单数据
+      resetFormData(){
+        var _t = this;
+        _t.dialogVisible = false;
+        _t.addEdit.id = '';
+        _t.addEdit.parentId = null;
+        _t.addEdit.menuLevel = 0;
+        _t.addEdit.menuIcon = '';
+        _t.addEdit.menuHref = '';
+        _t.addEdit.jumpType = '';
+        _t.addEdit.enable = '';
+        _t.addEdit.orderMark = '';
+        _t.$refs.table.clearSelection();
+      },
       // 输入框菜单名称校验
       menuNameInput(data){
         if (data.menuName.trim() == '') {
@@ -372,6 +389,7 @@
               switch (res.status) {
                 case 200:
                   _t.getMenuData();
+                  _t.getData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -380,7 +398,10 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 3004: // 操作失败
-                  _t.$alert(res.message);
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'queryBtn'
+                  });
                   break;
                 default:
                   break;
@@ -396,6 +417,7 @@
         _t.ifAdd = false;
         _t.addEdit.id = _t.checkValueList.id;
         _t.getEditData(_t.addEdit.id);
+        _t.getEditRoleData(_t.addEdit.id);
       },
       // 根据菜单id查询需要编辑的数据
       getEditData(data){
@@ -415,6 +437,43 @@
               _t.addEdit.orderMark = res.data.orderMark;
               _t.addEdit.enable = res.data.enable == true ? 1 : 0;
               _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 根据菜单id 查询 需要编辑的数据下的角色列表
+      getEditRoleData(data){
+        var _t = this;
+        _t.$api.get('system/menu/getRoleByMenu',{
+          jsonString:JSON.stringify({
+            systemMenu:{
+              id:data
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              var nodeIdArr = new Array();
+              var resData = res.data;
+              resData.forEach(function (item) {
+                var obj = new Object();
+                obj.children = [];
+                obj.level = 1; // 类型 1代表角色类型 2代表组织类型
+                obj.nodeId = item.id;
+                obj.nodeName = item.roleName;
+                obj.parentNodeId = item.organizationId;
+                nodeIdArr.push(obj);
+              });
+              _t.listData = queryOrgWithRole(_t.selectUser, nodeIdArr, 1);
+
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -469,6 +528,7 @@
               switch (res.status) {
                 case 200:
                   _t.getMenuData();
+                  _t.getData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -477,7 +537,10 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 3004: // 操作失败
-                  _t.$alert(res.message);
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'queryBtn'
+                  });
                   break;
                 default:
                   break;
@@ -552,7 +615,9 @@
         _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -565,13 +630,11 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getMenuData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
+                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -580,12 +643,12 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
         }).catch(() => {
           return;
@@ -597,7 +660,9 @@
         _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -610,13 +675,11 @@
             switch (res.status) {
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getMenuData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
+                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -625,12 +688,12 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
         }).catch(() => {
           return;
@@ -642,7 +705,9 @@
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          type: 'warning'
+          type: 'warning',
+          confirmButtonClass:'queryBtn',
+          cancelButtonClass:'queryBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/menu/', {
@@ -654,9 +719,11 @@
             switch (res.status) {
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getMenuData();
+                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -666,24 +733,28 @@
                 break;
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getMenuData();
+                _t.getData();
                 break;
               case 3005: // 菜单管理其他菜单
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm')
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
                 });
                 _t.getMenuData();
+                _t.getData();
                 break;
               default:
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
-          _t.disableBtn.edit = true;
-          _t.disableBtn.enable = true;
-          _t.disableBtn.disable = true;
-          _t.disableBtn.more = true;
         }).catch(() => {
           return;
         });
@@ -747,8 +818,6 @@
           switch (res.status) {
             case 200: // 查询成功
               _t.treeData = res.data.rootMenu;
-              _t.formItem.nodeId = '0';
-              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -862,6 +931,18 @@
       selectUserBtn() {
         var _t = this;
         _t.dialogVisibleAlert = true;
+        // 编辑时 过滤数据
+        if (_t.ifAdd == false) {
+          var checkArr = new Array();
+          _t.result().forEach(function (item) {
+            checkArr.push(item.nodeId);
+          });
+          _t.checkedKeysArr = checkArr;
+        }
+      },
+      // 获取组织角色列表
+      getOrgRoleList(){
+        var _t = this;
         _t.$api.get('system/menu/getOrgRole', {}, function (res) {
           switch (res.status) {
             case 200:
@@ -893,6 +974,8 @@
     created() {
       this.$store.commit('setLoading', true);
       this.getMenuData();
+      this.getData();
+      this.getOrgRoleList();
     }
   }
 </script>
