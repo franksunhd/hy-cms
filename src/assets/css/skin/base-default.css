@@ -292,6 +292,24 @@
   color: #C0C0C0;
 }
 
+.iconfontSuccess {
+  color: #67C23A;
+}
+
 .dialogTitle {
   background-color: #c1c1c1;
+}
+
+#administration-tabs-title,
+#administration-tabs-title li.active::before,
+#administration-tabs-title li.active::after {
+  background-color: #c1c1c1;
+}
+
+#administration-tabs-title li.active::before {
+  box-shadow: 2px 2px 0 #fff;
+}
+
+#administration-tabs-title li.active::after {
+  box-shadow: -2px 2px 0 #fff;
 }
