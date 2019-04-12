@@ -466,12 +466,19 @@
   }
 
   #alarmCurrent-tabs .el-tabs__content {
-    overflow: visible;
+    position: fixed;
+    left: 100px;
+    right: 40px;
+    bottom: 50px;
+    top: 150px;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
 
   .alarmCurrent-btn {
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 100;
   }
 </style>

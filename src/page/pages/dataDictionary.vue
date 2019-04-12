@@ -172,7 +172,6 @@ export default {
 			},
 			// 新增 编辑表单
 			addEdit: {
-			
 				nodeName: '', //字典名称
 				parentId: "", //父级Id
 				nodeId: '', //字典项ID
@@ -180,8 +179,7 @@ export default {
 				dictionaryCode: '', //字典项编码
 				dictionaryType: '', //字典项类型
 				orderMark: '', //顺序
-				//状态
-				enable:'',
+				enable:'',//状态
 				//status: null,
 				systemBasedataLanguageList: [{
 					id: "", //字典语言项的ID
@@ -226,12 +224,6 @@ export default {
 				currentPage: 1, // 当前页码
 				pageSize: 10, // 每页显示条数
 			},
-			/*
-			                defaultProps: {
-			                  label: 'nodeName',
-			                  children: 'children'
-			                }*/
-
 		}
 	},
 	methods: {
@@ -372,9 +364,7 @@ export default {
 		},
 		// 删除
 		deleteData() {
-			//debugger;
 			var _t = this;
-			console.log(_t.checkListIds);
 			_t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
 				confirmButtonText: _t.$t('public.confirm'),
 				cancelButtonText: _t.$t('public.close'),
@@ -481,7 +471,7 @@ export default {
 			_t.$api.post('system/basedata/', {
 				"systemBasedata": {
 					"id": null,
-					"parentId": _t.addEdit.parentId,
+					"parentId": _t.addEdit.parentId == '' ? null : _t.addEdit.parentId,
 					"dictionaryCode": _t.addEdit.dictionaryCode,
 					"dictionaryType": _t.addEdit.dictionaryType,
 					"orderMark": _t.addEdit.orderMark,
@@ -644,7 +634,7 @@ export default {
 				}
 			});
 		},
-		
+
 	},
 
 	created() {
