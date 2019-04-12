@@ -6,6 +6,8 @@ import Index from '@/page/Index';
 import Login from '@/page/login';
 // Home页
 const Home = () => import ('@/page/pages/Home');
+//树形穿梭框
+const selectTree = () => import ('@/components/selectTree');
 // 系统设置页面
 const systemSettings = () => import ('@/components/systemSettings');
 // 系统监测页面
@@ -165,9 +167,13 @@ export default new Router({
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
         {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
-        {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent}
+        {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
+        
+        
+        //树形穿梭
+        {path:'/YUser/selectTree',name:'selectTree',component:selectTree},
       ]
     },
-    {path: '/login', name: 'Login', component: Login}
+    {path: '/login', name: 'Login', component: Login},
   ]
 });
