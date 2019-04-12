@@ -196,7 +196,7 @@
           {label:'禁用',value:0},
         ],
         dialogVisible:false, // 新增编辑弹出层
-        ifAdd:false, // 新增编辑判断
+        ifAdd:true, // 新增编辑判断
         tableData: [], // 表格数据
         checkListIds:[], // 获取选中的表格数据id
         editDataList:{}, // 选中的单条的数据集合
@@ -301,6 +301,7 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
                   // 编辑语言列表成功之后刷新顶部导航语言列表
                   _t.$bus.emit('getLanguage',true);
                   break;
@@ -323,7 +324,7 @@
         var _t = this;
         _t.$refs[formName].validate((valid) => {
           if (valid) {
-            _t.$api.put('system/language/', {
+            _t.$api.post('system/language/', {
               systemLanguage: {
                 id:null,
                 languageCode: _t.addEdit.languageCode == null ? null : _t.addEdit.languageCode.trim(),
@@ -338,6 +339,7 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
                   // 新增语言之后重新获取 顶部导航语言列表数据
                   _t.$bus.emit('getLanguage',true);
                   break;
