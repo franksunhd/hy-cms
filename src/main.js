@@ -90,7 +90,7 @@ new Vue({
   methods: {
     // 检查是否登录
     checkLogin() {
-      if (!this.getCookie('tokenID')) {
+      if (!localStorage.getItem('hy-token')) {
         this.$store.commit("setLoading", false);
         this.$router.push({name: 'Login'});
         localStorage.removeItem('hy-language');
