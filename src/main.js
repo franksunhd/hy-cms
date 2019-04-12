@@ -90,13 +90,15 @@ new Vue({
   methods: {
     // 检查是否登录
     checkLogin() {
-      if (!this.getCookie('tokenID')) {
+      if (!localStorage.getItem('hy-token')) {
         this.$store.commit("setLoading", false);
-        // this.$router.replace('/login');
-        // localStorage.removeItem('hy-token');
-        // localStorage.removeItem('hy-user-id');
-        // localStorage.removeItem('hy-language');
-        // localStorage.removeItem('hy-menu-id');
+        this.$router.push({name: 'Login'});
+        localStorage.removeItem('hy-language');
+        localStorage.removeItem('hy-menu-id');
+        localStorage.removeItem('hy-organization-id');
+        localStorage.removeItem('hy-token');
+        localStorage.removeItem('hy-user-id');
+        localStorage.removeItem('hy-user-name');
       }
     }
   }

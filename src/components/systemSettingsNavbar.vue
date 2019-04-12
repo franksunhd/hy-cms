@@ -111,18 +111,24 @@
       }
     },
     created() {
+      var _t = this;
       var menuId = this.$route.query.id || localStorage.getItem('hy-menu-id');
       switch (menuId) {
         case 'menu_01_01':
-          this.titleName = this.$t('system.systemSetting');
+          _t.titleName = _t.$t('system.systemSetting');
           break;
         case 'menu_01_02':
-          this.titleName = this.$t('system.systemMonitoring');
+          _t.titleName = _t.$t('system.systemMonitoring');
           break;
         default:
           break;
       }
-      this.getData(menuId);
+      _t.getData(menuId);
+      _t.$bus.on('getMenu',(val)=>{
+        if (val){
+          _t.getData(menuId);
+        }
+      });
     }
   }
 </script>

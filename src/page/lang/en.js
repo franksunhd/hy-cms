@@ -307,7 +307,7 @@ export default {
     createName: 'createName',
     createTime: 'createTime',
     createUpdateNode: 'createUpdateNode',
-    isEnable: 'isEnable',
+    IPList: 'IPList',
     note: 'note'
   },
   // 采集节点管理

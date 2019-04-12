@@ -196,7 +196,7 @@
           {label:'禁用',value:0},
         ],
         dialogVisible:false, // 新增编辑弹出层
-        ifAdd:false, // 新增编辑判断
+        ifAdd:true, // 新增编辑判断
         tableData: [], // 表格数据
         checkListIds:[], // 获取选中的表格数据id
         editDataList:{}, // 选中的单条的数据集合
@@ -301,6 +301,9 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
+                  // 编辑语言列表成功之后刷新顶部导航语言列表
+                  _t.$bus.emit('getLanguage',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -313,6 +316,11 @@
                   break;
               }
             });
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
+            _t.disableBtn.default = true;
           }
         })
       },
@@ -321,7 +329,7 @@
         var _t = this;
         _t.$refs[formName].validate((valid) => {
           if (valid) {
-            _t.$api.put('system/language/', {
+            _t.$api.post('system/language/', {
               systemLanguage: {
                 id:null,
                 languageCode: _t.addEdit.languageCode == null ? null : _t.addEdit.languageCode.trim(),
@@ -336,6 +344,9 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  _t.resetFormData();
+                  // 新增语言之后重新获取 顶部导航语言列表数据
+                  _t.$bus.emit('getLanguage',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -348,6 +359,11 @@
                   break;
               }
             });
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
+            _t.disableBtn.default = true;
           }
         });
       },
@@ -443,8 +459,11 @@
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  // 启用语言之后刷新顶部导航语言列表
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -488,8 +507,10 @@
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn',
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -505,6 +526,7 @@
           _t.disableBtn.enable = true;
           _t.disableBtn.disable = true;
           _t.disableBtn.more = true;
+          _t.disableBtn.default = true;
         }).catch(()=>{
           return;
         });
@@ -529,8 +551,10 @@
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -582,8 +606,10 @@
                 _t.$alert('恭喜你,当前记录设置成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期

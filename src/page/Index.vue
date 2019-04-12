@@ -178,9 +178,16 @@
       }
     },
     created() {
-      this.getData();
-      this.getLanguage();
-      this.getMessage();
+      var _t = this;
+      _t.getData();
+      _t.getLanguage();
+      _t.getMessage();
+      // 系统支持语言改变之后重新获取语言列表
+      _t.$bus.on('getLanguage',(val)=>{
+        if (val) {
+          _t.getLanguage();
+        }
+      });
     }
   }
 </script>
