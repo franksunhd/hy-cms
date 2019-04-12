@@ -307,7 +307,7 @@ export default {
     createName: '创建人',
     createTime: '创建时间',
     createUpdateNode: '新增/编辑节点组',
-    isEnable: '是否启用',
+    IPList: '管辖的IP段',
     note: '备注'
   },
   // 采集节点管理
