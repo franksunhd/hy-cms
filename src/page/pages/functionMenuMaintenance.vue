@@ -167,9 +167,9 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <!--<el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">-->
-          <!--<el-input v-model="addEdit.menuLevel" class="width200"/>-->
-        <!--</el-form-item>-->
+        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
+          <el-input v-model="addEdit.menuLevel" class="width200" readonly/>
+        </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200"/>
         </el-form-item>
@@ -346,6 +346,7 @@
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = true;
+        _t.addEdit.menuLevel += 1;
         _t.getLanguage();
       },
       // 新增提交
@@ -390,6 +391,8 @@
                 case 200:
                   _t.getMenuData();
                   _t.getData();
+                  // 新增语言之后刷新左侧导航的数据
+                  _t.$bus.emit('getMenu',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -473,7 +476,6 @@
                 nodeIdArr.push(obj);
               });
               _t.listData = queryOrgWithRole(_t.selectUser, nodeIdArr, 1);
-
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -529,6 +531,8 @@
                 case 200:
                   _t.getMenuData();
                   _t.getData();
+                  // 编辑成功后刷新左侧导航的数据
+                  _t.$bus.emit('getMenu',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -606,8 +610,9 @@
       },
       // 改变当前页码
       handleCurrentChange(val) {
-        this.options.currentPage = val;
-        this.getData();
+        var _t = this;
+        _t.options.currentPage = val;
+        _t.getData();
       },
       // 启用
       enableData() {
@@ -632,9 +637,12 @@
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getMenuData();
+                  _t.getData();
+                  // 启用成功之后刷新左侧导航数据
+                  _t.$bus.emit('getMenu',true);
                 });
-                _t.getMenuData();
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -677,9 +685,13 @@
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  // 刷新当前组件列表数据
+                  _t.getMenuData();
+                  _t.getData();
+                  // 刷新左侧导航列表数据
+                  _t.$bus.emit('getMenu',true);
                 });
-                _t.getMenuData();
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -721,9 +733,13 @@
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getMenuData();
+                  _t.getData();
+                  // 删除之后刷新左侧导航数据
+                  _t.$bus.emit('getMenu',true);
                 });
-                _t.getMenuData();
-                _t.getData();
+
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -735,17 +751,22 @@
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getMenuData();
+                  _t.getData();
+                  // 删除失败之后刷新左侧导航数据
+                  _t.$bus.emit('getMenu',true);
                 });
-                _t.getMenuData();
-                _t.getData();
                 break;
-              case 3005: // 菜单管理其他菜单
+              case 3005: // 菜单关联其他菜单
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
-                });
-                _t.getMenuData();
-                _t.getData();
+                }).then(()=>{
+                  _t.getMenuData();
+                  _t.getData();
+                  _t.$bus.emit('getMenu',true);
+              ``});
                 break;
               default:
                 break;
@@ -889,6 +910,8 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              // 列表数据上移之后刷新左侧导航菜单
+              _t.$bus.emit('getMenu',true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -915,6 +938,8 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              // 数据下移之后刷新左侧导航菜单
+              _t.$bus.emit('getMenu',true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

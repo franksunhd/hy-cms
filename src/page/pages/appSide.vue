@@ -309,6 +309,13 @@
         _t.getData();
         _t.getMenuData();
       }
+      // 菜单权限更改后 实现局部的接口刷新, 避免整个页面的刷新
+      _t.$bus.on('getMenu',(val)=>{
+        if (val) {
+          _t.getData();
+          _t.getMenuData();
+        }
+      });
     }
   }
 </script>

@@ -12,9 +12,9 @@ import VueDND from 'awe-dnd';
 import echarts from 'echarts';
 import md5 from 'js-md5';
 import * as custom from './assets/js/filters';
-
 import tagsview from './assets/js/tagsview';
 import getters from './assets/js/getters';
+import vueBus from 'vue-bus';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
@@ -26,6 +26,7 @@ import './assets/css/fontStyle.css';
 
 Vue.use(Vuex);
 Vue.use(VueDND);
+Vue.use(vueBus);
 Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value)
 });
