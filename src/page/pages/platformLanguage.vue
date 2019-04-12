@@ -301,6 +301,8 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  // 编辑语言列表成功之后刷新顶部导航语言列表
+                  _t.$bus.emit('getLanguage',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -336,6 +338,8 @@
               switch (res.status) {
                 case 200:
                   _t.getData();
+                  // 新增语言之后重新获取 顶部导航语言列表数据
+                  _t.$bus.emit('getLanguage',true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -443,8 +447,11 @@
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  // 启用语言之后刷新顶部导航语言列表
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -488,8 +495,10 @@
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn',
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -529,8 +538,10 @@
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -582,8 +593,10 @@
                 _t.$alert('恭喜你,当前记录设置成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.$bus.emit('getLanguage',true);
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
