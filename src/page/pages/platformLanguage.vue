@@ -316,6 +316,11 @@
                   break;
               }
             });
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
+            _t.disableBtn.default = true;
           }
         })
       },
@@ -354,6 +359,11 @@
                   break;
               }
             });
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
+            _t.disableBtn.default = true;
           }
         });
       },
@@ -516,6 +526,7 @@
           _t.disableBtn.enable = true;
           _t.disableBtn.disable = true;
           _t.disableBtn.more = true;
+          _t.disableBtn.default = true;
         }).catch(()=>{
           return;
         });
