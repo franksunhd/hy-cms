@@ -8,7 +8,7 @@
       </el-breadcrumb>
     </div>
     <div class="padding20">
-      <el-form inline label-width="200px">
+      <el-form inline label-width="200px" class="marginBottom10">
         <el-form-item :label="$t('license.version') + '：'">3.0</el-form-item><br>
         <el-form-item :label="$t('license.customerName') + '：'">上海XXXXXXXXXXXXXXX证券营业部</el-form-item><br>
         <el-form-item :label="$t('license.LicenseGenerated') + '：'">
