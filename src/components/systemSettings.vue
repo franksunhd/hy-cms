@@ -2,9 +2,13 @@
   <div class="systemSettings-box">
     <div v-show="isShow" class="systemSettings-navBar">
       <systemSettingsNavBar/>
-      <a href="javascript:;" @click="clickInset" id="systemSettings-navBar-inSet">内</a>
+      <a href="javascript:;" @click="clickInset" id="systemSettings-navBar-inSet">
+        <span class="iconfont">&#xe613;</span>
+      </a>
     </div>
-    <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">外</a>
+    <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">
+      <span class="iconfont">&#xe614;</span>
+    </a>
     <div id="systemSettings-routerView" class="systemSettings-routerView">
       <router-view/>
     </div>
@@ -64,17 +68,25 @@
     bottom: 0;
   }
 
-  #systemSettings-navBar-inSet {
-    position: fixed;
+  #systemSettings-navBar-inSet,
+  #systemSettings-navBar-outSet {
+    height: 40px;
+    width: 20px;
     top: 50%;
+    text-align: center;
+    line-height: 40px;
+    position: fixed;
+  }
+
+  #systemSettings-navBar-inSet {
     left: 210px;
+    border-radius: 15px 0 0 15px;
   }
 
   #systemSettings-navBar-outSet {
-    position: fixed;
-    top: 50%;
-    left: 60px;
+    left: 56px;
     display: none;
     z-index: 1001;
+    border-radius: 0 15px 15px 0;
   }
 </style>

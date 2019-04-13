@@ -333,3 +333,9 @@
 .el-dialog__header .el-dialog__title {
   color: #252a2f;
 }
+
+#systemSettings-navBar-inSet,
+#systemSettings-navBar-outSet {
+  background-color: #3f81d0;
+  color: #fff;
+}
