@@ -171,8 +171,8 @@
 
   .systemSettings-navBarBox .el-submenu .el-menu-item,
   .systemSettings-navBarBox .el-submenu .el-submenu__title {
-    height: 30px;
-    line-height: 30px;
+    height: 36px;
+    line-height: 36px;
     min-width: auto;
   }
 
