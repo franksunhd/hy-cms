@@ -317,7 +317,7 @@ export default {
     nodePort: '节点端口',
     nodeType: '节点类型',
     status: '状态',
-    groupName: '组名称',
+    groupName: '节点组',
     ip: 'IP',
     port: '端口',
     nodeGroup: '所属节点组',

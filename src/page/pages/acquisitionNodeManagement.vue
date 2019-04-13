@@ -10,75 +10,50 @@
     </div>
     <div class="padding20 borderBottom">
       <!--表单-->
-      <el-form inline>
+      <el-form inline label-width="96px" :model="formItem">
         <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200"/>
+          <el-input class="width200" v-model="formItem.collectorName" />
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200"/>
+          <el-input class="width200" v-model="formItem.IP" />
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200"/>
+          <el-input class="width200" v-model="formItem.port" />
         </el-form-item>
-        <br>
         <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
-          <el-select class="width200">
-            <el-option></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('acquisitionNodeManagement.nodeType') + '：'">
-          <el-select class="width200">
-            <el-option></el-option>
+          <el-select class="width200" v-model="formItem.groupIp">
+            <el-option label="全部" value="0" />
+            <el-option v-for="(item,index) in groupIpList" :key="index" :label="item.groupName" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.status') + '：'">
-          <el-select class="width200">
-            <el-option></el-option>
+          <el-select class="width200" v-model="formItem.status">
+            <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button class="queryBtn" type="primary">{{$t('public.query')}}</el-button>
+          <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="padding20">
       <!--全局操作-->
       <div class="marBottom16">
-        <el-button type="warning" class="queryBtn" @click="dialogVisible = true">
+        <el-button type="warning" class="queryBtn" @click="addDataBtn">
           <i class="el-icon-circle-plus-outline"></i>
           {{$t('public.add')}}
         </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="dialogVisible = true">
+        <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
           <i class="el-icon-edit-outline"></i>
           {{$t('public.edit')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-          <i class="el-icon-circle-check-outline"></i>
-          {{$t('public.enable')}}
-        </el-button>
-        <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-          <i class="el-icon-circle-close-outline"></i>
-          {{$t('public.disable')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
           <i class="el-icon-delete"></i>
           {{$t('public.delete')}}
         </el-button>
-        <el-button :disabled="disableBtn.enable" @click="runMonitoring">
-          <i class="el-icon-delete"></i>
-          {{$t('acquisitionNodeManagement.runMonitoring')}}
-        </el-button>
-        <el-button :disabled="disableBtn.disable" @click="stopMonitoring">
-          <i class="el-icon-delete"></i>
-          {{$t('acquisitionNodeManagement.stopMonitoring')}}
-        </el-button>
-        <el-button :disabled="disableBtn.edit" @click="assignedTasks">
-          <i class="el-icon-delete"></i>
-          {{$t('acquisitionNodeManagement.equipmentMonitoring')}}
-        </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+      <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="center" align="center"/>
         <el-table-column :label="$t('public.index')" header-align="center" align="center">
           <template slot-scope="scope">
@@ -86,29 +61,29 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.nodeType')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.equipmentNumber')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center"/>
+        <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center"/>
+        <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center"/>
+        <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center"/>
+        <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center"/>
+        <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center"/>
         <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="center" align="center">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.status === 1">正常</span>
+            <span v-if="scope.row.status === -1" class="disabledStatusColor">异常</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center"/>
+        <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.createTime | dateFilter}}</span>
+          </template>
+        </el-table-column>
       </el-table>
       <!--分页-->
       <pages
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
-        :firstPage='options.firstPage'
-        :lastPage='options.lastPage'
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
@@ -118,111 +93,29 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="120px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'">
-              <el-input/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'">
-              <el-input/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeGroup') + '：'">
-              <el-select>
-                <el-option></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'">
-              <el-input/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeType') + '：'">
-              <el-select>
-                <el-option></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.statusAlert') + '：'">
-              <el-radio-group v-model="status">
-                <el-radio :label="0">{{$t('public.enable')}}</el-radio>
-                <el-radio :label="1">{{$t('public.disable')}}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item :label="$t('acquisitionNodeManagement.ruleDes') + '：'">
-              <el-input type="textarea" :autosize="{minRows:3}"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-form label-width="120px" inline :model="addEdit" :rules="rules" ref="formName">
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" prop="collectorName">
+          <el-input class="width200" v-model="addEdit.collectorName" />
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" prop="ip">
+          <el-input class="width200" v-model="addEdit.ip" />
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodeGroup') + '：'" prop="groupId">
+          <el-select v-model="addEdit.groupId" class="width200">
+            <el-option v-for="(item,index) in groupIpList" :key="index" :label="item.groupName" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" prop="port">
+          <el-input class="width200" v-model="addEdit.port" />
+        </el-form-item>
+        <el-form-item :label="$t('acquisitionNodeManagement.ruleDes') + '：'" prop="description">
+          <el-input class="width200" type="textarea" v-model="addEdit.description" :autosize="{minRows:3}"/>
+        </el-form-item>
       </el-form>
-      <el-row>
-        <el-col :span="24">
-          <p>{{$t('acquisitionNodeManagement.monitoringTask') + '：'}}</p>
-          <p>穿梭框插件</p>
-        </el-col>
-      </el-row>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisible = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
-      </span>
-    </el-dialog>
-    <!--分配设备监测任务-->
-    <el-dialog
-      append-to-body
-      :title="$t('acquisitionNodeManagement.createUpdateNode')"
-      :visible.sync="dialogVisibleAlert"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false">
-      <el-form label-width="120px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeGroup') + '：'">
-              温州机房
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'">
-              A01
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'">
-              192.168.0.1
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'">
-              8080
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <el-row>
-        <el-col :span="24">
-          <p>{{$t('acquisitionNodeManagement.monitoringTask') + '：'}}</p>
-          <p>穿梭框插件</p>
-        </el-col>
-      </el-row>
-      <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" v-if="ifAdd == true" class="queryBtn" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" v-if="ifAdd == false" class="queryBtn" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -230,154 +123,357 @@
 
 <script>
   import Box from '../../components/Box';
+  import {isNotNull} from "../../assets/js/validator";
+  import {dateFilter} from "../../assets/js/filters";
 
   export default {
     name: "acquisitionNodeManagement",
     components: {Box},
     data() {
       return {
+        // 查询表单
+        formItem:{
+          collectorName:null, // 名称
+          groupIp:'0', // 节点组id
+          IP:null,
+          port:null,
+          status:null
+        },
+        // 新增编辑表单
+        addEdit:{
+          id:'',
+          collectorName:'',
+          ip:'',
+          status:1,
+          groupId:'',
+          port:'',
+          description:''
+        },
+        // 全局按钮判断
         disableBtn: {
           edit: true,
-          enable: true,
-          disable: true,
           more: true
         },
-        tableData: [
-          {status: 1}, {status: 0}, {status: 1}, {status: 0}, {status: 1}, {status: 1}
+        statusList:[
+          {label:'正常',value:1},
+          {label:'异常',value:-1},
         ],
+        tableData: [], // 表格数据集合
+        checkListIds:[], // 选中的数据id集合
+        groupIpList:[], // 节点组列表
+        // 分页
         options: {
-          total: 1000, // 总条数
+          total: 0, // 总条数
           currentPage: 1, // 当前页码
           pageSize: 10, // 每页显示条数
-          firstPage: 1, // 首页
-          lastPage: 100 // 末页
         },
-        dialogVisible: false,
-        dialogVisibleAlert: false
+        dialogVisible: false, // 新增编辑弹出层
+        ifAdd:true, // 判断新增编辑
+        rules: {
+          collectorName:[
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          ip:[
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          groupId:[
+            {validator: isNotNull, trigger: ['blur','change']}
+          ],
+          port:[
+            {validator: isNotNull, trigger: ['blur']}
+          ],
+          description:[
+            {validator: isNotNull, trigger: ['blur']}
+          ]
+        }
       }
     },
     methods: {
+      // 重置表单
+      resetFormData(){
+        var _t= this;
+        _t.ifAdd = true;
+        _t.dialogVisible = false;
+        _t.addEdit.id = '';
+        _t.addEdit.collectorName ='';
+        _t.addEdit.ip ='';
+        _t.addEdit.status = 1;
+        _t.addEdit.groupId ='';
+        _t.addEdit.port ='';
+        _t.addEdit.description ='';
+        this.$refs.table.clearSelection();
+      },
       // 当前选中条数
       selectTableNum(data) {
         var _t = this;
         switch (data.length) {
           case 0: // 未选中
-            _t.disableBtn.disable = true;
             _t.disableBtn.edit = true;
-            _t.disableBtn.enable = true;
             _t.disableBtn.more = true;
             break;
           case 1: // 单选
             _t.disableBtn.edit = false;
             _t.disableBtn.more = false;
-            data.forEach(function (item) {
-              if (item.status === 0) {
-                _t.disableBtn.enable = false;
-              } else if (item.status === 1) {
-                _t.disableBtn.disable = false;
-              }
-            });
             break;
           default: // 多选
             _t.disableBtn.edit = true;
             _t.disableBtn.more = false;
-            var disableFlag = 0, enableFlag = 0;
-            for (var i = 0; i < data.length; i++) {
-              if (data[i].status === 0) {
-                disableFlag++;
-              } else if (data[i].status === 1) {
-                enableFlag++;
-              }
-            }
-            if (disableFlag > 0 && enableFlag > 0) {
-              _t.disableBtn.enable = true;
-              _t.disableBtn.disable = true;
-            } else if (disableFlag === 0 && enableFlag > 0) {
-              _t.disableBtn.enable = true;
-              _t.disableBtn.disable = false;
-            } else if (disableFlag > 0 && enableFlag === 0) {
-              _t.disableBtn.enable = false;
-              _t.disableBtn.disable = true;
-            }
             break;
         }
+        var checkListIds = new Array();
+        data.forEach(function (item) {
+          checkListIds.push(item.id);
+        });
+        _t.checkListIds = checkListIds;
       },
       // 改变当前页码
       handleCurrentChange(val) {
-        console.log(val)
-      },
-      // 启用
-      enableData() {
-        this.$confirm('请问是否确认启用当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
-          type: 'warning'
-        }).then(() => {
-
-        }).catch(() => {
-          return;
-        });
-      },
-      // 禁用
-      disableData() {
-        this.$confirm('请问是否确认禁用当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
-          type: 'warning'
-        }).then(() => {
-
-        }).catch(() => {
-          return;
-        });
+        var _t = this;
+        _t.options.currentPage = val;
+        _t.getData();
       },
       // 删除
       deleteData() {
-        this.$confirm('请问是否确认删除当前的记录?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
+        var _t = this;
+        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
+          cancelButtonClass: "queryBtn",
+          confirmButtonClass:'queryBtn',
           type: 'warning'
         }).then(() => {
-
+          _t.$store.commit('setLoading',true);
+          _t.$api.delete('system/collector/',{
+            jsonString: JSON.stringify({
+              systemCollector:{
+                id:_t.checkListIds.join(',')
+              }
+            })
+          },function (res) {
+            _t.$store.commit('setLoading',false);
+            switch (res.status) {
+              case 200:
+                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
+                });
+                _t.getData();
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              case 2007: // 删除失败
+              case 3005: // 节点组关联角色不能删除
+                _t.$alert(res.message, _t.$t('public.resultTip'), {
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'queryBtn'
+                }).then(()=>{
+                  _t.getData();
+                });
+                break;
+              default:
+                break;
+            }
+          });
+          _t.disableBtn.edit = true;
+          _t.disableBtn.more = true;
         }).catch(() => {
           return;
         });
       },
-      // 执行监测
-      runMonitoring() {
-        this.$confirm('请问是否确认立即开始执行监测?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
-          type: 'warning',
-        }).then(() => {
-
-        }).catch(() => {
-          return;
+      // 查询列表数据
+      getData(){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('system/collector/pagelist',{
+          jsonString:JSON.stringify({
+            systemCollector:{
+              collectorName:_t.formItem.collectorName == null ? null : (_t.formItem.collectorName.trim() == '' ? null : _t.formItem.collectorName.trim()),
+              ip:_t.formItem.IP == null ? null : (_t.formItem.IP.trim() == '' ? null : _t.formItem.IP.trim()),
+              groupId:_t.formItem.groupIp == '0' ? null : (_t.formItem.groupIp.trim() == '' ? null : _t.formItem.groupIp.trim()),
+              port:_t.formItem.port == null ? null : (_t.formItem.port.trim() == '' ? null : _t.formItem.port.trim()),
+              status:_t.formItem.status,
+              languageMark:localStorage.getItem('hy-language')
+            },
+            currentPage:_t.options.currentPage,
+            pageSize:_t.options.pageSize
+          })
+        },function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              _t.tableData = res.data.list;
+              _t.options.currentPage = res.data.currentPage;
+              _t.options.total = res.data.count;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
+              break;
+          }
         });
       },
-      // 停止监测
-      stopMonitoring() {
-        this.$confirm('请问是否确认要停止正在执行的监测?', this.$t('public.confirmTip'), {
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
-          type: 'warning',
-
-        }).then(() => {
-
-        }).catch(() => {
-          return;
+      // 新增按钮
+      addDataBtn(){
+        var _t = this;
+        _t.ifAdd = true;
+        _t.dialogVisible = true;
+      },
+      // 新增提交
+      addData(formName){
+        var _t = this;
+        _t.$refs[formName].validate((valid) => {
+            if (valid) {
+              _t.$api.post('system/collector/',{
+                systemCollector:{
+                  collectorName:_t.addEdit.collectorName,
+                  ip:_t.addEdit.ip,
+                  groupId:_t.addEdit.groupId,
+                  port:_t.addEdit.port,
+                  status:_t.addEdit.status,
+                  description:_t.addEdit.description,
+                  createBy:localStorage.getItem('hy-user-name'),
+                  languageMark: localStorage.getItem('hy-language')
+                }
+              },function (res) {
+                _t.dialogVisible = false;
+                switch (res.status) {
+                  case 200:
+                    _t.getData();
+                    break;
+                  case 1003: // 无操作权限
+                  case 1004: // 登录过期
+                  case 1005: // token过期
+                  case 1006: // token不通过
+                    _t.exclude(_t, res.message);
+                    break;
+                  case 3004: // 操作失败
+                    _t.$alert(res.message, _t.$t('public.resultTip'), {
+                      confirmButtonText: _t.$t('public.confirm'),
+                      confirmButtonClass:'queryBtn'
+                    }).then(()=>{
+                      _t.resetFormData();
+                    });
+                    break;
+                  default:
+                    break;
+                }
+              });
+            }
         });
       },
-      // 分配设备监测任务
-      assignedTasks() {
-        this.dialogVisibleAlert = true;
+      // 编辑按钮
+      editDataBtn(){
+        var _t = this;
+        _t.ifAdd = false;
+        _t.dialogVisible = true;
+        _t.addEdit.id = _t.checkListIds.join(',');
+        _t.getEditDataById(_t.addEdit.id);
+      },
+      // 根据选中的id获取编辑的数据
+      getEditDataById(val){
+        var _t = this;
+        _t.$api.get('system/collector/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.addEdit.id = res.data.id;
+              _t.addEdit.collectorName = res.data.collectorName;
+              _t.addEdit.ip = res.data.ip;
+              _t.addEdit.port = res.data.port;
+              _t.addEdit.status = res.data.status;
+              _t.addEdit.description = res.data.description;
+              _t.addEdit.groupId = res.data.groupId;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 编辑提交
+      editData(formName){
+        var _t = this;
+        _t.$refs[formName].validate((valid) => {
+          if (valid) {
+            _t.$api.put('system/collector/',{
+              systemCollector:{
+                id:_t.addEdit.id,
+                collectorName:_t.addEdit.collectorName,
+                ip:_t.addEdit.ip,
+                groupId:_t.addEdit.groupId,
+                port:_t.addEdit.port,
+                status:_t.addEdit.status,
+                description:_t.addEdit.description,
+                createBy:localStorage.getItem('hy-user-name'),
+                languageMark: localStorage.getItem('hy-language')
+              }
+            },function (res) {
+              _t.dialogVisible = false;
+              switch (res.status) {
+                case 200:
+                  _t.getData();
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                case 3004: // 操作失败
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'queryBtn'
+                  }).then(()=>{
+                    _t.resetFormData();
+                  });
+                  break;
+                default:
+                  break;
+              }
+            });
+          }
+        });
+      },
+      // 查询节点组数据
+      getGroupData(){
+        var _t = this;
+        _t.$api.get('system/collectorGroup/all',{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.groupIpList = res.data.list;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.groupIpList = [];
+              break;
+          }
+        });
       }
     },
     created() {
+      this.$store.commit('setLoading',true);
+      this.getData();
+      this.getGroupData();
     }
   }
 </script>
