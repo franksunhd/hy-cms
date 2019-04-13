@@ -89,11 +89,4 @@
     width: 640px;
     height: 434px;
   }
-
-  .licenseInformation-dialog .el-dialog__footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
 </style>

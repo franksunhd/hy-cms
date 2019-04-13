@@ -291,4 +291,66 @@ html,body,.Index-box {
 
 .el-dialog__footer {
   padding: 10px 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.el-button.el-button--text {
+  font-size: 12px;
+}
+
+.el-form--inline .el-form-item {
+  margin-right: 20px;
+}
+
+.el-form-item__label {
+  padding-right: 0px;
+}
+
+.el-radio__label {
+  font-size: 12px;
+}
+
+/*确认提示*/
+.el-message-box {
+  width: 400px;
+  height: 160px;
+  position: relative;
+  border-radius: 0;
+}
+
+.el-message-box__btns {
+  position: absolute;
+  bottom: 10px;
+  right: 5px;
+}
+
+.el-message-box__title {
+  font-size: 16px;
+}
+
+.el-message-box__content {
+  padding: 25px 15px;
+}
+
+.el-message-box__status+.el-message-box__message {
+  font-size: 14px;
+}
+
+.avatar-uploader {
+  width: 66px;
+  height: 66px;
+  border-radius: 2px;
+  text-align: center;
+  display: inline-block;
+  border: 1px solid #dcdfe6;
+}
+
+.avatar-uploader .avatar-uploader-icon {
+  width: 66px;
+  height: 66px;
+  line-height: 66px;
+  font-size: 16px;
 }

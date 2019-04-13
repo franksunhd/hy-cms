@@ -91,6 +91,25 @@
 }
 
 /*按钮区域*/
+.el-button--default {
+  background-color: #fff;
+  color: #252a2f;
+  border-color: #DCDFE6;
+}
+
+.el-button--default:focus,
+.el-button--default:hover {
+  background-color: #fff;
+  border-color: #3f81d0;
+  color: #3f81d0;
+}
+
+.el-button--default:active {
+  background-color: #f6f8fa;
+  border-color: #3f81d0;
+  color: #3f81d0;
+}
+
 .el-button--primary {
   background-color: #3f81d0;
   color: #fff;
@@ -100,13 +119,16 @@
 .el-button--primary:focus,
 .el-button--primary:hover {
   background-color: #4c97f0;
+  color: #fff;
   border-color: #4c97f0;
 }
 
 .el-button--primary:active {
   background-color: #3976be;
+  color: #fff;
   border-color: #3976be;
 }
+
 
 .el-button--warning {
   background-color: #dda742;
@@ -116,9 +138,9 @@
 .el-button.is-disabled,
 .el-button.is-disabled:focus,
 .el-button.is-disabled:hover {
-  background-color: #eaedf1;
+  background-color: #f4f4f4;
   color: #999;
-  border-color: #c1c1c1;
+  border-color: #DCDFE6;
 }
 
 /*表格*/
@@ -268,9 +290,20 @@
   background-color: #ddd;
 }
 
+
+/*必填项校验颜色*/
 .star label::before,
 .isNotNull {
-  color: #F56C6C;
+  color: #fb6041;
+}
+
+.el-form-item.is-error .el-input__inner,
+.el-form-item.is-error .el-input__inner:focus,
+.el-form-item.is-error .el-textarea__inner,
+.el-form-item.is-error .el-textarea__inner:focus,
+.el-message-box__input input.invalid,
+.el-message-box__input input.invalid:focus {
+  color: #fb6041;
 }
 
 .el-icon-error{
@@ -338,4 +371,21 @@
 #systemSettings-navBar-outSet {
   background-color: #3f81d0;
   color: #fff;
+}
+
+.el-dialog__footer {
+  background-color: #fff;
+}
+
+.el-radio__label {
+  color: #252a2f;
+}
+
+.el-radio__input.is-checked+.el-radio__label {
+  color: #3f81d0;
+}
+
+.el-radio__input.is-checked .el-radio__inner {
+  border-color: #3f81d0;
+  background-color: #3f81d0;
 }
