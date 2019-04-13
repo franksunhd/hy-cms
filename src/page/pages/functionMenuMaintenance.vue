@@ -899,10 +899,17 @@
       // 表格数据上移
       moveUp(data) {
         var _t = this;
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id == data.id) {
+            dataIdArr.push(_t.tableData[index - 1].id)
+          }
+        });
         _t.$store.commit('setLoading', true);
         _t.$api.put('system/menu/enableMenu', {
           systemMenu:{
-            id:data.id
+            id:dataIdArr.join(',')
           },
           upOrDown:'up'
         }, function (res) {
@@ -928,9 +935,16 @@
       moveDown(data) {
         var _t = this;
         _t.$store.commit('setLoading', true);
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id == data.id) {
+            dataIdArr.push(_t.tableData[index + 1].id)
+          }
+        });
         _t.$api.put('system/menu/enableMenu', {
           systemMenu:{
-            id:data.id
+            id:dataIdArr.join(',')
           },
           upOrDown:'down'
         }, function (res) {
