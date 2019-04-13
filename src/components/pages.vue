@@ -2,10 +2,12 @@
   <div class="paging">
     <el-pagination
       class="first-pager"
+      @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="currentPageNum"
       :page-size="pageSize"
-      layout="total,slot,prev"
+      :page-sizes="[10,20,30,40]"
+      layout="total,sizes,slot,prev"
       :total="total"
       :prev-text="$t('public.prevText')"
       :firstPage="firstPage"
@@ -72,6 +74,10 @@
       toLastPage(val) {
         this.currentPageNum = this.lastPage;
         this.handleCurrentChange(this.lastPage);
+      },
+      // 改变条数
+      handleSizeChange(val){
+        this.$emit("handleSizeChangeSub", val);
       }
     },
     // 计算属性
