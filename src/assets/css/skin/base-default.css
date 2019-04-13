@@ -5,7 +5,7 @@
 .app-header {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
-  -webkit-box-shadow: 0px 3px 3px #c8c8c8;
+  -webkit-box-shadow: 0px 3px 3px rgba(69,79,108,0.1);
 }
 
 .app-aside {
@@ -121,17 +121,25 @@
   border-color: #c1c1c1;
 }
 
-
 /*表格*/
 .el-table {
   border: 1px solid #eaedf1;
 }
 
-.el-table .el-table__header tr th {
-  background-color: #f5f8f8;
-}
+.el-table .el-table__header tr th,
 .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: #f6f9f9;
+  background-color: #f6f8fa;
+}
+
+/*鼠标悬停*/
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #e9f3fe;
+}
+
+.el-table td, .el-table th {
+  padding: 0;
+  height: 46px;
+  line-height: 46px;
 }
 
 /*分页*/
@@ -249,11 +257,11 @@
 }
 
 .el-dialog__header {
-  border-bottom: 1px solid #c1c1c1;
+  border-bottom: 1px solid #eaedf1;
 }
 
 .el-dialog__footer {
-  border-top: 1px solid #c1c1c1;
+  border-top: 1px solid #eaedf1;
 }
 
 .assignRole-box {
@@ -312,4 +320,16 @@
 
 #administration-tabs-title li.active::after {
   box-shadow: -2px 2px 0 #fff;
+}
+
+.el-form-item__label {
+  color: #666;
+}
+
+.el-form-item__content {
+  color: #252a2f;
+}
+
+.el-dialog__header .el-dialog__title {
+  color: #252a2f;
 }
