@@ -766,7 +766,7 @@
                   _t.getMenuData();
                   _t.getData();
                   _t.$bus.emit('getMenu',true);
-              ``});
+                });
                 break;
               default:
                 break;
@@ -917,6 +917,7 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              _t.getMenuData();
               // 列表数据上移之后刷新左侧导航菜单
               _t.$bus.emit('getMenu',true);
               break;
@@ -952,6 +953,7 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              _t.getMenuData();
               // 数据下移之后刷新左侧导航菜单
               _t.$bus.emit('getMenu',true);
               break;
