@@ -26,7 +26,7 @@
       <div class="BeganToSee-RefreshRate">
         <span>页面刷新频率</span>
         <el-select v-model="value" placeholder="请选择" style="width: 100px;">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          <el-option v-for="item in optionss" :key="item.value" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </div>
@@ -52,16 +52,25 @@
               <el-table :data="tableData" style="width: 100%; margin-top: 16px;"
                         @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55" :selectable="selectable"/>
-                <el-table-column prop="serialNumber" label="序号" width="120"/>
+                <!--<el-table-column prop="serialNumber" label="序号" />-->
+                <el-table-column :label="$t('public.index')" header-align="center" width="120" align="center">
+              <template slot-scope="scope">
+								<span>
+                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                </span>
+              </template>
+            </el-table-column>
                 <el-table-column prop="ip" label="IP地址" width="120"/>
                 <el-table-column prop="manufacturerModel" label="品牌型号" show-overflow-tooltip/>
                 <el-table-column prop="discovery" label="发现状态" show-overflow-tooltip/>
                 <el-table-column prop="errorText " label="描述" show-overflow-tooltip/>
               </el-table>
               <!--分页-->
-              <pages :total='optionss.total' :currentPage='optionss.currentPage' :pageSize='optionss.pageSize'
-                     :firstPage='optionss.firstPage' :lastPage='optionss.lastPage'
-                     @handleCurrentChangeSub="handleCurrentChange"/>
+              <pages
+            :total='options.total'
+            :currentPage='options.currentPage'
+            :pageSize='options.pageSize'
+            @handleCurrentChangeSub="handleCurrentChange"/>
             </div>
           </div>
         </el-col>
@@ -83,15 +92,13 @@
       return {
         BeganToSee: '',
         //表格
-        optionss: {
-          total: 1000, // 总条数
+        options: {
+          total: 0, // 总条数
           currentPage: 1, // 当前页码
-          pageSize: 5, // 每页显示条数
-          firstPage: 1, // 首页
-          lastPage: 100 // 末页
+          pageSize: 10, // 每页显示条数
         },
         //页面刷新时间
-        options: [{
+        optionss: [{
           value: '1',
           label: '不刷新'
         }, {
@@ -199,12 +206,18 @@
                 } else {
                   Income[i].discovery = "待发现"
                 }
+                if(Income[i].manufacturer==undefined){
+                	Income[i].manufacturer='';
+                }
+                if(Income[i].model==undefined){
+                	Income[i].model='';
+                }
                 _t.tableData.push({
-                  'manufacturerModel': Income[i].manufacturer + Income[i].model,
-                  'serialNumber': i + 1,
-                  'ip': Income[i].ip,
-                  'discovery': Income[i].discovery,
-                  'errorText ': Income[i].errorText
+                  manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
+                  serialNumber: i + 1,
+                  ip: Income[i].ip,
+                  discovery: Income[i].discovery,
+                  errorText: Income[i].errorText
                 })
               }
               var Dincome = [];
@@ -253,7 +266,7 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              //console.log(res)
+              console.log(res)
               var Income = [];
               Income = res.data.pageList;
               for (var i = 0; i < Income.length; i++) {
@@ -264,13 +277,20 @@
                 } else {
                   Income[i].discovery = "待发现"
                 }
+                if(Income[i].manufacturer==undefined){
+                	Income[i].manufacturer='';
+                }
+                if(Income[i].model==undefined){
+                	Income[i].model='';
+                }
                 _t.tableData.push({
-                  'manufacturerModel': Income[i].manufacturer + Income[i].model,
-                  'serialNumber': i + 1,
-                  'ip': Income[i].ip,
-                  'discovery': Income[i].discovery,
-                  'errorText ': Income[i].errorText
+                  manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
+                  serialNumber: i + 1,
+                  ip: Income[i].ip,
+                  discovery: Income[i].discovery,
+                  errorText : Income[i].errorText
                 })
+                //console.log(_t.tableData)
               }
               var Dincome = [];
               Dincome.push({
@@ -417,15 +437,21 @@
                   } else {
                     Income[i].discovery = "待发现"
                   }
+                  if(Income[i].manufacturer==undefined){
+                	Income[i].manufacturer="";
+                }
+                if(Income[i].model==undefined){
+                	Income[i].model="";
+                }
                   _t.tableData.push({
-                    'manufacturerModel': Income[i].manufacturer + Income[i].model,
-                    'serialNumber': i + 1,
-                    'ip': Income[i].ip,
-                    'discovery': Income[i].discovery,
-                    'errorText ': Income[i].errorText
+                  	manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
+                    serialNumber: i + 1,
+                    ip: Income[i].ip,
+                    discovery: Income[i].discovery,
+                    errorText : Income[i].errorText
                   })
                 }
-                alert(param.dataIndex - 1);
+               // alert(param.dataIndex - 1);
 
                 break;
               case 1003: // 无操作权限
@@ -443,13 +469,9 @@
 
       // 改变当前页码
       handleCurrentChange(val) {
+      	var _t = this;
+        _t.options.currentPage = val;
       },
-      /*handleSizeChange: function(size) {
-                      this.pagesize = size;
-                  },
-                  /*handleCurrentChange: function(currentPage) {
-                      this.currentPage = currentPage;
-                  }*/
       //返回设备手动发现
       BeganToSeeReturn() {
         this.$router.push({
@@ -487,7 +509,29 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              //console.log(res);
+            for (var i = 0; i < Income.length; i++) {
+                  if (Income[i].discovery === true) {
+                    Income[i].discovery = "成功"
+                  } else if (Income[i].discovery === false) {
+                    Income[i].discovery = "失败"
+                  } else {
+                    Income[i].discovery = "待发现"
+                  }
+                  if(Income[i].manufacturer==undefined){
+                	Income[i].manufacturer="";
+                }
+                if(Income[i].model==undefined){
+                	Income[i].model="";
+                }
+                  _t.tableData.push({
+                  	manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
+                    serialNumber: i + 1,
+                    ip: Income[i].ip,
+                    discovery: Income[i].discovery,
+                    errorText : Income[i].errorText
+                  })
+                }
+              console.log(res);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -541,7 +585,6 @@
             default:
               break;
           }
-
         });
       }
     },
