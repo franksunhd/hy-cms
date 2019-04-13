@@ -228,3 +228,10 @@ html,body,.Index-box {
 .marginBottom20 {
   margin-bottom: 20px;
 }
+
+/*文本按钮禁用样式*/
+.el-button.is-disabled.el-button--text,
+.el-button.is-disabled.el-button--text:hover {
+  border: none;
+  background:none;
+}

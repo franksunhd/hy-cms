@@ -86,8 +86,8 @@
                              align="center"/>
             <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="center" align="center">
               <template slot-scope="scope">
-                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
-                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+                <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
               </template>
             </el-table-column>
             <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="center" align="center">

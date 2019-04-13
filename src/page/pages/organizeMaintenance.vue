@@ -73,6 +73,7 @@
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
+
               </template>
             </el-table-column>
             <el-table-column prop="name" :label="$t('organizeMaintenance.organizationName')" header-align="center" align="center"/>
@@ -80,8 +81,8 @@
             <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="center" align="center"/>
             <el-table-column :label="$t('organizeMaintenance.sort')" header-align="center" align="center">
               <template slot-scope="scope">
-                <el-button type="text" @click="moveUp(scope.row)">上移</el-button>
-                <el-button type="text" @click="moveDown(scope.row)">下移</el-button>
+                <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
               </template>
             </el-table-column>
             <el-table-column :label="$t('organizeMaintenance.status')" header-align="center" align="center">
@@ -697,9 +698,16 @@
       // 上移
       moveUp(data){
         var _t = this;
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id == data.id) {
+            dataIdArr.push(_t.tableData[index - 1].id)
+          }
+        });
         _t.$api.put('system/organization/enableOrganization',{
           systemOrganization:{
-            id:data.id
+            id:dataIdArr.join(',')
           },
           upOrDown:"up"
         },function (res) {
@@ -721,9 +729,16 @@
       // 下移
       moveDown(data){
         var _t = this;
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id == data.id) {
+            dataIdArr.push(_t.tableData[index + 1].id)
+          }
+        });
         _t.$api.put('system/organization/enableOrganization',{
           systemOrganization:{
-            id:data.id
+            id:dataIdArr.join(',')
           },
           upOrDown:"down"
         },function (res) {
