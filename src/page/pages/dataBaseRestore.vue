@@ -170,7 +170,7 @@
           firstPage: 1, // 首页
           lastPage: 100 // 末页
         },
-        dialogVisible: true,
+        dialogVisible: false,
         dialogVisibleAlert: false,
         timelineData: [
           {label: '2019年2月1日', level: 1, des: null},
