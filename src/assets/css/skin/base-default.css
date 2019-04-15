@@ -330,17 +330,8 @@
 
 
 /*必填项校验颜色*/
-.star label::before,
+.star > label.el-form-item__label::before,
 .isNotNull {
-  color: #fb6041;
-}
-
-.el-form-item.is-error .el-input__inner,
-.el-form-item.is-error .el-input__inner:focus,
-.el-form-item.is-error .el-textarea__inner,
-.el-form-item.is-error .el-textarea__inner:focus,
-.el-message-box__input input.invalid,
-.el-message-box__input input.invalid:focus {
   color: #fb6041;
 }
 
@@ -475,4 +466,10 @@ span.el-tree-node__label {
 
 .el-checkbox-button__inner:hover {
   color: #666;
+}
+
+.el-input-group__append {
+  background-color: #3f81d0;
+  color: #fff;
+  border-color: #3f81d0;
 }

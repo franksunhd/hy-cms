@@ -98,13 +98,14 @@
     </div>
     <!--新增/编辑-->
     <el-dialog
+      class="roleMaintenance-dialog"
       :title="$t('roleMaintenance.addUpdateRole')"
       append-to-body
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
-        <el-form-item :label="$t('roleMaintenance.organization') +'：'" prop="organization">
+      <el-form :model="addEdit" label-width="96px" :rules="rules" ref="ruleForm">
+        <el-form-item class="star" :label="$t('roleMaintenance.organization') +'：'" prop="organization">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -124,27 +125,28 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('roleMaintenance.roleName') +'：'" prop="roleName">
-          <el-input v-model="addEdit.roleName"/>
+        <el-form-item class="star" :label="$t('roleMaintenance.roleName') +'：'" prop="roleName">
+          <el-input v-model="addEdit.roleName" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('roleMaintenance.isEnable') +'：'" prop="status">
-          <el-radio-group v-model="addEdit.status">
+        <el-form-item class="star" :label="$t('roleMaintenance.isEnable') +'：'" prop="status">
+          <el-radio-group v-model="addEdit.status" class="width200">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('roleMaintenance.organizationDes') +'：'" prop="description">
-          <el-input type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
+        <el-form-item :label="$t('roleMaintenance.organizationDes') +'：'">
+          <el-input style="width: 400px" type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" v-if="ifAdd == true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" type="primary" v-if="ifAdd == false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" type="primary" v-if="ifAdd == true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" type="primary" v-if="ifAdd == false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--用户授权-->
     <el-dialog
+      class="role-setUserName-dialog"
       append-to-body
       :title="$t('roleMaintenance.setUserName')"
       :visible.sync="outerVisible"
@@ -172,7 +174,9 @@
           <div style="height: 20px;" v-if="tagsLength">必填项不能为空</div>
         </el-form-item>
       </el-form>
+      <!--选择用户内页-->
       <el-dialog
+        class="roleMaintenance-dialog"
         :title="$t('roleMaintenance.selectUser')"
         :visible.sync="innerVisible"
         append-to-body
@@ -204,24 +208,25 @@
           :pageSize='innerOptions.pageSize'
           @handleCurrentChangeSub="innerOptionsHandleCurrentChange"/>
         <div slot="footer">
-          <el-button class="queryBtn" type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
-          <el-button class="queryBtn" @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
+          <el-button class="alertBtn" type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
+          <el-button class="alertBtn" @click="innerVisible = false">{{$t('public.cancel')}}</el-button>
         </div>
       </el-dialog>
       <div slot="footer">
-        <el-button class="queryBtn" type="primary" @click="userDataForm">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="outerVisible = false;tagsLength = false;">{{$t('public.close')}}</el-button>
+        <el-button class="alertBtn" type="primary" @click="userDataForm">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="outerVisible = false;tagsLength = false;">{{$t('public.close')}}</el-button>
       </div>
     </el-dialog>
     <!--功能权限-->
     <el-dialog
       append-to-body
-      :title="$t('roleMaintenance.setRoleLimit')"
+      class="role-setRoleLimit-dialog"
+      :title="$t('roleMaintenance.roleLimit')"
       :visible.sync="dialogVisibleFunction"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="120px">
-        <el-form-item :label="$t('roleMaintenance.roleLimit') + '：'">
+      <el-form>
+        <el-form-item>
           <el-tree
             :data="selectArr"
             :props="menuProps"
@@ -230,22 +235,23 @@
             ref="tree"/>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
-          <div v-if="selectMenuMark">必填项不能为空</div>
+          <div v-if="selectMenuMark" class="isNotNull">必填项不能为空</div>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleFunction = false; selectMenuMark = false;">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="dialogVisibleFunction = false; selectMenuMark = false;">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--数据权限-->
     <el-dialog
+      class="role-setDateLimit-dialog"
       append-to-body
       :title="$t('roleMaintenance.setDateLimit')"
       :visible.sync="dialogVisibleData"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px">
+      <el-form>
         <el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
           <el-radio-group v-model="status">
             <el-radio :label="3">资源视图</el-radio>
@@ -253,26 +259,26 @@
             <el-radio :label="9">机房视图</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item>
-          <el-input class="width200"/>
-          <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+        <div class="role-setDateLimit-dialog-line"><div class="line"></div></div>
+        <el-form-item style="margin-bottom: 10px;">
+          <el-input class="width200 role-input-search">
+            <el-button slot="append" @click="getData" class="el-icon-search"></el-button>
+          </el-input>
         </el-form-item>
         <el-form-item>
-          <el-checkbox :checked="checked" @change="checkedAll">全选</el-checkbox>
+          <el-checkbox class="role-setDateLimit-dialog-checkout" :checked="checked" @change="checkedAll">全选</el-checkbox>
           <el-tree
             id="dataLimit-box"
             node-key="id"
             :data="selectArr"
             :props="menuProps"
-            :default-expand-all="true"
             show-checkbox
             ref="vueTree"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="queryBtn" type="primary"
-                   @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -301,7 +307,7 @@
           organization: '',
           roleName: '',
           organizationId: '',
-          status: '',
+          status: 1,
           description: ''
         },
         status: '',
@@ -396,7 +402,7 @@
         _t.addEdit.organization = '';
         _t.addEdit.roleName = '';
         _t.addEdit.organizationId = '';
-        _t.addEdit.status = '';
+        _t.addEdit.status = 1;
         _t.addEdit.description = '';
         _t.$refs.table.clearSelection();
         _t.dialogVisible = false;
@@ -985,7 +991,44 @@
 </script>
 
 <style>
-  #dataLimit-box > div.el-tree-node > div.el-tree-node__children > div.el-tree-node > div.el-tree-node__children > div.el-tree-node {
-    float: left;
+  .roleMaintenance-dialog .el-dialog {
+    width: 600px;
+    height: 400px;
+  }
+
+  .role-setUserName-dialog .el-dialog {
+    width: 820px;
+    height: 500px;
+  }
+
+  .role-setRoleLimit-dialog .el-dialog {
+    width: 700px;
+    height: 450px;
+  }
+
+  .role-setDateLimit-dialog .el-dialog {
+    width: 700px;
+    height: 450px;
+  }
+
+  .role-setDateLimit-dialog-checkout .el-checkbox__label {
+    font-size: 12px;
+  }
+
+  .role-setDateLimit-dialog-line {
+    position: relative;
+  }
+
+  .role-setDateLimit-dialog-line div.line {
+    position: absolute;
+    top: -15px;
+    left: -20px;
+    right: -20px;
+    height: 1px;
+    border-bottom: 1px solid #eaedf1;
+  }
+
+  .role-input-search .el-input__inner {
+    height: 32px;
   }
 </style>

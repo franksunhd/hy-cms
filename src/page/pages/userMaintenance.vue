@@ -156,13 +156,10 @@
           <el-input v-model="addEdit.emails" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.statusAlert') + '：'" prop="status">
-          <el-select class="width200" v-model="addEdit.status">
-            <el-option
-              v-for="(item,index) in statusList"
-              :value="item.value"
-              :key="index"
-              :label="item.label"/>
-          </el-select>
+          <el-radio-group v-model="addEdit.status" class="width200">
+            <el-radio :label="1">{{$t('public.enable')}}</el-radio>
+            <el-radio :label="0">{{$t('public.disable')}}</el-radio>
+          </el-radio-group>
         </el-form-item>
         <br>
         <el-form-item class="star" :label="$t('userMaintenance.assignRole') + '：'" prop="assignRole">
@@ -215,7 +212,7 @@
           loginPassword: '',
           mobileNum: '',
           emails: '',
-          status: '',
+          status: 1,
           assignRole: [],
           changeSelect: false
         },
@@ -333,7 +330,7 @@
         _t.addEdit.loginAccount = '';
         _t.addEdit.loginPassword = '';
         _t.addEdit.mobileNum = '';
-        _t.addEdit.status = '';
+        _t.addEdit.status = 1;
         _t.addEdit.emails = '';
         _t.$refs.table.clearSelection();
       },

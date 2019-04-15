@@ -378,7 +378,7 @@
 <style>
   .licenseNotice-dialog .el-dialog {
     width: 700px;
-    height: 500px;
+    height: 450px;
   }
 
   .licenseNotice-tree .el-tree-node__content {
