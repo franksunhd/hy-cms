@@ -434,3 +434,23 @@ span.el-tree-node__label {
 .el-select-dropdown__item.selected {
   color: #3f81d0;
 }
+
+.el-tag {
+  background-color: #f0f0f0;
+  border: 1px dashed #bdbdbd;
+  color: #252a2f;
+}
+
+.el-tag .el-icon-close {
+  color: #fb6041;
+}
+
+.el-tag .el-icon-close:hover {
+  background-color: #fb6041;
+}
+
+#writePlace {
+  border: 1px solid #DCDFE6;
+  background-color: #f0f0f0;
+  color: #252a2f;
+}

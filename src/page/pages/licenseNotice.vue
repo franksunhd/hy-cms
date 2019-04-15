@@ -25,7 +25,7 @@
           </el-button>
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
-            <p>
+            <p style="margin-top: 10px;">
               <span>{{item.headName}}</span>
               <span v-if="item.branchName !== null">></span>
               <span v-if="item.branchName !== null">{{item.branchName}}</span>

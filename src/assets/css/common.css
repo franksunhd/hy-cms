@@ -97,6 +97,10 @@ html,body,.Index-box {
   width: 240px;
 }
 
+.width800 {
+  width: 800px;
+}
+
 .el-date-editor.el-input.width120 {
   width: 140px;
 }
@@ -399,4 +403,11 @@ input::-webkit-input-placeholder {
   line-height: 30px;
   height: 30px;
   font-size: 12px;
+}
+
+.el-tag {
+  height: 28px;
+  line-height: 28px;
+  margin-right: 10px;
+  border-radius: 0;
 }

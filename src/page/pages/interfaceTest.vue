@@ -17,18 +17,18 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('interfaceTest.apiAddress') + '：'">
-          <el-input class="inputWidth" />
+          <el-input class="width800" />
         </el-form-item>
         <el-form-item :label="$t('interfaceTest.accessParameters') + '：'">
-          <el-input type="textarea" :autosize="{ minRows: 5 }" />
+          <el-input class="width800" type="textarea" :autosize="{ minRows: 5 }" />
         </el-form-item>
         <el-form-item>
-          <el-button size="small" @click="request">{{$t('public.request')}}</el-button>
-          <el-button size="small" type="reset">{{$t('public.reset')}}</el-button>
+          <el-button class="alertBtn" type="primary" @click="request">{{$t('public.request')}}</el-button>
+          <el-button class="alertBtn" type="reset">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
       <!--接口响应区域-->
-      <div id="writePlace"></div>
+      <div id="writePlace" class="width800" v-loading="false"></div>
     </div>
   </Box>
 </template>
@@ -170,9 +170,7 @@
 
 <style scoped>
   #writePlace {
-    width: 500px;
-    min-height: 300px;
-    border: 1px solid #ddd;
+    min-height: 200px;
     margin-left: 200px;
     margin-bottom: 50px;
     padding-top: 20px;
