@@ -208,16 +208,33 @@
 /*分页*/
 .el-pager li,
 .el-pagination button {
-  border: 1px solid #eaedf1;
+  border: 1px solid #DCDFE6;
   border-right: none;
 }
 
 .el-pager li.active {
-  border-right: 1px solid #eaedf1;
+  border-right: 1px solid #DCDFE6;
+  color: #3f81d0;
+}
+
+.el-pager li:hover {
+  color: #3f81d0;
 }
 
 .el-pagination button.page-btn-last {
-  border-right: 1px solid #eaedf1;
+  border-right: 1px solid #DCDFE6;
+}
+
+.pageBtn-border:hover,
+.page-btn-last:hover,
+.pageBtn-border:active,
+.page-btn-last:active {
+  border-color: #DCDFE6;
+}
+
+.pageBtn-border,
+.page-btn-last {
+  color: #252a2f;
 }
 
 /*复选框*/
