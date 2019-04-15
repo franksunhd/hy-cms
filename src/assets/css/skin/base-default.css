@@ -74,7 +74,8 @@
   color: #3f81d0;
 }
 
-.systemSettings-navBarBox .el-menu-item:focus, .el-menu-item:hover {
+.systemSettings-navBarBox .el-menu-item:focus, .el-menu-item:hover,
+.el-tree-node__content:hover {
   background-color: #eef2f9;
 }
 
@@ -129,10 +130,42 @@
   border-color: #3976be;
 }
 
-
 .el-button--warning {
-  background-color: #dda742;
-  border-color: #dda742;
+  color: #fff;
+  background-color: #e7a835;
+  border-color: #e7a835;
+}
+
+.el-button--warning:focus,
+.el-button--warning:hover {
+  background-color: #fdbb41;
+  color: #fff;
+  border-color: #fdbb41;
+}
+
+.el-button--warning:active {
+  background-color: #d99d31;
+  color: #fff;
+  border-color: #d99d31;
+}
+
+.el-button--success {
+  border-color: #5bd25d;
+  background-color: #5bd25d;
+  color: #fff;
+}
+
+.el-button--success:focus,
+.el-button--success:hover {
+  background-color: #74e677;
+  color: #fff;
+  border-color: #74e677;
+}
+
+.el-button--success:active {
+  background-color: #46bb48;
+  color: #fff;
+  border-color: #46bb48;
 }
 
 .el-button.is-disabled,
@@ -148,13 +181,21 @@
   border: 1px solid #eaedf1;
 }
 
-.el-table .el-table__header tr th,
-.el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: #f6f8fa;
+.el-table .el-table__header tr th {
+  background: #f6f8fa;
 }
 
+.el-table .el-table__body tr.el-table__row--striped td {
+  background: #f6f8fa;
+}
+
+
 /*鼠标悬停*/
-.el-table--enable-row-hover .el-table__body tr:hover>td {
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table__body tr.current-row>td, .el-table__body tr.hover-row.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped>td,
+.el-table__body tr.hover-row>td {
   background-color: #e9f3fe;
 }
 
@@ -167,16 +208,33 @@
 /*分页*/
 .el-pager li,
 .el-pagination button {
-  border: 1px solid #eaedf1;
+  border: 1px solid #DCDFE6;
   border-right: none;
 }
 
 .el-pager li.active {
-  border-right: 1px solid #eaedf1;
+  border-right: 1px solid #DCDFE6;
+  color: #3f81d0;
+}
+
+.el-pager li:hover {
+  color: #3f81d0;
 }
 
 .el-pagination button.page-btn-last {
-  border-right: 1px solid #eaedf1;
+  border-right: 1px solid #DCDFE6;
+}
+
+.pageBtn-border:hover,
+.page-btn-last:hover,
+.pageBtn-border:active,
+.page-btn-last:active {
+  border-color: #DCDFE6;
+}
+
+.pageBtn-border,
+.page-btn-last {
+  color: #252a2f;
 }
 
 /*复选框*/
@@ -207,16 +265,13 @@
 }
 
 .login-error-box {
-  background-color: orange;
+  border: 1px solid #fb6041;
+  color: #fb6041;
 }
 
 .login-form .el-input__inner {
   border: none;
   border-bottom: 1px solid #c1c1c1;
-}
-
-.login-error-i {
-  color:#fb6140;
 }
 
 /*禁用状态颜色*/
@@ -287,54 +342,97 @@
 }
 
 .assignRole-box {
-  background-color: #ddd;
+  background-color: #f0f0f0;
 }
 
 
 /*必填项校验颜色*/
-.star label::before,
+.star > label.el-form-item__label::before,
 .isNotNull {
   color: #fb6041;
 }
 
-.el-form-item.is-error .el-input__inner,
-.el-form-item.is-error .el-input__inner:focus,
-.el-form-item.is-error .el-textarea__inner,
-.el-form-item.is-error .el-textarea__inner:focus,
-.el-message-box__input input.invalid,
-.el-message-box__input input.invalid:focus {
-  color: #fb6041;
+.el-form-item.is-success .el-input__inner,
+.el-form-item.is-success .el-input__inner:focus,
+.el-form-item.is-success .el-textarea__inner,
+.el-form-item.is-success .el-textarea__inner:focus {
+  border: 1px solid #DCDFE6;
 }
-
-.el-icon-error{
-  color: #f22;
-}
-.el-icon-warning{
-  color: #FFFF00;
-}
-.el-icon-info{
-  color: #FF9500;
-}
-.el-icon-remove{
-  color: #C0C0C0;
-}
-
 
 /*字体图标库代码*/
+.iconfontWarn,
+.el-icon-warning,
+.el-icon-info,
+.el-icon-error,
 .iconfontError {
-  color: #f22;
+  color: #fb6140;
 }
 
-.iconfontWarn {
-  color: #FFFF00;
-}
-
-.iconfontDisable {
-  color: #C0C0C0;
+.iconfontDisable,
+.el-icon-remove {
+  color: #999;
 }
 
 .iconfontSuccess {
-  color: #67C23A;
+  color: #5bd25d;
+}
+
+.iconfontPrimaryBg,
+.iconfontSuccessBg,
+.iconfontWarnBg,
+.iconfontErrorBg {
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 44px;
+  display: inline-block;
+  margin: 10px 20px 0 20px;
+}
+
+.iconfontPrimaryBg {
+  background-color: rgba(33,106,180,0.1);
+}
+
+.iconfontSuccessBg {
+  background-color: rgba(50,204,53,0.1);
+}
+
+.iconfontWarnBg {
+  background-color: rgba(253,227,63,0.1);
+}
+
+.iconfontErrorBg {
+  background-color: rgba(242,34,46,0.1);
+}
+
+.iconfontPrimaryBox,
+.iconfontSuccessBox,
+.iconfontWarnBox,
+.iconfontErrorBox {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.iconfontPrimaryBox {
+  background-color: #3f81d0;
+}
+
+.iconfontErrorBox {
+  background-color: #fb6041;
+}
+
+.iconfontSuccessBox {
+  background-color: #5bd25d;
+}
+
+.iconfontWarnBox {
+  background-color: #fdbb41;
 }
 
 .dialogTitle {
@@ -388,4 +486,65 @@
 .el-radio__input.is-checked .el-radio__inner {
   border-color: #3f81d0;
   background-color: #3f81d0;
+}
+
+.borderRightColorGray {
+  border-right: 1px solid #eaedf1;
+}
+
+/*树形下拉款*/
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  background-color: #eef1f9;
+}
+
+span.el-tree-node__label {
+  color: #666;
+}
+
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content span.el-tree-node__label {
+  color: #3f81d0;
+}
+
+.el-select-dropdown__item.selected {
+  color: #3f81d0;
+}
+
+.el-tag {
+  background-color: #f0f0f0;
+  border: 1px dashed #bdbdbd;
+  color: #252a2f;
+}
+
+.el-tag .el-icon-close {
+  color: #fb6041;
+}
+
+.el-tag .el-icon-close:hover {
+  background-color: #fb6041;
+}
+
+#writePlace {
+  border: 1px solid #DCDFE6;
+  background-color: #f0f0f0;
+  color: #252a2f;
+}
+
+.assignRole-box:before {
+  border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.el-checkbox-button.is-checked .el-checkbox-button__inner {
+  background-color: #3f81d0;
+  color: #fff;
+  border-color: #3f81d0;
+}
+
+.el-checkbox-button__inner:hover {
+  color: #666;
+}
+
+.el-input-group__append {
+  background-color: #3f81d0;
+  color: #fff;
+  border-color: #3f81d0;
 }

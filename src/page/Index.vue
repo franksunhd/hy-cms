@@ -61,7 +61,7 @@
 </template>
 
 <script>
-  import appSide from './pages/appSide';
+  import appSide from '../components/appSide';
 
   export default {
     name: "index",

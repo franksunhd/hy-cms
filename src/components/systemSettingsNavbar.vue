@@ -139,6 +139,7 @@
     line-height: 50px;
     padding: 0 0 0 20px;
     font-size: 14px;
+    font-weight: bold;
   }
 
   .systemSettings-navBarContent {
@@ -187,6 +188,7 @@
 
   .systemSettings-navBarBox .treeBorder {
     width: 100%;
+    height: 100%;
     padding-left: 10px;
     display: inline-block;
   }

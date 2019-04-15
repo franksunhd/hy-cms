@@ -105,4 +105,15 @@
   .last-pager {
     display: inline-block;
   }
+
+  .pageBtn-border,
+  .page-btn-last {
+    padding: 0 10px;
+    color: #252a2f;
+  }
+
+  .pageBtn-border,
+  .pageBtn-border:hover {
+    border-right: none;
+  }
 </style>
