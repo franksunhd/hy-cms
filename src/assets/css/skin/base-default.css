@@ -377,6 +377,64 @@
   color: #5bd25d;
 }
 
+.iconfontPrimaryBg,
+.iconfontSuccessBg,
+.iconfontWarnBg,
+.iconfontErrorBg {
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 44px;
+  display: inline-block;
+  margin: 10px 20px 0 20px;
+}
+
+.iconfontPrimaryBg {
+  background-color: rgba(33,106,180,0.1);
+}
+
+.iconfontSuccessBg {
+  background-color: rgba(50,204,53,0.1);
+}
+
+.iconfontWarnBg {
+  background-color: rgba(253,227,63,0.1);
+}
+
+.iconfontErrorBg {
+  background-color: rgba(242,34,46,0.1);
+}
+
+.iconfontPrimaryBox,
+.iconfontSuccessBox,
+.iconfontWarnBox,
+.iconfontErrorBox {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.iconfontPrimaryBox {
+  background-color: #3f81d0;
+}
+
+.iconfontErrorBox {
+  background-color: #fb6041;
+}
+
+.iconfontSuccessBox {
+  background-color: #5bd25d;
+}
+
+.iconfontWarnBox {
+  background-color: #fdbb41;
+}
+
 .dialogTitle {
   background-color: #c1c1c1;
 }

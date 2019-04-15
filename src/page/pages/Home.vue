@@ -1,42 +1,73 @@
 <template>
-  <Box>
-    <div class="con-main">
-      <el-row>
-        <el-col :span="24">
-          <div class="con-main-top">
-            <span>{{$t('breadcrumb.ComputerRoomEquipment')}}</span></div>
-        </el-col>
-      </el-row>
+  <Box class="grayBg homeBox">
+    <div class="home-main">
+      <p class="home-main-title">{{$t('breadcrumb.ComputerRoomEquipment')}}</p>
       <el-row :gutter="20">
         <el-col :span="6">
-          <div class="grid-content">
-            <div class="bg-purple">179</div>
-            <div class="bg-purple-dark">设备总数</div>
+          <div class="home-main-alert-box" style="display: flex;">
+            <span class="iconfontPrimaryBg">
+              <span class="iconfontPrimaryBox">
+                <span class="iconfont">&#xe603;</span>
+              </span>
+            </span>
+            <div class="displayFlex-flex home-main-title-text">
+              <p class="title">设备总数</p>
+              <p class="textNum">1122 <span class="num">台</span> </p>
+            </div>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content">
-            <div class="bg-purple">10</div>
-            <div class="bg-purple-dark">告警设备数</div>
+          <div class="home-main-alert-box" style="display: flex;">
+            <span class="iconfontSuccessBg">
+              <span class="iconfontSuccessBox">
+                <span class="iconfont ">&#xe602;</span>
+              </span>
+            </span>
+            <div class="displayFlex-flex home-main-title-text">
+              <p class="title">设备总数</p>
+              <p class="textNum">
+                <span>1122</span>
+                <span class="num">台</span>
+              </p>
+            </div>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content">
-            <div class="bg-purple">2</div>
-            <div class="bg-purple-dark">今日新增告警数</div>
+          <div class="home-main-alert-box" style="display: flex;">
+            <span class="iconfontWarnBg">
+              <span class="iconfontWarnBox">
+                <span class="iconfont">&#xe604;</span>
+              </span>
+            </span>
+            <div class="displayFlex-flex home-main-title-text">
+              <p class="title">设备总数</p>
+              <p class="textNum">
+                <span>1122</span>
+                <span class="num">台</span>
+              </p>
+            </div>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="grid-content">
-            <div class="bg-purple">3</div>
-            <div class="bg-purple-dark">今日告警恢复数</div>
+          <div class="home-main-alert-box" style="display: flex;">
+            <span class="iconfontErrorBg">
+              <span class="iconfontErrorBox">
+                <span class="iconfont">&#xe605;</span>
+              </span>
+            </span>
+            <div class="displayFlex-flex home-main-title-text">
+              <p class="title">设备总数</p>
+              <p class="textNum">
+                <span>1122</span>
+                <span class="num">台</span>
+              </p>
+            </div>
           </div>
         </el-col>
       </el-row>
-
       <el-row>
         <el-col :span="24">
-          <div id='echart' style="width: 100%;height:500px; border:1px solid #ccc;" v-show="echart"></div>
+          <div id="eCharts" class="whiteBg" style="height: 500px;width: 100%;" v-show="echart"></div>
         </el-col>
       </el-row>
       <el-row>
@@ -82,98 +113,27 @@
   import Box from '../../components/Box';
   export default {
     name: "home",
-    components: {
-      Box
-    },
+    components: {Box},
     data() {
       return {
         echart: true,
-        tableData: [{
-          serialNumber: '1',
-          alarmTime: '2016-05-02',
-          DeviceName: '1',
-          latestState: {
-            emergency:'11',
-            warning:'3',
-            ignore:'7',
-            ban:'10',
-          },
-          ComputerRoom: '温州机房',
-          rack: 'A8-3',
-          locations: 'U22',
-
-        },{
-          serialNumber: '1',
-          alarmTime: '2016-05-04',
-          DeviceName: '1',
-          latestState: {
-            emergency:'3',
-            warning:null,
-            ignore:'10',
-            ban:'9',
-          },
-          ComputerRoom: '温州机房',
-          rack: 'A8-3',
-          locations: 'U22',
-
-        },{
-          serialNumber: '1',
-          alarmTime: '2016-05-02',
-          DeviceName: '1',
-          latestState: {
-            emergency:'1',
-            warning:'3',
-            ignore:null,
-            ban:'5',
-          },
-          ComputerRoom: '温州机房',
-          rack: 'A8-3',
-          locations: 'U22',
-
-        },{
-          serialNumber: '1',
-          alarmTime: '2016-05-02',
-          DeviceName: '1',
-          latestState: {
-            emergency:null,
-            warning:'10',
-            ignore:'5',
-            ban:'10',
-          },
-          ComputerRoom: '温州机房',
-          rack: 'A8-3',
-          locations: 'U22',
-
-        },{
-          serialNumber: '1',
-          alarmTime: '2016-05-02',
-          DeviceName: '1',
-          latestState: {
-            emergency:'10',
-            warning:'5',
-            ignore:'4',
-            ban:null,
-          },
-          ComputerRoom: '温州机房',
-          rack: 'A8-3',
-          locations: 'U22',
-
-        },]
-      }
-    },
-    created() {
-
-      /*this.$store.commit('setLoading',true);*/
-    },
-    mounted() {
-      this.drawLine();
-    },
-    methods: {
-      drawLine() {
-        let myChart = this.$echarts.init(document.getElementById("echart"))
-
-        myChart.setOption({
-
+        tableData: [
+          {
+            serialNumber: '1',
+            alarmTime: '2016-05-02',
+            DeviceName: '1',
+            latestState: {
+              emergency:'11',
+              warning:'3',
+              ignore:'7',
+              ban:'10',
+            },
+            ComputerRoom: '温州机房',
+            rack: 'A8-3',
+            locations: 'U22',
+          }
+        ],
+        options:{
           title: {
             text: '监测概览',
             subtext: '2019年3月25日 09:02',
@@ -198,14 +158,15 @@
           grid:{
             top:'100',
           },
+          icon:['circle'], // 设置图例为圆形
+          color:['#31ce32','#f1232b','#2c6bb5','#9255dc','#fce441','#37d0c7','#fe753f','#3dabfd'],
           legend: {
             data: ['正常', '紧急', '主要', '次要', '警告', '忽略', '禁止', '设备总数']
           },
           toolbox: {
             show: true,
-            orient: 'vertical',
             x: 'right',
-            y: 'center',
+            y: 'top',
             feature: {
               mark: {
                 show: true
@@ -263,24 +224,6 @@
               type: 'bar',
               stack: '搜索引擎',
               data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-              /*markLine: {
-                                itemStyle: {
-                                    normal: {
-
-                                        lineStyle: {
-
-                                            type: 'dashed'
-                                        }
-                                    }
-                                },*/
-              /*data: [
-                                [{
-                                    type: 'min'
-                                }, {
-                                    type: 'max'
-                                }]
-                            ]*/
-              /*}*/
             },
             {
               name: '忽略',
@@ -301,68 +244,60 @@
               stack: '设备总数',
               data: [60, 72, 71, 74, 190, 130, 110]
             },
-
           ]
-        })
+        }
+      }
+    },
+    methods: {
+      drawLine() {
+        var _t= this;
+        var myChart = this.$echarts.init(document.getElementById("eCharts"))
+        myChart.setOption(_t.options)
       },
-
+    },
+    mounted() {
+     this.drawLine();
     }
   }
 </script>
 
 <style scoped>
-  .con-main {
-    padding: 0 60px;
+  .home-main {
+    padding: 0 20px;
   }
 
-  .el-row {
+  .home-main-title {
+    height: 50px;
+    line-height: 50px;
+  }
+
+  .home-main-alert-box {
+    background-color: #fff;
+    border-radius: 4px;
+    height: 110px;
     margin-bottom: 20px;
-  &:last-child {
-     margin-bottom: 0;
-   }
   }
 
-  .el-col {
-    border-radius: 4px;
+  .home-main-title-text {
+    margin-top: 26px;
   }
 
-  .bg-purple-dark {
-    color: #333;
-    text-align: center;
-    font-size: 25px;
-    /*line-height: 50px;*/
+  .home-main-title-text p.title {
+    font-size: 12px;
   }
 
-  .bg-purple {
-    color: #f22;
-    font-size: 25px;
-    text-align: center;
-    line-height: 100px;
+  .home-main-title-text > p.textNum {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 22px;
   }
 
-  .bg-purple-light {
-    background: #e5e9f2;
+  .home-main-title-text > p.textNum > span.num {
+    font-size: 12px;
   }
-
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-    height: 150px;
-    border: 1px solid #ccc;
-  }
-
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
-
-  .con-main-top {
-    line-height: 30px;
-    border-bottom: 1px solid #ccc;
-  }
-
-  .con-main-top span {
-    display: inline-block;
-    border-bottom: 4px solid #99A9BF;
+</style>
+<style>
+  .homeBox .box-wrap {
+    padding-top: 0 !important;
   }
 </style>
