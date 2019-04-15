@@ -37,11 +37,11 @@
     <!--标签页具体内容-->
     <div>
       <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
-        <el-table-column type="expand" header-align="center" align="center">
+        <el-table-column type="expand" header-align="left" align="left">
           <!--展开行-->
           <template>
             <el-table stripe>
-              <el-table-column label="状态" header-align="center" align="center">
+              <el-table-column label="状态" header-align="left" align="left">
                 <template>
                   <el-tooltip effect="dark" content="紧急" placement="top-start">
                     <span class="iconfont iconfontError">&#xe609;</span>
@@ -51,17 +51,17 @@
                   </el-tooltip>
                 </template>
               </el-table-column>
-              <el-table-column v-if="true" label="类型" header-align="center" align="center" />
-              <el-table-column v-if="true" label="名称" header-align="center" align="center" />
-              <el-table-column v-if="false" label="资源名称" header-align="center" align="center" />
-              <el-table-column label="最新状态" header-align="center" align="center" />
-              <el-table-column label="取值方式" header-align="center" align="center" />
-              <el-table-column label="取值间隔" header-align="center" align="center" />
-              <el-table-column label="更新时间" header-align="center" align="center" />
+              <el-table-column v-if="true" label="类型" header-align="left" align="left" />
+              <el-table-column v-if="true" label="名称" header-align="left" align="left" />
+              <el-table-column v-if="false" label="资源名称" header-align="left" align="left" />
+              <el-table-column label="最新状态" header-align="left" align="left" />
+              <el-table-column label="取值方式" header-align="left" align="left" />
+              <el-table-column label="取值间隔" header-align="left" align="left" />
+              <el-table-column label="更新时间" header-align="left" align="left" />
             </el-table>
           </template>
         </el-table-column>
-        <el-table-column label="状态" header-align="center" align="center">
+        <el-table-column label="状态" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
               <span class="iconfont iconfontError">&#xe609;</span>
@@ -71,10 +71,10 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column label="资源名称" header-align="center" align="center" />
-        <el-table-column label="最新状态" header-align="center" align="center" />
-        <el-table-column label="更新时间" header-align="center" align="center" />
-        <el-table-column label="操作" header-align="center" align="center">
+        <el-table-column label="资源名称" header-align="left" align="left" />
+        <el-table-column label="最新状态" header-align="left" align="left" />
+        <el-table-column label="更新时间" header-align="left" align="left" />
+        <el-table-column label="操作" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" content="离线设备" placement="top-start">
               <span class="iconfont iconfontError">&#xe62b;</span>
