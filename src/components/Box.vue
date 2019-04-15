@@ -22,13 +22,14 @@
 <style scoped>
   .app-main {
     height: 100%;
-    min-height: 475px;
     box-sizing: border-box;
     overflow: hidden;
-    /*position: relative;*/
   }
 
   .box-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     height: 100%;
     overflow: auto;
     padding: 50px 0 0 0;

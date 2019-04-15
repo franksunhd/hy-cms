@@ -383,6 +383,7 @@ input::-webkit-input-placeholder {
 
 .displayFlex {
   display: flex;
+  flex: 1;
 }
 
 .displayFlex-flex {
