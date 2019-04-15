@@ -10,7 +10,7 @@
     </div>
     <div class="padding20 borderBottom">
       <!--表单-->
-      <el-form inline>
+      <el-form inline label-width="80px">
         <el-form-item :label="$t('acquisitionNodeState.nodeName') + '：'" style="margin-bottom: 16px;">
           <el-input class="width200" />
         </el-form-item>
@@ -20,7 +20,6 @@
         <el-form-item :label="$t('acquisitionNodeState.nodePort') + '：'" style="margin-bottom: 16px;">
           <el-input class="width200'" />
         </el-form-item>
-        <br>
         <el-form-item :label="$t('acquisitionNodeState.groupName') + '：'">
           <el-select class="width200">
             <el-option></el-option>
