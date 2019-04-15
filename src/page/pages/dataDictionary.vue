@@ -8,19 +8,21 @@
         <el-breadcrumb-item>{{$t('breadcrumb.dataDictionary')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-row>
-      <el-col :span="4">
+    <div class="displayFlex">
+      <div class="borderRightColorGray">
         <p class="dataDictionary-title">
           <a href="javascript:;" @click="clickNode">{{formItem.menuName}}</a>
         </p>
         <el-tree
+          class="dataDictionary-tree"
           :data="treeData"
+          highlight-current
           @node-click="getCurrentNode"
           :props="defaultProps"
           :expand-on-click-node="false"
           :default-expand-all="false"/>
-      </el-col>
-      <el-col :span="20">
+      </div>
+      <div class="displayFlex-flex">
         <div class="padding20 borderBottom">
           <!--表单-->
           <el-form :model="formItem" inline>
@@ -62,31 +64,37 @@
           <!--表格-->
           <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
             <el-table-column type="selection" fixed header-align="left" align="left"/>
-            <el-table-column :label="$t('public.index')" header-align="left" align="left">
+            <el-table-column width="60" :label="$t('public.index')" header-align="left" align="left">
               <template slot-scope="scope">
 								<span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')" width="150" header-align="left" align="left"/>
-            <el-table-column prop="basedataName" :label="$t('dataDictionary.dictionaryName')" width="150" header-align="left" align="left"/>
-            <el-table-column prop="dictionaryCode" :label="$t('dataDictionary.businessCode')" width="150" header-align="left" align="left"/>
-            <el-table-column prop="level" :label="$t('dataDictionary.directoryLevel')" width="150" header-align="left" align="left"/>
-            <el-table-column :label="$t('dataDictionary.sort')" width="150" header-align="left" align="left">
+            <el-table-column min-width="100px" prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')" header-align="left" align="left"/>
+            <el-table-column min-width="140px" :label="$t('dataDictionary.dictionaryName')" header-align="left" align="left" >
+              <template slot-scope="scope">
+                <el-tooltip effect="dark" :content="scope.row.basedataName" placement="top-start">
+                  <span>{{scope.row.basedataName}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column prop="dictionaryCode" :label="$t('dataDictionary.businessCode')" header-align="left" align="left"/>
+            <el-table-column prop="level" width="100px" :label="$t('dataDictionary.directoryLevel')" header-align="left" align="left"/>
+            <el-table-column width="140px" :label="$t('dataDictionary.sort')" header-align="left" align="left">
               <template slot-scope="scope">
                 <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
                 <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('dataDictionary.status')" width="150" header-align="left" align="left">
+            <el-table-column width="100px" :label="$t('dataDictionary.status')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span v-if="scope.row.enable === true">启用</span>
                 <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createBy" :label="$t('dataDictionary.createName')" width="150" header-align="left" align="left"/>
-            <el-table-column :label="$t('dataDictionary.createTime')" width="155" header-align="left" align="left">
+            <el-table-column min-width="100px" prop="createBy" :label="$t('dataDictionary.createName')" header-align="left" align="left"/>
+            <el-table-column width="150px" :label="$t('dataDictionary.createTime')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>{{scope.row.createTime | dateFilter}}</span>
               </template>
@@ -99,10 +107,11 @@
             :pageSize='options.pageSize'
             @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
     <!--新增编辑-->
     <el-dialog
+      class="dataDictionary-dialog"
       append-to-body
       :title="$t('dataDictionary.createUpdateDictionary')"
       :visible.sync="dialogVisible"
@@ -165,9 +174,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('roleName')" >{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('roleName')" >{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -345,8 +354,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/basedata/', {
@@ -360,7 +369,7 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 _t.getMenuData();
@@ -386,8 +395,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/basedata/', {
@@ -400,7 +409,7 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getData();
                   _t.getMenuData();
@@ -427,8 +436,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/basedata/', {
@@ -441,7 +450,7 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getData();
                   _t.getMenuData();
@@ -456,7 +465,7 @@
               case 400: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 break;
               default:
@@ -692,7 +701,7 @@
                 case 2006:
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   }).then(()=>{
                     _t.getData();
                     _t.getMenuData();
@@ -745,17 +754,24 @@
 
 <style scoped>
   .dataDictionary-title {
-    height: 35px;
-    line-height: 35px;
+    height: 40px;
+    line-height: 40px;
     font-size: 14px;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 176px;
   }
 
   .dataDictionary-title a {
-    line-height: 35px;
+    line-height: 40px;
     display: inline-block;
   }
 </style>
 <style>
+  .dataDictionary-dialog .el-dialog {
+    width: 600px;
+    height: 446px;
+  }
   .dataDictionary-dialog-form .el-form-item {
     margin-bottom: 20px;
     margin-right: 0;

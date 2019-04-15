@@ -21,7 +21,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item :label="$t('licenseNotice.licenseUser') + '：'">
-          <el-button class="queryBtn" type="primary" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}
+          <el-button class="queryBtn" type="success" @click="dialogVisible = true">{{$t('licenseNotice.selectUser')}}
           </el-button>
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData"> <!--第一层 数据条数的循环-->
@@ -54,20 +54,19 @@
     </div>
     <!--选择用户-->
     <el-dialog
+      class="licenseNotice-dialog"
       append-to-body
       :title="$t('licenseNotice.selectUser')"
       :visible.sync="dialogVisible">
       <el-tree
+        class="licenseNotice-tree"
         :data="treeData"
         show-checkbox
-        ref="tree">
-         <span slot-scope="{ node, data }">
-           <i v-if="data.type !== 'user'" class="el-icon-document"></i>{{ node.label }}
-        </span>
-      </el-tree>
+        :props="defaultProps"
+        ref="tree" />
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="getCheckedNodes" size="small">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisible = false" size="small">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" type="primary" @click="getCheckedNodes">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -85,6 +84,10 @@
         noticeWay: '',
         dialogVisible: false,
         listData: [],
+        defaultProps:{
+          label:'label',
+          children:'children'
+        },
         treeData: [
           {
             id: 1,
@@ -372,6 +375,14 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .licenseNotice-dialog .el-dialog {
+    width: 700px;
+    height: 500px;
+  }
 
+  .licenseNotice-tree .el-tree-node__content {
+    height: 30px;
+    line-height: 30px;
+  }
 </style>
