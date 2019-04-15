@@ -64,12 +64,21 @@
     </div>
     <!--新增编辑-->
     <el-dialog
+      class="nodeGroup-dialog"
       append-to-body
       :title="$t('nodeGroupMaintenance.createUpdateNode')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="120px" :model="addEdit" :rules="rules" ref="formName">
+      <p class="nodeGroup-dialog-tip">
+        <i class="el-icon-warning"></i>
+        <span>
+          注意：“网关IP”主要用于验证采集节点与带外IP段的通讯是否正常，
+          一般填“网关”，若无网关情况下，选填一个有设备的带外网IP，
+          如果采集节点与此IP通讯不正常则代表可能无法采集此IP段的相关设备！
+        </span>
+      </p>
+      <el-form label-width="96px" :model="addEdit" :rules="rules" ref="formName">
         <el-form-item :label="$t('nodeGroupMaintenance.nodeGroupName') + '：'" prop="groupName">
           <el-input class="width200" v-model="addEdit.groupName" />
         </el-form-item>
@@ -93,9 +102,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -217,8 +226,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(()=>{
           _t.$store.commit('setLoading',true);
           _t.$api.delete('system/collectorGroup/',{
@@ -233,7 +242,7 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 break;
@@ -247,7 +256,7 @@
               case 3005: // 节点组关联角色不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getData();
                 });
@@ -350,7 +359,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   }).then(()=>{
                     _t.resetFormData();
                   });
@@ -419,7 +428,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   }).then(()=>{
                     _t.resetFormData();
                   });
@@ -476,6 +485,30 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .nodeGroup-dialog .el-dialog {
+    width: 876px;
+    height: 426px;
+  }
 
+  .nodeGroup-dialog-tip {
+    background-color: #fdf6ec;
+    font-size: 12px;
+    color: #d99815;
+    padding: 8px 10px;
+    display: flex;
+    margin-bottom: 20px;
+  }
+
+  .nodeGroup-dialog-tip i {
+    width: 30px;
+    height: 35px;
+    line-height: 35px;
+    color: #d99815;
+    font-size: 14px;
+  }
+
+  .nodeGroup-dialog-tip span {
+    flex: 1;
+  }
 </style>

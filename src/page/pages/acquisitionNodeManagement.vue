@@ -89,33 +89,36 @@
     <!--新增编辑-->
     <el-dialog
       append-to-body
+      class="acquisitionNode-dialog"
       :title="$t('acquisitionNodeManagement.createUpdateNode')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="120px" inline :model="addEdit" :rules="rules" ref="formName">
-        <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" prop="collectorName">
+      <el-form label-width="96px" inline :model="addEdit" :rules="rules" ref="formName">
+        <el-form-item class="star" :label="$t('acquisitionNodeManagement.nodeName') + '：'" prop="collectorName">
           <el-input class="width200" v-model="addEdit.collectorName" />
         </el-form-item>
-        <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" prop="ip">
+        <el-form-item class="star" :label="$t('acquisitionNodeManagement.nodeIp') + '：'" prop="ip">
           <el-input class="width200" v-model="addEdit.ip" />
         </el-form-item>
-        <el-form-item :label="$t('acquisitionNodeManagement.nodeGroup') + '：'" prop="groupId">
+        <el-form-item class="star" :label="$t('acquisitionNodeManagement.nodeGroup') + '：'" prop="groupId">
           <el-select v-model="addEdit.groupId" class="width200">
             <el-option v-for="(item,index) in groupIpList" :key="index" :label="item.groupName" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" prop="port">
+        <el-form-item class="star" :label="$t('acquisitionNodeManagement.nodePort') + '：'" prop="port">
           <el-input class="width200" v-model="addEdit.port" />
         </el-form-item>
-        <el-form-item :label="$t('acquisitionNodeManagement.ruleDes') + '：'" prop="description">
-          <el-input class="width200" type="textarea" v-model="addEdit.description" :autosize="{minRows:3}"/>
+      </el-form>
+      <el-form :model="addEdit" label-width="96px">
+        <el-form-item :label="$t('acquisitionNodeManagement.ruleDes') + '：'">
+          <el-input class="acquisitionNode-description" type="textarea" v-model="addEdit.description" :autosize="{minRows:3}"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" v-if="ifAdd == true" class="queryBtn" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" v-if="ifAdd == false" class="queryBtn" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" v-if="ifAdd == true" class="alertBtn" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" v-if="ifAdd == false" class="alertBtn" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -181,9 +184,6 @@
           ],
           port:[
             {validator: isNotNull, trigger: ['blur']}
-          ],
-          description:[
-            {validator: isNotNull, trigger: ['blur']}
           ]
         }
       }
@@ -238,8 +238,8 @@
         _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          cancelButtonClass: "queryBtn",
-          confirmButtonClass:'queryBtn',
+          cancelButtonClass: "alertBtn",
+          confirmButtonClass:'alertBtn',
           type: 'warning'
         }).then(() => {
           _t.$store.commit('setLoading',true);
@@ -255,7 +255,7 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 break;
@@ -269,7 +269,7 @@
               case 3005: // 节点组关联角色不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getData();
                 });
@@ -360,7 +360,7 @@
                   case 3004: // 操作失败
                     _t.$alert(res.message, _t.$t('public.resultTip'), {
                       confirmButtonText: _t.$t('public.confirm'),
-                      confirmButtonClass:'queryBtn'
+                      confirmButtonClass:'alertBtn'
                     }).then(()=>{
                       _t.resetFormData();
                     });
@@ -437,7 +437,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   }).then(()=>{
                     _t.resetFormData();
                   });
@@ -478,6 +478,19 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .acquisitionNode-dialog .el-dialog {
+    width: 660px;
+    height: 356px;
+  }
 
+  .acquisitionNode-dialog .el-form-item {
+    width: 49%;
+    margin-bottom: 20px;
+    margin-right: 0;
+  }
+
+  .acquisitionNode-description {
+    width: 505px;
+  }
 </style>
