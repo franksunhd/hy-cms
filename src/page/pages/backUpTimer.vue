@@ -88,8 +88,6 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
-        :firstPage='options.firstPage'
-        :lastPage='options.lastPage'
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
@@ -117,8 +115,8 @@
         </el-form-item>
       </my-cron>
       <span slot="footer">
-        <el-button type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
-        <el-button @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" type="primary" @click="dialogVisibleAlert = false">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="dialogVisibleAlert = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -228,6 +226,9 @@
   }
 </script>
 
-<style scoped>
-
+<style>
+  .dataBaseClear-box .el-dialog {
+    width: 700px;
+    height: 500px;
+  }
 </style>

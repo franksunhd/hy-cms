@@ -84,6 +84,7 @@
     </div>
     <!--还原的执行史-->
     <el-dialog
+      class="dataBaseRestore-history-dialog"
       append-to-body
       :title="$t('dataBaseRestore.restoreHistory')"
       :visible.sync="dialogVisible"
@@ -114,7 +115,7 @@
     <el-dialog
       append-to-body
       :title="$t('dataBaseRestore.backUpRole')"
-      class="dataBaseClear-box"
+      class="dataBaseClear-box dataBaseRestore-history-dialog"
       :visible.sync="dialogVisibleAlert"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
@@ -169,7 +170,7 @@
           firstPage: 1, // 首页
           lastPage: 100 // 末页
         },
-        dialogVisible: false,
+        dialogVisible: true,
         dialogVisibleAlert: false,
         timelineData: [
           {label: '2019年2月1日', level: 1, des: null},
@@ -307,5 +308,10 @@
 
   .dataBaseClear-box .el-radio {
     margin-right: 15px;
+  }
+
+  .dataBaseRestore-history-dialog .el-dialog {
+    width: 500px;
+    height: 500px;
   }
 </style>
