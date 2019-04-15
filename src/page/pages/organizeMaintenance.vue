@@ -139,9 +139,6 @@
         <el-form-item class="star" :label="$t('organizeMaintenance.organizationName') + '：'" prop="organizationName">
           <el-input class="width200" v-model="addEdit.organizationName"/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('organizeMaintenance.orderIndex') + '：'" prop="orderIndex">
-          <el-input class="width200" v-model="addEdit.orderIndex"/>
-        </el-form-item>
         <el-form-item class="star" :label="$t('organizeMaintenance.isEnable') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
@@ -183,8 +180,7 @@
           organizationId: '',
           organizationName: '',
           enable: 1,
-          description: '',
-          orderIndex: ''
+          description: ''
         },
         isShowEditPopover: false, // 控制所属组织下拉框的显示隐藏
         // 操作按钮的禁用启用
@@ -219,9 +215,6 @@
           organizationName: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          orderIndex: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
           enable: [
             {validator: isNotNull, trigger: ['blur']}
           ],
@@ -241,7 +234,6 @@
         _t.addEdit.organizationName = '';
         _t.addEdit.enable = 1;
         _t.addEdit.description = '';
-        _t.addEdit.orderIndex = '';
         _t.dialogVisible = false;
         _t.$refs.table.clearSelection();
       },
@@ -583,7 +575,6 @@
                 name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
                 enable: _t.addEdit.enable,
                 createBy: localStorage.getItem('hy-user-name'),
-                orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.trim(),
                 description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
               }
             }, function (res) {
@@ -630,7 +621,6 @@
               }
               _t.addEdit.organizationId = res.data.parentId;
               _t.addEdit.organizationName = res.data.name;
-              _t.addEdit.orderIndex = res.data.orderMark;
               _t.addEdit.enable = res.data.enable == true ? 1 : 0;
               _t.addEdit.description = res.data.description;
               _t.dialogVisible = true;
@@ -675,7 +665,6 @@
                 enable: _t.addEdit.enable,
                 lastModifyBy: localStorage.getItem('hy-user-name'),
                 languageMark: localStorage.getItem('hy-language'),
-                orderMark: _t.addEdit.orderIndex == null ? null : _t.addEdit.orderIndex.toString().trim(),
                 description: _t.addEdit.description == null ? null : _t.addEdit.description.trim()
               }
             }, function (res) {
