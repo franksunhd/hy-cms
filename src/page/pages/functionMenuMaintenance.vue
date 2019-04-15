@@ -8,19 +8,21 @@
         <el-breadcrumb-item>{{$t('breadcrumb.functionMenuMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-row>
-      <el-col :span="4">
+    <div class="displayFlex">
+      <div class="borderRightColorGray">
         <p class="functionMenuMaintenance-title">
           <a href="javascript:;" @click="clickNode">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
         </p>
         <el-tree
+          class="functionMenuMaintenance-tree"
           :data="treeData"
           :props="defaultProps"
+          highlight-current
           @node-click="getCurrentNode"
           :expand-on-click-node="false"
           :default-expand-all="false"/>
-      </el-col>
-      <el-col :span="20">
+      </div>
+      <div class="displayFlex-flex">
         <div class="padding20 borderBottom">
           <!--表单-->
           <el-form inline :model="formItem">
@@ -68,17 +70,29 @@
           <!--表格-->
           <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
             <el-table-column type="selection" fixed header-align="left" align="left"/>
-            <el-table-column :label="$t('public.index')" header-align="left" align="left">
+            <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="menuName" :label="$t('functionMenuMaintenance.menuName')" header-align="left" align="left"/>
-            <el-table-column prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left" align="left"/>
-            <el-table-column prop="menuHref" :label="$t('functionMenuMaintenance.link')" header-align="left" align="left"/>
-            <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="left" align="left"/>
+            <el-table-column min-width="60px" :label="$t('functionMenuMaintenance.menuName')" header-align="left" align="left">
+              <template slot-scope="scope">
+                <el-tooltip effect="dark" :content="scope.row.menuName" placement="top-start">
+                  <span>{{scope.row.menuName}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column width="60px" prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left" align="left"/>
+            <el-table-column min-width="100px" :label="$t('functionMenuMaintenance.link')" header-align="left" align="left">
+              <template slot-scope="scope">
+                <el-tooltip effect="dark" :content="scope.row.menuHref" placement="top-start">
+                  <span>{{scope.row.menuHref}}</span>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column width="90px" :label="$t('functionMenuMaintenance.jumpType')" header-align="left" align="left"/>
             <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left" align="left"/>
             <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
               <template slot-scope="scope">
@@ -93,7 +107,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="left" align="left"/>
-            <el-table-column prop="createTime" :label="$t('functionMenuMaintenance.createTime')" header-align="left" align="left"/>
+            <el-table-column width="160px" :label="$t('functionMenuMaintenance.createTime')" header-align="left" align="left">
+              <template slot-scope="scope">
+                <span>{{scope.row.createTime | dateFilter}}</span>
+              </template>
+            </el-table-column>
           </el-table>
           <!--分页-->
           <pages
@@ -102,11 +120,12 @@
             :pageSize='options.pageSize'
             @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
     <!--新增编辑-->
     <el-dialog
       append-to-body
+      class="functionMenuMaintenance-dialog"
       :title="$t('functionMenuMaintenance.createUpdateDictionary')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
@@ -176,6 +195,7 @@
       </el-form>
       <!--选择用户-->
       <el-dialog
+        class="functionMenuMaintenance-dialog-selectUser"
         :title="$t('functionMenuMaintenance.selectUser')"
         :visible.sync="dialogVisibleAlert"
         append-to-body>
@@ -187,14 +207,14 @@
           :default-checked-keys="checkedKeysArr"
           ref="tree"/>
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="getCheckedNodes" class="queryBtn">{{$t('public.confirm')}}</el-button>
-          <el-button @click="dialogVisibleAlert = false" class="queryBtn">{{$t('public.cancel')}}</el-button>
+          <el-button type="primary" @click="getCheckedNodes" class="alertBtn">{{$t('public.confirm')}}</el-button>
+          <el-button @click="dialogVisibleAlert = false" class="alertBtn">{{$t('public.cancel')}}</el-button>
         </span>
       </el-dialog>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -204,6 +224,7 @@
   import Box from '../../components/Box';
   import {isNotNull} from "../../assets/js/validator";
   import {queryOrgWithRole} from "../../assets/js/recursive";
+  import {dateFilter} from "../../assets/js/filters";
 
   export default {
     name: "functionMenuMaintenance",
@@ -1017,13 +1038,27 @@
 
 <style scoped>
   .functionMenuMaintenance-title {
-    height: 35px;
-    line-height: 35px;
+    height: 40px;
+    line-height: 40px;
     font-size: 14px;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 176px;
   }
 
   .functionMenuMaintenance-title a {
-    line-height: 35px;
+    line-height: 40px;
     display: inline-block;
+  }
+</style>
+<style>
+  .functionMenuMaintenance-dialog .el-dialog {
+    width: 700px;
+    height: 600px;
+  }
+
+  .functionMenuMaintenance-dialog-selectUser .el-dialog {
+    width: 700px;
+    height: 450px;
   }
 </style>

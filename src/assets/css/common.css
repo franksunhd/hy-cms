@@ -391,11 +391,18 @@ input::-webkit-input-placeholder {
 }
 
 .dataDictionary-tree.el-tree .el-tree-node__content,
-.organizeMaintenance-tree.el-tree .el-tree-node__content{
+.organizeMaintenance-tree.el-tree .el-tree-node__content,
+.functionMenuMaintenance-tree.el-tree .el-tree-node__content {
   height: 36px;
   line-height: 36px;
-  padding-left: 12px !important;
 }
+
+.dataDictionary-tree.el-tree,
+.organizeMaintenance-tree.el-tree,
+.functionMenuMaintenance-tree.el-tree {
+  padding-left: 12px;
+}
+
 
 .el-tree-node__label {
   font-size: 12px;
