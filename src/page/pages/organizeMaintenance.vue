@@ -69,7 +69,7 @@
           <!--表格-->
           <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
             <el-table-column type="selection" fixed header-align="left" align="left"/>
-            <el-table-column fixed :label="$t('public.index')" header-align="left" align="left">
+            <el-table-column width="60px" fixed :label="$t('public.index')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -92,7 +92,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="left" align="left"/>
-            <el-table-column :label="$t('organizeMaintenance.createTime')" header-align="left" align="left">
+            <el-table-column width="160px" :label="$t('organizeMaintenance.createTime')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>{{scope.row.createTime | dateFilter}}</span>
               </template>
