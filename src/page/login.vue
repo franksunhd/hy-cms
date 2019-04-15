@@ -3,7 +3,7 @@
     <!--背景-->
     <el-carousel class="login-bg-box" arrow="never" indicator-position="none">
       <el-carousel-item v-for="(item,index) in loginImg" :key="index">
-        <img class="login-swiper-img" src="../../static/img/login_bg.png" alt="swiper">
+        <img class="login-swiper-img" src="../../static/img/login_bg.jpg" alt="swiper">
       </el-carousel-item>
     </el-carousel>
     <!--header-->
