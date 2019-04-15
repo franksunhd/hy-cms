@@ -16,10 +16,10 @@
       <p class="login-form-title">账号登录</p>
       <div class="login-content-box">
         <div class="login-error-box" v-if="isError">
-          <i class="el-icon-warning login-error-i"></i>
+          <i class="el-icon-warning"></i>
           <span>{{loginTip}}</span>
         </div>
-        <el-form style="width: 340px;">
+        <el-form>
           <el-form-item style="margin-bottom: 10px;">
             <el-input class="login_input"
                       placeholder="账号"
@@ -166,7 +166,8 @@
   }
 
   .login-logoText {
-    font-size: 16px;
+    font-size: 14px;
+    margin-left: 14px;
   }
 
   .login-footer {
@@ -181,7 +182,7 @@
   }
 
   .login-form {
-    width: 538px;
+    width: 510px;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -195,6 +196,7 @@
     text-align: center;
     font-size: 22px;
     margin-bottom: 20px;
+    font-weight: bold;
   }
 
   .login-content-box {
@@ -205,6 +207,7 @@
     line-height: 36px;
     height: 36px;
     padding-left: 10px;
+    margin-bottom: 10px;
   }
 
   .login_btn {
