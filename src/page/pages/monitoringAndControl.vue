@@ -37,14 +37,14 @@
 		</div>
 		<div class="equipmentList clearfix">
 			<el-table :data="tableData" style="width: 100%;" stripe @cell-click="cellClickColumn">
-				<el-table-column prop="number" label="序号" width="180" header-align="center" align="center">
+				<el-table-column prop="number" label="序号" width="180" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>
-                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-                </span>
+              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+            </span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="state" label="状态" width="180" header-align="center" align="center">
+				<el-table-column prop="state" label="状态" width="180" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip v-if="scope.row.state == 1" effect="dark" content="紧急" placement="top-start">
 							<span class="iconfont iconfontError">&#xe609;</span>
@@ -57,45 +57,35 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="DeviceName" label="设备名称" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="alarmContent" label="告警内容" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="LatestAlarmTime" label="最新告警时间" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="StatusSummary" label="状态汇总" width="180" header-align="center" align="center">
+				<el-table-column prop="DeviceName" label="设备名称" width="180" header-align="left" align="left" />
+				<el-table-column prop="alarmContent" label="告警内容" width="180" header-align="left" align="left" />
+				<el-table-column prop="LatestAlarmTime" label="最新告警时间" width="180" header-align="left" align="left" />
+				<el-table-column prop="StatusSummary" label="状态汇总" width="180" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" content="紧急" placement="top-start">
 							<span>
-                		<span class="iconfont iconfontError">&#xe609;</span>
+                <span class="iconfont iconfontError">&#xe609;</span>
 							<span>10</span>
 							</span>
-
 						</el-tooltip>
 						<el-tooltip effect="dark" content="警告" placement="top-start">
 							<span>
-                		<span class="iconfont iconfontWarn">&#xe608;</span>
+                <span class="iconfont iconfontWarn">&#xe608;</span>
 							<span>5</span>
 							</span>
-
 						</el-tooltip>
 						<el-tooltip effect="dark" content="忽略" placement="top-start">
 							<span>
-                		<span class="iconfont iconfontDisable">&#xe60a;</span>
-							<span>2</span>
+                <span class="iconfont iconfontDisable">&#xe60a;</span>
+							  <span>2</span>
 							</span>
-
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="ComputerRoom" label="机房" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="rack" label="机架" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="location" label="位置" width="180" header-align="center" align="center" />
-
-				<el-table-column prop="operation" label="操作" width="180" header-align="center" align="center" />
-
+				<el-table-column prop="ComputerRoom" label="机房" width="180" header-align="left" align="left" />
+				<el-table-column prop="rack" label="机架" width="180" header-align="left" align="left" />
+				<el-table-column prop="location" label="位置" width="180" header-align="left" align="left" />
+				<el-table-column prop="operation" label="操作" width="180" header-align="left" align="left" />
 			</el-table>
 			<!--分页-->
 			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
@@ -107,15 +97,12 @@
 				<el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
 				<el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
 				<el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
-
 				<el-form-item style="width: 33%;" label="UUID:"></el-form-item>
 				<el-form-item style="width: 33%;" label="设备厂商:"></el-form-item>
 				<el-form-item style="width: 33%;" label="序列号:"></el-form-item>
-
 				<el-form-item style="width: 33%;" label="对象类型:"></el-form-item>
 				<el-form-item style="width: 33%;" label="严重级别:"></el-form-item>
 				<el-form-item style="width: 33%;" label="告警次数:"></el-form-item>
-
 				<el-form-item style="width: 33%;" label="事件类别:"></el-form-item>
 				<el-form-item style="width: 33%;" label="起始时间:"></el-form-item>
 				<el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
@@ -132,7 +119,7 @@
 				<p class="paddingLeft-10"><strong>附加信息</strong></p>
 				<el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
 				<el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
-				<br>
+				<br
 				<el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
 				<el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
 				<el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
@@ -147,7 +134,7 @@
         <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
       </span>
 		</el-dialog>
-		
+
 	</Box>
 </template>
 <script>
@@ -579,13 +566,13 @@
 								animation: true,
 								animationThreshold: '2000',
 								animationDuration: '1000',
-								
+
 								//scaleSize: 120,
 								//symbolSize:'50',
 								//symbolOffset:[0,1],
 								color: 'rgba(250,225,50,0.8)',
-								
-								
+
+
 							//},
 							data: [{
 								x: '50%',
@@ -687,24 +674,24 @@
 		background-color: #fff;
 		margin: 0 10px;
 	}
-	
+
 	.equipmentList ul li {
 		line-height: 56px;
 	}
-	
+
 	.equipmentList ul li span {
 		padding-left: 20px;
 	}
-	
+
 	.equipmentList ul li:first-child {
 		float: left;
 	}
-	
+
 	.equipmentList ul li:nth-child(2) {
 		float: right;
 		margin-right: 20px;
 	}
-	
+
 	.equipmentList ul li:last-child {
 		float: right;
 		margin-right: 10px;

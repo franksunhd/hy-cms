@@ -74,29 +74,29 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left" />
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeState.nodeName')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.ip')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.port')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.nodeGroup')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.nodeType')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.equipmentNumber')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.description')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.status')" header-align="center" align="center">
+        <el-table-column :label="$t('acquisitionNodeState.nodeName')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.ip')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.port')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.nodeGroup')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.nodeType')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.equipmentNumber')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.description')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('acquisitionNodeState.executionStatus')" header-align="center" align="center" />
-        <el-table-column :label="$t('acquisitionNodeState.lastExecutionTime')" header-align="center" align="center" />
+        <el-table-column :label="$t('acquisitionNodeState.executionStatus')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeState.lastExecutionTime')" header-align="left" align="left" />
       </el-table>
       <!--分页-->
       <pages

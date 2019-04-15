@@ -60,18 +60,18 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="center" align="center"/>
-        <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="center" align="center"/>
-        <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="center" align="center"/>
-        <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="center" align="center"/>
-        <el-table-column :label="$t('dataBaseRestore.note')" header-align="center" align="center"/>
+        <el-table-column :label="$t('dataBaseRestore.backUpObject')" header-align="left" align="left"/>
+        <el-table-column :label="$t('dataBaseRestore.backUpTime')" header-align="left" align="left"/>
+        <el-table-column :label="$t('dataBaseRestore.storageLocation')" header-align="left" align="left"/>
+        <el-table-column :label="$t('dataBaseRestore.dataSize')" header-align="left" align="left"/>
+        <el-table-column :label="$t('dataBaseRestore.note')" header-align="left" align="left"/>
       </el-table>
       <!--分页-->
       <pages

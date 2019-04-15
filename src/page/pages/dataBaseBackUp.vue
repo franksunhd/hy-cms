@@ -37,9 +37,9 @@
       <!--表格-->
       <el-table :data="tableData" stripe>
         <el-table-column type="selection" fixed/>
-        <el-table-column :label="$t('public.index')" width="100" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseBackUp.tableName')" width="200" header-align="center" align="center" />
-        <el-table-column :label="$t('dataBaseBackUp.tableDes')" header-align="center" align="center" />
+        <el-table-column :label="$t('public.index')" width="100" header-align="left" align="left" />
+        <el-table-column :label="$t('dataBaseBackUp.tableName')" width="200" header-align="left" align="left" />
+        <el-table-column :label="$t('dataBaseBackUp.tableDes')" header-align="left" align="left" />
       </el-table>
     </div>
   </Box>

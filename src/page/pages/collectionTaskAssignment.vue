@@ -59,28 +59,28 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('collectionTaskAssignment.nodeName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.ip')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.port')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.nodeGroup')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="center" align="center">
+        <el-table-column :label="$t('collectionTaskAssignment.nodeName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.ip')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.port')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.nodeGroup')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.nodeType')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.equipmentNumber')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.description')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="center" align="center"/>
+        <el-table-column :label="$t('collectionTaskAssignment.createName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('collectionTaskAssignment.createTime')" header-align="left" align="left"/>
       </el-table>
       <!--分页-->
       <pages

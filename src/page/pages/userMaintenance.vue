@@ -77,35 +77,28 @@
         </el-button>
       </div>
       <el-table :data="tableData" stripe ref="table" @selection-change="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="displayName" :label="$t('userMaintenance.username')" width="100" header-align="center"
-                         align="center"/>
-        <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" width="100" header-align="center"
-                         align="center"/>
-        <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" width="100"
-                         header-align="center" align="center"/>
-        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" width="100" header-align="center"
-                         align="center"/>
-        <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="center"
-                         align="center"/>
-        <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="center"
-                         align="center"/>
-        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="center" align="center">
+        <el-table-column prop="displayName" :label="$t('userMaintenance.username')" width="100" header-align="left" align="left"/>
+        <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" width="100" header-align="left" align="left"/>
+        <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" width="100" header-align="left" align="left"/>
+        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" width="100" header-align="left" align="left"/>
+        <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="left" align="left"/>
+        <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="left" align="left"/>
+        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="center"
-                         align="center"/>
-        <el-table-column :label="$t('userMaintenance.createTime')" header-align="center" align="center">
+        <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="left" align="left"/>
+        <el-table-column :label="$t('userMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             {{scope.row.createTime | dateFilter}}
           </template>

@@ -67,39 +67,33 @@
           </div>
           <!--表格-->
           <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
-            <el-table-column type="selection" fixed header-align="center" align="center"/>
-            <el-table-column :label="$t('public.index')" header-align="center" align="center">
+            <el-table-column type="selection" fixed header-align="left" align="left"/>
+            <el-table-column :label="$t('public.index')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="menuName" :label="$t('functionMenuMaintenance.menuName')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="menuHref" :label="$t('functionMenuMaintenance.link')" header-align="center"
-                             align="center"/>
-            <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="center" align="center"/>
-            <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="center"
-                             align="center"/>
-            <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="center" align="center">
+            <el-table-column prop="menuName" :label="$t('functionMenuMaintenance.menuName')" header-align="left" align="left"/>
+            <el-table-column prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left" align="left"/>
+            <el-table-column prop="menuHref" :label="$t('functionMenuMaintenance.link')" header-align="left" align="left"/>
+            <el-table-column :label="$t('functionMenuMaintenance.jumpType')" header-align="left" align="left"/>
+            <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left" align="left"/>
+            <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
               <template slot-scope="scope">
                 <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
                 <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="center" align="center">
+            <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span v-if="scope.row.enable === true">启用</span>
                 <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="center"
-                             align="center"/>
-            <el-table-column prop="createTime" :label="$t('functionMenuMaintenance.createTime')" header-align="center"
-                             align="center"/>
+            <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="left" align="left"/>
+            <el-table-column prop="createTime" :label="$t('functionMenuMaintenance.createTime')" header-align="left" align="left"/>
           </el-table>
           <!--分页-->
           <pages

@@ -63,25 +63,25 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('backUpTimer.taskName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('backUpTimer.createTime')" header-align="center" align="center"/>
-        <el-table-column :label="$t('backUpTimer.backUpObject')" header-align="center" align="center"/>
-        <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="center" align="center"/>
-        <el-table-column :label="$t('backUpTimer.status')" header-align="center" align="center">
+        <el-table-column :label="$t('backUpTimer.taskName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('backUpTimer.createTime')" header-align="left" align="left"/>
+        <el-table-column :label="$t('backUpTimer.backUpObject')" header-align="left" align="left"/>
+        <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="left" align="left"/>
+        <el-table-column :label="$t('backUpTimer.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">启用</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('backUpTimer.note')" header-align="center" align="center"/>
+        <el-table-column :label="$t('backUpTimer.note')" header-align="left" align="left"/>
       </el-table>
       <!--分页-->
       <pages

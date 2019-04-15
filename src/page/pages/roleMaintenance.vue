@@ -66,27 +66,24 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="center" align="center"/>
-        <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="center"
-                         align="center"/>
-        <el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="center" align="center"/>
-        <el-table-column :label="$t('roleMaintenance.status')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="left" align="left"/>
+        <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="left" align="left"/>
+        <el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="left" align="left"/>
+        <el-table-column :label="$t('roleMaintenance.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.enable === true">启用</span>
             <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="center"
-                         align="center"/>
-        <el-table-column :label="$t('roleMaintenance.createTime')" header-align="center" align="center">
+        <el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('roleMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="center"
-                         align="center"/>
-        <el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="center" align="center">
+        <el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.lastModifyTime | dateFilter}}</span>
           </template>
@@ -190,11 +187,11 @@
           </el-form-item>
         </el-form>
         <el-table :data="innerTableData" stripe @select="selectTableNumAlert" @select-all="selectTableNumAlert">
-          <el-table-column type="selection" fixed header-align="center" align="center"/>
-          <el-table-column prop="displayName" :label="$t('public.name')" header-align="center" align="center"/>
-          <el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="center" align="center"/>
-          <el-table-column :label="$t('public.sex')" header-align="center" align="center"/>
-          <el-table-column :label="$t('roleMaintenance.registerDate')" header-align="center" align="center">
+          <el-table-column type="selection" fixed header-align="left" align="left"/>
+          <el-table-column prop="displayName" :label="$t('public.name')" header-align="left" align="left"/>
+          <el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="left" align="left"/>
+          <el-table-column :label="$t('public.sex')" header-align="left" align="left"/>
+          <el-table-column :label="$t('roleMaintenance.registerDate')" header-align="left" align="left">
             <template slot-scope="scope">
               <span>{{scope.row.createTime | dateFilter}}</span>
             </template>

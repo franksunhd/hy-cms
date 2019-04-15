@@ -35,20 +35,20 @@
     <div class="padding20">
       <!--表格-->
       <el-table :data="tableData" stripe>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('loginLog.name')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.account')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.loginType')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.loginIpAddress')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.logInTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.logOutTime')" header-align="center" align="center" />
-        <el-table-column :label="$t('loginLog.timeLength')" header-align="center" align="center" />
+        <el-table-column :label="$t('loginLog.name')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.account')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.loginType')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.loginIpAddress')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.logInTime')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.logOutTime')" header-align="left" align="left" />
+        <el-table-column :label="$t('loginLog.timeLength')" header-align="left" align="left" />
       </el-table>
       <!--分页-->
       <pages

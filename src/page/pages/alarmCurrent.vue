@@ -81,14 +81,14 @@
       </el-form>
       <!--表格-->
       <el-table :data="tableData" stripe @cell-click="cellClickColumn">
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.status')" header-align="center" align="center">
+        <el-table-column :label="$t('alarmCurrent.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
               <span class="iconfont iconfontError">&#xe609;</span>
@@ -101,12 +101,12 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.equipmentName')" header-align="center" align="center">
+        <el-table-column :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.equipmentName}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.alarmContent')" header-align="center" align="center">
+        <el-table-column :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" placement="left-start">
               <div slot="content" style="width: 150px">{{scope.row.alarmContent}}</div>
@@ -114,12 +114,12 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.lastAlarmTime')" header-align="center" align="center">
+        <el-table-column :label="$t('alarmCurrent.lastAlarmTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.lastModifiedTime | dateFilter}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.statusAll')" header-align="center" align="center">
+        <el-table-column :label="$t('alarmCurrent.statusAll')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               <span class="iconfont iconfontError">&#xe609;</span>
@@ -135,13 +135,13 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="computerRoomName" :label="$t('alarmCurrent.computerRoomName')" header-align="center" align="center"/>
-        <el-table-column prop="rackName" :label="$t('alarmCurrent.rackName')" header-align="center" align="center"/>
-        <el-table-column prop="location" :label="$t('alarmCurrent.location')" header-align="center" align="center"/>
-        <el-table-column prop="ip" :label="$t('alarmCurrent.Ip')" header-align="center" align="center"/>
-        <el-table-column prop="equipmentType" :label="$t('alarmCurrent.equipmentType')" header-align="center" align="center"/>
-        <el-table-column prop="equipmentOwner" :label="$t('alarmCurrent.equipmentOwner')" header-align="center" align="center"/>
-        <el-table-column prop="processStatus" :label="$t('alarmCurrent.processStatus')" header-align="center" align="center"/>
+        <el-table-column prop="computerRoomName" :label="$t('alarmCurrent.computerRoomName')" header-align="left" align="left"/>
+        <el-table-column prop="rackName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left"/>
+        <el-table-column prop="location" :label="$t('alarmCurrent.location')" header-align="left" align="left"/>
+        <el-table-column prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
+        <el-table-column prop="equipmentType" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left"/>
+        <el-table-column prop="equipmentOwner" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left"/>
+        <el-table-column prop="processStatus" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left"/>
       </el-table>
       <!--分页-->
       <pages

@@ -37,19 +37,19 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" stripe @selection-change="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center" />
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left" />
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="groupName" :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="center" align="center" />
-        <el-table-column prop="description" :label="$t('nodeGroupMaintenance.description')" header-align="center" align="center" />
-        <el-table-column prop="collectorCount" :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="center" align="center" />
-        <el-table-column prop="createBy" :label="$t('nodeGroupMaintenance.createName')" header-align="center" align="center" />
-        <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="center" align="center">
+        <el-table-column prop="groupName" :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="left" align="left" />
+        <el-table-column prop="description" :label="$t('nodeGroupMaintenance.description')" header-align="left" align="left" />
+        <el-table-column prop="collectorCount" :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="left" align="left" />
+        <el-table-column prop="createBy" :label="$t('nodeGroupMaintenance.createName')" header-align="left" align="left" />
+        <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>

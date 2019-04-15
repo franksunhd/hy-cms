@@ -54,26 +54,26 @@
       </div>
       <!--表格-->
       <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
-        <el-table-column type="selection" fixed header-align="center" align="center"/>
-        <el-table-column :label="$t('public.index')" header-align="center" align="center">
+        <el-table-column type="selection" fixed header-align="left" align="left"/>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="center" align="center"/>
-        <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="center" align="center"/>
-        <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="center" align="center"/>
-        <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="center" align="center"/>
-        <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="center" align="center">
+        <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
+        <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="left" align="left"/>
+        <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
+        <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
+        <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="left" align="left"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">正常</span>
             <span v-if="scope.row.status === -1" class="disabledStatusColor">异常</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="center" align="center"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="center" align="center">
+        <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
+        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>
