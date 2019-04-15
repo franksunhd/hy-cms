@@ -13,65 +13,65 @@ const systemSettings = () => import ('@/components/systemSettings');
 // 系统监测页面
 const systemSettingsMonitoring = () => import ('@/components/systemSettingsMonitoring');
 // 许可证信息管理
-const licenseInformation = () => import ('@/page/pages/licenseInformation');
+const licenseInformation = () => import ('@/page/pages/system/system/licenseInformation');
 // 平台信息设置
-const platformInformation = () => import ('@/page/pages/platformInformation');
+const platformInformation = () => import ('@/page/pages/system/system/platformInformation');
 // 平台语言设置
-const platformLanguage = () => import ('@/page/pages/platformLanguage');
+const platformLanguage = () => import ('@/page/pages/system/system/platformLanguage');
 // 数据字典管理
-const dataDictionary = () => import ('@/page/pages/dataDictionary');
+const dataDictionary = () => import ('@/page/pages/system/system/dataDictionary');
 // License到期通知
-const licenseNotice = () => import ('@/page/pages/licenseNotice');
+const licenseNotice = () => import ('@/page/pages/system/system/licenseNotice');
 // 接口访问测试
-const interfaceTest = () => import ('@/page/pages/interfaceTest');
+const interfaceTest = () => import ('@/page/pages/system/system/interfaceTest');
 // 用户维护
-const userMaintenance = () => import ('@/page/pages/userMaintenance');
+const userMaintenance = () => import ('@/page/pages/system/user/userMaintenance');
 // 角色维护
-const roleMaintenance = () => import ('@/page/pages/roleMaintenance');
+const roleMaintenance = () => import ('@/page/pages/system/user/roleMaintenance');
 // 组织维护
-const organizeMaintenance = () => import ('@/page/pages/organizeMaintenance');
-// 数据库备份
-const dataBaseBackUp = () => import ('@/page/pages/dataBaseBackUp');
-// 备份定时器
-const backUpTimer = () => import ('@/page/pages/backUpTimer');
-// 数据库还原
-const dataBaseRestore = () => import ('@/page/pages/dataBaseRestore');
-// 节点组维护
-const nodeGroupMaintenance = () => import ('@/page/pages/nodeGroupMaintenance');
+const organizeMaintenance = () => import ('@/page/pages/system/user/organizeMaintenance');
 // 功能菜单维护
-const functionMenuMaintenance = () => import ('@/page/pages/functionMenuMaintenance');
+const functionMenuMaintenance = () => import ('@/page/pages/system/user/functionMenuMaintenance');
+// 数据库备份
+const dataBaseBackUp = () => import ('@/page/pages/system/database/dataBaseBackUp');
+// 备份定时器
+const backUpTimer = () => import ('@/page/pages/system/database/backUpTimer');
+// 数据库还原
+const dataBaseRestore = () => import ('@/page/pages/system/database/dataBaseRestore');
+// 节点组维护
+const nodeGroupMaintenance = () => import ('@/page/pages/system/collector/nodeGroupMaintenance');
 // 采集节点管理
-const acquisitionNodeManagement = () => import ('@/page/pages/acquisitionNodeManagement');
+const acquisitionNodeManagement = () => import ('@/page/pages/system/collector/acquisitionNodeManagement');
 // 采集任务分配
-const collectionTaskAssignment = () => import ('@/page/pages/collectionTaskAssignment');
+const collectionTaskAssignment = () => import ('@/page/pages/system/collector/collectionTaskAssignment');
 // 采集节点状态
-const acquisitionNodeState = () => import ('@/page/pages/acquisitionNodeState');
+const acquisitionNodeState = () => import ('@/page/pages/system/collector/acquisitionNodeState');
 // 登录日志
-const loginLog = () => import ('@/page/pages/loginLog');
+const loginLog = () => import ('@/page/pages/system/log/loginLog');
 // 操作日志
-const operationLog = () => import ('@/page/pages/operationLog');
+const operationLog = () => import ('@/page/pages/system/log/operationLog');
 // 任务日志
-const jobLog = () => import ('@/page/pages/jobLog');
+const jobLog = () => import ('@/page/pages/system/log/jobLog');
 // 通知日志
-const notificationLog = () => import ('@/page/pages/notificationLog');
+const notificationLog = () => import ('@/page/pages/system/log/notificationLog');
 // 检测日志
-const testLog = () => import ('@/page/pages/testLog');
+const testLog = () => import ('@/page/pages/system/log/testLog');
 // web应用
-const WebApplication = () => import ('@/page/pages/WebApplication');
+const WebApplication = () => import ('@/page/pages/system/monitor/WebApplication');
 // 数据库应用
-const DatabaseApplication = () => import ('@/page/pages/DatabaseApplication');
+const DatabaseApplication = () => import ('@/page/pages/system/monitor/DatabaseApplication');
 //采集器应用
-const CollectorApplication = () => import ('@/page/pages/CollectorApplication');
+const CollectorApplication = () => import ('@/page/pages/system/monitor/CollectorApplication');
 //设备手动发现
-const DeviceManualDetection = () => import ('@/page/pages/DeviceManualDetection');
+const DeviceManualDetection = () => import ('@/page/pages/asset/discover/DeviceManualDetection');
 //开始发现
-const BeganToSee = () => import ('@/page/pages/BeganToSee');
+const BeganToSee = () => import ('@/page/pages/asset/discover/BeganToSee');
 //监测管理
-const monitoringAndControl = () => import ('@/page/pages/monitoringAndControl');
+const monitoringAndControl = () => import ('@/page/pages/monitor/monitoringAndControl');
 // 告警管理
-const alarmManagement = () => import ('@/page/pages/alarmManagement');
+const alarmManagement = () => import ('@/page/pages/alarm/alarmManagement');
 // 当前告警
-const alarmCurrent = () => import ('@/page/pages/alarmCurrent');
+const alarmCurrent = () => import ('@/page/pages/alarm/alarmCurrent');
 
 Vue.use(Router);
 export default new Router({
@@ -168,8 +168,8 @@ export default new Router({
         {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
         {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
-        
-        
+
+
         //树形穿梭
         {path:'/YUser/selectTree',name:'selectTree',component:selectTree},
       ]
