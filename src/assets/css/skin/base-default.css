@@ -181,14 +181,23 @@
   border: 1px solid #eaedf1;
 }
 
-.el-table .el-table__header tr th,
-.el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: #f6f8fa;
+.el-table .el-table__header tr th {
+  background: #f6f8fa;
 }
 
+.el-table--striped tr.el-table__row--striped td {
+  background: #f6f8fa;
+}
+
+
 /*鼠标悬停*/
-.el-table--enable-row-hover .el-table__body tr:hover>td {
-  background-color: #e9f3fe;
+.el-table--enable-row-hover .el-table__body tr:hover>td,
+.el-table--striped .el-table__body tr.el-table__row--striped:hover td {
+  background: #e9f3fe;
+}
+
+tr.el-table__row--striped:hover td {
+  background: #e9f3fe !important;
 }
 
 .el-table td, .el-table th {
