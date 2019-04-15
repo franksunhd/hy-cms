@@ -78,27 +78,27 @@
       </div>
       <el-table :data="tableData" stripe ref="table" @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
-        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="displayName" :label="$t('userMaintenance.username')" width="100" header-align="left" align="left"/>
-        <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" width="100" header-align="left" align="left"/>
-        <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" width="100" header-align="left" align="left"/>
-        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" width="100" header-align="left" align="left"/>
-        <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" width="100" header-align="left" align="left"/>
-        <el-table-column prop="email" :label="$t('userMaintenance.email')" width="100" header-align="left" align="left"/>
-        <el-table-column :label="$t('userMaintenance.status')" width="100" header-align="left" align="left">
+        <el-table-column prop="displayName" :label="$t('userMaintenance.username')" header-align="left" align="left"/>
+        <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" header-align="left" align="left"/>
+        <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" header-align="left" align="left"/>
+        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" header-align="left" align="left"/>
+        <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" header-align="left" align="left"/>
+        <el-table-column prop="email" :label="$t('userMaintenance.email')" header-align="left" align="left"/>
+        <el-table-column :label="$t('userMaintenance.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
             <span v-if="scope.row.status === 0" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" width="200" header-align="left" align="left"/>
-        <el-table-column :label="$t('userMaintenance.createTime')" header-align="left" align="left">
+        <el-table-column prop="createBy" :label="$t('userMaintenance.createName')" header-align="left" align="left"/>
+        <el-table-column width="160px" :label="$t('userMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             {{scope.row.createTime | dateFilter}}
           </template>
@@ -119,7 +119,7 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="addEdit" inline label-width="150px" :rules="rules" ref="ruleForm">
+      <el-form :model="addEdit" inline label-width="116px" :rules="rules" ref="ruleForm">
         <el-form-item class="star" :label="$t('userMaintenance.organization') + '：'" prop="organization">
           <el-popover
             trigger="click"
@@ -171,7 +171,7 @@
       </el-form>
       <div class="assignRole-box" v-show="isShowRole">
         <template v-for="(item,index) in organizationName">
-          <span>{{item}}</span>
+          <span style="margin-bottom: 10px;display: inline-block;font-size: 12px;">{{item}}</span>
           <i v-if="index !== organizationName.length - 1" class="el-icon-arrow-right"></i>
         </template>
         <el-checkbox-group class="assignRole-group-box" v-model="addEdit.assignRole">
@@ -180,9 +180,9 @@
         </el-checkbox-group>
       </div>
       <span slot="footer">
-        <el-button class="queryBtn" v-if="ifAdd == true" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" v-if="ifAdd === false" type="primary" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormAdd">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" v-if="ifAdd == true" type="primary" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" v-if="ifAdd === false" type="primary" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormAdd">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -855,14 +855,49 @@
     min-height: 72px;
     max-height: 152px;
     padding: 10px 0 0 50px;
+    position: relative;
+  }
+
+  .assignRole-box:before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: -12px;
+    left: 150px;
+    border-width: 6px;
+    border-style: solid;
   }
 
   .assignRole-group-box .el-checkbox-button {
-    margin-right: 15px;
+    margin-right: 10px;
     margin-bottom: 10px;
+    min-width: 100px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+  }
+
+  .assignRole-group-box .el-checkbox-button span {
+    font-size: 12px;
   }
 
   .assignRole-group-box .el-checkbox-button__inner {
     border-radius: 2px !important;
+    padding: 0 20px;
+    display: inline-block;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+  }
+
+  .userMaintenance-dialog .el-dialog {
+    width: 700px;
+    height: 400px;
+  }
+
+  .userMaintenance-dialog .el-form-item {
+    margin-right: 0;
+    width: 49%;
   }
 </style>

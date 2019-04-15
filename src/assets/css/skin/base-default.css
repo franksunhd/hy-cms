@@ -185,19 +185,18 @@
   background: #f6f8fa;
 }
 
-.el-table--striped tr.el-table__row--striped td {
+.el-table .el-table__body tr.el-table__row--striped td {
   background: #f6f8fa;
 }
 
 
 /*鼠标悬停*/
-.el-table--enable-row-hover .el-table__body tr:hover>td,
-.el-table--striped .el-table__body tr.el-table__row--striped:hover td {
-  background: #e9f3fe;
-}
-
-tr.el-table__row--striped:hover td {
-  background: #e9f3fe !important;
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td,
+.el-table__body tr.current-row>td, .el-table__body tr.hover-row.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped.current-row>td,
+.el-table__body tr.hover-row.el-table__row--striped>td,
+.el-table__body tr.hover-row>td {
+  background-color: #e9f3fe;
 }
 
 .el-table td, .el-table th {
@@ -326,7 +325,7 @@ tr.el-table__row--striped:hover td {
 }
 
 .assignRole-box {
-  background-color: #ddd;
+  background-color: #f0f0f0;
 }
 
 
@@ -462,4 +461,18 @@ span.el-tree-node__label {
   border: 1px solid #DCDFE6;
   background-color: #f0f0f0;
   color: #252a2f;
+}
+
+.assignRole-box:before {
+  border-color: transparent transparent #f0f0f0 transparent;
+}
+
+.el-checkbox-button.is-checked .el-checkbox-button__inner {
+  background-color: #3f81d0;
+  color: #fff;
+  border-color: #3f81d0;
+}
+
+.el-checkbox-button__inner:hover {
+  color: #666;
 }
