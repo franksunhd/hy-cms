@@ -8,20 +8,21 @@
         <el-breadcrumb-item>{{$t('breadcrumb.organizeMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <el-row>
-      <el-col :span="4">
-        <p>
+    <div class="displayFlex">
+      <div class="borderRightColorGray">
+        <p class="organizeMaintenance-title">
           <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">{{treeMenuData.nodeName}}</a>
         </p>
         <el-tree
+          class="organizeMaintenance-tree"
           :data="treeMenuData.children"
           @node-click="getCurrentNode"
           :props="defaultProps"
           highlight-current
           :expand-on-click-node="false"
           :default-expand-all="true"/>
-      </el-col>
-      <el-col :span="20">
+      </div>
+      <div class="displayFlex-flex">
         <div class="padding20 borderBottom">
           <!--表单-->
           <el-form inline :model="formItem">
@@ -104,16 +105,17 @@
             :pageSize='options.pageSize'
             @handleCurrentChangeSub="handleCurrentChange"/>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
     <!--新增、编辑-->
     <el-dialog
+      class="organizeMaintenance-dialog"
       append-to-body
       :title="$t('organizeMaintenance.createUpdateOrganization')"
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="addEdit" label-width="150px" :rules="rules" ref="ruleForm">
+      <el-form :model="addEdit" label-width="96px" :rules="rules" ref="ruleForm">
         <el-form-item :label="$t('organizeMaintenance.parentOrganization') + '：'">
           <el-popover
             trigger="click"
@@ -134,26 +136,26 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.organizationName') + '：'" prop="organizationName">
+        <el-form-item class="star" :label="$t('organizeMaintenance.organizationName') + '：'" prop="organizationName">
           <el-input class="width200" v-model="addEdit.organizationName"/>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.orderIndex') + '：'" prop="orderIndex">
+        <el-form-item class="star" :label="$t('organizeMaintenance.orderIndex') + '：'" prop="orderIndex">
           <el-input class="width200" v-model="addEdit.orderIndex"/>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.isEnable') + '：'" prop="enable">
+        <el-form-item class="star" :label="$t('organizeMaintenance.isEnable') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'" prop="description">
+        <el-form-item :label="$t('organizeMaintenance.organizationDes') + '：'">
           <el-input type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" class="queryBtn" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="resetFormData">{{$t('public.close')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" @click="resetFormData">{{$t('public.close')}}</el-button>
       </span>
     </el-dialog>
   </Box>
@@ -180,7 +182,7 @@
           organization: '',
           organizationId: '',
           organizationName: '',
-          enable: '',
+          enable: 1,
           description: '',
           orderIndex: ''
         },
@@ -237,7 +239,7 @@
         _t.addEdit.organization = '';
         _t.addEdit.organizationId = '';
         _t.addEdit.organizationName = '';
-        _t.addEdit.enable = '';
+        _t.addEdit.enable = 1;
         _t.addEdit.description = '';
         _t.addEdit.orderIndex = '';
         _t.dialogVisible = false;
@@ -319,8 +321,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/organization/enableOrganization', {
@@ -334,9 +336,10 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
+                _t.getTreeData();
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
@@ -367,8 +370,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/organization/enableOrganization', {
@@ -382,9 +385,10 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
+                _t.getTreeData();
                 _t.disableBtn.edit = true;
                 _t.disableBtn.enable = true;
                 _t.disableBtn.disable = true;
@@ -415,8 +419,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(()=>{
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/organization/', {
@@ -429,7 +433,7 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 _t.getTreeData();
@@ -443,7 +447,7 @@
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 _t.getTreeData();
@@ -451,7 +455,7 @@
               case 3005: // 数据关联不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 });
                 _t.getData();
                 _t.getTreeData();
@@ -575,7 +579,7 @@
           if (valid) {
             _t.$api.post('system/organization/', {
               systemOrganization: {
-                parentId: _t.addEdit.organizationId,
+                parentId: _t.addEdit.organizationId == null ? null : (_t.addEdit.organizationId.trim() == '' ? null : _t.addEdit.organizationId.trim()),
                 name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
                 enable: _t.addEdit.enable,
                 createBy: localStorage.getItem('hy-user-name'),
@@ -666,7 +670,7 @@
             _t.$api.put('system/organization/', {
               systemOrganization: {
                 id: _t.addEdit.id,
-                parentId: _t.addEdit.organizationId,
+                parentId: _t.addEdit.organizationId == null ? null : (_t.addEdit.organizationId.trim() == '' ? null : _t.addEdit.organizationId.trim()),
                 name: _t.addEdit.organizationName == null ? null : _t.addEdit.organizationName.trim(),
                 enable: _t.addEdit.enable,
                 lastModifyBy: localStorage.getItem('hy-user-name'),
@@ -713,6 +717,7 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              _t.getTreeData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -744,6 +749,7 @@
           switch (res.status) {
             case 200:
               _t.getData();
+              _t.getTreeData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -767,5 +773,24 @@
 </script>
 
 <style scoped>
+  .organizeMaintenance-title {
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 20px;
+    width: 176px;
+    cursor: pointer;
+  }
 
+  .organizeMaintenance-title a {
+    line-height: 40px;
+    display: inline-block;
+  }
+</style>
+<style>
+  .organizeMaintenance-dialog .el-dialog {
+    width: 600px;
+    height: 430px;
+  }
 </style>

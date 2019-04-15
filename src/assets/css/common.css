@@ -390,7 +390,8 @@ input::-webkit-input-placeholder {
   flex: 1;
 }
 
-.dataDictionary-tree.el-tree .el-tree-node__content {
+.dataDictionary-tree.el-tree .el-tree-node__content,
+.organizeMaintenance-tree.el-tree .el-tree-node__content{
   height: 36px;
   line-height: 36px;
   padding-left: 12px !important;
