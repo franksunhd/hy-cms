@@ -325,10 +325,14 @@
             }
           })
         },function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
+              _t.tableData = res.data.list;
+              _t.options.currentPage = res.data.page.currentPage;
+              _t.options.total = res.data.page.totalResultSize;
               // 调用查看相应状态值的接口
-              _t.getTableDataValue(res.data);
+              // _t.getTableDataValue(res.data);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -337,6 +341,9 @@
               _t.exclude(_t, res.message);
               break;
             default:
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
               break;
           }
         });
