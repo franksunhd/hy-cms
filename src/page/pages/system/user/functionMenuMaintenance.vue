@@ -395,7 +395,7 @@
                 menuName: _t.languageList,
                 menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel + 1,
+                menuLevel: _t.addEdit.menuLevel,
                 enable: _t.addEdit.enable == 1 ? true : false,
                 languageMark: localStorage.getItem('hy-language')
               },
@@ -884,7 +884,7 @@
               id: _t.formItem.nodeId,
               menuName: _t.formItem.dictionaryName == null ? null : _t.formItem.dictionaryName.trim(),
               languageMark: localStorage.getItem('hy-language'),
-              status: _t.formItem.status == null ? null : _t.formItem.status
+              enable: _t.formItem.status == null ? null : _t.formItem.status
             },
             currentPage: _t.options.currentPage,
             pageSize: _t.options.pageSize
