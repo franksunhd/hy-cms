@@ -55,13 +55,13 @@
       <!--表格-->
       <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
-        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
+        <el-table-column  width="100px" prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
         <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="left" align="left"/>
         <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
         <el-table-column :label="$t('acquisitionNodeManagement.nodeRunStatus')" header-align="left" align="left">
@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
         <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="left" align="left"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
+        <el-table-column width="150px" :label="$t('acquisitionNodeManagement.detailNode')" header-align="left" align="left">
           <template slot-scope="scope">
             <a href="javascript:;" @click="clickSeeDetail(scope.row)" class="acquisitionNode-detail">
               <span class="iconfontSuccess">正常</span>
@@ -81,7 +81,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
+        <el-table-column width="160px" :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>
