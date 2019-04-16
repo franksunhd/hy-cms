@@ -894,7 +894,7 @@
   }
 
   .userMaintenance-dialog .el-form-item {
-    margin-right: 0;
+    margin-right: 0 !important;
     width: 49%;
   }
 </style>
