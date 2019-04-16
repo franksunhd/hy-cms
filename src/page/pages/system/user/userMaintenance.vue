@@ -295,8 +295,8 @@
       // 选择组织下拉框中的角色
       selectRoleList(){
         var _t = this;
-        if (_t.addEdit.organizationId !== '' || _t.addEdit.organizationName !== '') {
-          _t.isShowRole = true
+        if (_t.addEdit.organizationId !== '') {
+          _t.isShowRole = true;
         }
       },
       // 新增按钮弹出层
