@@ -336,7 +336,8 @@ export default {
     nodeRunStatus:'nodeRunStatus',
     detailNode:'detailNode',
     IPList: 'IPList',
-    gatewayIp:'gatewayIp'
+    gatewayIp:'gatewayIp',
+    testPort:'testPort'
   },
   // 采集任务分配
   collectionTaskAssignment: {

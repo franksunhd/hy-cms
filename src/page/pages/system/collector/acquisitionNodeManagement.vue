@@ -64,14 +64,12 @@
         <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
         <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="left" align="left"/>
         <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
-
         <el-table-column :label="$t('acquisitionNodeManagement.nodeRunStatus')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
             <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
           </template>
         </el-table-column>
-
         <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
         <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="left" align="left"/>
         <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
@@ -126,6 +124,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
+        <el-button type="primary" class="alertBtn" @click="testPort('formName')">{{$t('acquisitionNodeManagement.testPort')}}</el-button>
         <el-button type="primary" v-if="ifAdd == true" class="alertBtn" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
         <el-button type="primary" v-if="ifAdd == false" class="alertBtn" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
@@ -261,6 +260,10 @@
               break;
           }
         });
+      },
+      // 测试端口
+      testPort(){
+
       },
       // 重置表单
       resetFormData(){
