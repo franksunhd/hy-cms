@@ -419,8 +419,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          cancelButtonClass:'queryBtn',
-          confirmButtonClass:'queryBtn'
+          cancelButtonClass:'alertBtn',
+          confirmButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/user/updateSystemUserStatus', {
@@ -434,9 +434,11 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.resetFormAdd();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -459,8 +461,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          cancelButtonClass:'queryBtn',
-          confirmButtonClass:'queryBtn'
+          cancelButtonClass:'alertBtn',
+          confirmButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/user/updateSystemUserStatus', {
@@ -474,9 +476,11 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn',
+                  confirmButtonClass:'alertBtn',
+                }).then(()=>{
+                  _t.resetFormAdd();
+                  _t.getData();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -499,8 +503,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           var checkRoleIds = new Array();
@@ -518,9 +522,11 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.resetFormAdd();
+                  _t.getData();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -531,16 +537,19 @@
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
                 });
-                _t.getData();
                 break;
               case 3005: //
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.resetFormAdd();
+                  _t.getData();
                 });
-                _t.getData();
                 break;
               default:
                 _t.getData();
@@ -562,8 +571,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/user/resetPassword', {
@@ -576,9 +585,11 @@
               case 200:
                 _t.$alert('重置密码成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.resetFormAdd();
+                  _t.getData();
                 });
-                _t.getData();
                 break;
               case 1004: // token 失效
               case 1005: // token 为 null
@@ -682,6 +693,7 @@
                 case 200:
                   _t.dialogVisible = false;
                   _t.getData();
+                  _t.resetFormAdd();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -690,7 +702,13 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 2005:
-                  _t.$alert(res.message);
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.resetFormAdd();
+                    _t.getData();
+                  });
                   break;
                 default:
                   _t.dialogVisible = false;
@@ -819,6 +837,7 @@
                 case 200:
                   _t.dialogVisible = false;
                   _t.getData();
+                  _t.resetFormAdd();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -827,7 +846,13 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 2006:
-                  _t.$alert(res.message);
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.resetFormAdd();
+                    _t.getData();
+                  });
                   break;
                 default:
                   _t.getData();
