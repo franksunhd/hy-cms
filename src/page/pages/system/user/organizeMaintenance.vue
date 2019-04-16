@@ -329,13 +329,10 @@
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.getTreeData();
                 });
-                _t.getData();
-                _t.getTreeData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -344,12 +341,12 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
         }).catch(()=>{
           return;
@@ -378,13 +375,10 @@
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.getTreeData();
                 });
-                _t.getData();
-                _t.getTreeData();
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -393,12 +387,12 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
-                _t.disableBtn.edit = true;
-                _t.disableBtn.enable = true;
-                _t.disableBtn.disable = true;
-                _t.disableBtn.more = true;
                 break;
             }
+            _t.disableBtn.edit = true;
+            _t.disableBtn.enable = true;
+            _t.disableBtn.disable = true;
+            _t.disableBtn.more = true;
           });
         }).catch(()=>{
           return;
@@ -426,9 +420,10 @@
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.getTreeData();
                 });
-                _t.getData();
-                _t.getTreeData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -440,17 +435,19 @@
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.getTreeData();
                 });
-                _t.getData();
-                _t.getTreeData();
                 break;
               case 3005: // 数据关联不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.getTreeData();
                 });
-                _t.getData();
-                _t.getTreeData();
                 break;
               default:
                 _t.getData();
@@ -583,6 +580,7 @@
                 case 200:
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -594,6 +592,7 @@
                   _t.$alert(res.message);
                   break;
                 default:
+                  _t.resetFormData();
                   break;
               }
             });
@@ -673,6 +672,7 @@
                 case 200:
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -681,6 +681,7 @@
                   _t.exclude(_t, res.message);
                   break;
                 default:
+                  _t.resetFormData();
                   break;
               }
             });
