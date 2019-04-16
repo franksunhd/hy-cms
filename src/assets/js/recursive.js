@@ -162,3 +162,17 @@ export function orgBreadcrumb(allNodes, nodeId) {
   }
   return organizationArr.reverse();
 }
+
+/*
+ * 传入id 找到对应的集合,并返回
+ * allNodes 需要寻找的集合,
+ * nodeId 需要寻找的id
+ * nodeIdKey 集合中id键值名
+ * nodeNameKey 集合中name键值名,
+ * nodeChildrenKey 集合中子节点键值名
+ * nodeParentIdKey 集合中父id键值名
+ */
+
+export function returnObjectById(allNodes, nodeId,nodeIdKey,nodeNameKey,nodeChildrenKey,nodeParentIdKey) {
+
+}
