@@ -131,7 +131,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
-        <el-form-item :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
           <div style="position: relative;" v-for="(item,index) in languageList">
             <el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;" class="width200" :placeholder="item.languageName" />
             <span class="isNotNull" v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
@@ -143,7 +143,7 @@
           </el-upload>
           <el-input v-if="false" v-model="addEdit.menuIcon"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
           <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
@@ -155,7 +155,7 @@
             <el-radio :label="4">_top</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.roleMenu') + '：'">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.roleMenu') + '：'">
           <el-button class="queryBtn" type="primary" @click="selectUserBtn">
             {{$t('functionMenuMaintenance.selectUser')}}
           </el-button>
@@ -180,13 +180,13 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
           <el-input v-model="addEdit.menuLevel" class="width200"/>
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200" readonly />
         </el-form-item>
-        <el-form-item :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
+        <el-form-item class="star" :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
@@ -243,8 +243,8 @@
           menuIcon: '',
           menuHref: '',
           jumpType: '',
-          enable: '',
-          orderMark: '',
+          enable: 1,
+          orderMark: 1,
         },
         disableBtn: { // 全局按钮启用禁用判断
           edit: true,
@@ -316,8 +316,8 @@
         _t.addEdit.menuIcon = '';
         _t.addEdit.menuHref = '';
         _t.addEdit.jumpType = '';
-        _t.addEdit.enable = '';
-        _t.addEdit.orderMark = '';
+        _t.addEdit.enable = 1;
+        _t.addEdit.orderMark = 1;
         _t.$refs.table.clearSelection();
       },
       // 输入框菜单名称校验
