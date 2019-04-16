@@ -23,57 +23,6 @@
         <li v-show="mouse"><i class="el-icon-rank"></i></li>
       </ul>
     </div>
-    <!--<div v-show="rshow" class="box-right-box fl">-->
-    <!--<div class="box-right-searchBox">-->
-    <!--<el-input v-model="search" class="box-right-search" prefix-icon="el-icon-search" placeholder="请输入关键词"/>-->
-    <!--<i class="el-icon-close box-right-search-no" @click="ClickClose"></i>-->
-    <!--</div>-->
-    <!--<ul style="overflow-y: scroll;position: absolute;top: 84px;left: 30px;bottom: 0;padding-bottom: 50px;" v-if="selectArr.length !== 0">-->
-    <!--<li :id="item.id" v-for="(item,index) in selectArr"-->
-    <!--:key="index">-->
-    <!--&lt;!&ndash;一级&ndash;&gt;-->
-    <!--<span style="-->
-    <!--font-size: 20px;-->
-    <!--color: red;-->
-    <!--background-color: green;-->
-    <!--">{{item.menuName}}</span><div v-for="(val,i) in item.systemMenuAndLanguageRelationChildList"-->
-    <!--v-if="item.systemMenuAndLanguageRelationChildList.length !== 0"-->
-    <!--:key="i">-->
-    <!--&lt;!&ndash;二级&ndash;&gt;-->
-    <!--<router-link-->
-    <!--:to="{path:item.menuHref,query:{id:val.id}}"-->
-    <!--@click.native="hiddenAlert(val.id)"-->
-    <!--style="font-size: 16px;color: blue;background-color: red;">{{val.menuName}}</router-link>-->
-    <!--<ul style="width: 640px;display: flex;flex-wrap: wrap;">-->
-    <!--&lt;!&ndash;三级&ndash;&gt;-->
-    <!--<li v-for="(data,j) in val.systemMenuAndLanguageRelationChildList"-->
-    <!--:key="j"-->
-    <!--style="width: 156px;">-->
-    <!--<router-link-->
-    <!--:to="{path:data.menuHref,query: {id:val.id}}"-->
-    <!--@click.native="hiddenAlert(val.id)"-->
-    <!--style="font-size: 14px;color: green;background-color: orange;">{{data.menuName}}</router-link>-->
-    <!--<div v-for="(menu,k) in data.systemMenuAndLanguageRelationChildList" :key="k">-->
-    <!--<router-link-->
-    <!--:to="{path:menu.menuHref,query: {id:val.id}}"-->
-    <!--@click.native="hiddenAlert(val.id)"-->
-    <!--style="font-size: 12px;height: 30px;line-height: 30px;color: orange;">{{menu.menuName}}</router-link>-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--</ul>-->
-    <!--</div>-->
-    <!--</li>-->
-    <!--</ul>-->
-    <!--<p v-else class="box-search-result-null">-->
-    <!--未找到与 "<span> {{ search }} </span>" 有关的内容-->
-    <!--</p>-->
-    <!--<ul style="position: absolute; top: 84px; right: 75px;">-->
-    <!--<li v-for="(item,index) in selectArr" :key="index">-->
-    <!--<a href="javascript:;" @click="resultTip(item.id)">{{item.menuName}}</a>-->
-    <!--</li>-->
-    <!--</ul>-->
-    <!--</div>-->
-
     <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
@@ -85,8 +34,9 @@
             <router-link @click.native="hiddenAlert(item.id)" :to="{path:item.menuHref,query:{id:item.id}}">
               {{ item.menuName }}
             </router-link>
-            <i :class="activeClass.indexOf(item.menuName)!=-1?'el-icon-star-on':'el-icon-star-off'"
-               @click="getItem(item)"></i>
+            <i></i>
+            <i v-if="item.status == 1" class="el-icon-star-on" @click="delItem(item)"></i>
+            <i v-if="item.status == 0" class="el-icon-star-off" @click="getItem(item)"></i>
           </li>
         </ul>
       </div>
@@ -95,6 +45,7 @@
   </div>
 </template>
 <script>
+  import {returnObjectById} from "../assets/js/recursive";
   export default {
     name: 'app-side',
     data() {
@@ -107,9 +58,6 @@
         search: '',
         dragListEnd: []
       }
-    },
-    mounted() {
-      this.dragList();
     },
     methods: {
       // 拖拽导航
@@ -182,9 +130,17 @@
               var navBarArr = res.data.rootMenu;
               if (navBarArr) {
                 navBarArr.forEach(function (item) {
+                  // 子菜单为空的判断
                   if (item.systemMenuAndLanguageRelationChildList.length === 0) {
                     item.systemMenuAndLanguageRelationChildList = null;
                   }
+                });
+                // 判断是否加入便捷菜单
+                _t.activeClass.forEach(function (item) {
+                  // 菜单id锁对应的集合
+                  var menuIdStatus = returnObjectById(navBarArr,item.menuId);
+                  menuIdStatus.status = 1;
+                  menuIdStatus.menuNum = item.id;
                 });
                 _t.selectArr = navBarArr;
               }
@@ -212,7 +168,11 @@
         }, function (res) {
           switch (res.status) {
             case 200:
+              res.data.forEach(function (item) {
+                item.menuNum = item.id;
+              });
               _t.activeClass = res.data;
+              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -228,12 +188,6 @@
       },
       // 加入便捷菜单
       getItem(val) {
-        // 把当前点击元素的index，赋值给activeClass
-        // if (this.activeClass.indexOf(val) == -1) {
-        //   this.activeClass.unshift(val);
-        // } else {
-        //   this.activeClass.splice(this.activeClass.indexOf(val), 1);
-        // }
         var _t = this;
         _t.$api.post('system/userShortcutMenu/', {
           userId: localStorage.getItem('hy-user-id'),
@@ -249,6 +203,12 @@
             case 1006: // token不通过
               _t.exclude(_t, res.message);
               break;
+            case 2005: // 已加入便捷菜单
+              _t.$alert(res.message, _t.$t('public.resultTip'), {
+                confirmButtonText: _t.$t('public.confirm'),
+                confirmButtonClass: 'alertBtn'
+              }).then(() => {});
+              break;
             default:
               break;
           }
@@ -257,7 +217,7 @@
       // 删除便捷菜单
       delItem(data) {
         var _t = this;
-        _t.$api.delete('system/userShortcutMenu/' + data.id, {}, function (res) {
+        _t.$api.delete('system/userShortcutMenu/' + data.menuNum, {}, function (res) {
           switch (res.status) {
             case 200:
               _t.getMenuData();
@@ -298,21 +258,21 @@
         });
       }
     },
+    mounted() {
+      this.dragList();
+    },
     created() {
       var _t = this;
       if (localStorage.getItem('hy-language') == null || localStorage.getItem('hy-user-id') == null) {
         setTimeout(function () {
-          _t.getData();
           _t.getMenuData();
         }, 1000);
       } else {
-        _t.getData();
         _t.getMenuData();
       }
       // 菜单权限更改后 实现局部的接口刷新, 避免整个页面的刷新
       _t.$bus.on('getMenu',(val)=>{
         if (val) {
-          _t.getData();
           _t.getMenuData();
         }
       });
@@ -323,7 +283,6 @@
   .box {
     overflow: hidden;
     z-index: 1031;
-    height: 100%;
     position: fixed;
     top: 52px;
     left: 0;
@@ -370,7 +329,8 @@
   }
 
   .box-right {
-    width: 584px;
+    width: 590px;
+    height: 100%;
     padding-left: 14px;
     padding-right: 14px;
     float: left;

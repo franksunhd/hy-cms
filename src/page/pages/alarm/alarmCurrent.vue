@@ -80,68 +80,61 @@
         </el-form-item>
       </el-form>
       <!--表格-->
-      <el-table :data="tableData" stripe @cell-click="cellClickColumn">
-        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+      <el-table :data="tableData" class="indexTableBox" ref="table" stripe @cell-click="cellClickColumn">
+        <el-table-column width="90px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.status')" header-align="left" align="left">
+        <el-table-column width="50px" :label="$t('alarmCurrent.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
-              <span class="iconfont iconfontError">&#xe609;</span>
-            </el-tooltip>
-            <el-tooltip v-if="scope.row.status == 2" effect="dark" content="警告" placement="top-start">
-              <span class="iconfont iconfontWarn">&#xe608;</span>
-            </el-tooltip>
-            <el-tooltip v-if="scope.row.status == 3" effect="dark" content="忽略" placement="top-start">
-              <span class="iconfont iconfontDisable">&#xe60a;</span>
+            <span>{{scope.row.alarmLevel}}</span>
+            <!--<el-tooltip v-if="scope.row.alarmLevel == 1" effect="dark" content="紧急" placement="top-start">-->
+              <!--<span class="iconfont iconfontError">&#xe609;</span>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip v-if="scope.row.alarmLevel == 2" effect="dark" content="警告" placement="top-start">-->
+              <!--<span class="iconfont iconfontWarn">&#xe608;</span>-->
+            <!--</el-tooltip>-->
+            <!--<el-tooltip v-if="scope.row.alarmLevel == 3" effect="dark" content="忽略" placement="top-start">-->
+              <!--<span class="iconfont iconfontDisable">&#xe60a;</span>-->
+            <!--</el-tooltip>-->
+          </template>
+        </el-table-column>
+        <el-table-column width="150px" :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" :content="scope.row.deviceName" placement="top-start">
+              <span>{{scope.row.deviceName}}</span>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
-          <template slot-scope="scope">
-            <span>{{scope.row.equipmentName}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
+        <el-table-column width="150px" :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" placement="left-start">
-              <div slot="content" style="width: 150px">{{scope.row.alarmContent}}</div>
-              <span>{{scope.row.alarmContent}}</span>
+              <div slot="content" style="width: 150px">{{scope.row.currentStatus}}</div>
+              <span>{{scope.row.currentStatus}}</span>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.lastAlarmTime')" header-align="left" align="left">
+        <el-table-column width="160px" :label="$t('alarmCurrent.lastAlarmTime')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.lastModifiedTime | dateFilter}}</span>
+            <span>{{scope.row.updateTime | dateFilter}}</span>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('alarmCurrent.statusAll')" header-align="left" align="left">
+        <el-table-column width="100px" prop="roomName" :label="$t('alarmCurrent.computerRoomName')" header-align="left" align="left"/>
+        <el-table-column width="100px" prop="frameName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left"/>
+        <el-table-column width="120px" prop="framePosition" :label="$t('alarmCurrent.location')" header-align="left" align="left"/>
+        <el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
+        <el-table-column width="120px" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left"/>
+        <el-table-column width="120px" prop="chargeBy" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left"/>
+        <el-table-column width="100px" prop="status" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left"/>
+        <el-table-column width="150px" label="操作">
           <template slot-scope="scope">
-            <span>
-              <span class="iconfont iconfontError">&#xe609;</span>
-              <span>22</span>
-            </span>
-            <span>
-              <span class="iconfont iconfontWarn">&#xe608;</span>
-              <span>222</span>
-            </span>
-            <span>
-              <span class="iconfont iconfontDisable">&#xe60a;</span>
-              <span>12</span>
-            </span>
+            <el-button type="text">转保修</el-button>
+            <el-button type="text">处理告警</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="computerRoomName" :label="$t('alarmCurrent.computerRoomName')" header-align="left" align="left"/>
-        <el-table-column prop="rackName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left"/>
-        <el-table-column prop="location" :label="$t('alarmCurrent.location')" header-align="left" align="left"/>
-        <el-table-column prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
-        <el-table-column prop="equipmentType" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left"/>
-        <el-table-column prop="equipmentOwner" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left"/>
-        <el-table-column prop="processStatus" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left"/>
       </el-table>
       <!--分页-->
       <pages
@@ -285,9 +278,7 @@
         // 设备状态下拉框
         equipmentStatusList:[],
         // 表格数据
-        tableData:[
-          {}
-        ],
+        tableData:[],
         // 处理状态
         dealWithStatusList:[],
         isShowTypePopover:false, // 控制设备类型下拉框的显示隐藏
@@ -322,12 +313,62 @@
       // 查询表格数据
       getData(){
         var _t = this;
-        _t.$api.get('',{},function (res) {
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('alarm/alarm/pagelist',{
+          jsonString:JSON.stringify({
+            alarm:{
+
+            },
+            page:{
+              currentPage:_t.options.currentPage,
+              pageSize: _t.options.pageSize
+            }
+          })
+        },function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.tableData = res.data.list;
-              _t.options.currentPage = res.data.currentPage;
-              _t.options.total = res.data.count;
+              _t.options.currentPage = res.data.page.currentPage;
+              _t.options.total = res.data.page.totalResultSize;
+              // 调用查看相应状态值的接口
+              // _t.getTableDataValue(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
+              break;
+          }
+        });
+      },
+      // 查询表格中状态对应的数据值
+      getTableDataValue(resData){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('',{},function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              var tableDataValue = res.data.list;
+              // _t.tableData = resData.list;
+              // 遍历列表数据 对比相应状态
+              resData.list.forEach(function (item) {
+                tableDataValue.forEach(function (val) {
+                  // 根据告警数量查询对应状态
+                  // 根据type 值判断设备类型
+                  // 根据处理状态值判断处理状态
+                });
+              });
+              _t.tableData = resData.list;
+              _t.options.currentPage = resData.page.currentPage;
+              _t.options.total = resData.page.totalResultSize;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -440,7 +481,8 @@
       }
     },
     created() {
-
+      this.$store.commit('setLoading',true);
+      this.getData();
     }
   }
 </script>

@@ -55,26 +55,24 @@
       <!--表格-->
       <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
-        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
+        <el-table-column  width="100px" prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
         <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="left" align="left"/>
         <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
-
         <el-table-column :label="$t('acquisitionNodeManagement.nodeRunStatus')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
             <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
           </template>
         </el-table-column>
-
         <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
         <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="left" align="left"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
+        <el-table-column width="150px" :label="$t('acquisitionNodeManagement.detailNode')" header-align="left" align="left">
           <template slot-scope="scope">
             <a href="javascript:;" @click="clickSeeDetail(scope.row)" class="acquisitionNode-detail">
               <span class="iconfontSuccess">正常</span>
@@ -83,7 +81,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
-        <el-table-column :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
+        <el-table-column width="160px" :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>
@@ -126,6 +124,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
+        <el-button type="primary" class="alertBtn" @click="testPort('formName')">{{$t('acquisitionNodeManagement.testPort')}}</el-button>
         <el-button type="primary" v-if="ifAdd == true" class="alertBtn" @click="addData('formName')">{{$t('public.confirm')}}</el-button>
         <el-button type="primary" v-if="ifAdd == false" class="alertBtn" @click="editData('formName')">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
@@ -261,6 +260,10 @@
               break;
           }
         });
+      },
+      // 测试端口
+      testPort(){
+
       },
       // 重置表单
       resetFormData(){

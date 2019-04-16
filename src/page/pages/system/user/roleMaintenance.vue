@@ -169,7 +169,7 @@
             :disable-transitions="true"
             style="margin-right: 20px;"
             closable>
-            {{tag.username}}
+            {{tag.displayName}}
           </el-tag>
           <div style="height: 20px;" v-if="tagsLength">必填项不能为空</div>
         </el-form-item>
@@ -230,6 +230,7 @@
           <el-tree
             :data="selectArr"
             :props="menuProps"
+            :default-expanded-keys="menuExpanded"
             node-key="id"
             show-checkbox
             ref="tree"/>
@@ -344,6 +345,7 @@
         innerTableData: [],
         // 组织结构名
         organizationName: [],
+        menuExpanded:[], // 功能菜单授权数据回显 展开树
         // 外层分页
         options: {
           total: 0, // 总条数
@@ -422,7 +424,7 @@
             switch (res.status) {
               case 200:
                 _t.dialogVisibleFunction = false;
-                _t.getData();
+                _t.$refs.tree.setCheckedKeys([]);
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -456,7 +458,7 @@
             switch (res.status) {
               case 200:
                 _t.outerVisible = false;
-                _t.getData();
+                _t.tags = [];
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -465,6 +467,7 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
+                _t.tags = [];
                 break;
             }
           });
@@ -740,11 +743,75 @@
         var _t = this;
         _t.organizationName = orgBreadcrumb(_t.organizationList, _t.editDataList.organizationId);
         _t.outerVisible = true;
+        _t.getAuthorizationData(_t.checkListIds.join(','))
+      },
+      // 获取已授权的用户
+      getAuthorizationData(val){
+        var _t = this;
+        _t.$api.get('system/role/getImpowerRoleById',{
+          jsonString:JSON.stringify({
+            systemRole:{
+              id:val
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              var tags = new Array();
+              res.data.forEach(function (item) {
+                var obj = new Object();
+                obj.id = item.id;
+                obj.displayName = item.displayName;
+                tags.push(obj);
+              });
+              _t.tags = tags;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 功能权限
       functionData() {
         var _t = this;
         _t.dialogVisibleFunction = true;
+        _t.getFunctionDataByRoleId(_t.checkListIds.join(','))
+      },
+      // 获取已授权的功能权限菜单
+      getFunctionDataByRoleId(val){
+        var _t = this;
+        _t.$api.get('system/menu/getImpowerMenuById',{
+          jsonString:JSON.stringify({
+            systemRole:{
+              id:val
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              var menuData = new Array();
+              res.data.forEach(function (item) {
+                menuData.push(item.id);
+              });
+              _t.menuExpanded = menuData;
+              _t.$refs.tree.setCheckedKeys(menuData);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 数据权限
       infoData() {
