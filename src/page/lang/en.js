@@ -332,6 +332,10 @@ export default {
     ruleDes: 'ruleDes',
     statusAlert: 'statusAlert',
     monitoringTask: 'monitoring Task',
+    nodeRunStatus:'nodeRunStatus',
+    detailNode:'detailNode',
+    IPList: 'IPList',
+    gatewayIp:'gatewayIp'
   },
   // 采集任务分配
   collectionTaskAssignment: {

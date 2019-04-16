@@ -64,12 +64,22 @@
         <el-table-column prop="collectorName" :label="$t('acquisitionNodeManagement.nodeName')" header-align="left" align="left"/>
         <el-table-column prop="ip" :label="$t('acquisitionNodeManagement.ip')" header-align="left" align="left"/>
         <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
+
+        <el-table-column :label="$t('acquisitionNodeManagement.nodeRunStatus')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
+            <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
+          </template>
+        </el-table-column>
+
         <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
         <el-table-column prop="description" :label="$t('acquisitionNodeManagement.description')" header-align="left" align="left"/>
         <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">正常</span>
-            <span v-if="scope.row.status === -1" class="disabledStatusColor">异常</span>
+            <a href="javascript:;" @click="clickSeeDetail(scope.row)" class="acquisitionNode-detail">
+              <span class="iconfontSuccess">正常</span>
+              <span class="iconfontError">异常</span>
+            </a>
           </template>
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
@@ -121,6 +131,32 @@
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      append-to-body
+      class="acquisitionNodeDetail-dialog"
+      :title="statusDetail.label + ' 的' + $t('acquisitionNodeManagement.detailNode')"
+      :visible.sync="dialogVisibleDetail"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <el-table :data="statusDetailData" stripe>
+        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.$index+(optionsDetail.currentPage - 1) * optionsDetail.pageSize + 1}}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column :label="$t('acquisitionNodeManagement.IPList')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeManagement.gatewayIp')" header-align="left" align="left" />
+        <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
+            <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
+          </template>
+        </el-table-column>
+      </el-table>
+      <span slot="footer">
+      </span>
+    </el-dialog>
   </Box>
 </template>
 
@@ -134,6 +170,11 @@
     components: {Box},
     data() {
       return {
+        // 带外通讯状态
+        statusDetail:{
+          id:'',
+          label:''
+        },
         // 查询表单
         formItem:{
           collectorName:null, // 名称
@@ -164,13 +205,20 @@
         tableData: [], // 表格数据集合
         checkListIds:[], // 选中的数据id集合
         groupIpList:[], // 节点组列表
+        statusDetailData:[], // 带外通讯详情表格数据
         // 分页
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
           pageSize: 10, // 每页显示条数
         },
+        optionsDetail: {
+          total: 0, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 每页显示条数
+        },
         dialogVisible: false, // 新增编辑弹出层
+        dialogVisibleDetail:false, // 带外通讯状态弹出层
         ifAdd:true, // 判断新增编辑
         rules: {
           collectorName:[
@@ -189,6 +237,31 @@
       }
     },
     methods: {
+      // 查看带外通讯状态
+      clickSeeDetail(data){
+        var _t = this;
+        _t.dialogVisibleDetail = true;
+        _t.statusDetail.id = data.id;
+        _t.statusDetail.label = data.collectorName;
+      },
+      // 根据id查询带外通讯状态列表
+      getStatusById(val){
+        var _t = this;
+        _t.$api.get('',{},function (res) {
+          switch (res.status) {
+            case 200:
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
       // 重置表单
       resetFormData(){
         var _t= this;
@@ -492,5 +565,14 @@
 
   .acquisitionNode-description {
     width: 505px;
+  }
+
+  .acquisitionNode-detail {
+    display: inline-block;
+  }
+
+  .acquisitionNodeDetail-dialog .el-dialog {
+    width: 700px;
+    height: 450px;
   }
 </style>

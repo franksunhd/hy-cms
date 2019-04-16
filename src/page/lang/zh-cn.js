@@ -332,6 +332,10 @@ export default {
     ruleDes: '规则说明',
     statusAlert: '启用状态',
     monitoringTask: '设备监测任务分配',
+    nodeRunStatus:'节点运行状态',
+    detailNode:'带外Ip段通讯状态',
+    IPList: '管辖IP段',
+    gatewayIp:'网关IP'
   },
   // 采集任务分配
   collectionTaskAssignment: {
