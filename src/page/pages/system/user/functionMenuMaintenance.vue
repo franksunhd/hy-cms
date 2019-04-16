@@ -8,118 +8,124 @@
         <el-breadcrumb-item>{{$t('breadcrumb.functionMenuMaintenance')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="displayFlex">
-      <div class="borderRightColorGray">
-        <p class="functionMenuMaintenance-title">
-          <a href="javascript:;" @click="clickNode">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
-        </p>
-        <el-tree
-          class="functionMenuMaintenance-tree"
-          :data="treeData"
-          :props="defaultProps"
-          highlight-current
-          @node-click="getCurrentNode"
-          :expand-on-click-node="false"
-          :default-expand-all="false"/>
+    <div class="borderRightColorGray functionMenuBox">
+      <p class="functionMenuMaintenance-title">
+        <a href="javascript:;" @click="clickNode">{{$t('functionMenuMaintenance.systemDataDictionary')}}</a>
+      </p>
+      <el-tree
+        class="functionMenuMaintenance-tree"
+        :data="treeData"
+        :props="defaultProps"
+        highlight-current
+        @node-click="getCurrentNode"
+        :expand-on-click-node="false"
+        :default-expand-all="false"/>
+    </div>
+    <div class="functionMenu-FormBox">
+      <div class="padding20 borderBottom">
+        <!--表单-->
+        <el-form inline :model="formItem">
+          <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
+            <el-input class="width200" v-model="formItem.dictionaryName"/>
+          </el-form-item>
+          <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
+            <el-select v-model="formItem.status" class="width200">
+              <el-option
+                v-for="item in statusList"
+                :value="item.value"
+                :key="item.key"
+                :label="item.label"/>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-      <div class="displayFlex-flex">
-        <div class="padding20 borderBottom">
-          <!--表单-->
-          <el-form inline :model="formItem">
-            <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
-              <el-input class="width200" v-model="formItem.dictionaryName"/>
-            </el-form-item>
-            <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
-              <el-select v-model="formItem.status" class="width200">
-                <el-option
-                  v-for="item in statusList"
-                  :value="item.value"
-                  :key="item.key"
-                  :label="item.label"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
-            </el-form-item>
-          </el-form>
+      <div class="padding20">
+        <!--全局操作-->
+        <div class="marBottom16">
+          <el-button type="warning" class="queryBtn" @click="addDataBtn">
+            <i class="el-icon-circle-plus-outline"></i>
+            {{$t('public.add')}}
+          </el-button>
+          <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
+            <i class="el-icon-edit-outline"></i>
+            {{$t('public.edit')}}
+          </el-button>
+          <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
+            <i class="el-icon-circle-check-outline"></i>
+            {{$t('public.enable')}}
+          </el-button>
+          <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
+            <i class="el-icon-circle-close-outline"></i>
+            {{$t('public.disable')}}
+          </el-button>
+          <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
+            <i class="el-icon-delete"></i>
+            {{$t('public.delete')}}
+          </el-button>
         </div>
-        <div class="padding20">
-          <!--全局操作-->
-          <div class="marBottom16">
-            <el-button type="warning" class="queryBtn" @click="addDataBtn">
-              <i class="el-icon-circle-plus-outline"></i>
-              {{$t('public.add')}}
-            </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-              <i class="el-icon-edit-outline"></i>
-              {{$t('public.edit')}}
-            </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-              <i class="el-icon-circle-check-outline"></i>
-              {{$t('public.enable')}}
-            </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-              <i class="el-icon-circle-close-outline"></i>
-              {{$t('public.disable')}}
-            </el-button>
-            <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-              <i class="el-icon-delete"></i>
-              {{$t('public.delete')}}
-            </el-button>
-          </div>
-          <!--表格-->
-          <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
-            <el-table-column type="selection" fixed header-align="left" align="left"/>
-            <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
-              <template slot-scope="scope">
+        <!--表格-->
+        <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
+          <el-table-column type="selection" fixed header-align="left" align="left"/>
+          <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
+            <template slot-scope="scope">
                 <span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                 </span>
-              </template>
-            </el-table-column>
-            <el-table-column min-width="60px" :label="$t('functionMenuMaintenance.menuName')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <el-tooltip effect="dark" :content="scope.row.menuName" placement="top-start">
-                  <span>{{scope.row.menuName}}</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column width="60px" prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left" align="left"/>
-            <el-table-column min-width="100px" :label="$t('functionMenuMaintenance.link')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <el-tooltip effect="dark" :content="scope.row.menuHref" placement="top-start">
-                  <span>{{scope.row.menuHref}}</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column width="90px" :label="$t('functionMenuMaintenance.jumpType')" header-align="left" align="left"/>
-            <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left" align="left"/>
-            <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
-                <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
-              </template>
-            </el-table-column>
-            <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <span v-if="scope.row.enable === true">启用</span>
-                <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="left" align="left"/>
-            <el-table-column width="160px" :label="$t('functionMenuMaintenance.createTime')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <span>{{scope.row.createTime | dateFilter}}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-          <!--分页-->
-          <pages
-            :total='options.total'
-            :currentPage='options.currentPage'
-            :pageSize='options.pageSize'
-            @handleCurrentChangeSub="handleCurrentChange"/>
-        </div>
+            </template>
+          </el-table-column>
+          <el-table-column min-width="60px" :label="$t('functionMenuMaintenance.menuName')" header-align="left"
+                           align="left">
+            <template slot-scope="scope">
+              <el-tooltip effect="dark" :content="scope.row.menuName" placement="top-start">
+                <span>{{scope.row.menuName}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column width="60px" prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left"
+                           align="left"/>
+          <el-table-column min-width="100px" :label="$t('functionMenuMaintenance.link')" header-align="left"
+                           align="left">
+            <template slot-scope="scope">
+              <el-tooltip effect="dark" :content="scope.row.menuHref" placement="top-start">
+                <span>{{scope.row.menuHref}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column width="90px" :label="$t('functionMenuMaintenance.jumpType')" header-align="left"
+                           align="left"/>
+          <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left"
+                           align="left"/>
+          <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
+              <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="left" align="left">
+            <template slot-scope="scope">
+              <span v-if="scope.row.enable === true">启用</span>
+              <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="left"
+                           align="left"/>
+          <el-table-column width="160px" :label="$t('functionMenuMaintenance.createTime')" header-align="left"
+                           align="left">
+            <template slot-scope="scope">
+              <span>{{scope.row.createTime | dateFilter}}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--分页-->
+        <pages
+          :total='options.total'
+          :currentPage='options.currentPage'
+          :pageSize='options.pageSize'
+          @handleCurrentChangeSub="handleCurrentChange"/>
       </div>
     </div>
     <!--新增编辑-->
@@ -133,8 +139,10 @@
       <el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
         <el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
           <div style="position: relative;" v-for="(item,index) in languageList">
-            <el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;" class="width200" :placeholder="item.languageName" />
-            <span class="isNotNull" v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
+            <el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;"
+                      class="width200" :placeholder="item.languageName"/>
+            <span class="isNotNull"
+                  v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
           </div>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
@@ -184,7 +192,7 @@
           <el-input v-model="addEdit.menuLevel" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
-          <el-input v-model="addEdit.orderMark" class="width200" readonly />
+          <el-input v-model="addEdit.orderMark" class="width200" readonly/>
         </el-form-item>
         <el-form-item class="star" :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
@@ -268,8 +276,8 @@
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
         checkValueList: {}, // 选中数据集合 编辑时
-        languageList:[], // 当前系统支持的语言列表
-        checkedKeysArr:[], // 选择用户树形控件默认选中的节点组
+        languageList: [], // 当前系统支持的语言列表
+        checkedKeysArr: [], // 选择用户树形控件默认选中的节点组
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -307,7 +315,7 @@
     },
     methods: {
       // 重置表单数据
-      resetFormData(){
+      resetFormData() {
         var _t = this;
         _t.dialogVisible = false;
         _t.addEdit.id = '';
@@ -321,7 +329,7 @@
         _t.$refs.table.clearSelection();
       },
       // 输入框菜单名称校验
-      menuNameInput(data){
+      menuNameInput(data) {
         if (data.menuName.trim() == '') {
           data.flag = true;
           document.getElementById(data.id).style.borderColor = '#F56C6C';
@@ -331,9 +339,9 @@
         }
       },
       // 查询当前支持的语言
-      getLanguage(){
+      getLanguage() {
         var _t = this;
-        _t.$api.get('system/language/all',{},function (res) {
+        _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
             case 200:
               var languageList = res.data.list;
@@ -407,7 +415,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 新增语言之后刷新左侧导航的数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -418,7 +426,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'alertBtn'
+                    confirmButtonClass: 'alertBtn'
                   });
                   break;
                 default:
@@ -438,9 +446,9 @@
         _t.getEditRoleData(_t.addEdit.id);
       },
       // 根据菜单id查询需要编辑的数据
-      getEditData(data){
+      getEditData(data) {
         var _t = this;
-        _t.$api.get('system/menu/' + data,{},function (res) {
+        _t.$api.get('system/menu/' + data, {}, function (res) {
           switch (res.status) {
             case 200:
               var languageList = res.data.systemMenuLanguageList;
@@ -468,15 +476,15 @@
         });
       },
       // 根据菜单id 查询 需要编辑的数据下的角色列表
-      getEditRoleData(data){
+      getEditRoleData(data) {
         var _t = this;
-        _t.$api.get('system/menu/getRoleByMenu',{
-          jsonString:JSON.stringify({
-            systemMenu:{
-              id:data
+        _t.$api.get('system/menu/getRoleByMenu', {
+          jsonString: JSON.stringify({
+            systemMenu: {
+              id: data
             }
           })
-        },function (res) {
+        }, function (res) {
           switch (res.status) {
             case 200:
               var nodeIdArr = new Array();
@@ -547,7 +555,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 编辑成功后刷新左侧导航的数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -558,7 +566,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'alertBtn'
+                    confirmButtonClass: 'alertBtn'
                   });
                   break;
                 default:
@@ -636,8 +644,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -651,12 +659,12 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   _t.getMenuData();
                   _t.getData();
                   // 启用成功之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                 });
                 break;
               case 1003: // 无操作权限
@@ -684,8 +692,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -699,13 +707,13 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   // 刷新当前组件列表数据
                   _t.getMenuData();
                   _t.getData();
                   // 刷新左侧导航列表数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                 });
                 break;
               case 1003: // 无操作权限
@@ -733,8 +741,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/menu/', {
@@ -747,12 +755,12 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   _t.getMenuData();
                   _t.getData();
                   // 删除之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                 });
 
                 break;
@@ -765,22 +773,22 @@
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   _t.getMenuData();
                   _t.getData();
                   // 删除失败之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                 });
                 break;
               case 3005: // 菜单关联其他菜单
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   _t.getMenuData();
                   _t.getData();
-                  _t.$bus.emit('getMenu',true);
+                  _t.$bus.emit('getMenu', true);
                 });
                 break;
               default:
@@ -916,17 +924,17 @@
         var _t = this;
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
-        _t.tableData.forEach(function (item,index) {
+        _t.tableData.forEach(function (item, index) {
           if (item.id == data.id) {
             dataIdArr.push(_t.tableData[index - 1].id)
           }
         });
         _t.$store.commit('setLoading', true);
         _t.$api.put('system/menu/enableMenu', {
-          systemMenu:{
-            id:dataIdArr.join(',')
+          systemMenu: {
+            id: dataIdArr.join(',')
           },
-          upOrDown:'up'
+          upOrDown: 'up'
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -934,7 +942,7 @@
               _t.getData();
               _t.getMenuData();
               // 列表数据上移之后刷新左侧导航菜单
-              _t.$bus.emit('getMenu',true);
+              _t.$bus.emit('getMenu', true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -953,16 +961,16 @@
         _t.$store.commit('setLoading', true);
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
-        _t.tableData.forEach(function (item,index) {
+        _t.tableData.forEach(function (item, index) {
           if (item.id == data.id) {
             dataIdArr.push(_t.tableData[index + 1].id)
           }
         });
         _t.$api.put('system/menu/enableMenu', {
-          systemMenu:{
-            id:dataIdArr.join(',')
+          systemMenu: {
+            id: dataIdArr.join(',')
           },
-          upOrDown:'down'
+          upOrDown: 'down'
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -970,7 +978,7 @@
               _t.getData();
               _t.getMenuData();
               // 数据下移之后刷新左侧导航菜单
-              _t.$bus.emit('getMenu',true);
+              _t.$bus.emit('getMenu', true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -997,7 +1005,7 @@
         }
       },
       // 获取组织角色列表
-      getOrgRoleList(){
+      getOrgRoleList() {
         var _t = this;
         _t.$api.get('system/menu/getOrgRole', {}, function (res) {
           switch (res.status) {
@@ -1043,12 +1051,34 @@
     font-size: 14px;
     font-weight: bold;
     padding-left: 20px;
-    width: 176px;
   }
 
   .functionMenuMaintenance-title a {
     line-height: 40px;
     display: inline-block;
+  }
+
+  .functionMenuBox {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    bottom:0;
+    width: 176px;
+    overflow: auto;
+  }
+
+  .functionMenuMaintenance-tree {
+    min-width: 176px;
+    display: inline-block;
+  }
+
+  .functionMenu-FormBox {
+    position: absolute;
+    top: 50px;
+    left: 176px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
   }
 </style>
 <style>
