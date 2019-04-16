@@ -74,6 +74,8 @@ const EquipmentMonitoring =() => import ('@/page/pages/monitor/EquipmentMonitori
 const alarmManagement = () => import ('@/page/pages/alarm/alarmManagement');
 // 当前告警
 const alarmCurrent = () => import ('@/page/pages/alarm/alarmCurrent');
+// 历史告警
+const alarmHistory = () => import ('@/page/pages/alarm/alarmHistory');
 
 Vue.use(Router);
 export default new Router({
@@ -169,11 +171,9 @@ export default new Router({
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
         {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
         {path: "/YUser/EquipmentMonitoring", name: "EquipmentMonitoring", component: EquipmentMonitoring},
-        
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
         {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
-
-
+        {path: "/YUser/alarmManagement/alarmHistory", name: "alarmHistory", component: alarmHistory},
         //树形穿梭
         {path:'/YUser/selectTree',name:'selectTree',component:selectTree},
       ]
