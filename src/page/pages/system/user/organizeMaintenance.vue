@@ -332,6 +332,7 @@
                 }).then(()=>{
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                 });
                 break;
               case 1003: // 无操作权限
@@ -378,6 +379,7 @@
                 }).then(()=>{
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                 });
                 break;
               case 1003: // 无操作权限
@@ -423,6 +425,7 @@
                 }).then(()=>{
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                 });
                 break;
               case 1003: // 无操作权限
@@ -438,6 +441,7 @@
                 }).then(()=>{
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                 });
                 break;
               case 3005: // 数据关联不能删除
@@ -447,11 +451,13 @@
                 }).then(()=>{
                   _t.getData();
                   _t.getTreeData();
+                  _t.resetFormData();
                 });
                 break;
               default:
                 _t.getData();
                 _t.getTreeData();
+                _t.resetFormData();
                 break;
             }
             _t.disableBtn.edit = true;

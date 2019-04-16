@@ -418,7 +418,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   });
                   break;
                 default:
@@ -558,7 +558,7 @@
                 case 3004: // 操作失败
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'queryBtn'
+                    confirmButtonClass:'alertBtn'
                   });
                   break;
                 default:
@@ -636,8 +636,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -651,7 +651,7 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getMenuData();
                   _t.getData();
@@ -684,8 +684,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/menu/enableMenu', {
@@ -699,7 +699,7 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   // 刷新当前组件列表数据
                   _t.getMenuData();
@@ -733,8 +733,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/menu/', {
@@ -747,7 +747,7 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getMenuData();
                   _t.getData();
@@ -765,7 +765,7 @@
               case 2007: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getMenuData();
                   _t.getData();
@@ -776,7 +776,7 @@
               case 3005: // 菜单关联其他菜单
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
                 }).then(()=>{
                   _t.getMenuData();
                   _t.getData();

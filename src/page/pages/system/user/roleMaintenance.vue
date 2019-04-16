@@ -529,8 +529,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/role/enableRole', {
@@ -544,9 +544,11 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.resetFormData();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -569,8 +571,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/role/enableRole', {
@@ -584,9 +586,11 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.resetFormData();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -684,8 +688,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'queryBtn',
-          cancelButtonClass:'queryBtn'
+          confirmButtonClass:'alertBtn',
+          cancelButtonClass:'alertBtn'
         }).then(() => {
           _t.$api.delete('system/role/', {
             jsonString: JSON.stringify({
@@ -696,9 +700,11 @@
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.resetFormData();
                 });
-                _t.getData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -707,18 +713,14 @@
                 _t.exclude(_t, res.message);
                 break;
               case 2007: // 删除失败
-                _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
-                });
-                _t.getData();
-                break;
               case 3005: // 角色关联用户不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'queryBtn'
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.getData();
+                  _t.resetFormData();
                 });
-                _t.getData();
                 break;
               default:
                 _t.getData();
@@ -829,11 +831,22 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 2005:
-                  _t.$alert(res.message);
-                  _t.resetFormData();
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.getData();
+                    _t.resetFormData();
+                  });
                   break;
                 default:
-                  _t.resetFormData();
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.getData();
+                    _t.resetFormData();
+                  });
                   break;
               }
             });
@@ -901,11 +914,22 @@
                   _t.exclude(_t, res.message);
                   break;
                 case 2006:
-                  _t.$alert(res.message);
-                  _t.resetFormData();
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.getData();
+                    _t.resetFormData();
+                  });
                   break;
                 default:
-                  _t.resetFormData();
+                  _t.$alert(res.message, _t.$t('public.resultTip'), {
+                    confirmButtonText: _t.$t('public.confirm'),
+                    confirmButtonClass:'alertBtn'
+                  }).then(()=>{
+                    _t.getData();
+                    _t.resetFormData();
+                  });
                   break;
               }
             });
