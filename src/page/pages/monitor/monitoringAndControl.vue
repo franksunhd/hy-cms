@@ -37,30 +37,30 @@
 		</div>
 		<div class="equipmentList clearfix">
 			<el-table :data="tableData" stripe @cell-click="cellClickColumn">
-				<el-table-column prop="number" label="序号" width="56" header-align="left" align="left">
+				<el-table-column label="序号" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>
-              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-            </span>
+                        {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                        </span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="state" label="状态" width="66" header-align="left" align="left">
+				<el-table-column prop="status" label="状态"  header-align="left" align="left">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.state == 1" effect="dark" content="紧急" placement="top-start">
+						<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 							<span class="iconfont iconfontError">&#xe609;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.state == 2" effect="dark" content="警告" placement="top-start">
+						<el-tooltip v-if="scope.row.status == 66" effect="dark" content="警告" placement="top-start">
 							<span class="iconfont iconfontWarn">&#xe608;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.state == 3" effect="dark" content="忽略" placement="top-start">
+						<el-tooltip v-if="scope.row.status == 3" effect="dark" content="忽略" placement="top-start">
 							<span class="iconfont iconfontDisable">&#xe60a;</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="DeviceName" label="设备名称" header-align="left" align="left" />
-				<el-table-column prop="alarmContent" label="告警内容" main-width="" header-align="left" align="left" />
-				<el-table-column prop="LatestAlarmTime" label="最新告警时间" header-align="left" align="left" />
-				<el-table-column prop="StatusSummary" label="状态汇总" header-align="left" align="left">
+				<el-table-column prop="deviceName" label="设备名称" header-align="left" align="left" />
+				<!--<el-table-column prop="alarmContent" label="告警内容" main-width="" header-align="left" align="left" />-->
+				<el-table-column prop="lastMonitorTime" label="最新告警时间" header-align="left" align="left" />
+				<!--<el-table-column prop="StatusSummary" label="状态汇总" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" content="紧急" placement="top-start">
 							<span>
@@ -77,15 +77,15 @@
 						<el-tooltip effect="dark" content="忽略" placement="top-start">
 							<span>
                 <span class="iconfont iconfontDisable">&#xe60a;</span>
-							  <span>2</span>
+							<span>2</span>
 							</span>
 						</el-tooltip>
 					</template>
-				</el-table-column>
-				<el-table-column prop="ComputerRoom" label="机房" header-align="left" align="left" />
-				<el-table-column prop="rack" label="机架" header-align="left" align="left" />
-				<el-table-column prop="location" label="位置" header-align="left" align="left" />
-				<el-table-column prop="operation" label="操作" header-align="left" align="left" />
+				</el-table-column>-->
+				<el-table-column prop="roomName" label="机房" header-align="left" align="left" />
+				<el-table-column prop="frameName" label="机架" header-align="left" align="left" />
+				<el-table-column prop="framePosition" label="位置" header-align="left" align="left" />
+				<!--<el-table-column prop="operation" label="操作" header-align="left" align="left" />-->
 			</el-table>
 			<!--分页-->
 			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
@@ -119,8 +119,7 @@
 				<p class="paddingLeft-10"><strong>附加信息</strong></p>
 				<el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
 				<el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
-				<br
-				<el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
+				<br <el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
 				<el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
 				<el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
 				<el-form-item label="告警评注:">
@@ -191,118 +190,6 @@
 					location: 'U22',
 					operation: '详情'
 
-				}, {
-					id: '2',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-
-				}, {
-					id: '3',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-
-				}, {
-					id: '4',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '5',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '6',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '7',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '8',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '9',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '10',
-					state: '2',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-				}, {
-					id: '11',
-					state: '3',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
 				}],
 				treeData: [{
 					label: '一级 1',
@@ -350,11 +237,64 @@
 
 			}
 		},
+
 		mounted() {
+			this.getData();
 			this.drawLine();
 			this.drawLine2();
 		},
 		methods: {
+			// 查询表格数据
+			getData() {
+				var _t = this;
+				_t.$api.get('/asset/assetDevice/pagelist', {
+					jsonString: JSON.stringify({
+						alarmDevice:true,
+						currentPage: 1,
+						pageSize: 10
+					})
+				}, function(res) {
+					switch(res.status) {
+						case 200:
+							console.log(res);
+							var Income1=res.data.list;
+							console.log(Income);
+							var Income=[];
+							for(var i=0;i<Income1.length;i++){
+								/*if(Income1[i].status=="11"){
+									
+								}else if(Income1[i].status=="22"){
+									
+								}else if(Income1[i].status=="")
+								*/
+								Income.push({
+								deviceName:Income1[i].deviceName,
+								roomName:Income1[i].roomName,
+								frameName:Income1[i].frameName,
+								framePosition:Income1[i].framePosition,
+								lastMonitorTime:Income1[i].lastMonitorTime,
+								status:Income1[i].status,
+							})
+							}
+							
+							_t.tableData = Income;
+							_t.options.currentPage = res.data.currentPage;
+							_t.options.total = res.data.count;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableData = [];
+							_t.options.currentPage = 1;
+							_t.options.total = 0;
+							break;
+					}
+				});
+			},
 			clickNodeAlert(val) {
 				var _t = this;
 				console.log(val);
@@ -562,30 +502,29 @@
 							symbol: 'image://https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554907158685&di=3ed03cd97d6ac71f30e51dab04c93403&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F19f7a76f9205e1452eb958e75739d95ee05fc5e04a4bf-yHYrfg_fw658',
 							symbolSize: series[0].radius[0],
 							//effect: {
-								show: true,
-								animation: true,
-								animationThreshold: '2000',
-								animationDuration: '1000',
+							show: true,
+							animation: true,
+							animationThreshold: '2000',
+							animationDuration: '1000',
 
-								//scaleSize: 120,
-								//symbolSize:'50',
-								//symbolOffset:[0,1],
-								color: 'rgba(250,225,50,0.8)',
-
+							//scaleSize: 120,
+							//symbolSize:'50',
+							//symbolOffset:[0,1],
+							color: 'rgba(250,225,50,0.8)',
 
 							//},
 							data: [{
 								x: '50%',
 								y: '50%',
-								symbol:'emptyCircle',
-								symbolSize:'50',
-								itemStyle:{
+								symbol: 'emptyCircle',
+								symbolSize: '50',
+								itemStyle: {
 									shadowBlur: '300',
-									shadowColor:'rgba(250,225,50,0.8)',
+									shadowColor: 'rgba(250,225,50,0.8)',
 									//period: '300',
 								},
-								label:{
-									textBorderWidth:"350",
+								label: {
+									textBorderWidth: "350",
 									textShadowBlur: "200"
 								}
 							}]
@@ -641,7 +580,7 @@
 			handleCurrentChange(val) {
 				var _t = this;
 				_t.options.currentPage = val;
-
+				_t.getData();
 			},
 			cellClickColumn(row, column) {
 				var _t = this;
@@ -652,7 +591,7 @@
 				}
 				// 点击设备名称列
 				if(column.label == "设备名称") {
-					_t.addTab(row.DeviceName, row.id);
+					_t.addTab(row.deviceName, row.id);
 				}
 				// 点击告警内容列
 				if(column.label == "告警内容") {
@@ -668,36 +607,35 @@
 	}
 </script>
 <style>
-	.alarmMessageBox_monitoringAndControl .el-dialog { 
+	.alarmMessageBox_monitoringAndControl .el-dialog {
 		width: 780px;
 		height: 500px;
 	}
 </style>
 <style scoped>
-	
 	.equipmentList {
 		/*overflow: hidden;*/
 		background-color: #fff;
 		margin: 0 10px;
 	}
-
+	
 	.equipmentList ul li {
 		line-height: 56px;
 	}
-
+	
 	.equipmentList ul li span {
 		padding-left: 20px;
 	}
-
+	
 	.equipmentList ul li:first-child {
 		float: left;
 	}
-
+	
 	.equipmentList ul li:nth-child(2) {
 		float: right;
 		margin-right: 20px;
 	}
-
+	
 	.equipmentList ul li:last-child {
 		float: right;
 		margin-right: 10px;
