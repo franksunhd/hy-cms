@@ -10,23 +10,23 @@
 		<el-row :gutter="10">
 			<el-col :span="12">
 				<div style="padding: 10px 0 10px 10px">
-					<div id="echartText" class="whiteBg" style="width: 100%; height:440px">1</div>
+					<div id="echartText" class="whiteBg" style="width: 100%; height:440px"></div>
 				</div>
 			</el-col>
 			<el-col :span="12">
 				<div style="padding: 10px 10px 10px 0">
-					<div id="echart" class="whiteBg" style="width: 100%; height:440px">2</div>
+					<div id="echart" class="whiteBg" style="width: 100%; height:440px"></div>
 				</div>
 			</el-col>
 		</el-row>
 		<div class="equipmentList clearfix">
 			<ul class="clearfix">
 				<li><span>最新告警设备列表</span></li>
-				<li>
+				<!--<li>
 					<el-select class="fr selectArr" v-model="addEdit.sortValue">
 						<el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value" />
 					</el-select>
-				</li>
+				</li>-->
 				<li>
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover" style="float: left;">
 						<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
@@ -37,14 +37,14 @@
 		</div>
 		<div class="equipmentList clearfix">
 			<el-table :data="tableData" stripe @cell-click="cellClickColumn">
-				<el-table-column prop="number" label="序号" header-align="left" align="left">
+				<el-table-column prop="number" label="序号" width="56" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="state" label="状态" header-align="left" align="left">
+				<el-table-column prop="state" label="状态" width="66" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip v-if="scope.row.state == 1" effect="dark" content="紧急" placement="top-start">
 							<span class="iconfont iconfontError">&#xe609;</span>
@@ -58,7 +58,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="DeviceName" label="设备名称" header-align="left" align="left" />
-				<el-table-column prop="alarmContent" label="告警内容" header-align="left" align="left" />
+				<el-table-column prop="alarmContent" label="告警内容" main-width="" header-align="left" align="left" />
 				<el-table-column prop="LatestAlarmTime" label="最新告警时间" header-align="left" align="left" />
 				<el-table-column prop="StatusSummary" label="状态汇总" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -91,7 +91,7 @@
 			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 		</div>
 		<!--设备告警详情弹出层-->
-		<el-dialog class="alarmMessageBox" :title="$t('alarmManagement.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog class="alarmMessageBox_monitoringAndControl" :title="$t('alarmManagement.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
 			<div class="dialogTitle">设备基本信息</div>
 			<el-form :model="equipmentData" inline label-position="right" label-width="76px">
 				<el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
@@ -667,10 +667,16 @@
 		}
 	}
 </script>
-
+<style>
+	.alarmMessageBox_monitoringAndControl .el-dialog { 
+		width: 780px;
+		height: 500px;
+	}
+</style>
 <style scoped>
+	
 	.equipmentList {
-		overflow: hidden;
+		/*overflow: hidden;*/
 		background-color: #fff;
 		margin: 0 10px;
 	}

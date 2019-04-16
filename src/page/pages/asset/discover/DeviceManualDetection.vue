@@ -27,8 +27,6 @@
 					<div class="DeviceManualDetection-button">
 						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;增加检索范围</i></div>
 						<div class="BeganToSee" @click="BeganToSee">开始发现
-							<!--<router-link :to="{path:'/YUser/DeviceManualDetection/BeganToSee',query:{BeganToSee:label}}">开始发现
-                            </router-link>-->
 						</div>
 						<div class="ListOfUncompletedDiscoveries" @click="UncompletedDiscoveryTask">
 							<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
@@ -73,7 +71,6 @@
 									<el-option v-for="item in version" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
-
 								<!--<el-input v-model="list.userName" class="width200"></el-input>-->
 							</el-form-item>
 							<el-form-item v-if="type == 2" label="SNMP端口:">
@@ -123,7 +120,6 @@
 
 <script>
 	import Box from '../../../../components/Box';
-
 	export default {
 		name: 'DeviceManualDetection',
 		components: {
@@ -160,10 +156,8 @@
 					children: 'children',
 					label: 'label'
 				},
-
 				//表单
 				tables: [],
-
 				lists: [{
 					ip: [{
 						"startIp": '192.168.0.2',
@@ -369,6 +363,7 @@
 			//开始发现
 			BeganToSee() {
 				var _t = this;
+				
 				_t.$api.post('/asset/discovery/start', {
 					param: _t.lists,
 					type: _t.type

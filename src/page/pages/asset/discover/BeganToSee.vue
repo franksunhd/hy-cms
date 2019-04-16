@@ -144,6 +144,7 @@
         _t.$api.post('/asset/discovery/history', {}, function (res) {
           switch (res.status) {
             case 200:
+            console.log(res);
               var process = [];
               for (var key in res.data) {
                 if (res.data[key].type === "1") {
@@ -509,7 +510,28 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-            for (var i = 0; i < Income.length; i++) {
+            console.log(res);
+            
+            var describes = [];
+              for (var key in res.data) {
+                if (res.data[key] === "-1") {
+                  res.data[key] = "已存在"
+                } else if (res.data[key] === "0") {
+                  res.data[key] = "添加失败"
+                }else if (res.data[key] === "1") {
+                  res.data[key] = "添加成功"
+                }
+                describes.push({
+                  describe:res.data[key]
+                })
+              }
+              console.log(describes)
+              _t.tableData.push(describes)
+             _t.tableData = _t.tableData.set(_t.tableData,5,'ddd');
+            console.log(_t.tableData);
+            
+            
+            /*for (var i = 0; i < Income.length; i++) {
                   if (Income[i].discovery === true) {
                     Income[i].discovery = "成功"
                   } else if (Income[i].discovery === false) {
@@ -531,7 +553,7 @@
                     errorText : Income[i].errorText
                   })
                 }
-              console.log(res);
+              console.log(res);*/
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

@@ -66,8 +66,10 @@ const CollectorApplication = () => import ('@/page/pages/system/monitor/Collecto
 const DeviceManualDetection = () => import ('@/page/pages/asset/discover/DeviceManualDetection');
 //开始发现
 const BeganToSee = () => import ('@/page/pages/asset/discover/BeganToSee');
-//监测管理
+//监测汇总
 const monitoringAndControl = () => import ('@/page/pages/monitor/monitoringAndControl');
+//设备监测
+const EquipmentMonitoring =() => import ('@/page/pages/monitor/EquipmentMonitoring');
 // 告警管理
 const alarmManagement = () => import ('@/page/pages/alarm/alarmManagement');
 // 当前告警
@@ -166,6 +168,8 @@ export default new Router({
         {path: "/YUser/DeviceManualDetection", name: "DeviceManualDetection", component: DeviceManualDetection},
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
         {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
+        {path: "/YUser/EquipmentMonitoring", name: "EquipmentMonitoring", component: EquipmentMonitoring},
+        
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
         {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
 
