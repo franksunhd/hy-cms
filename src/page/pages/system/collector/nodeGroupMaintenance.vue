@@ -36,20 +36,27 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe @selection-change="selectTableNum">
+      <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left" />
-        <el-table-column :label="$t('public.index')" header-align="left" align="left">
+        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="groupName" :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="left" align="left" />
-        <el-table-column prop="description" :label="$t('nodeGroupMaintenance.description')" header-align="left" align="left" />
-        <el-table-column prop="collectorCount" :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="left" align="left" />
-        <el-table-column prop="createBy" :label="$t('nodeGroupMaintenance.createName')" header-align="left" align="left" />
-        <el-table-column :label="$t('nodeGroupMaintenance.createTime')" header-align="left" align="left">
+        <el-table-column width="150px" prop="groupName" :label="$t('nodeGroupMaintenance.nodeGroupName')" header-align="left" align="left" />
+        <el-table-column min-width="150px" :label="$t('nodeGroupMaintenance.IPList')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.manageIpItem" :key="index">
+              {{index + 1}}、{{item.startIp}} 至 {{item.endIp}} 【网关IP:{{item.gatewayIp}}】
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column min-width="100px" prop="description" :label="$t('nodeGroupMaintenance.description')" header-align="left" align="left" />
+        <el-table-column width="150px" prop="collectorCount" :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="left" align="left" />
+        <el-table-column width="150px" prop="createBy" :label="$t('nodeGroupMaintenance.createName')" header-align="left" align="left" />
+        <el-table-column width="160px" :label="$t('nodeGroupMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
           </template>
@@ -79,25 +86,30 @@
         </span>
       </p>
       <el-form label-width="96px" :model="addEdit" :rules="rules" ref="formName">
-        <el-form-item :label="$t('nodeGroupMaintenance.nodeGroupName') + '：'" prop="groupName">
+        <el-form-item class="star" :label="$t('nodeGroupMaintenance.nodeGroupName') + '：'" prop="groupName">
           <el-input class="width200" v-model="addEdit.groupName" />
         </el-form-item>
-        <el-form-item :label="$t('nodeGroupMaintenance.IPList') + '：'">
+        <el-form-item class="star" :label="$t('nodeGroupMaintenance.IPList') + '：'">
           <div v-for="(item,index) in IPListArr" :key="index" :class="(IPListArr.length - 1)?'marginBottom20':''">
-            <div style="position: relative;display: inline-block;">
-              <el-input :id="'IpListStart' + index" class="width200" @input="ipListRule(item,index,true)" v-model="item.startIp" />
+            <div class="nodeGroup-formInputBox">
+              <el-input :id="'IpListStart' + index" class="width200" @input="ipListRule(item,index,1)" v-model="item.startIp" />
               <span class="isNotNull" v-if="item.startIpFlag">{{$t('public.isNotNull')}}</span>
             </div>
             <span>~</span>
-            <div style="position: relative;display: inline-block;">
-              <el-input :id="'IpListEnd' + index" class="width200" @input="ipListRule(item,index,false)" v-model="item.endIp" />
+            <div class="nodeGroup-formInputBox">
+              <el-input :id="'IpListEnd' + index" class="width200" @input="ipListRule(item,index,2)" v-model="item.endIp" />
               <span class="isNotNull" v-if="item.endIpFlag">{{$t('public.isNotNull')}}</span>
+            </div>
+            <div class="nodeGroup-formInputBox">
+              <span>网关IP:</span>
+              <el-input :id="'IpListGatewayIp' + index" class="width200" @input="ipListRule(item,index,3)" v-model="item.gatewayIp" />
+              <span class="marginLeft40 isNotNull" v-if="item.gatewayIpFlag">{{$t('public.isNotNull')}}</span>
             </div>
             <el-button v-if="index == 0" @click="addIpList">+</el-button>
             <el-button v-else @click="deleteIpList(index)">-</el-button>
           </div>
         </el-form-item>
-        <el-form-item :label="$t('nodeGroupMaintenance.note') + '：'" prop="description">
+        <el-form-item :label="$t('nodeGroupMaintenance.note') + '：'">
           <el-input type="textarea" v-model="addEdit.description" :autosize="{minRows:3}" />
         </el-form-item>
       </el-form>
@@ -137,23 +149,20 @@
         tableData:[], // 表格数据集合
         checkListIds:[], // 选中表格的id集合
         IPListArr:[
-          {startIp:'', endIp:'',startIpFlag:false,endIpFlag:false}
+          {startIp:'', endIp:'',gatewayIp:'',startIpFlag:false,endIpFlag:false,gatewayIpFlag:false}
         ],
         options:{
           total:0, // 总条数
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
-        dialogVisible:false, // 新增编辑弹出层
+        dialogVisible:true, // 新增编辑弹出层
         ifAdd:true, // 新增编辑判断
         // 表单校验
         rules: {
           groupName: [
             {validator: isNotNull, trigger: ['blur']}
-          ],
-          description: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
+          ]
         }
       }
     },
@@ -167,26 +176,35 @@
         _t.addEdit.groupName = '';
         _t.addEdit.description = '';
         _t.IPListArr = [
-          {startIp:'', endIp:'',startIpFlag:false,endIpFlag:false}
-        ]
+          {startIp:'', endIp:'',gatewayIp:'',startIpFlag:false,endIpFlag:false,gatewayIpFlag:false}
+        ];
+        _t.$refs.table.clearSelection();
       },
       // ip管辖地址段输入校验
       ipListRule(data,index,item){
-        if (item) {
+        if (item == 1) {
           // ip地址段开始
           data.startIpFlag = data.startIp.trim() == '' ? true : false;
           if (data.startIpFlag) {
-            document.getElementById('IpListStart' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
           } else {
             document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
           }
-        } else {
+        } else if (item == 2) {
           // ip地址段结束
           data.endIpFlag = data.endIp.trim() == '' ? true : false;
           if (data.endIpFlag) {
-            document.getElementById('IpListEnd' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
           } else {
             document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
+          }
+        } else if (item == 3) {
+          // 网关IP
+          data.gatewayIpFlag = data.gatewayIp.trim() == '' ? true : false;
+          if (data.gatewayIpFlag) {
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
+          } else {
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
           }
         }
       },
@@ -287,6 +305,9 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
+              res.data.list.forEach(function (item) {
+                item.manageIpItem = JSON.parse(item.manageIp);
+              });
               _t.tableData = res.data.list;
               _t.options.total = res.data.count;
               _t.options.currentPage = res.data.currentPage;
@@ -317,21 +338,32 @@
         // 判断ip地址段的数据是否输入
         var isErrorNull = 0;
         _t.IPListArr.forEach(function (item,index) {
+          // ip段开始
           if (item.startIp.trim() == '') {
             isErrorNull += 1;
             item.startIpFlag = true;
-            document.getElementById('IpListStart' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
           } else {
             item.startIpFlag = false;
             document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
           }
+          // ip段结束
           if (item.endIp.trim() == '') {
             isErrorNull += 1;
             item.endIpFlag = true;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
           } else {
             item.endIpFlag = false;
             document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
+          }
+          // 网关
+          if (item.gatewayIp.trim() == '') {
+            isErrorNull += 1;
+            item.gatewayIpFlag = true;
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
+          } else {
+            item.gatewayIpFlag = false;
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
           }
         });
         _t.$refs[formName].validate((valid) => {
@@ -385,21 +417,32 @@
         // 判断ip地址段的数据是否输入
         var isErrorNull = 0;
         _t.IPListArr.forEach(function (item,index) {
+          // ip段开始
           if (item.startIp.trim() == '') {
             isErrorNull += 1;
             item.startIpFlag = true;
-            document.getElementById('IpListStart' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
           } else {
             item.startIpFlag = false;
             document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
           }
+          // ip段结束
           if (item.endIp.trim() == '') {
             isErrorNull += 1;
             item.endIpFlag = true;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#F56C6C';
+            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
           } else {
             item.endIpFlag = false;
             document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
+          }
+          // 网关
+          if (item.gatewayIp.trim() == '') {
+            isErrorNull += 1;
+            item.gatewayIpFlag = true;
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
+          } else {
+            item.gatewayIpFlag = false;
+            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
           }
         });
         _t.$refs[formName].validate((valid) => {
@@ -468,6 +511,8 @@
         var ipObj = new Object();
         ipObj.startIp = '';
         ipObj.endIp = '';
+        ipObj.gatewayIp = '';
+        ipObj.gatewayIpFlag = false;
         ipObj.startIpFlag = false;
         ipObj.endIpFlag = false;
         _t.IPListArr.push(ipObj);
@@ -510,5 +555,10 @@
 
   .nodeGroup-dialog-tip span {
     flex: 1;
+  }
+
+  .nodeGroup-formInputBox {
+    position: relative;
+    display: inline-block;
   }
 </style>

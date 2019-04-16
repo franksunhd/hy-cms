@@ -246,6 +246,10 @@ html,body,.Index-box {
   margin-bottom: 20px;
 }
 
+.marginLeft40 {
+  margin-left: 40px;
+}
+
 /*文本按钮禁用样式*/
 .el-button.is-disabled.el-button--text,
 .el-button.is-disabled.el-button--text:hover {
