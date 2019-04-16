@@ -118,7 +118,6 @@ export function orgBreadcrumb(allNodes, nodeId) {
   buildParentList(allNodes);
   findParent(nodeId);
 
-
   // 递归找到 id 所对应的 父 id
   function buildParentList(arr) {
     arr.forEach(g => {
@@ -167,12 +166,25 @@ export function orgBreadcrumb(allNodes, nodeId) {
  * 传入id 找到对应的集合,并返回
  * allNodes 需要寻找的集合,
  * nodeId 需要寻找的id
- * nodeIdKey 集合中id键值名
- * nodeNameKey 集合中name键值名,
- * nodeChildrenKey 集合中子节点键值名
- * nodeParentIdKey 集合中父id键值名
  */
 
-export function returnObjectById(allNodes, nodeId,nodeIdKey,nodeNameKey,nodeChildrenKey,nodeParentIdKey) {
-
+export function returnObjectById(allNodes, nodeId) {
+  // 递归寻找节点 recursive(要查找的集合,要匹配的字段,要匹配的值)
+  function recursive(data, node, index) {
+    var result, temp; // 返回值和临时变量
+    for (var i = 0; i < data.length; i++) {
+      temp = data[i]; // 临时缓存
+      if (temp[node] == index) {
+        result = temp;
+        break;
+      }
+      // 没有找到 继续往下找
+      if (typeof result == 'undefined' && temp['systemMenuAndLanguageRelationChildList']) {
+        result = recursive(temp['systemMenuAndLanguageRelationChildList'], node, index);
+      }
+    }
+    return result;
+  }
+  // 返回 菜单id 对应的集合
+  return recursive(allNodes, 'id', nodeId);
 }
