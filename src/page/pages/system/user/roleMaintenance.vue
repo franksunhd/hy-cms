@@ -458,6 +458,7 @@
             switch (res.status) {
               case 200:
                 _t.outerVisible = false;
+                _t.tags = [];
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -466,6 +467,7 @@
                 _t.exclude(_t, res.message);
                 break;
               default:
+                _t.tags = [];
                 break;
             }
           });
