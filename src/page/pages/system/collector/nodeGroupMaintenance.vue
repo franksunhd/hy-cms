@@ -156,7 +156,7 @@
           currentPage:1, // 当前页码
           pageSize:10, // 每页显示条数
         },
-        dialogVisible:true, // 新增编辑弹出层
+        dialogVisible:false, // 新增编辑弹出层
         ifAdd:true, // 新增编辑判断
         // 表单校验
         rules: {
