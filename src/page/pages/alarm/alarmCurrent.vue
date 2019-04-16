@@ -3,7 +3,7 @@
     <!--面包屑区域-->
     <div class="Breadcrumb">
       <el-breadcrumb>
-        <el-breadcrumb-item>{{$t('breadcrumb.alarmCurrent')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.alarmManagement')}}</el-breadcrumb-item>
         <el-breadcrumb-item>{{$t('breadcrumb.alarmCurrent')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -202,6 +202,7 @@
     </el-dialog>
     <!--设备责任人弹出层-->
     <el-dialog
+      class="alarmCurrent-dialog"
       :title="$t('alarmCurrent.ownerInfo')"
       append-to-body
       :visible.sync="dialogVisibleOwnerInfo"
@@ -285,21 +286,14 @@
         equipmentStatusList:[],
         // 表格数据
         tableData:[
-          {
-            id:'1',
-            status: 1,
-            equipmentName: '惠普1',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-            equipmentOwner:'张三'
-          },
+          {}
         ],
         // 处理状态
         dealWithStatusList:[],
         isShowTypePopover:false, // 控制设备类型下拉框的显示隐藏
         isShowComputerPopover:false, // 控制机房下拉框的显示隐藏
-        isShowTabBox:true, // 控制标签页内容是否显示
-        isShowTabBox_tab:true, // 控制标签页区域是否显示
+        isShowTabBox:false, // 控制标签页内容是否显示
+        isShowTabBox_tab:false, // 控制标签页区域是否显示
         dialogVisible:false, // 设备详情信息弹出层
         dialogVisibleOwnerInfo:false, // 业务责任人信息弹出层
         defaultProps:{},
@@ -326,7 +320,29 @@
       // 点击机房下拉框的节点
       clickRoomNode(val){},
       // 查询表格数据
-      getData(){},
+      getData(){
+        var _t = this;
+        _t.$api.get('',{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.tableData = res.data.list;
+              _t.options.currentPage = res.data.currentPage;
+              _t.options.total = res.data.count;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
+              break;
+          }
+        });
+      },
       // 导出excel数据
       downloadData(){},
       // 改变当前页码
@@ -337,11 +353,6 @@
       },
       // 单元格点击
       cellClickColumn(row,column) {
-        /*
-         * 点击表格的单元格
-         *    row 当前行绑定的 数据
-         *    column 当前 单元格的 属性
-         */
         var _t = this;
         // 点击状态列
         if (column.label == _t.$t('alarmCurrent.status')) {
@@ -429,13 +440,20 @@
       }
     },
     created() {
+
     }
   }
 </script>
 
 <style>
+  .alarmCurrent-dialog .el-dialog {
+    width: 700px;
+    height: 450px;
+  }
+
   .alarmCurrentBox .el-dialog {
     width: 880px;
+    height: 500px;
   }
 
   .alarmCurrentBox .el-dialog__body {

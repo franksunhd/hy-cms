@@ -105,7 +105,8 @@ export default {
     DeviceType: '设备类型',
     rackTowerServer: '【机架/塔式服务器】',
     alarmManagement: '告警管理',
-    alarmCurrent:'当前告警'
+    alarmCurrent:'当前告警',
+    alarmHistory:'历史告警'
   },
   // 许可证信息维护
   license: {

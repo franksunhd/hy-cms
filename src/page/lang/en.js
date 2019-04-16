@@ -105,7 +105,8 @@ export default {
     DeviceType: 'DeviceType',
     rackTowerServer: 'rackTowerServer',
     alarmManagement: 'alarmManagement',
-    alarmCurrent:'alarmCurrent'
+    alarmCurrent:'alarmCurrent',
+    alarmHistory:'alarmHistory'
   },
   // 许可证信息维护
   license: {
