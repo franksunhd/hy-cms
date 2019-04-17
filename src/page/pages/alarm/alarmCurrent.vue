@@ -57,7 +57,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
-          <el-select v-model="formItem.rackNameId" class="width200">
+          <el-select v-model="formItem.rackNameId" class="width200" clearable>
             <el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -65,12 +65,12 @@
           <el-input v-model="formItem.business" class="width200" />
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
-          <el-select v-model="formItem.equipmentStatus" class="width200">
+          <el-select v-model="formItem.equipmentStatus" class="width200" clearable>
             <el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.processStatus') + '：'">
-          <el-select v-model="formItem.dealWithStatus" class="width200">
+          <el-select v-model="formItem.dealWithStatus" class="width200" clearable>
             <el-option v-for="(item,index) in dealWithStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
