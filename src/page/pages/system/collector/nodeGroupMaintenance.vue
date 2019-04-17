@@ -92,18 +92,18 @@
         <el-form-item class="star" :label="$t('nodeGroupMaintenance.IPList') + '：'">
           <div v-for="(item,index) in IPListArr" :key="index" :class="(IPListArr.length - 1)?'marginBottom20':''">
             <div class="nodeGroup-formInputBox">
-              <el-input :id="'IpListStart' + index" class="width200" @input="ipListRule(item,index,1)" v-model="item.startIp" />
-              <span class="isNotNull" v-if="item.startIpFlag">{{$t('public.isNotNull')}}</span>
+              <el-input :id="'IpListStart' + index" class="width200" @blur="rulesFormData(item,index,1)" v-model="item.startIp" />
+              <span class="isNotNull" v-if="item.startIpFlag">{{item.startIpTip}}</span>
             </div>
             <span>~</span>
             <div class="nodeGroup-formInputBox">
-              <el-input :id="'IpListEnd' + index" class="width200" @input="ipListRule(item,index,2)" v-model="item.endIp" />
-              <span class="isNotNull" v-if="item.endIpFlag">{{$t('public.isNotNull')}}</span>
+              <el-input :id="'IpListEnd' + index" class="width200" @blur="rulesFormData(item,index,2)" v-model="item.endIp" />
+              <span class="isNotNull" v-if="item.endIpFlag">{{item.endIpTip}}</span>
             </div>
             <div class="nodeGroup-formInputBox">
               <span>网关IP:</span>
-              <el-input :id="'IpListGatewayIp' + index" class="width200" @input="ipListRule(item,index,3)" v-model="item.gatewayIp" />
-              <span class="marginLeft40 isNotNull" v-if="item.gatewayIpFlag">{{$t('public.isNotNull')}}</span>
+              <el-input :id="'IpListGatewayIp' + index" class="width200" @blur="rulesFormData(item,index,3)" v-model="item.gatewayIp" />
+              <span class="marginLeft40 isNotNull" v-if="item.gatewayIpFlag">{{item.gatewayIpTip}}</span>
             </div>
             <el-button v-if="index == 0" @click="addIpList">+</el-button>
             <el-button v-else @click="deleteIpList(index)">-</el-button>
@@ -141,6 +141,12 @@
           groupName:'',
           description:''
         },
+        // 不为空集合
+        isNotNull:{
+          startIp:'',
+          endIp:'',
+          gatewayIp:''
+        },
         // 全局按钮判断
         disableBtn:{
           edit:true,
@@ -149,7 +155,17 @@
         tableData:[], // 表格数据集合
         checkListIds:[], // 选中表格的id集合
         IPListArr:[
-          {startIp:'', endIp:'',gatewayIp:'',startIpFlag:false,endIpFlag:false,gatewayIpFlag:false}
+          {
+            startIp:'',
+            startIpTip:'',
+            startIpFlag:false,
+            endIp:'',
+            endIpTip:'',
+            endIpFlag:false,
+            gatewayIp:'',
+            gatewayIpTip:'',
+            gatewayIpFlag:false
+          }
         ],
         options:{
           total:0, // 总条数
@@ -179,34 +195,6 @@
           {startIp:'', endIp:'',gatewayIp:'',startIpFlag:false,endIpFlag:false,gatewayIpFlag:false}
         ];
         _t.$refs.table.clearSelection();
-      },
-      // ip管辖地址段输入校验
-      ipListRule(data,index,item){
-        if (item == 1) {
-          // ip地址段开始
-          data.startIpFlag = data.startIp.trim() == '' ? true : false;
-          if (data.startIpFlag) {
-            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
-          } else {
-            document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
-          }
-        } else if (item == 2) {
-          // ip地址段结束
-          data.endIpFlag = data.endIp.trim() == '' ? true : false;
-          if (data.endIpFlag) {
-            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
-          } else {
-            document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
-          }
-        } else if (item == 3) {
-          // 网关IP
-          data.gatewayIpFlag = data.gatewayIp.trim() == '' ? true : false;
-          if (data.gatewayIpFlag) {
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
-          } else {
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
-          }
-        }
       },
       // 当前选中条数
       selectTableNum(data){
@@ -338,32 +326,9 @@
         // 判断ip地址段的数据是否输入
         var isErrorNull = 0;
         _t.IPListArr.forEach(function (item,index) {
-          // ip段开始
-          if (item.startIp.trim() == '') {
+          _t.rulesFormData(item,index,0);
+          if (_t.rulesFormData(item,index) == false) {
             isErrorNull += 1;
-            item.startIpFlag = true;
-            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
-          } else {
-            item.startIpFlag = false;
-            document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
-          }
-          // ip段结束
-          if (item.endIp.trim() == '') {
-            isErrorNull += 1;
-            item.endIpFlag = true;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
-          } else {
-            item.endIpFlag = false;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
-          }
-          // 网关
-          if (item.gatewayIp.trim() == '') {
-            isErrorNull += 1;
-            item.gatewayIpFlag = true;
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
-          } else {
-            item.gatewayIpFlag = false;
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
           }
         });
         _t.$refs[formName].validate((valid) => {
@@ -403,6 +368,69 @@
           }
         });
       },
+      // 校验ip地址开始段
+      // ip地址段的校验
+      rulesFormData(data,index,val){
+        var _t = this;
+        var isNotNull = 0;
+        var ipTipText = 'IP格式不正确,请重新输入!';
+        // 校验 开始 ip
+        if (data.startIp.trim() == '') {
+          isNotNull += 1;
+          data.startIpTip = _t.$t('public.isNotNull');
+          data.startIpFlag = true;
+          document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
+        } else if (_t.$api.isIpNumber().test(data.startIp) === false) {
+          isNotNull += 1;
+          data.startIpTip = ipTipText;
+          data.startIpFlag = true;
+          document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
+        } else {
+          data.startIpTip = '';
+          data.startIpFlag = false;
+          document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
+        }
+        if (val == 1) {
+          return false;
+        }
+        // 校验 结束 ip
+        if (data.endIp.trim() == '') {
+          isNotNull += 1;
+          data.endIpTip = _t.$t('public.isNotNull');
+          data.endIpFlag = true;
+          document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
+        } else if (_t.$api.isIpNumber().test(data.endIp) === false) {
+          isNotNull += 1;
+          data.endIpTip = ipTipText;
+          data.endIpFlag = true;
+          document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
+        } else {
+          data.endIpTip = '';
+          data.endIpFlag = false;
+          document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
+        }
+        if (val == 2) {
+          return false;
+        }
+        // 校验 网关 ip
+        if (data.gatewayIp.trim() == '') {
+          isNotNull += 1;
+          data.gatewayIpTip = _t.$t('public.isNotNull');
+          data.gatewayIpFlag = true;
+          document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
+        } else if (_t.$api.isIpNumber().test(data.gatewayIp) === false) {
+          isNotNull += 1;
+          data.gatewayIpTip = ipTipText;
+          data.gatewayIpFlag = true;
+          document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
+        } else {
+          data.gatewayIpTip = '';
+          data.gatewayIpFlag = false;
+          document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
+        }
+        // true 代表 可以提交 false 代表不可以提交
+        return isNotNull > 0 ? false : true;
+      },
       // 编辑按钮
       editDataBtn(){
         var _t = this;
@@ -417,32 +445,9 @@
         // 判断ip地址段的数据是否输入
         var isErrorNull = 0;
         _t.IPListArr.forEach(function (item,index) {
-          // ip段开始
-          if (item.startIp.trim() == '') {
+          _t.rulesFormData(item,index,0);
+          if (_t.rulesFormData(item,index) == false) {
             isErrorNull += 1;
-            item.startIpFlag = true;
-            document.getElementById('IpListStart' + index).style.borderColor = '#fb6041';
-          } else {
-            item.startIpFlag = false;
-            document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
-          }
-          // ip段结束
-          if (item.endIp.trim() == '') {
-            isErrorNull += 1;
-            item.endIpFlag = true;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#fb6041';
-          } else {
-            item.endIpFlag = false;
-            document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
-          }
-          // 网关
-          if (item.gatewayIp.trim() == '') {
-            isErrorNull += 1;
-            item.gatewayIpFlag = true;
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#fb6041';
-          } else {
-            item.gatewayIpFlag = false;
-            document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
           }
         });
         _t.$refs[formName].validate((valid) => {
@@ -510,11 +515,14 @@
         var _t = this;
         var ipObj = new Object();
         ipObj.startIp = '';
+        ipObj.startIpFlag = false;
+        ipObj.startIpTip = '';
         ipObj.endIp = '';
+        ipObj.endIpFlag = false;
+        ipObj.endIpTip = '';
         ipObj.gatewayIp = '';
         ipObj.gatewayIpFlag = false;
-        ipObj.startIpFlag = false;
-        ipObj.endIpFlag = false;
+        ipObj.gatewayIpTip = '';
         _t.IPListArr.push(ipObj);
       },
       // 删除ip地址段
