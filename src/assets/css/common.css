@@ -73,6 +73,14 @@ html,body,.Index-box {
 }
 
 /*公共功能*/
+.marginTop10 {
+  margin-top: 10px;
+}
+
+.marginTop20 {
+  margin-top: 20px;
+}
+
 .marBottom16 {
   margin-bottom: 16px;
 }
@@ -95,6 +103,15 @@ html,body,.Index-box {
 
 .width800 {
   width: 800px;
+}
+
+.fs12 {
+  font-size: 12px;
+}
+
+.fsBold12 {
+  font-size: 12px;
+  font-weight: bold;
 }
 
 /*messageBox弹出层 确认和取消按钮调换位置*/
@@ -230,9 +247,9 @@ html,body,.Index-box {
 .dialogTitle {
   height: 30px;
   line-height: 30px;
-  font-size: 14px;
+  font-size: 12px;
   padding-left: 10px;
-  font-weight: bold;
+  font-weight: bolder;
 }
 
 /*必填项不能为空*/

@@ -89,22 +89,7 @@
                 <span>{{scope.row.lastModifiedTime | dateFilter}}</span>
               </template>
             </el-table-column>
-            <el-table-column :label="$t('alarmManagement.statusAll')" header-align="left" align="left">
-              <template slot-scope="scope">
-                <span>
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                  <span>22</span>
-                </span>
-                <span>
-                  <span class="iconfont iconfontWarn">&#xe608;</span>
-                  <span>222</span>
-                </span>
-                <span>
-                  <span class="iconfont iconfontDisable">&#xe60a;</span>
-                  <span>12</span>
-                </span>
-              </template>
-            </el-table-column>
+            <el-table-column :label="$t('alarmManagement.statusAll')" header-align="left" align="left" />
             <el-table-column prop="computerRoomName" :label="$t('alarmManagement.computerRoomName')" header-align="left" align="left"/>
             <el-table-column prop="rackName" :label="$t('alarmManagement.rackName')" header-align="left" align="left"/>
             <el-table-column prop="location" :label="$t('alarmManagement.location')" header-align="left" align="left"/>
@@ -124,52 +109,61 @@
     </el-row>
     <!--设备告警详情弹出层-->
     <el-dialog
-      class="alarmMessageBox"
+      class="alarmMessageBox-dialog"
       :title="$t('alarmManagement.addUpdateAlarm')"
       append-to-body
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <div class="dialogTitle">{{$t('alarmManagement.equipmentInfo')}}</div>
-      <el-form :model="equipmentData" inline label-position="right" label-width="76px">
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentName') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.productName') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentIp') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.UUID') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.equipmentVendor') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.serialNumber') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.objectType') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.severityLevel') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.alarmNumber') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.eventType') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.createTime') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmManagement.lastTime') + ':'"></el-form-item>
+      <el-form class="alarmMessageBox-formItem" :model="equipmentData" label-position="right" label-width="76px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item :label="$t('alarmManagement.equipmentName') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.UUID') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.objectType') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.eventType') + '：'"></el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item :label="$t('alarmManagement.productName') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.equipmentVendor') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.severityLevel') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.createTime') + '：'"></el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item :label="$t('alarmManagement.equipmentIp') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.serialNumber') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.alarmNumber') + '：'"></el-form-item>
+            <el-form-item :label="$t('alarmManagement.lastTime') + '：'"></el-form-item>
+          </el-col>
+        </el-row>
+
       </el-form>
       <div class="dialogTitle">{{$t('alarmManagement.alarmInfo')}}</div>
       <el-form inline label-position="right" label-width="76px">
-        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.alarmField')}}</strong></p>
-        <el-form-item :label="$t('alarmManagement.status') + ':'">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.currentStatus')}}</strong></p>
-        <el-form-item style="width: 50%;" :label="$t('alarmManagement.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmManagement.status') + ':'">Down</el-form-item>
-        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.addField')}}</strong></p>
-        <el-form-item :label="$t('alarmManagement.status') + ':'">Down != Up</el-form-item>
-        <p class="paddingLeft-10"><strong>{{$t('alarmManagement.addInfo')}}</strong></p>
-        <el-form-item style="width: 60%;" :label="$t('alarmManagement.productName') + ':'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmManagement.name') + ':'">NIC.Integrated.1-3-1</el-form-item>
+        <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmManagement.alarmField')}}</strong></p>
+        <el-form-item :label="$t('alarmManagement.status') + '：'">Down != Up</el-form-item>
+        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmManagement.currentStatus')}}</strong></p>
+        <el-form-item style="width: 50%;" :label="$t('alarmManagement.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.status') + '：'">Down</el-form-item>
+        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmManagement.addField')}}</strong></p>
+        <el-form-item :label="$t('alarmManagement.status') + '：'">Down != Up</el-form-item>
+        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmManagement.addInfo')}}</strong></p>
+        <el-form-item :label="$t('alarmManagement.productName') + '：'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.name') + '：'">NIC.Integrated.1-3-1</el-form-item>
         <br>
-        <el-form-item style="width: 30%;" :label="$t('alarmManagement.AutoNegotiation') + ':'">Enabled</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmManagement.linkSpeed') + ':'">Unknown</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmManagement.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmManagement.alarmDescription') + ':'">
-          <el-input type="textarea" style="width: 734px;" />
+        <el-form-item :label="$t('alarmManagement.AutoNegotiation') + '：'">Enabled</el-form-item>
+        <el-form-item :label="$t('alarmManagement.linkSpeed') + '：'">Unknown</el-form-item>
+        <el-form-item :label="$t('alarmManagement.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.alarmDescription') + '：'">
+          <el-input type="textarea" :autosize="{minRows: 3}" style="width: 734px;" />
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary">{{$t('public.ignoreAlarm')}}</el-button>
-        <el-button type="primary">{{$t('public.confirmAlarm')}}</el-button>
-        <el-button type="primary">{{$t('public.toWarranty')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
+        <el-button type="primary" class="alertBtn">{{$t('public.ignoreAlarm')}}</el-button>
+        <el-button type="primary" class="alertBtn">{{$t('public.confirmAlarm')}}</el-button>
+        <el-button type="primary" class="alertBtn">{{$t('public.toWarranty')}}</el-button>
+        <el-button type="default" class="alertBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--标签页-->
@@ -237,7 +231,7 @@
           pageSize: 10, // 显示条数
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
-        dialogVisible:false, // 设备告警详情弹出层
+        dialogVisible:true, // 设备告警详情弹出层
         isShowTabBox:true, // 控制标签页内容是否显示
         isShowTabBox_tab:false,
         organizationList: [], // 树形下拉框的数据
@@ -409,13 +403,6 @@
       }
     },
     methods: {
-      /*
-       * 点击表格的单元格
-       *    row 当前行绑定的 数据
-       *    column 当前 单元格的 属性
-       *    cell 当前单元格 的 dom节点
-       *    event 事件
-       */
       cellClickColumn(row, column){
         var _t = this;
         // 点击状态列
@@ -579,16 +566,17 @@
   }
 </style>
 <style>
-  .alarmMessageBox .el-dialog {
+  .alarmMessageBox-dialog .el-dialog {
     width: 880px;
+    height: 494px;
   }
 
-  .alarmMessageBox .el-dialog__body {
+  .alarmMessageBox-dialog .el-dialog__body {
     padding-top: 10px;
   }
 
-  .alarmMessageBox .el-form--inline .el-form-item {
-    margin: 0;
+  .alarmMessageBox-dialog .el-form-item {
+    margin-bottom: 0;
   }
 
   #alarmManagement-tabs {
