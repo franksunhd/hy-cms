@@ -35,7 +35,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.status') + '：'">
-          <el-select v-model="formItem.status" class="width200">
+          <el-select v-model="formItem.status" class="width200" clearable>
             <el-option
               v-for="(item,index) in statusList"
               :value="item.value"

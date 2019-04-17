@@ -29,7 +29,7 @@
             <el-input class="width200" v-model="formItem.dictionaryName"/>
           </el-form-item>
           <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
-            <el-select v-model="formItem.status" class="width200">
+            <el-select v-model="formItem.status" class="width200" clearable>
               <el-option
                 v-for="item in statusList"
                 :value="item.value"
