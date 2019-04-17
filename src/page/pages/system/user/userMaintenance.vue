@@ -677,12 +677,12 @@
           if (valid) {
             _t.$api.post('system/user/', {
               systemUser: {
-                organizationId: _t.addEdit.organizationId,
-                username: _t.addEdit.loginAccount,
-                password: _t.addEdit.loginPassword,
-                displayName: _t.addEdit.username,
-                email: _t.addEdit.emails,
-                mobile: _t.addEdit.mobileNum,
+                organizationId: _t.addEdit.organizationId == null ? null : _t.addEdit.organizationId,
+                username: _t.addEdit.loginAccount == null ? null : (_t.addEdit.loginAccount.trim() == '' ? null : _t.addEdit.loginAccount.trim()),
+                password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.addEdit.loginPassword.trim())),
+                displayName: _t.addEdit.username == null ? null :(_t.addEdit.username.trim() == '' ? null : _t.addEdit.username.trim()),
+                email: _t.addEdit.emails == null ? null : (_t.addEdit.emails.trim() == '' ? null : _t.addEdit.emails.trim()),
+                mobile: _t.addEdit.mobileNum == null ? null : (_t.addEdit.mobileNum.trim() == '' ? null : _t.addEdit.mobileNum.trim()),
                 status: _t.addEdit.status,
                 createBy: localStorage.getItem('hy-user-name'),
                 languageMark: localStorage.getItem('hy-language')
@@ -801,6 +801,9 @@
               _t.addEdit.status = res.data.status;
               _t.getRoleWithOrgId(res.data.organizationId);
               _t.organizationName = orgBreadcrumb(_t.organizationList,res.data.organizationId);
+              if (_t.addEdit.organizationId !== '') {
+                _t.isShowRole = true;
+              }
               _t.dialogVisible = true;
               break;
             case 1003: // 无操作权限
@@ -822,13 +825,14 @@
             _t.$api.put('system/user/', {
               systemUser: {
                 id: _t.addEdit.id,
-                organizationId: _t.addEdit.organizationId,
-                username: _t.addEdit.loginAccount == null ? null : _t.addEdit.loginAccount.trim(),
-                password: _t.addEdit.loginPassword == null ? null : _t.addEdit.loginPassword.trim(),
-                displayName: _t.addEdit.username == null ? null : _t.addEdit.username.trim(),
-                email: _t.addEdit.emails == null ? null : _t.addEdit.emails.trim(),
-                mobile: _t.addEdit.mobileNum == null ? null : _t.addEdit.mobileNum.trim(),
+                organizationId: _t.addEdit.organizationId == null ? null : _t.addEdit.organizationId,
+                username: _t.addEdit.loginAccount == null ? null : (_t.addEdit.loginAccount.trim() == '' ? null : _t.addEdit.loginAccount.trim()),
+                password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.addEdit.loginPassword.trim())),
+                displayName: _t.addEdit.username == null ? null :(_t.addEdit.username.trim() == '' ? null : _t.addEdit.username.trim()),
+                email: _t.addEdit.emails == null ? null : (_t.addEdit.emails.trim() == '' ? null : _t.addEdit.emails.trim()),
+                mobile: _t.addEdit.mobileNum == null ? null : (_t.addEdit.mobileNum.trim() == '' ? null : _t.addEdit.mobileNum.trim()),
                 status: _t.addEdit.status,
+                createBy: localStorage.getItem('hy-user-name'),
                 languageMark: localStorage.getItem('hy-language')
               },
               roleId: _t.addEdit.assignRole.join(',')
