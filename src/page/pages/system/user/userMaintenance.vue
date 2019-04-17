@@ -35,7 +35,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('userMaintenance.status') + '：'">
-          <el-select v-model="formItem.status" class="width200">
+          <el-select v-model="formItem.status" class="width200" clearable>
             <el-option
               v-for="(item,index) in statusList"
               :value="item.value"
@@ -109,6 +109,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :page-size="options.pageSize"
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增-->
@@ -150,7 +151,7 @@
           <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
-          <el-input v-model="addEdit.mobileNum" class="width200"/>
+          <el-input v-model="addEdit.mobileNum" maxlength="11" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.emails') + '：'" prop="emails">
           <el-input v-model="addEdit.emails" class="width200"/>
@@ -187,7 +188,7 @@
 
 <script>
   import Box from '../../../../components/Box';
-  import {isNotNull} from "../../../../assets/js/validator";
+  import {isNotNull,isMobilePhone,isEmail} from "../../../../assets/js/validator";
   import {orgBreadcrumb} from "../../../../assets/js/recursive";
 
   export default {
@@ -277,10 +278,12 @@
             {validator: isNotNull, trigger: ['blur']}
           ],
           mobileNum: [
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isMobilePhone, trigger: ['blur']}
           ],
           emails: [
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isEmail, trigger: ['blur']}
           ],
           status: [
             {validator: isNotNull, trigger: ['blur']}
@@ -410,6 +413,12 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 启用

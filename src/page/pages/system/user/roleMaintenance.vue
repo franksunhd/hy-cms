@@ -94,6 +94,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增/编辑-->
@@ -206,6 +207,7 @@
           :total='innerOptions.total'
           :currentPage='innerOptions.currentPage'
           :pageSize='innerOptions.pageSize'
+          @handleSizeChangeSub="innerOptionsHandleSizeChange"
           @handleCurrentChangeSub="innerOptionsHandleCurrentChange"/>
         <div slot="footer">
           <el-button class="alertBtn" type="primary" @click="innerVisible = false">{{$t('public.confirm')}}</el-button>
@@ -678,11 +680,23 @@
         _t.options.currentPage = val;
         _t.getData();
       },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
+        _t.getData();
+      },
       // 内层 改变当前页码
       innerOptionsHandleCurrentChange(val) {
         var _t = this;
         _t.innerOptions.currentPage = val;
         _t.selectRole();
+      },
+      // 改变每页显示条数
+      innerOptionsHandleSizeChange(val){
+        var _t = this;
+        _t.options.pageSize = val;
+        _t.getData();
       },
       // 删除
       deleteData() {
@@ -748,7 +762,7 @@
       // 获取已授权的用户
       getAuthorizationData(val){
         var _t = this;
-        _t.$api.get('system/role/getImpowerRoleById',{
+        _t.$api.get('system/user/getImpowerRoleById',{
           jsonString:JSON.stringify({
             systemRole:{
               id:val
@@ -786,7 +800,7 @@
       // 获取已授权的功能权限菜单
       getFunctionDataByRoleId(val){
         var _t = this;
-        _t.$api.get('system/menu/getImpowerMenuById',{
+        _t.$api.get('system/role/getImpowerMenuById',{
           jsonString:JSON.stringify({
             systemRole:{
               id:val

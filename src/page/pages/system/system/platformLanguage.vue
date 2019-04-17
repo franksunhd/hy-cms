@@ -18,7 +18,7 @@
           <el-input class="width200" v-model="formItem.languageName"/>
         </el-form-item>
         <el-form-item :label="$t('platformLanguage.status') + '：'">
-          <el-select v-model="formItem.status" class="width200">
+          <el-select v-model="formItem.status" class="width200" clearable>
             <el-option
               v-for="item in statusList"
               :value="item.value"
@@ -110,6 +110,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange" />
     </div>
     <!--新增/编辑-->
@@ -121,25 +122,25 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px" inline :model="addEdit" :rules="rules" ref="roleForm">
-        <el-form-item :label="$t('platformLanguage.languageCodes') + '：'" prop="languageCode">
+        <el-form-item class="star" :label="$t('platformLanguage.languageCodes') + '：'" prop="languageCode">
           <el-input class="width200" v-model="addEdit.languageCode"/>
         </el-form-item>
-        <el-form-item :label="$t('platformLanguage.languageName') + '：'" prop="languageName">
+        <el-form-item class="star" :label="$t('platformLanguage.languageName') + '：'" prop="languageName">
           <el-input class="width200" v-model="addEdit.languageName"/>
         </el-form-item>
-        <el-form-item :label="$t('platformLanguage.descriptionAlert') + '：'" prop="description">
+        <el-form-item class="star" :label="$t('platformLanguage.descriptionAlert') + '：'" prop="description">
           <el-input class="width200" v-model="addEdit.description"/>
         </el-form-item>
-        <el-form-item :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">
+        <el-form-item class="star" :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">
           <el-input class="width200" v-model="addEdit.orderIndex"/>
         </el-form-item>
-        <el-form-item  :label="$t('platformLanguage.isDefault') + '：'" prop="isDefault">
+        <el-form-item class="star" :label="$t('platformLanguage.isDefault') + '：'" prop="isDefault">
           <el-radio-group class="width200" v-model="addEdit.isDefault">
             <el-radio :label="1">{{$t('public.YES')}}</el-radio>
             <el-radio :label="0">{{$t('public.NO')}}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item :label="$t('platformLanguage.isEnable') + '：'" prop="isEnable">
+        <el-form-item class="star" :label="$t('platformLanguage.isEnable') + '：'" prop="isEnable">
           <el-radio-group class="width200" v-model="addEdit.isEnable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
@@ -263,6 +264,7 @@
               _t.addEdit.languageCode = res.data.languageCode;
               _t.addEdit.languageName = res.data.languageName;
               _t.addEdit.orderIndex = res.data.orderMark;
+              _t.addEdit.description = res.data.description;
               _t.addEdit.isDefault = res.data.isDefault == true ? 1 : 0;
               _t.addEdit.isEnable == res.data.isEnable == true ? 1 : 0;
               _t.dialogVisible = true;
@@ -289,6 +291,7 @@
                 id:_t.addEdit.id,
                 languageCode: _t.addEdit.languageCode == null ? null : _t.addEdit.languageCode.trim(),
                 languageName: _t.addEdit.languageName == null ? null : _t.addEdit.languageName.trim(),
+                description: _t.addEdit.description == null ? null : _t.addEdit.description.trim(),
                 isDefault: _t.addEdit.isDefault == 1 ? true : false,
                 enable: _t.addEdit.isEnable == 1 ? true : false,
                 orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
@@ -332,6 +335,7 @@
                 id:null,
                 languageCode: _t.addEdit.languageCode == null ? null : _t.addEdit.languageCode.trim(),
                 languageName: _t.addEdit.languageName == null ? null : _t.addEdit.languageName.trim(),
+                description: _t.addEdit.description == null ? null : _t.addEdit.description.trim(),
                 isDefault: _t.addEdit.isDefault == 1 ? true : false,
                 enable: _t.addEdit.isEnable == 1 ? true : false,
                 orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
@@ -432,6 +436,12 @@
       handleCurrentChange(val){
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 启用

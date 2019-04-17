@@ -29,7 +29,7 @@
             <el-input class="width200" v-model="formItem.dictionaryName"/>
           </el-form-item>
           <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
-            <el-select v-model="formItem.status" class="width200">
+            <el-select v-model="formItem.status" class="width200" clearable>
               <el-option
                 v-for="item in statusList"
                 :value="item.value"
@@ -125,6 +125,7 @@
           :total='options.total'
           :currentPage='options.currentPage'
           :pageSize='options.pageSize'
+          @handleSizeChangeSub="handleSizeChangeSub"
           @handleCurrentChangeSub="handleCurrentChange"/>
       </div>
     </div>
@@ -230,7 +231,7 @@
 
 <script>
   import Box from '../../../../components/Box';
-  import {isNotNull} from "../../../../assets/js/validator";
+  import {isNotNull,isMenuHref} from "../../../../assets/js/validator";
   import {queryOrgWithRole} from "../../../../assets/js/recursive";
   import {dateFilter} from "../../../../assets/js/filters";
 
@@ -302,7 +303,8 @@
             {validator: isNotNull, trigger: ['blur', 'change']}
           ],
           menuHref: [
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isMenuHref, trigger: ['blur']},
           ],
           jumpType: [
             {validator: isNotNull, trigger: ['blur']}
@@ -635,6 +637,12 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 启用

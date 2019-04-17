@@ -92,6 +92,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :pageSize='options.pageSize'
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增编辑-->
@@ -161,7 +162,7 @@
 
 <script>
   import Box from '../../../../components/Box';
-  import {isNotNull} from "../../../../assets/js/validator";
+  import {isNotNull,isIpNumber,isNumber} from "../../../../assets/js/validator";
   import {dateFilter} from "../../../../assets/js/filters";
 
   export default {
@@ -224,13 +225,15 @@
             {validator: isNotNull, trigger: ['blur']}
           ],
           ip:[
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isIpNumber, trigger: ['blur']}
           ],
           groupId:[
             {validator: isNotNull, trigger: ['blur','change']}
           ],
           port:[
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isNumber, trigger: ['blur']}
           ]
         }
       }
@@ -306,6 +309,12 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 删除

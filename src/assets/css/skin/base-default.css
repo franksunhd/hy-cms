@@ -548,3 +548,11 @@ span.el-tree-node__label {
   color: #fff;
   border-color: #3f81d0;
 }
+
+.borderBottomFormItem {
+  border: 1px solid #eaedf1;
+}
+
+.el-tooltip__popper.is-light {
+  border: 1px solid #eaedf1;
+}
