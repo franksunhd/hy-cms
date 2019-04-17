@@ -567,5 +567,19 @@ export default {
     businessCode:'businessCode',
     email:'email',
     phoneNumber:'phoneNumber',
-  }
+  },
+  //设备监测
+	EquipmentMonitoring: {
+		FutureGenerations: 'FutureGenerations',
+		index: 'index',
+		workStatus: 'workStatus',
+		status: 'status',
+		AssetInformation: 'AssetInformation',
+		servicetag: 'servicetag',
+		manufacturer: 'manufacturer',
+		ManufacturersModel: 'ManufacturersModel',
+		type: 'type',
+		lastMonitorTime: 'lastMonitorTime ',
+		operation: 'operation'
+	},
 }
