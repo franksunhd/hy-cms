@@ -91,15 +91,15 @@
         <el-table-column width="50px" :label="$t('alarmCurrent.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.alarmLevel}}</span>
-            <!--<el-tooltip v-if="scope.row.alarmLevel == 1" effect="dark" content="紧急" placement="top-start">-->
-              <!--<span class="iconfont iconfontError">&#xe609;</span>-->
-            <!--</el-tooltip>-->
-            <!--<el-tooltip v-if="scope.row.alarmLevel == 2" effect="dark" content="警告" placement="top-start">-->
-              <!--<span class="iconfont iconfontWarn">&#xe608;</span>-->
-            <!--</el-tooltip>-->
-            <!--<el-tooltip v-if="scope.row.alarmLevel == 3" effect="dark" content="忽略" placement="top-start">-->
-              <!--<span class="iconfont iconfontDisable">&#xe60a;</span>-->
-            <!--</el-tooltip>-->
+            <el-tooltip v-if="scope.row.alarmLevel == 1" effect="dark" content="紧急" placement="top-start">
+              <span class="iconfont iconfontError">&#xe609;</span>
+            </el-tooltip>
+            <el-tooltip v-if="scope.row.alarmLevel == 2" effect="dark" content="警告" placement="top-start">
+              <span class="iconfont iconfontWarn">&#xe608;</span>
+            </el-tooltip>
+            <el-tooltip v-if="scope.row.alarmLevel == 3" effect="dark" content="忽略" placement="top-start">
+              <span class="iconfont iconfontDisable">&#xe60a;</span>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column width="150px" :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
@@ -352,11 +352,9 @@
       getTableDataValue(){
         var _t = this;
         _t.$store.commit('setLoading',true);
-        _t.$api.get('system/basedata/map',{
-          jsonString: JSON.stringify({
-            dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
-            languageMark:localStorage.getItem("hy-language")
-          })
+        _t.$api.post('system/basedata/map',{
+          dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
+          languageMark:localStorage.getItem("hy-language")
         },function (res) {
           _t.$store.commit('setLoading',false);
           switch (res.status) {
