@@ -55,7 +55,7 @@ export function isNumber(rule,value,callback) {
     return callback(new Error('必填项不能为空'));
   }
   setTimeout(function () {
-    var reg = Api.isNumber;
+    var reg = Api.isNumber();
     if (reg.test(value) == false) {
       return callback(new Error('输入不正确只能输入数字!'));
     } else {

@@ -161,7 +161,7 @@
 
 <script>
   import Box from '../../../../components/Box';
-  import {isNotNull} from "../../../../assets/js/validator";
+  import {isNotNull,isIpNumber,isNumber} from "../../../../assets/js/validator";
   import {dateFilter} from "../../../../assets/js/filters";
 
   export default {
@@ -224,13 +224,15 @@
             {validator: isNotNull, trigger: ['blur']}
           ],
           ip:[
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isIpNumber, trigger: ['blur']}
           ],
           groupId:[
             {validator: isNotNull, trigger: ['blur','change']}
           ],
           port:[
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isNumber, trigger: ['blur']}
           ]
         }
       }
