@@ -786,7 +786,7 @@
       // 获取已授权的功能权限菜单
       getFunctionDataByRoleId(val){
         var _t = this;
-        _t.$api.get('system/menu/getImpowerMenuById',{
+        _t.$api.get('system/role/getImpowerMenuById',{
           jsonString:JSON.stringify({
             systemRole:{
               id:val
