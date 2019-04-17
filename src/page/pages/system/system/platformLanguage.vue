@@ -18,7 +18,7 @@
           <el-input class="width200" v-model="formItem.languageName"/>
         </el-form-item>
         <el-form-item :label="$t('platformLanguage.status') + '：'">
-          <el-select v-model="formItem.status" class="width200">
+          <el-select v-model="formItem.status" class="width200" clearable>
             <el-option
               v-for="item in statusList"
               :value="item.value"
