@@ -137,14 +137,13 @@
             <el-form-item :label="$t('alarmManagement.lastTime') + '：'"></el-form-item>
           </el-col>
         </el-row>
-
       </el-form>
       <div class="dialogTitle">{{$t('alarmManagement.alarmInfo')}}</div>
       <el-form inline label-position="right" label-width="76px">
         <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmManagement.alarmField')}}</strong></p>
         <el-form-item :label="$t('alarmManagement.status') + '：'">Down != Up</el-form-item>
         <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmManagement.currentStatus')}}</strong></p>
-        <el-form-item style="width: 50%;" :label="$t('alarmManagement.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmManagement.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
         <el-form-item :label="$t('alarmManagement.status') + '：'">Down</el-form-item>
         <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmManagement.addField')}}</strong></p>
         <el-form-item :label="$t('alarmManagement.status') + '：'">Down != Up</el-form-item>
@@ -569,14 +568,6 @@
   .alarmMessageBox-dialog .el-dialog {
     width: 880px;
     height: 494px;
-  }
-
-  .alarmMessageBox-dialog .el-dialog__body {
-    padding-top: 10px;
-  }
-
-  .alarmMessageBox-dialog .el-form-item {
-    margin-bottom: 0;
   }
 
   #alarmManagement-tabs {
