@@ -469,3 +469,8 @@ input::-webkit-input-placeholder {
 .alarmCurrentBox-dialog .el-form-item{
   margin-bottom: 0;
 }
+
+.borderBottomFormItem {
+  padding: 20px 20px 0;
+  border: 1px solid #eaedf1;
+}

@@ -7,9 +7,9 @@
         <el-breadcrumb-item>{{$t('breadcrumb.alarmCurrent')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="padding20">
+    <div class="borderBottomFormItem">
       <!--表单-->
-      <el-form :model="formItem" inline label-width="150px">
+      <el-form :model="formItem" inline label-width="120px">
         <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'">
           <el-popover
             trigger="click"
@@ -82,14 +82,30 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"/>
         </el-form-item>
-        <el-form-item label=" ">
+        <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
-          <el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>
         </el-form-item>
       </el-form>
+    </div>
+    <div class="padding20">
+      <div class="marBottom16">
+        <el-button @click="downloadData" :disabled="disableBtn.more">
+          <span class="iconfont">&#xe617;</span>
+          {{$t('alarmCurrent.exportExcel')}}
+        </el-button>
+        <el-button :disabled="disableBtn.more">
+          <span class="iconfont">&#xe618;</span>
+          批量确认告警
+        </el-button>
+        <el-button :disabled="disableBtn.more">
+          <span class="iconfont">&#xe619;</span>
+          批量关闭告警
+        </el-button>
+      </div>
       <!--表格-->
-      <el-table :data="tableData" class="indexTableBox" ref="table" stripe @cell-click="cellClickColumn">
-        <el-table-column width="90px" :label="$t('public.index')" header-align="left" align="left">
+      <el-table :data="tableData" @row-click="rowClick" ref="table" stripe @cell-click="cellClickColumn" @cell-mouse-enter="cellMouseEnter" @cell-mouse-leave="cellMouseLeave">
+        <el-table-column type="selection" fixed header-align="left" align="left" />
+        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -119,7 +135,9 @@
         <el-table-column width="150px" :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" placement="left-start">
-              <div slot="content" style="width: 150px">{{scope.row.currentStatus}}</div>
+              <div slot="content" style="width: 150px">
+                {{scope.row.currentStatus}}
+              </div>
               <span>{{scope.row.currentStatus}}</span>
             </el-tooltip>
           </template>
@@ -138,7 +156,16 @@
             <span>{{tableDataBase.AssetType[scope.row.type]}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="chargeBy" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left"/>
+        <el-table-column width="120px" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" class="alarmCurrent-tooltip" placement="top-start">
+              <div slot="content" class="aaa">
+                {{scope.row.chargeBy}}
+              </div>
+              <span>{{scope.row.chargeBy}}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column width="100px" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{tableDataBase.AlarmHandleStatus[scope.row.status]}}</span>
@@ -290,9 +317,14 @@
           dealWithStatus:null,
           dateTime:null
         },
+        statusMenu:false,
         // 设备告警详情提交字段
         addEdit:{
           id:''
+        },
+        // 全局按钮启用禁用判断
+        disableBtn:{
+          more:true
         },
         // 设备告警详情数据
         equipmentData:{},
@@ -305,15 +337,23 @@
         // 设备状态下拉框
         equipmentStatusList:[],
         // 表格数据
-        tableData:[],
+        tableData:[
+          {
+            chargeBy:'账单账单账单账单账单'
+          }
+        ],
         // 表格数据字典
-        tableDataBase:[],
+        tableDataBase:{
+          AlarmHandleStatus:{},
+          AlarmSeverity:{},
+          AssetType:{}
+        },
         // 处理状态
         dealWithStatusList:[],
         isShowTypePopover:false, // 控制设备类型下拉框的显示隐藏
         isShowComputerPopover:false, // 控制机房下拉框的显示隐藏
-        isShowTabBox:true, // 控制标签页内容是否显示
-        isShowTabBox_tab:true, // 控制标签页区域是否显示
+        isShowTabBox:false, // 控制标签页内容是否显示
+        isShowTabBox_tab:false, // 控制标签页区域是否显示
         dialogVisible:false, // 设备详情信息弹出层
         dialogVisibleOwnerInfo:false, // 业务责任人信息弹出层
         defaultProps:{},
@@ -335,6 +375,13 @@
       }
     },
     methods: {
+      rowClick(row,column,event){
+        this.$refs.table.toggleRowSelection(row);
+        console.log(row);
+        console.log(column);
+        column.filterOpened = true;
+        console.log(event)
+      },
       // 点击设备类型下拉框节点
       clickTypeNode(val){},
       // 点击机房下拉框的节点
@@ -423,6 +470,22 @@
         _t.options.pageSize = val;
         _t.getData();
       },
+      // 单元格鼠标移入事件
+      cellMouseEnter(row,column){
+        var _t = this;
+        // 设备责任人列
+        if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
+          _t.statusMenu = true;
+        }
+      },
+      // 单元格移出事件
+      cellMouseLeave(row,column){
+        var _t = this;
+        // 设备责任人列
+        if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
+          _t.statusMenu = false;
+        }
+      },
       // 单元格点击
       cellClickColumn(row,column) {
         var _t = this;
@@ -443,10 +506,6 @@
         // 点击最新告警时间列
         if (column.label == _t.$t('alarmCurrent.lastAlarmTime')) {
           _t.addTab(row.equipmentName,row.id);
-        }
-        // 点击设备责任人列
-        if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
-          _t.dialogVisibleOwnerInfo = true;
         }
       },
       // 删除页签
@@ -509,11 +568,31 @@
         var _t = this;
         _t.isShowTabBox = true;
         document.getElementById('alarmCurrent-tabs').style.top = '118px';
+      },
+      // 表单部分下拉框数据
+      getFormData(){
+        var _t = this;
+        _t.$api.get('asset/assetEngineroom/maplist',{},function (res) {
+          switch (res.status) {
+            case 200:
+              console.log(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       }
     },
     created() {
       this.$store.commit('setLoading',true);
       this.getData();
+      this.getFormData();
     }
   }
 </script>
