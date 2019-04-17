@@ -10,7 +10,7 @@
     <div class="padding20">
       <!--表单-->
       <el-form :model="formItem" inline label-width="150px">
-        <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -30,13 +30,13 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + '：'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + '：'">
           <el-input v-model="formItem.equipmentName" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">
           <el-input v-model="formItem.serialNumber" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -56,25 +56,33 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'" style="width: 30%">
-          <el-select v-model="formItem.rackName" class="width200">
+        <el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
+          <el-select v-model="formItem.rackNameId" class="width200">
             <el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'" style="width: 30%">
-          <el-input v-model="formItem.business" />
+        <el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'">
+          <el-input v-model="formItem.business" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
           <el-select v-model="formItem.equipmentStatus" class="width200">
             <el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.processStatus') + '：'" style="width: 30%;">
+        <el-form-item :label="$t('alarmCurrent.processStatus') + '：'">
           <el-select v-model="formItem.dealWithStatus" class="width200">
             <el-option v-for="(item,index) in dealWithStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item label="发生日期：">
+          <el-date-picker
+            v-model="formItem.dateTime"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"/>
+        </el-form-item>
+        <el-form-item label=" ">
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
           <el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>
         </el-form-item>
@@ -253,6 +261,8 @@
 <script>
   import Box from '../../../components/Box';
   import AdministrationTags from '../../../components/AdministrationTabs';
+  import {dateFilterDay,dateFilter} from "../../../assets/js/filters";
+
   export default {
     name: "alarmCurrent",
     components:{Box,AdministrationTags},
@@ -264,12 +274,13 @@
           equipmentTypeId:null,
           computerRoom:null,
           computerRoomId:null,
-          rackName:null,
+          rackNameId:null,
           serialNumber:null,
           equipmentName:null,
           business:null,
           equipmentStatus:null,
-          dealWithStatus:null
+          dealWithStatus:null,
+          dateTime:null
         },
         // 设备告警详情提交字段
         addEdit:{
@@ -327,7 +338,14 @@
         _t.$api.get('alarm/alarm/pagelist',{
           jsonString:JSON.stringify({
             alarm:{
-
+              type:_t.formItem.equipmentType == null ? null : (_t.formItem.equipmentType == 0 ? null : _t.formItem.equipmentType),
+              deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
+              ip:_t.formItem.serialNumber == null ? null : (_t.formItem.serialNumber.trim() == '' ? null : _t.formItem.serialNumber.trim()),
+              roomId:_t.formItem.computerRoomId == null ? null : _t.formItem.computerRoomId,
+              frameId:_t.formItem.rackNameId == null ? null : _t.formItem.rackNameId,
+              status:_t.formItem.dealWithStatus == null ? null : _t.formItem.dealWithStatus,
+              ocrStartTime:_t.formItem.dateTime == null ? null : dateFilterDay(_t.formItem.dateTime[0].getTime()),
+              ocrEndTime:_t.formItem.dateTime == null ? null : dateFilterDay(_t.formItem.dateTime[1].getTime()),
             },
             page:{
               currentPage:_t.options.currentPage,
