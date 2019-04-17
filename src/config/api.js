@@ -3,6 +3,15 @@ import axios from 'axios';
 var root = "http://127.0.0.1/web";   //正式环境
 // var root = "http://192.168.0.9/webapi";   //测试环境内网
 
+// 校验手机号的正则
+var mobileRegular = /^(0|86|17951)?(1[3-9][0-9])[0-9]{8}$/;
+// 校验邮箱正则
+var emailRegular = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+// 校验是否全部为数字
+var isNumber = /^([0-9]+$)$/;
+// 校验ip地址
+var ipNumber = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+
 function apiAxios(method, url, params, success) {
   axios({
     method: method,
@@ -42,5 +51,21 @@ export default {
   // 删除
   delete: function (url, params, success) {
     return apiAxios('DELETE', url, params, success);
+  },
+  // 手机正则
+  mobileRegular: function () {
+    return mobileRegular;
+  },
+  // 邮箱正则
+  emailRegular: function () {
+    return emailRegular;
+  },
+  // 数字正则
+  isNumber: function () {
+    return isNumber;
+  },
+  // ip正则
+  isIpNumber: function () {
+    return ipNumber;
   }
 }
