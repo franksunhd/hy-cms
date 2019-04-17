@@ -279,6 +279,8 @@
         equipmentStatusList:[],
         // 表格数据
         tableData:[],
+        // 表格数据字典
+        tableDataBase:[],
         // 处理状态
         dealWithStatusList:[],
         isShowTypePopover:false, // 控制设备类型下拉框的显示隐藏
@@ -331,8 +333,6 @@
               _t.tableData = res.data.list;
               _t.options.currentPage = res.data.page.currentPage;
               _t.options.total = res.data.page.totalResultSize;
-              // 调用查看相应状态值的接口
-              // _t.getTableDataValue(res.data);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -349,26 +349,20 @@
         });
       },
       // 查询表格中状态对应的数据值
-      getTableDataValue(resData){
+      getTableDataValue(){
         var _t = this;
         _t.$store.commit('setLoading',true);
-        _t.$api.get('',{},function (res) {
+        _t.$api.get('system/basedata/map',{
+          jsonString: JSON.stringify({
+            dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
+            languageMark:localStorage.getItem("hy-language")
+          })
+        },function (res) {
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              var tableDataValue = res.data.list;
-              // _t.tableData = resData.list;
-              // 遍历列表数据 对比相应状态
-              resData.list.forEach(function (item) {
-                tableDataValue.forEach(function (val) {
-                  // 根据告警数量查询对应状态
-                  // 根据type 值判断设备类型
-                  // 根据处理状态值判断处理状态
-                });
-              });
-              _t.tableData = resData.list;
-              _t.options.currentPage = resData.page.currentPage;
-              _t.options.total = resData.page.totalResultSize;
+              _t.tableDataBase = res.data;
+              _t.getData();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -377,9 +371,7 @@
               _t.exclude(_t, res.message);
               break;
             default:
-              _t.tableData = [];
-              _t.options.currentPage = 1;
-              _t.options.total = 0;
+              _t.tableDataBase = [];
               break;
           }
         });
