@@ -11,6 +11,8 @@ var emailRegular = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
 var isNumber = /^([0-9]+$)$/;
 // 校验ip地址
 var ipNumber = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/;
+// 校验菜单路径
+var menuHref = /^([{},a-zA-Z0-9.:#/?&_%\/-]+$)$/;
 
 function apiAxios(method, url, params, success) {
   axios({
@@ -67,5 +69,9 @@ export default {
   // ip正则
   isIpNumber: function () {
     return ipNumber;
+  },
+  // 菜单路径
+  menuHref: function () {
+    return menuHref;
   }
 }

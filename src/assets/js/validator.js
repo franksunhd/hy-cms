@@ -78,3 +78,18 @@ export function isIpNumber(rule,value,callback) {
     }
   },0);
 }
+
+// 校验菜单路径
+export function isMenuHref(rule,value,callback) {
+  if (!value) {
+    return callback(new Error('必填项不能为空'));
+  }
+  setTimeout(function () {
+    var reg = Api.menuHref();
+    if (reg.test(value) == false) {
+      return callback(new Error('格式不正确,请重新输入!'));
+    } else {
+      return callback();
+    }
+  },0);
+}

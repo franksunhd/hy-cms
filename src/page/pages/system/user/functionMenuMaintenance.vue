@@ -230,7 +230,7 @@
 
 <script>
   import Box from '../../../../components/Box';
-  import {isNotNull} from "../../../../assets/js/validator";
+  import {isNotNull,isMenuHref} from "../../../../assets/js/validator";
   import {queryOrgWithRole} from "../../../../assets/js/recursive";
   import {dateFilter} from "../../../../assets/js/filters";
 
@@ -302,7 +302,8 @@
             {validator: isNotNull, trigger: ['blur', 'change']}
           ],
           menuHref: [
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur']},
+            {validator: isMenuHref, trigger: ['blur']},
           ],
           jumpType: [
             {validator: isNotNull, trigger: ['blur']}
