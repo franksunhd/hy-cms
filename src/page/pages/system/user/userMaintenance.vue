@@ -109,6 +109,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :page-size="options.pageSize"
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--新增-->
@@ -412,6 +413,12 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 启用
