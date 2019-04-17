@@ -10,7 +10,7 @@
     <div class="padding20">
       <!--表单-->
       <el-form :model="formItem" inline label-width="150px">
-        <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'" style="width: 30%">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -30,13 +30,13 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + '：'" style="width: 30%">
           <el-input v-model="formItem.equipmentName" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.serialNumber') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'" style="width: 30%">
           <el-input v-model="formItem.serialNumber" class="width200" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.computerRoomName') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'" style="width: 30%">
           <el-popover
             trigger="click"
             placement="bottom-start"
@@ -56,20 +56,20 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.rackNameInfo') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'" style="width: 30%">
           <el-select v-model="formItem.rackName" class="width200">
             <el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.relateBusiness') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'" style="width: 30%">
           <el-input v-model="formItem.business" />
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + ':'" style="width: 30%">
+        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'" style="width: 30%">
           <el-select v-model="formItem.equipmentStatus" class="width200">
             <el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.processStatus') + ':'" style="width: 30%;">
+        <el-form-item :label="$t('alarmCurrent.processStatus') + '：'" style="width: 30%;">
           <el-select v-model="formItem.dealWithStatus" class="width200">
             <el-option v-for="(item,index) in dealWithStatusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
@@ -148,6 +148,7 @@
         :total='options.total'
         :currentPage='options.currentPage'
         :page-size="options.pageSize"
+        @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
     <!--设备告警详情弹出层-->
@@ -160,36 +161,36 @@
       :close-on-press-escape="false">
       <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
       <el-form :model="equipmentData" inline label-position="right" label-width="76px">
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentName') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.productName') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentIp') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.UUID') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentVendor') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.serialNumber') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.objectType') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.severityLevel') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.alarmNumber') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.eventType') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.createTime') + ':'"></el-form-item>
-        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.lastTime') + ':'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentName') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.productName') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentIp') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.UUID') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentVendor') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.serialNumber') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.objectType') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.severityLevel') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.alarmNumber') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.eventType') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.createTime') + '：'"></el-form-item>
+        <el-form-item style="width: 33%;" :label="$t('alarmCurrent.lastTime') + '：'"></el-form-item>
       </el-form>
       <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
       <el-form inline label-position="right" label-width="76px">
         <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.alarmField')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down != Up</el-form-item>
         <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.currentStatus')}}</strong></p>
-        <el-form-item style="width: 50%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down</el-form-item>
+        <el-form-item style="width: 50%;" :label="$t('alarmCurrent.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down</el-form-item>
         <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addField')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down != Up</el-form-item>
         <p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addInfo')}}</strong></p>
-        <el-form-item style="width: 60%;" :label="$t('alarmCurrent.productName') + ':'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.name') + ':'">NIC.Integrated.1-3-1</el-form-item>
+        <el-form-item style="width: 60%;" :label="$t('alarmCurrent.productName') + '：'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.name') + '：'">NIC.Integrated.1-3-1</el-form-item>
         <br>
-        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.AutoNegotiation') + ':'">Enabled</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.linkSpeed') + ':'">Unknown</el-form-item>
-        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.alarmDescription') + ':'">
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.AutoNegotiation') + '：'">Enabled</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.linkSpeed') + '：'">Unknown</el-form-item>
+        <el-form-item style="width: 30%;" :label="$t('alarmCurrent.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
+        <el-form-item :label="$t('alarmCurrent.alarmDescription') + '：'">
           <el-input type="textarea" style="width: 734px;" />
         </el-form-item>
       </el-form>
@@ -209,11 +210,11 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px">
-        <el-form-item :label="$t('alarmCurrent.userName') + ':'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.organizationName') + ':'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.businessCode') + ':'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.email') + ':'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.phoneNumber') + ':'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.userName') + '：'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.organizationName') + '：'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.businessCode') + '：'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.email') + '：'"></el-form-item>
+        <el-form-item :label="$t('alarmCurrent.phoneNumber') + '：'"></el-form-item>
       </el-form>
       <span slot="footer">
         <el-button class="queryBtn" type="primary">{{$t('public.confirm')}}</el-button>
@@ -388,6 +389,12 @@
       handleCurrentChange(val) {
         var _t = this;
         _t.options.currentPage = val;
+        _t.getData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSub(val){
+        var _t = this;
+        _t.options.pageSize = val;
         _t.getData();
       },
       // 单元格点击
