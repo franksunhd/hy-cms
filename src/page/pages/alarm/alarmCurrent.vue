@@ -90,19 +90,18 @@
         </el-table-column>
         <el-table-column width="50px" :label="$t('alarmCurrent.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.alarmLevel}}</span>
-            <el-tooltip v-if="scope.row.alarmLevel == 1" effect="dark" content="紧急" placement="top-start">
-              <span class="iconfont iconfontError">&#xe609;</span>
+            <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
+              <span class="iconfont iconfontSuccess">&#xe618;</span>
             </el-tooltip>
-            <el-tooltip v-if="scope.row.alarmLevel == 2" effect="dark" content="警告" placement="top-start">
+            <el-tooltip v-if="scope.row.alarmLevel == 66" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
               <span class="iconfont iconfontWarn">&#xe608;</span>
             </el-tooltip>
-            <el-tooltip v-if="scope.row.alarmLevel == 3" effect="dark" content="忽略" placement="top-start">
-              <span class="iconfont iconfontDisable">&#xe60a;</span>
+            <el-tooltip v-if="scope.row.alarmLevel == 99" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
+              <span class="iconfont iconfontError">&#xe609;</span>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="150px" :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
+        <el-table-column width="100px" :label="$t('alarmCurrent.equipmentName')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" :content="scope.row.deviceName" placement="top-start">
               <span>{{scope.row.deviceName}}</span>
@@ -126,9 +125,17 @@
         <el-table-column width="100px" prop="frameName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left"/>
         <el-table-column width="120px" prop="framePosition" :label="$t('alarmCurrent.location')" header-align="left" align="left"/>
         <el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
-        <el-table-column width="120px" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left"/>
+        <el-table-column width="120px" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span>{{tableDataBase.AssetType[scope.row.type]}}</span>
+          </template>
+        </el-table-column>
         <el-table-column width="120px" prop="chargeBy" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left"/>
-        <el-table-column width="100px" prop="status" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left"/>
+        <el-table-column width="100px" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span>{{tableDataBase.AlarmHandleStatus[scope.row.status]}}</span>
+          </template>
+        </el-table-column>
         <el-table-column width="150px" label="操作">
           <template slot-scope="scope">
             <el-button type="text">转保修</el-button>
@@ -330,9 +337,7 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              _t.tableData = res.data.list;
-              _t.options.currentPage = res.data.page.currentPage;
-              _t.options.total = res.data.page.totalResultSize;
+              _t.getTableDataValue(res.data);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -341,15 +346,12 @@
               _t.exclude(_t, res.message);
               break;
             default:
-              _t.tableData = [];
-              _t.options.currentPage = 1;
-              _t.options.total = 0;
               break;
           }
         });
       },
       // 查询表格中状态对应的数据值
-      getTableDataValue(){
+      getTableDataValue(resData){
         var _t = this;
         _t.$store.commit('setLoading',true);
         _t.$api.post('system/basedata/map',{
@@ -359,8 +361,11 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
+              // 获取表格对应的状态值
               _t.tableDataBase = res.data;
-              _t.getData();
+              _t.tableData = resData.list;
+              _t.options.currentPage = resData.page.currentPage;
+              _t.options.total = resData.page.totalResultSize;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -370,6 +375,9 @@
               break;
             default:
               _t.tableDataBase = [];
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
               break;
           }
         });
