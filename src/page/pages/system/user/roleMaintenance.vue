@@ -748,7 +748,7 @@
       // 获取已授权的用户
       getAuthorizationData(val){
         var _t = this;
-        _t.$api.get('system/role/getImpowerRoleById',{
+        _t.$api.get('system/user/getImpowerRoleById',{
           jsonString:JSON.stringify({
             systemRole:{
               id:val
