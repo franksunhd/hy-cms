@@ -231,8 +231,8 @@
           pageSize: 10, // 显示条数
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
-        dialogVisible:true, // 设备告警详情弹出层
-        isShowTabBox:true, // 控制标签页内容是否显示
+        dialogVisible:false, // 设备告警详情弹出层
+        isShowTabBox:false, // 控制标签页内容是否显示
         isShowTabBox_tab:false,
         organizationList: [], // 树形下拉框的数据
         equipmentData:{}, // 设备告警详情
