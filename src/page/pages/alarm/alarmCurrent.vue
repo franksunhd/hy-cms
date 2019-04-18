@@ -425,10 +425,7 @@
       // 点击当前行选中当前行
       rowClick(row,column,event){
         this.$refs.table.toggleRowSelection(row);
-        console.log(row);
-        console.log(column);
         column.filterOpened = true;
-        console.log(event)
       },
       // 点击设备类型下拉框节点
       clickTypeNode(val){
@@ -631,10 +628,12 @@
         _t.isShowTabBox = true;
         document.getElementById('alarmCurrent-tabs').style.top = '118px';
       },
-      // 表单部分下拉框数据
+      // 表单部分机房机架下拉框数据
       getFormData(){
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('asset/assetEngineroom/maplist',{},function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               var computerRoomList = res.data.rooms;
@@ -657,6 +656,7 @@
       // 查询设备类型
       getBaseData(){
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('system/basedata/all',{
           jsonString: JSON.stringify({
             systemBasedata:{
@@ -665,6 +665,7 @@
             }
           })
         },function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               var equipmentTypeList = res.data.treeNode.children;
@@ -686,11 +687,13 @@
       // 查找关联业务树形列表
       getBusinessTreeData(){
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('asset/assetBusiness/all',{
           jsonString:JSON.stringify({
             isTree:true
           })
         },function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.businessTreeData = res.data.children;
@@ -710,10 +713,12 @@
       // 查询字典集合
       getBaseDataList(){
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.post('system/basedata/maplist',{
           languageMark:localStorage.getItem('hy-language'),
           dictionaryTypes:['AlarmHandleStatus','AssetType','AlarmSeverity']
         },function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.formBaseData.AlarmSeverity = res.data.AlarmSeverity;
