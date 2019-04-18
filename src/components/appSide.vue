@@ -139,8 +139,10 @@
                 _t.activeClass.forEach(function (item) {
                   // 菜单id锁对应的集合
                   var menuIdStatus = returnObjectById(navBarArr,item.menuId);
-                  menuIdStatus.status = 1;
-                  menuIdStatus.menuNum = item.id;
+                  if (menuIdStatus !== undefined) {
+                    menuIdStatus.status = 1;
+                    menuIdStatus.menuNum = item.id;
+                  }
                 });
                 _t.selectArr = navBarArr;
               }
