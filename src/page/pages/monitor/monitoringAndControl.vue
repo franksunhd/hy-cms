@@ -138,11 +138,12 @@
 </template>
 <script>
 	import Box from '../../../components/Box';
-
+	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
 		name: 'monitoringAndControl',
 		components: {
 			Box,
+			AdministrationTags
 		},
 		data() {
 			return {

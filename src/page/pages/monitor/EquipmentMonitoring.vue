@@ -5,6 +5,65 @@
 			<div class="borderRightColorGray">
 				<p class="dataDictionary-title">
 					<a href="javascript:;" @click="clickNode">设备分组</a>
+					<el-button type="text" @click="dialogGrouping = true">新增</el-button>
+					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :visible.sync="dialogGrouping">
+						<div class="padding20" style="padding-top:0;">
+							<label style="padding-right:10px ;">父级节点</label>
+							<el-select v-model="parentNode" placeholder="请选择">
+								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value" />
+							</el-select>
+						</div>
+						<el-table :data="gridData" border align="center" style="width: 100%">
+							<el-table-column property="label1" label="第一级">
+								<el-input v-model="gridDatas" size="small"></el-input>
+							</el-table-column>
+							<el-table-column property="label2" label="第二级"></el-table-column>
+							<el-table-column property="label3" label="第三级"></el-table-column>
+							<el-table-column property="label4" label="第四级"></el-table-column>
+						</el-table>
+
+						<div slot="footer" class="dialog-footer">
+							<el-button type="primary" @click="dialogGrouping = false">确 定</el-button>
+							<el-button @click="dialogGrouping = false">取 消</el-button>
+						</div>
+					</el-dialog>
+
+					<!--编辑设备分组-->
+					<el-button type="text" @click="dialogGroupingBj = true">编辑</el-button>
+
+					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
+						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
+							<ul>
+								<li><label for="">父级节点:</label>
+									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopover" ref="popover">
+										<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNode" :props="defaultProps" />
+										<el-input v-model="formItem.computerRoom" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+									</el-popover>
+								</li>
+								<li><label for="">节点名称:</label>
+									<el-input class="width200"></el-input>
+								</li>
+								<li><label for="">顺序:</label>
+									<el-input class="width200"></el-input>
+								</li>
+							</ul>
+						</div>
+						<div slot="footer" class="dialog-footer">
+							<el-button type="primary" @click="dialogGroupingBj = false">确 定</el-button>
+							<el-button @click="dialogGroupingBj = false">取 消</el-button>
+						</div>
+					</el-dialog>
+					<!--删除设备分组-->
+					<el-button type="text" @click="dialogGroupingSc = true">删除</el-button>
+
+					<el-dialog class="EquipmentMonitoringSc" title="确认提示" :visible.sync="dialogGroupingSc" append-to-body :before-close="handleClose" width="30%">
+						<span>请问是否确认删除当前的记录?</span>
+						<span slot="footer" class="dialog-footer">
+    
+                            <el-button type="primary" @click="dialogGroupingSc = false">确 定</el-button>
+                            <el-button @click="dialogGroupingSc = false">取 消</el-button>
+                        </span>
+					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
 				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current @node-click="getCurrentNode" :props="defaultProps" :expand-on-click-node="false" :default-expand-all="false" />
@@ -28,43 +87,55 @@
 				</div>
 				<div class="padding20">
 					<!--表单-->
-					<el-form :model="formItem" inline label-width="150px">
-						<el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + ':'">
+					<el-form :model="formItem" inline label-width="120px">
+						<!--设备分类/类型-->
+						<el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'">
 							<el-popover trigger="click" placement="bottom-start" v-model="isShowTypePopover" ref="popover">
 								<el-tree :data="equipmentTypeList" highlight-current :expand-on-click-node="false" @node-click="clickTypeNode" :props="defaultProps" />
 								<el-input v-model="formItem.equipmentType" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 							</el-popover>
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + ':'">
+						<!--设备名称/资产信息-->
+						<el-form-item :label="$t('alarmCurrent.equipmentNameInfo') + '：'">
 							<el-input v-model="formItem.equipmentName" class="width200" />
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.serialNumber') + ':'">
+						<!--序列号-->
+						<el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">
 							<el-input v-model="formItem.serialNumber" class="width200" />
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.computerRoomName') + ':'">
+						<!--机房-->
+						<el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
 							<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopover" ref="popover">
 								<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNode" :props="defaultProps" />
 								<el-input v-model="formItem.computerRoom" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 							</el-popover>
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.rackNameInfo') + ':'">
-							<el-select v-model="formItem.rackName" class="width200">
+						<!--机架/机柜-->
+						<el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
+							<el-select v-model="formItem.rackNameId" class="width200" clearable>
 								<el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
 							</el-select>
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.relateBusiness') + ':'">
-							<el-input v-model="formItem.business" class="width200" />
+						<!--关联业务-->
+						<el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'">
+							<el-select v-model="formItem.business" class="width200" clearable>
+								<el-option v-for="(item,index) in businessList" :key="index" :label="item.label" :value="item.value" />
+							</el-select>
+
 						</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.equipmentStatus') + ':'">
-							<el-select v-model="formItem.equipmentStatus" class="width200">
+						<!--设备状态-->
+						<el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
+							<el-select v-model="formItem.equipmentStatus" class="width200" clearable>
 								<el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
 							</el-select>
 						</el-form-item>
+						<!--厂商  manufacturer-->
 						<el-form-item :label="$t('EquipmentMonitoring.manufacturer')+ ':'">
-							<el-select v-model="formItem.dealWithStatus" class="width200">
-								<el-option v-for="(item,index) in dealWithStatusList" :key="index" :label="item.label" :value="item.value" />
+							<el-select v-model="formItem.manufacturer" class="width200">
+								<el-option v-for="(item,index) in manufacturerList" :key="index" :label="item.label" :value="item.value" />
 							</el-select>
 						</el-form-item>
+						<!--查询按钮-->
 						<el-form-item>
 							<el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
 							<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
@@ -122,12 +193,6 @@
 						</el-table-column>
 						<!--资产信息-->
 						<el-table-column prop="AssetInformation" :label="$t('EquipmentMonitoring.AssetInformation')" header-align="left" align="left" />
-						<!--<template slot-scope="scope">
-						<el-tooltip effect="dark" placement="left-start">
-							<div slot="content" style="width: 150px">{{scope.row.alarmContent}}</div>
-							<span>{{scope.row.alarmContent}}</span>
-						</el-tooltip>
-					</template>-->
 						<!--序列号-->
 						<el-table-column prop="servicetag" :label="$t('EquipmentMonitoring.servicetag')" header-align="left" align="left" />
 						<!--厂商型号-->
@@ -138,40 +203,10 @@
 						<el-table-column prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
 						<!--操作-->
 						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left" />
-
-						<!--<el-table-column :label="$t('alarmCurrent.lastAlarmTime')" header-align="left" align="left">
-					<template slot-scope="scope">
-						<span>{{scope.row.lastModifiedTime | dateFilter}}</span>
-					</template>
-				</el-table-column>
-				<el-table-column :label="$t('alarmCurrent.statusAll')" header-align="left" align="left">
-					<template slot-scope="scope">
-						<span>
-              <span class="iconfont iconfontError">&#xe609;</span>
-						<span>22</span>
-						</span>
-						<span>
-              <span class="iconfont iconfontWarn">&#xe608;</span>
-						<span>222</span>
-						</span>
-						<span>
-              <span class="iconfont iconfontDisable">&#xe60a;</span>
-						<span>12</span>
-						</span>
-					</template>
-				</el-table-column>
-				<el-table-column prop="computerRoomName" :label="$t('alarmCurrent.computerRoomName')" header-align="left" align="left" />
-				<el-table-column prop="rackName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left" />
-				<el-table-column prop="location" :label="$t('alarmCurrent.location')" header-align="left" align="left" />
-				<el-table-column prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left" />
-				<el-table-column prop="equipmentType" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left" />
-				<el-table-column prop="equipmentOwner" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left" />
-				<el-table-column prop="processStatus" :label="$t('alarmCurrent.processStatus')" header-align="left" align="left" />-->
 					</el-table>
 					<!--分页-->
 					<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 				</div>
-
 				<!--设备告警详情弹出层-->
 				<el-dialog class="EquipmentMonitoringBox" :title="$t('alarmCurrent.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
 					<div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
@@ -261,15 +296,27 @@
 			return {
 				// 查询表单
 				formItem: {
-						type: 1, /*设备类型*/
-						catalogId:null, /*目录ID 左侧树形控件*/
-						/*ip: IP地址*/
-						manufacturer:null,/*厂商*/
-						servicetag: null,/*序列号*/
-						roomId: null,/*机房ID*/
-						frameId: null,/*机架ID*/
-						status: null,/*状态*/
-						business:null,/*业务ID*/
+					/*设备类型*/
+					equipmentType: 1,
+					equipmentTypeId: null,
+					/*设备名称/资产信息*/
+					equipmentName: null,
+					/*序列号*/
+					serialNumber: null,
+
+					computerRoom: null,
+					/*机房ID*/
+					computerRoomId: null,
+					/*机架ID*/
+					rackNameId: null,
+					/*业务ID*/
+					business: null,
+					/*状态*/
+					equipmentStatus: null,
+					/*厂商*/
+					manufacturer: null,
+					/*目录ID 左侧树形控件*/
+					catalogId: null,
 				},
 				// 设备告警详情提交字段
 				addEdit: {
@@ -285,6 +332,10 @@
 				rackNameList: [],
 				// 设备状态下拉框
 				equipmentStatusList: [],
+				//关联业务下拉框数据
+				businessList: [],
+				//厂商下拉框数据
+				manufacturerList: [],
 				// 表格数据
 				tableData: [{
 					id: '1',
@@ -295,12 +346,15 @@
 					equipmentOwner: '张三'
 				}, ],
 				// 处理状态
-				dealWithStatusList: [],
+
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowComputerPopover: false, // 控制机房下拉框的显示隐藏
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
 				dialogVisible: false, // 设备详情信息弹出层
+				dialogGrouping: false, //新增设备分组弹出层
+				dialogGroupingBj: false, //编辑设备分组弹出层
+				dialogGroupingSc: false, //删除设备分组弹出层
 				dialogVisibleOwnerInfo: false, // 业务责任人信息弹出层
 				defaultProps: {},
 				// 分页
@@ -360,6 +414,40 @@
 					children: 'children',
 					label: 'label'
 				},
+				//新增设备分组
+				gridData: [{
+					label1: '',
+					label2: '',
+					label3: '',
+					label4: ''
+				}, {
+					label1: '',
+					label2: '',
+					label3: '',
+					label4: ''
+				}, {
+					label1: '',
+					label2: '',
+					label3: '',
+					label4: ''
+				}, {
+					label1: '',
+					label2: '',
+					label3: '',
+					label4: ''
+				}],
+				parentNode: '',
+				gridDatas: '',
+				parentNodeList:[
+				{
+					value:'1',
+					label:'11'
+				},
+				{
+					value:'2',
+					label:'22'
+				}
+				],
 
 			}
 		},
@@ -377,18 +465,29 @@
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
-						/*assetDevice: {
-							type: '',
-							catalogId: '',
-							ip: '',
-							servicetag: '',
-							roomId: '',
-							frameId: '',
-							status: '',
-							business:'',
-						},*/
-						currentPage: 1,
-						pageSize: 10
+						//						assetDevice: {
+						//							/*设备名称/资产信息*/
+						//							deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
+						//							/*设备类型*/
+						//							type: _t.formItem.equipmentType == null ? null : (_t.formItem.equipmentType == 0 ? null : _t.formItem.equipmentType),
+						//							/*序列号*/
+						//							servicetag: _t.formItem.serialNumber == null ? null : (_t.formItem.serialNumber.trim() == '' ? null : _t.formItem.serialNumber.trim()),
+						//							/*机房ID*/
+						//							roomId: _t.formItem.computerRoomId == null ? null : _t.formItem.computerRoomId,
+						//							/*机架ID*/
+						//							frameId: _t.formItem.rackNameId == null ? null : _t.formItem.rackNameId,
+						//							/*设备状态*/
+						//							status: _t.formItem.dealWithStatus == null ? null : _t.formItem.dealWithStatus,
+						//							/*业务ID*/
+						//							business: _t.formItem.business == null ? null : _t.formItem.business,
+						//							/*厂商*/
+						//							manufacturer:_t.formItem.manufacturer == null ? null : _t.formItem.manufacturer,
+						//							/*目录ID*/
+						//							catalogId: _t.formItem.catalogId == null ? null : _t.formItem.catalogId,
+						//						},
+						alarmDevice: true,
+						currentPage: _t.options.currentPage,
+						pageSize: _t.options.pageSize,
 					})
 				}, function(res) {
 					switch(res.status) {
@@ -457,6 +556,7 @@
 				_t.options.currentPage = val;
 				_t.getData();
 			},
+
 			// 单元格点击
 			cellClickColumn(row, column) {
 
@@ -611,6 +711,15 @@
 			},
 			//机房下拉框数据获取
 			//机架/机柜下拉框数据获取
+			
+			//删除设备分组确认提示
+			handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      }
 		},
 
 		created() {}
@@ -658,6 +767,29 @@
 		z-index: 1001;
 		border-radius: 0 15px 15px 0;
 	}
+	
+	.borderRightColorGray {
+		overflow: hidden;
+	}
+	
+	.dataDictionary-title {
+		overflow: hidden;
+	}
+	
+	.dataDictionary-title a {
+		line-height: 40px;
+		padding-left: 20px;
+		font-weight: 600;
+	}
+	
+	.EquipmentMonitoringBj ul li {
+		padding-bottom: 20px;
+	}
+	
+	.EquipmentMonitoringBj ul li label {
+		display: inline-block;
+		width: 60px;
+	}
 </style>
 <style>
 	#systemSettings-navBar-inSet,
@@ -666,6 +798,19 @@
 		color: #fff;
 	}
 	
+	.EquipmentMonitoringGrid .el-dialog {
+		width: 612px;
+		height: 425px;
+	}
+	
+	.EquipmentMonitoringBj .el-dialog {
+		width: 501px;
+		height: 325px;
+	}
+	.EquipmentMonitoringSc .el-dialog {
+		width: 200px;
+		height: 180px;
+	}
 	.EquipmentMonitoringBox .el-dialog {
 		width: 880px;
 		height: 600px;
