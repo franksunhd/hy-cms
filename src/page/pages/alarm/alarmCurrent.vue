@@ -178,8 +178,14 @@
         <el-table-column width="120px" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="light" class="alarmCurrent-tooltip" placement="top-start">
-              <div slot="content" class="aaa">
-                {{scope.row.chargeBy}}
+              <div slot="content" :manual="true" v-model="scope.row.statusMenu">
+                <el-form class="alarmCurrentBox-chargeBy" label-width="120px">
+                  <el-form-item :label="$t('alarmCurrent.userName') + '：'"></el-form-item>
+                  <el-form-item :label="$t('alarmCurrent.organizationName') + '：'"></el-form-item>
+                  <el-form-item :label="$t('alarmCurrent.businessCode') + '：'"></el-form-item>
+                  <el-form-item :label="$t('alarmCurrent.email') + '：'"></el-form-item>
+                  <el-form-item :label="$t('alarmCurrent.phoneNumber') + '：'"></el-form-item>
+                </el-form>
               </div>
               <span>{{scope.row.chargeBy}}</span>
             </el-tooltip>
@@ -278,13 +284,7 @@
       :visible.sync="dialogVisibleOwnerInfo"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form label-width="150px">
-        <el-form-item :label="$t('alarmCurrent.userName') + '：'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.organizationName') + '：'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.businessCode') + '：'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.email') + '：'"></el-form-item>
-        <el-form-item :label="$t('alarmCurrent.phoneNumber') + '：'"></el-form-item>
-      </el-form>
+
       <span slot="footer">
         <el-button class="queryBtn" type="primary">{{$t('public.confirm')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisibleOwnerInfo = false">{{$t('public.cancel')}}</el-button>
@@ -343,7 +343,7 @@
           dealWithStatus:null,
           dateTime:null
         },
-        statusMenu:false,
+        statusMenu:true,
         // 设备告警详情提交字段
         addEdit:{
           id:''
@@ -413,15 +413,9 @@
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
-        editableTabsValue:'1', // 当前页签
-        editableTabs:[
-          {
-            name:'1',
-            title:'标题1',
-            content:'1'
-          }
-        ], // 页面集合
-        tabIndex: 1, // 页签序号
+        editableTabsValue:'', // 当前页签
+        editableTabs:[], // 页面集合
+        tabIndex: 0, // 页签序号
       }
     },
     methods: {
@@ -453,8 +447,6 @@
         _t.formItem.businessName = val.nodeName;
         _t.isShowBusinessPopover = false;
       },
-      // 点击机房下拉框的节点
-      clickRoomNode(val){},
       // 查询表格数据
       getData(){
         var _t = this;
@@ -463,7 +455,7 @@
           jsonString:JSON.stringify({
             alarm:{
               type:_t.formItem.equipmentTypeId == null ? null : _t.formItem.equipmentTypeId,
-              // deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
+              deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
               ip:_t.formItem.equipmentIp == null ? null : (_t.formItem.equipmentIp.trim() == '' ? null : _t.formItem.equipmentIp.trim()),
               roomId:_t.formItem.computerRoomId == null ? null : (_t.formItem.computerRoomId.trim() == '' ? null : _t.formItem.computerRoomId.trim()),
               frameId:_t.formItem.rackNameId == null ? null : (_t.formItem.rackNameId.trim() == '' ? null : _t.formItem.rackNameId.trim()),
@@ -511,6 +503,9 @@
               _t.tableData = resData.list;
               _t.options.currentPage = resData.page.currentPage;
               _t.options.total = resData.page.totalResultSize;
+              _t.tableData.forEach(function (item) {
+                item.statusMenu = false;
+              });
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -546,7 +541,7 @@
         var _t = this;
         // 设备责任人列
         if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
-          _t.statusMenu = true;
+          row.statusMenu = true;
         }
       },
       // 单元格移出事件
@@ -554,7 +549,7 @@
         var _t = this;
         // 设备责任人列
         if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
-          _t.statusMenu = false;
+          row.statusMenu = false;
         }
       },
       // 单元格点击
@@ -567,7 +562,7 @@
         }
         // 点击设备名称列 点击最新告警时间列
         if (column.label === _t.$t('alarmCurrent.equipmentName') || column.label === _t.$t('alarmCurrent.lastAlarmTime')) {
-          _t.addTab(row.equipmentName,row.id);
+          _t.addTab(row.deviceName,row.id);
         }
       },
       // 获取设备告警详情弹出层

@@ -474,7 +474,8 @@ input::-webkit-input-placeholder {
 
 /*设备告警详情弹出层样式*/
 .alarmMessageBox-dialog .el-form-item,
-.alarmCurrentBox-dialog .el-form-item{
+.alarmCurrentBox-dialog .el-form-item,
+.alarmCurrentBox-chargeBy .el-form-item{
   margin-bottom: 0;
 }
 

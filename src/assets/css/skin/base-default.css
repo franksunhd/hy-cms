@@ -436,7 +436,7 @@
 }
 
 .dialogTitle {
-  background-color: #c1c1c1;
+  background-color: #f1f1f1;
 }
 
 #administration-tabs-title,
@@ -555,4 +555,8 @@ span.el-tree-node__label {
 
 .el-tooltip__popper.is-light {
   border: 1px solid #eaedf1;
+}
+
+.el-tooltip__popper.is-light[x-placement^=top] .popper__arrow {
+  border-top-color: #eaedf1;
 }
