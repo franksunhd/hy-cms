@@ -148,7 +148,7 @@ export default {
 	},
 	// 用户维护
 	userMaintenance: {
-		account: '用户名/账号',
+		account: '账号',
 		organization: '所属组织',
 		status: '状态',
 		username: '用户名',
