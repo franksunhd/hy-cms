@@ -426,7 +426,7 @@ export default {
 		directoryLevel: '目录级别',
 		orderIndex: '显示顺序',
 		statusAlert: '启用状态',
-		selectUser: '选择用户',
+		selectUser: '选择角色',
 	},
 	// 告警管理
 	alarmManagement: {
