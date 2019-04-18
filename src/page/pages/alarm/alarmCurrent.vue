@@ -108,15 +108,22 @@
         </el-button>
         <el-button :disabled="disableBtn.more">
           <span class="iconfont">&#xe618;</span>
-          批量确认告警
+          {{$t('alarmCurrent.batchOpenAlarm')}}
         </el-button>
         <el-button :disabled="disableBtn.more">
           <span class="iconfont">&#xe619;</span>
-          批量关闭告警
+          {{$t('alarmCurrent.batchCloseAlarm')}}
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" @row-click="rowClick" ref="table" stripe @cell-click="cellClickColumn" @cell-mouse-enter="cellMouseEnter" @cell-mouse-leave="cellMouseLeave">
+      <el-table
+        :data="tableData"
+        @row-click="rowClick"
+        ref="table"
+        stripe
+        @cell-click="cellClickColumn"
+        @cell-mouse-enter="cellMouseEnter"
+        @cell-mouse-leave="cellMouseLeave">
         <el-table-column type="selection" fixed header-align="left" align="left" />
         <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
@@ -171,7 +178,7 @@
         </el-table-column>
         <el-table-column width="120px" :label="$t('alarmCurrent.equipmentOwner')" header-align="left" align="left">
           <template slot-scope="scope">
-            <el-tooltip effect="dark" class="alarmCurrent-tooltip" placement="top-start">
+            <el-tooltip effect="light" class="alarmCurrent-tooltip" placement="top-start">
               <div slot="content" class="aaa">
                 {{scope.row.chargeBy}}
               </div>
@@ -184,10 +191,10 @@
             <span>{{tableDataBase.AlarmHandleStatus[scope.row.status]}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="150px" label="操作">
+        <el-table-column width="150px" :label="$t('public.operation')">
           <template slot-scope="scope">
-            <el-button type="text">转保修</el-button>
-            <el-button type="text">处理告警</el-button>
+            <el-button type="text">{{$t('alarmCurrent.turnWarranty')}}</el-button>
+            <el-button type="text">{{$t('alarmCurrent.dealWithAlarm')}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -207,49 +214,56 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
-      <el-form class="alarmMessageBox-formItem" :model="equipmentData" label-position="right" label-width="76px">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.UUID') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.objectType') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.eventType') + '：'"></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.productName') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentVendor') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.createTime') + '：'"></el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.alarmNumber') + '：'"></el-form-item>
-            <el-form-item :label="$t('alarmCurrent.lastTime') + '：'"></el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
-      <el-form inline label-position="right" label-width="76px">
-        <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmField')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down != Up</el-form-item>
-        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmCurrent.currentStatus')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down</el-form-item>
-        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmCurrent.addField')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.status') + '：'">Down != Up</el-form-item>
-        <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmCurrent.addInfo')}}</strong></p>
-        <el-form-item :label="$t('alarmCurrent.productName') + '：'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.name') + '：'">NIC.Integrated.1-3-1</el-form-item>
-        <br>
-        <el-form-item :label="$t('alarmCurrent.AutoNegotiation') + '：'">Enabled</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.linkSpeed') + '：'">Unknown</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.macLocation') + '：'">EC:F4:BB:C1:0C:CA</el-form-item>
-        <el-form-item :label="$t('alarmCurrent.alarmDescription') + '：'">
-          <el-input type="textarea" :autosize="{minRows: 3}" style="width: 734px;" />
-        </el-form-item>
-      </el-form>
+      <el-row :gutter="20">
+        <el-col :span="8">
+          <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
+          <el-form class="alarmMessageBox-formItem" :model="alarmDetailData" label-position="right" label-width="76px">
+            <el-form-item :label="$t('alarmCurrent.equipmentType') + '：'">{{tableDataBase.AssetType[alarmDetailData.alarm.type]}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentVendor') + '：'">{{alarmDetailData.alarm.manufacturer}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">{{alarmDetailData.alarm.ip}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">{{alarmDetailData.alarm.deviceName || ''}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'">{{tableDataBase.AlarmSeverity[alarmDetailData.alarm.alarmLevel]}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">{{alarmDetailData.alarm.servicetag}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">{{alarmDetailData.alarm.roomName}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.location') + '：'">{{alarmDetailData.alarm.frameName}},{{alarmDetailData.alarm.framePosition}}U</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.alarmNumber') + '：'">{{alarmDetailData.alarm.alarmTimes}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.noticeTimes') + '：'">{{alarmDetailData.alarm.sendCount}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.createTime') + '：'">{{alarmDetailData.alarm.occurrenceTime | dateFilter}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.lastTime') + '：'">{{alarmDetailData.alarm.updateTime | dateFilter}}</el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="16">
+          <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
+          <el-form :model="alarmDetailData" label-position="right" label-width="76px">
+            <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmContent')}}</strong></p>
+            <el-form-item :label="$t('alarmCurrent.part') + '：'">
+              {{alarmDetailData.alarm.part}}
+            </el-form-item>
+            <el-form-item :label="$t('alarmCurrent.alarmInfo') + '：'">
+              {{alarmDetailData.alarm.currentStatus}}
+            </el-form-item>
+            <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmCurrent.alarmDealWith')}}</strong></p>
+            <template v-for="(item,index) in alarmDetailData.commentList">
+              <div class="fs12 marginTop10 displayInlineBlock marginRight20">
+                <label>{{$t('alarmCurrent.description') + (index + 1) + '：'}}</label>
+                <span>{{item.commContent}}</span>
+              </div>
+              <div class="fs12 marginTop10 displayInlineBlock marginRight20">
+                <label>{{$t('alarmCurrent.descriptionUser') + '：'}}</label>
+                <span>{{item.commUser}}</span>
+              </div>
+              <div class="fs12 marginTop10 displayInlineBlock">
+                <label>{{$t('alarmCurrent.descriptionTime') + '：'}}</label>
+                <span>{{item.createTime | dateFilter}}</span>
+              </div>
+              <br>
+            </template>
+            <el-form-item class="marginTop10" :label="$t('alarmCurrent.alarmDescription') + '：'">
+              <el-input type="textarea" :autosize="{minRows: 3}" />
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
       <span slot="footer">
         <el-button type="primary" class="alertBtn">{{$t('public.ignoreAlarm')}}</el-button>
         <el-button type="primary" class="alertBtn">{{$t('public.confirmAlarm')}}</el-button>
@@ -339,8 +353,6 @@
         disableBtn:{
           more:true
         },
-        // 设备告警详情数据
-        equipmentData:{},
         // 设备类型树形下拉框数据
         equipmentTypeList:[],
         // 机房树形下拉框的数据
@@ -367,6 +379,12 @@
           AlarmHandleStatus:[],
           AlarmSeverity:[],
           AssetType:[]
+        },
+        // 设备告警详情弹出层信息
+        alarmDetailData:{
+          alarm:{
+            type:''
+          }
         },
         // 处理状态
         dealWithStatusList:[],
@@ -451,7 +469,7 @@
           jsonString:JSON.stringify({
             alarm:{
               type:_t.formItem.equipmentTypeId == null ? null : _t.formItem.equipmentTypeId,
-              deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
+              // deviceName:_t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
               ip:_t.formItem.equipmentIp == null ? null : (_t.formItem.equipmentIp.trim() == '' ? null : _t.formItem.equipmentIp.trim()),
               roomId:_t.formItem.computerRoomId == null ? null : (_t.formItem.computerRoomId.trim() == '' ? null : _t.formItem.computerRoomId.trim()),
               frameId:_t.formItem.rackNameId == null ? null : (_t.formItem.rackNameId.trim() == '' ? null : _t.formItem.rackNameId.trim()),
@@ -548,24 +566,35 @@
       // 单元格点击
       cellClickColumn(row,column) {
         var _t = this;
-        // 点击状态列
-        if (column.label == _t.$t('alarmCurrent.status')) {
-          _t.dialogVisible = true;
+        // 点击状态列 点击告警内容列
+        if (column.label === _t.$t('alarmCurrent.status') || column.label === _t.$t('alarmCurrent.alarmContent')) {
           _t.addEdit.id = row.id;
+          _t.getAlarmDetailData(_t.addEdit.id);
         }
-        // 点击设备名称列
-        if (column.label == _t.$t('alarmCurrent.equipmentName')) {
+        // 点击设备名称列 点击最新告警时间列
+        if (column.label === _t.$t('alarmCurrent.equipmentName') || column.label === _t.$t('alarmCurrent.lastAlarmTime')) {
           _t.addTab(row.equipmentName,row.id);
         }
-        // 点击告警内容列
-        if (column.label == _t.$t('alarmCurrent.alarmContent')) {
-          _t.dialogVisible = true;
-          _t.addEdit.id = row.id;
-        }
-        // 点击最新告警时间列
-        if (column.label == _t.$t('alarmCurrent.lastAlarmTime')) {
-          _t.addTab(row.equipmentName,row.id);
-        }
+      },
+      // 获取设备告警详情弹出层
+      getAlarmDetailData(val){
+        var _t = this;
+        _t.$api.get('alarm/alarm/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.alarmDetailData = res.data;
+              _t.dialogVisible = true;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 删除页签
       removeTab(targetName){
@@ -751,8 +780,8 @@
 
 <style>
   .alarmCurrentBox-dialog .el-dialog {
-    width: 880px;
-    height: 494px;
+    width: 930px;
+    height: 560px;
   }
 
   #alarmCurrent-tabs {

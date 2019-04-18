@@ -81,6 +81,10 @@ html,body,.Index-box {
   margin-top: 20px;
 }
 
+.marginRight20 {
+  margin-right: 20px;
+}
+
 .marBottom16 {
   margin-bottom: 16px;
 }
@@ -412,6 +416,10 @@ input::-webkit-input-placeholder {
 .displayFlex {
   display: flex;
   flex: 1;
+}
+
+.displayInlineBlock {
+  display: inline-block;
 }
 
 .displayFlex-flex {

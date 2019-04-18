@@ -516,6 +516,16 @@ export default {
 		businessCode: '负责业务',
 		email: '电子邮箱',
 		phoneNumber: '联系电话',
+    batchOpenAlarm:'批量确认告警',
+    batchCloseAlarm:'批量关闭告警',
+    turnWarranty:'转保修',
+    dealWithAlarm:'处理告警',
+    part:'部件',
+    alarmDealWith:'告警处理',
+    description:'评注内容',
+    descriptionUser:'评注人',
+    descriptionTime:'评注时间',
+    noticeTimes:'通知次数',
 	},
 	// 历史告警
 	alarmHistory: {
