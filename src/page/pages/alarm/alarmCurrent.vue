@@ -118,7 +118,6 @@
       <!--表格-->
       <el-table
         :data="tableData"
-        @row-click="rowClick"
         ref="table"
         stripe
         @cell-click="cellClickColumn"
@@ -439,11 +438,6 @@
           _t.rackNameList = [];
         }
         _t.formItem.rackNameId = '';
-      },
-      // 点击当前行选中当前行
-      rowClick(row,column,event){
-        this.$refs.table.toggleRowSelection(row);
-        column.filterOpened = true;
       },
       // 点击设备类型下拉框节点
       clickTypeNode(val){
