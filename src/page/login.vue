@@ -39,7 +39,8 @@
             <el-input class="login_input"
                       v-model="code"
                       maxlength="4"
-                      placeholder="验证码"/>
+                      placeholder="验证码"
+                      @keyup.enter.native="login($event)"/>
             <img id="comments-canvas" @click="getCode" :src="codeImg">
             <!--<canvas  @click="draw" width="120" height="30"></canvas>-->
           </el-form-item>
@@ -47,8 +48,10 @@
             <el-button type="primary" class="login_btn" @click="login">登录</el-button>
           </el-form-item>
           <div class="login-foot-box">
-            <a href="javascript:;">忘记密码?</a>
-            <a href="javascript:;">立即注册</a>
+            <!-- 这里没有功能实现，先注释掉
+              <a href="javascript:;">忘记密码?</a>
+              <a href="javascript:;">立即注册</a>
+            -->
           </div>
         </el-form>
       </div>
