@@ -148,7 +148,7 @@ export default {
 	},
 	// 用户维护
 	userMaintenance: {
-		account: '用户名/账号',
+		account: '账号',
 		organization: '所属组织',
 		status: '状态',
 		username: '用户名',
@@ -426,7 +426,7 @@ export default {
 		directoryLevel: '目录级别',
 		orderIndex: '显示顺序',
 		statusAlert: '启用状态',
-		selectUser: '选择用户',
+		selectUser: '选择角色',
 	},
 	// 告警管理
 	alarmManagement: {
@@ -516,6 +516,16 @@ export default {
 		businessCode: '负责业务',
 		email: '电子邮箱',
 		phoneNumber: '联系电话',
+    batchOpenAlarm:'批量确认告警',
+    batchCloseAlarm:'批量关闭告警',
+    turnWarranty:'转保修',
+    dealWithAlarm:'处理告警',
+    part:'部件',
+    alarmDealWith:'告警处理',
+    description:'评注内容',
+    descriptionUser:'评注人',
+    descriptionTime:'评注时间',
+    noticeTimes:'通知次数',
 	},
 	// 历史告警
 	alarmHistory: {

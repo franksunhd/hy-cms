@@ -272,7 +272,7 @@
         status: '',
         organization: '',
         listData: [],
-        selectUser: [], // 选中的用户
+        selectUser: [], // 选中的角色
         treeData: [], // 左侧导航列表
         tableData: [], //
         checkListIds: [], // 选中数据集合的id
@@ -534,7 +534,7 @@
         _t.$refs[formName].validate((valid) => {
           if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
             var selectUserList = new Array();
-            // 用户集合
+            // 角色集合
             _t.result().forEach(function (item) {
               selectUserList.push(item.nodeId);
             });
@@ -1015,7 +1015,7 @@
       // 获取组织角色列表
       getOrgRoleList() {
         var _t = this;
-        _t.$api.get('system/menu/getOrgRole', {}, function (res) {
+        _t.$api.get('system/organization/getOrgRole', {}, function (res) {
           switch (res.status) {
             case 200:
               var selectUser = new Array();

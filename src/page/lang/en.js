@@ -516,6 +516,16 @@ export default {
     businessCode:'businessCode',
     email:'email',
     phoneNumber:'phoneNumber',
+    batchOpenAlarm:'batchOpenAlarm',
+    batchCloseAlarm:'batchCloseAlarm',
+    turnWarranty:'turnWarranty',
+    dealWithAlarm:'dealWithAlarm',
+    part:'part',
+    alarmDealWith:'alarmDealWith',
+    description:'description',
+    descriptionUser:'descriptionUser',
+    descriptionTime:'descriptionTime',
+    noticeTimes:'noticeTimes',
   },
   // 历史告警
   alarmHistory: {

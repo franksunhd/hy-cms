@@ -81,6 +81,10 @@ html,body,.Index-box {
   margin-top: 20px;
 }
 
+.marginRight20 {
+  margin-right: 20px;
+}
+
 .marBottom16 {
   margin-bottom: 16px;
 }
@@ -414,6 +418,10 @@ input::-webkit-input-placeholder {
   flex: 1;
 }
 
+.displayInlineBlock {
+  display: inline-block;
+}
+
 .displayFlex-flex {
   flex: 1;
 }
@@ -466,11 +474,16 @@ input::-webkit-input-placeholder {
 
 /*设备告警详情弹出层样式*/
 .alarmMessageBox-dialog .el-form-item,
-.alarmCurrentBox-dialog .el-form-item{
+.alarmCurrentBox-dialog .el-form-item,
+.alarmCurrentBox-chargeBy .el-form-item{
   margin-bottom: 0;
 }
 
 .borderBottomFormItem {
   padding: 20px 20px 0;
   border: 1px solid #eaedf1;
+}
+
+.cursorPointer {
+  cursor: pointer;
 }
