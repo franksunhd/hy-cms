@@ -276,20 +276,6 @@
         <el-button type="default" class="alertBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
-    <!--设备责任人弹出层-->
-    <el-dialog
-      class="alarmCurrent-dialog"
-      :title="$t('alarmCurrent.ownerInfo')"
-      append-to-body
-      :visible.sync="dialogVisibleOwnerInfo"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false">
-
-      <span slot="footer">
-        <el-button class="queryBtn" type="primary">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleOwnerInfo = false">{{$t('public.cancel')}}</el-button>
-      </span>
-    </el-dialog>
     <!--标签页-->
     <el-tabs
       v-if="isShowTabBox_tab"
@@ -309,9 +295,9 @@
         :label="item.title">
         <div class="alarmCurrent-btn">
           <!--收起-->
-          <span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+          <span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
           <!--关闭弹出层-->
-          <span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+          <span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
         </div>
         <AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
       </el-tab-pane>
@@ -397,8 +383,6 @@
         isShowTabBox_tab:false,
         // 设备详情信息弹出层
         dialogVisible:false,
-        // 业务责任人信息弹出层
-        dialogVisibleOwnerInfo:false,
         defaultProps:{
           label:'nodeName',
           children:'children'
@@ -413,9 +397,15 @@
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
-        editableTabsValue:'', // 当前页签
-        editableTabs:[], // 页面集合
-        tabIndex: 0, // 页签序号
+        editableTabsValue:'1', // 当前页签
+        editableTabs:[
+          {
+            title: '标题1',
+            name:'1',
+            content: '1'
+          }
+        ], // 页面集合
+        tabIndex: 1, // 页签序号
       }
     },
     methods: {
@@ -627,24 +617,14 @@
       // 收起
       packUp(){
         var _t = this;
-        _t.isShowTabBox = false;
-        document.getElementById('alarmCurrent-tabs').style.top = 'initial';
-        _t.editableTabsValue = '';
       },
       // 关闭标签页
       closeTab(){
         var _t = this;
-        _t.editableTabsValue = '';
-        _t.editableTabs = [];
-        _t.tabIndex = 0;
-        _t.isShowTabBox_tab = false;
-        _t.isShowTabBox = false;
       },
       // 点击标签页
       clickTabs(){
         var _t = this;
-        _t.isShowTabBox = true;
-        document.getElementById('alarmCurrent-tabs').style.top = '118px';
       },
       // 表单部分机房机架下拉框数据
       getFormData(){
@@ -793,13 +773,11 @@
   }
 
   #alarmCurrent-tabs .el-tabs__content {
-    position: fixed;
-    left: 100px;
-    right: 40px;
-    bottom: 50px;
-    top: 150px;
-    overflow-y: scroll;
-    overflow-x: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 40px;
+    top: 0;
   }
 
   .alarmCurrent-btn {

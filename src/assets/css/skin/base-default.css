@@ -442,7 +442,7 @@
 #administration-tabs-title,
 #administration-tabs-title li.active::before,
 #administration-tabs-title li.active::after {
-  background-color: #c1c1c1;
+  background-color: #f1f1f1;
 }
 
 #administration-tabs-title li.active::before {
