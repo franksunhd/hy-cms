@@ -526,6 +526,15 @@ export default {
     descriptionUser:'descriptionUser',
     descriptionTime:'descriptionTime',
     noticeTimes:'noticeTimes',
+    equipmentModel:'model',
+    dealWithWays:'dealWithWays',
+    alarmWarranty:'alarmWarranty',
+    alarmClose:'alarmClose',
+    alarmCloseIgnore:'alarmCloseIgnore',
+    confirmOpinions:'confirmOpinions',
+    addDescription:'addDescription',
+    warrantyOpinions:'warrantyOpinions',
+    closeOpinions:'closeOpinions'
   },
   // 历史告警
   alarmHistory: {

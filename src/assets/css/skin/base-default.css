@@ -30,6 +30,10 @@
   background-color: #fff;
 }
 
+.col666 {
+  color: #666;
+}
+
 /*面包屑*/
 .Breadcrumb {
   border-bottom: 1px solid #eaedf1;
@@ -559,4 +563,14 @@ span.el-tree-node__label {
 
 .el-tooltip__popper.is-light[x-placement^=top] .popper__arrow {
   border-top-color: #eaedf1;
+}
+
+.alarmDetailDataComment .el-timeline-item__node.el-timeline-item__node--large {
+  border:2px solid #fb6041;
+  background-color: #fff;
+}
+
+.alarmDetailDataComment .el-timeline-item__node.el-timeline-item__node--normal {
+  border:2px solid #3f81d0;
+  background-color: #fff;
 }

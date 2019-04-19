@@ -526,6 +526,15 @@ export default {
     descriptionUser:'评注人',
     descriptionTime:'评注时间',
     noticeTimes:'通知次数',
+    equipmentModel:'型号',
+    dealWithWays:'处理方式',
+    alarmWarranty:'告警保修',
+    alarmClose:'告警关闭',
+    alarmCloseIgnore:'关闭后忽略告警',
+    confirmOpinions:'确认意见',
+    addDescription:'添加评注',
+    warrantyOpinions:'报修意见',
+    closeOpinions:'关闭意见'
 	},
 	// 历史告警
 	alarmHistory: {

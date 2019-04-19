@@ -46,6 +46,7 @@
     </div>
     <!--修改头像弹出层-->
     <el-dialog
+      class="userHeader-photo-box"
       append-to-body
       :title="$t('header.head')"
       :visible.sync="dialogVisible">
@@ -264,5 +265,10 @@
     z-index: 999;
     width: auto;
     overflow: hidden;
+  }
+
+  .userHeader-photo-box .el-dialog {
+    width: 500px;
+    height: 400px;
   }
 </style>

@@ -25,7 +25,6 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
         // by ssy
         ObjTag.parentNodeId = recursive(allNodes, 'parentNodeId', item.parentNodeId).parentNodeId;
         roleListData.push(ObjTag);
-
         // 递归找到 id 所对应的 父 id
         function buildParentList(arr) {
           arr.forEach(g => {
@@ -40,7 +39,6 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
             }
           });
         }
-
         // 在新数组中找出
         function findParent(idx) {
           if (list[idx] != undefined) {
@@ -52,7 +50,6 @@ export function queryOrgWithRole(allNodes, allSelectedNodes, roleType) {
             findParent(pid)
           }
         }
-
         // 递归寻找节点 recursive(要查找的集合,要匹配的字段,要匹配的值)
         function recursive(data, node, index) {
           var result, temp; // 返回值和临时变量
@@ -187,4 +184,77 @@ export function returnObjectById(allNodes, nodeId) {
   }
   // 返回 菜单id 对应的集合
   return recursive(allNodes, 'id', nodeId);
+}
+
+/*
+ * 根据传入的菜单id集合,返回带父节点id的集合
+ */
+export function getMenuWithParentIdByMenuId(allNodes,allSelectedNodes) {
+  var selectWithParentIdArr = new Array(); // 返回带父节点id 的集合
+  if (allSelectedNodes.length !== 0) {
+    allSelectedNodes.forEach(function (item) {
+      selectWithParentIdArr.push(item);
+      var list = new Array();
+      // 以父id为参数
+      buildParentList(allNodes);
+      findParent(item);
+
+      // 递归找到 id 所对应的 父 id
+      function buildParentList(arr) {
+        arr.forEach(g => {
+          if (g.parentId != undefined) {
+            // by ssy
+            let oid = g['id']
+            // by ssy
+            list[oid] = g['parentId'];
+          }
+          if (g.systemMenuAndLanguageRelationChildList != undefined) {
+            buildParentList(g['systemMenuAndLanguageRelationChildList'])
+          }
+        });
+      }
+      // 在新数组中找出
+      function findParent(idx) {
+        if (list[idx] != undefined) {
+          let pid = list[idx];
+          // 根节点id 为0
+          if (pid != null) {
+            selectWithParentIdArr.push(pid);
+          }
+          findParent(pid)
+        }
+      }
+      // 递归寻找节点 recursive(要查找的集合,要匹配的字段,要匹配的值)
+      function recursive(data, node, index) {
+        var result, temp; // 返回值和临时变量
+        for (var i = 0; i < data.length; i++) {
+          temp = data[i]; // 临时缓存
+          if (temp[node] == index) {
+            result = temp;
+            break;
+          }
+          // 没有找到 继续往下找
+          if (typeof result == 'undefined' && temp['systemMenuAndLanguageRelationChildList']) {
+            result = recursive(temp['systemMenuAndLanguageRelationChildList'], node, index);
+          }
+        }
+        return result;
+      }
+    });
+  } else {
+    selectWithParentIdArr = [];
+  }
+  // 数组去重 得到去重后的数组
+  selectWithParentIdArr = uniq(selectWithParentIdArr);
+
+  function uniq(array) {
+    var temp = []; //一个新的临时数组
+    for (var i = 0; i < array.length; i++) {
+      if (temp.indexOf(array[i]) == -1) {
+        temp.push(array[i]);
+      }
+    }
+    return temp;
+  }
+  return selectWithParentIdArr;
 }

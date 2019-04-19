@@ -113,9 +113,22 @@ html,body,.Index-box {
   font-size: 12px;
 }
 
+.fs14 {
+  font-size: 14px;
+}
+
 .fsBold12 {
   font-size: 12px;
   font-weight: bold;
+}
+
+.fsBold14 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.positionRelative {
+  position: relative;
 }
 
 /*messageBox弹出层 确认和取消按钮调换位置*/
@@ -486,4 +499,19 @@ input::-webkit-input-placeholder {
 
 .cursorPointer {
   cursor: pointer;
+}
+
+.el-timeline-item {
+  padding-bottom: 0;
+  height: 100%;
+}
+
+.el-timeline-item__wrapper {
+  top: -7px;
+}
+
+.monitoringDetails-header.el-tabs--card>.el-tabs__header,
+.el-tabs--card>.el-tabs__header .el-tabs__item,
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+  border: none;
 }
