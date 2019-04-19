@@ -291,7 +291,7 @@
   import Box from '../../../../components/Box';
   import {isNotNull} from "../../../../assets/js/validator";
   import {dateFilter} from '../../../../assets/js/filters';
-  import {orgBreadcrumb} from "../../../../assets/js/recursive";
+  import {orgBreadcrumb,getMenuWithParentIdByMenuId} from "../../../../assets/js/recursive";
 
   export default {
     name: "role-maintenance",
@@ -399,22 +399,47 @@
       }
     },
     methods: {
-      // 重置表单
-      resetFormData(){
+      // 功能权限
+      functionData() {
         var _t = this;
-        _t.addEdit.id =  '';
-        _t.addEdit.organization = '';
-        _t.addEdit.roleName = '';
-        _t.addEdit.organizationId = '';
-        _t.addEdit.status = 1;
-        _t.addEdit.description = '';
-        _t.$refs.table.clearSelection();
-        _t.dialogVisible = false;
+        _t.dialogVisibleFunction = true;
+        _t.getFunctionDataByRoleId(_t.checkListIds.join(','))
+      },
+      // 获取已授权的功能权限菜单
+      getFunctionDataByRoleId(val){
+        var _t = this;
+        _t.$api.get('system/role/getImpowerMenuById',{
+          jsonString:JSON.stringify({
+            systemRole:{
+              id:val
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              var menuData = new Array();
+              res.data.forEach(function (item) {
+                menuData.push(item.id);
+              });
+              _t.menuExpanded = menuData;
+              _t.$refs.tree.setCheckedKeys(menuData);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 提交授权菜单
       commitMenuData() {
         var _t = this;
-        var selectMenu = this.$refs.tree.getCheckedKeys();
+        var selectMenu = new Array();
+        selectMenu = getMenuWithParentIdByMenuId(_t.selectArr,_t.$refs.tree.getCheckedKeys());
         if (selectMenu.length !== 0) {
           _t.selectMenuMark = false;
           _t.$api.post('system/role/impowerRoleByMenu', {
@@ -441,6 +466,18 @@
         } else {
           _t.selectMenuMark = true;
         }
+      },
+      // 重置表单
+      resetFormData(){
+        var _t = this;
+        _t.addEdit.id =  '';
+        _t.addEdit.organization = '';
+        _t.addEdit.roleName = '';
+        _t.addEdit.organizationId = '';
+        _t.addEdit.status = 1;
+        _t.addEdit.description = '';
+        _t.$refs.table.clearSelection();
+        _t.dialogVisible = false;
       },
       // 提交授权用户
       userDataForm() {
@@ -779,42 +816,6 @@
                 tags.push(obj);
               });
               _t.tags = tags;
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              break;
-          }
-        });
-      },
-      // 功能权限
-      functionData() {
-        var _t = this;
-        _t.dialogVisibleFunction = true;
-        _t.getFunctionDataByRoleId(_t.checkListIds.join(','))
-      },
-      // 获取已授权的功能权限菜单
-      getFunctionDataByRoleId(val){
-        var _t = this;
-        _t.$api.get('system/role/getImpowerMenuById',{
-          jsonString:JSON.stringify({
-            systemRole:{
-              id:val
-            }
-          })
-        },function (res) {
-          switch (res.status) {
-            case 200:
-              var menuData = new Array();
-              res.data.forEach(function (item) {
-                menuData.push(item.id);
-              });
-              _t.menuExpanded = menuData;
-              _t.$refs.tree.setCheckedKeys(menuData);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
