@@ -147,7 +147,7 @@
         <el-form-item class="star" :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
           <el-input v-model="addEdit.loginAccount" class="width200"/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
+        <el-form-item v-if="ifAdd == true" class="star" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
           <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
@@ -804,7 +804,6 @@
               _t.addEdit.organizationId = res.data.organizationId;
               _t.addEdit.username = res.data.displayName;
               _t.addEdit.loginAccount = res.data.username;
-              // _t.addEdit.loginPassword = res.data.password;
               _t.addEdit.mobileNum = res.data.mobile;
               _t.addEdit.emails = res.data.email;
               _t.addEdit.status = res.data.status;
@@ -836,7 +835,7 @@
                 id: _t.addEdit.id,
                 organizationId: _t.addEdit.organizationId == null ? null : _t.addEdit.organizationId,
                 username: _t.addEdit.loginAccount == null ? null : (_t.addEdit.loginAccount.trim() == '' ? null : _t.addEdit.loginAccount.trim()),
-                password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.addEdit.loginPassword.trim())),
+                // password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.addEdit.loginPassword.trim())),
                 displayName: _t.addEdit.username == null ? null :(_t.addEdit.username.trim() == '' ? null : _t.addEdit.username.trim()),
                 email: _t.addEdit.emails == null ? null : (_t.addEdit.emails.trim() == '' ? null : _t.addEdit.emails.trim()),
                 mobile: _t.addEdit.mobileNum == null ? null : (_t.addEdit.mobileNum.trim() == '' ? null : _t.addEdit.mobileNum.trim()),
