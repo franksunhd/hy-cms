@@ -452,6 +452,7 @@
               case 200:
                 _t.dialogVisibleFunction = false;
                 _t.$refs.tree.setCheckedKeys([]);
+                _t.$bus.emit('getMenu',true);
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -1056,9 +1057,8 @@
       // 请求菜单数据
       getMenuData() {
         var _t = this;
-        _t.$api.get('system/menu/', {
+        _t.$api.get('system/menu/getMenuTree', {
           jsonString: JSON.stringify({
-            menuLevel: '1_2_3_4',
             languageMark: localStorage.getItem('hy-language')
           })
         }, function (res) {
