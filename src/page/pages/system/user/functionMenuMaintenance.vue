@@ -329,6 +329,12 @@
         _t.addEdit.enable = 1;
         _t.addEdit.orderMark = 1;
         _t.$refs.table.clearSelection();
+        // 重置表单的时候取消 菜单名称非空的 红色边框
+        _t.languageList.forEach(function (item) {
+          if (item.languageName !== '') {
+            document.getElementById(item.id).style.borderColor = '#DCDFE6';
+          }
+        });
       },
       // 输入框菜单名称校验
       menuNameInput(data) {
