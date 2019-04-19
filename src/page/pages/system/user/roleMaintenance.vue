@@ -232,6 +232,7 @@
           <el-tree
             :data="selectArr"
             :props="menuProps"
+            :check-strictly="true"
             :default-expanded-keys="menuExpanded"
             node-key="id"
             show-checkbox
