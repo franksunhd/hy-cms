@@ -1,8 +1,8 @@
 <template>
   <div id="menuBox" class="box clearfix">
     <div class="box-left fl">
-      <ul class="box-left-ful">
-        <li @mouseover="MouseOverFul"><i class="el-icon-menu"></i></li>
+      <ul class="box-left-ful" @mouseover="MouseOverFul" >
+        <li ><i class="el-icon-menu"></i></li>
         <li v-show="show">功能清单列表</li>
         <li v-show="show">&gt;</li>
       </ul>
@@ -12,18 +12,19 @@
           @mouseover="MouseOverTwo"
           @mouseout="MouseOutTwo">
         <li><i class="el-icon-picture"></i></li>
-        <li v-show="show">
+        <li v-show="show" :title="data.menuName">
           <router-link
+          	
             class="bg-white"
             @click.native="hiddenAlert(data.menuId)"
             :to="{path:data.menuHref,query:{id:data.menuId}}">{{data.menuName}}
           </router-link>
         </li>
-        <li v-show="mouse"><i class="el-icon-close" @click="delItem(data)"></i></li>
-        <li v-show="mouse"><i class="el-icon-rank"></i></li>
+        <li v-show="mouse"><i title="刪除" class="el-icon-close" @click="delItem(data)"></i></li>
+        <li v-show="mouse"><i title="拖拽排序" class="el-icon-rank"></i></li>
       </ul>
     </div>
-    <div class="box-right" v-show="rshow" v-loading="selectArr.length === 0">
+    <div class="box-right" v-show="rshow" @mouseleave="mouseOutRight" v-loading="selectArr.length === 0">
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
       </div>
@@ -91,25 +92,40 @@
         this.show = true;
         this.rshow = true;
       },
+     /* //鼠标移除功能导航菜单
+      MouseOutFul(){
+      	
+        this.rshow = false;
+      },*/
       // 鼠标移入便捷菜单
       MouseOverTwo() {
-        if (this.rshow == true) {
+      	this.rshow=false;
+      	 this.mouse = true;
+          this.show = true;
+       /* if (this.rshow == true) {
           this.mouse = true;
           this.show = true;
         } else {
           this.mouse = true;
           this.show = true;
-        }
+        }*/
       },
       // 鼠标移出便捷菜单
       MouseOutTwo() {
-        if (this.rshow == true) {
+      	  this.mouse = false;
+          this.show = false;
+       /* if (this.rshow == true) {
           this.mouse = false;
           this.show = true;
         } else {
           this.mouse = false;
           this.show = false;
-        }
+        }*/
+      },
+      //移出右侧菜单栏
+      mouseOutRight(){
+      	this.rshow=false;
+      	this.show=false;
       },
       // 点击关闭弹出层
       ClickClose() {
@@ -431,12 +447,20 @@
     width: 56px;
     font-size: 26px;
     text-align: center;
+    
   }
 
   .box-left-two > li:nth-child(2) {
     float: left;
     width: 120px;
     font-size: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+     autoprefixer: off ;
+    -webkit-box-orient: vertical;
+     autoprefixer: on ;
   }
 
   .box-left-two > li:nth-child(3) {

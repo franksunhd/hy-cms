@@ -13,13 +13,32 @@
 								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value" />
 							</el-select>
 						</div>
-						<el-table :data="gridData" border align="center" style="width: 100%">
-							<el-table-column property="label1" label="第一级">
-								<el-input v-model="gridDatas" size="small"></el-input>
+						<el-table :data="gridData" :span-method="objectSpanMethod" border align="center" indent style="width: 100%">
+							<el-table-column label="第一级" align="center">
+								<template slot-scope="scope">
+									<span>{{scope.row.id}}</span>
+									<!--<el-input size="small" v-model="scope.row.label" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+								</template>
+								<!--<el-input v-model="gridDatas" size="small"></el-input>-->
 							</el-table-column>
-							<el-table-column property="label2" label="第二级"></el-table-column>
-							<el-table-column property="label3" label="第三级"></el-table-column>
-							<el-table-column property="label4" label="第四级"></el-table-column>
+							<el-table-column label="第二级" align="center">
+								<template slot-scope="scope">
+									<span>{{scope.row.amount1}}</span>
+									<!--<el-input size="small" v-model="scope.row.label.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+								</template>
+							</el-table-column>
+							<el-table-column label="第三级" align="center">
+								<template slot-scope="scope">
+									<span>{{scope.row.amount2}}</span>
+									<!--<el-input size="small" v-model="scope.row.label.children.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+								</template>
+							</el-table-column>
+							<el-table-column label="第四级" align="center">
+								<template slot-scope="scope">
+									<span>{{scope.row.amount3}}</span>
+									<!--<el-input size="small" v-model="scope.row.label.children.children.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+								</template>
+							</el-table-column>
 						</el-table>
 
 						<div slot="footer" class="dialog-footer">
@@ -35,16 +54,16 @@
 						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
 							<ul>
 								<li><label for="">父级节点:</label>
-									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopover" ref="popover">
-										<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNode" :props="defaultProps" />
-										<el-input v-model="formItem.computerRoom" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoverss" ref="popover">
+										<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultProps" />
+										<el-input v-model="addEdits.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 									</el-popover>
 								</li>
 								<li><label for="">节点名称:</label>
-									<el-input class="width200"></el-input>
+									<el-input v-model="nameOfTheNode" class="width200"></el-input>
 								</li>
 								<li><label for="">顺序:</label>
-									<el-input class="width200"></el-input>
+									<el-input v-model="order" class="width200"></el-input>
 								</li>
 							</ul>
 						</div>
@@ -130,7 +149,7 @@
 							</el-select>
 						</el-form-item>
 						<!--厂商  manufacturer-->
-						<el-form-item :label="$t('EquipmentMonitoring.manufacturer')+ ':'">
+						<el-form-item :label="$t('EquipmentMonitoring.manufacturer')+ '：'">
 							<el-select v-model="formItem.manufacturer" class="width200">
 								<el-option v-for="(item,index) in manufacturerList" :key="index" :label="item.label" :value="item.value" />
 							</el-select>
@@ -141,6 +160,17 @@
 							<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
 						</el-form-item>
 					</el-form>
+					<!--按钮-->
+					<div style="padding-bottom:10px;">
+						<el-button>添加监测</el-button>
+						<el-button>转移分组</el-button>
+						<el-button>进行监测</el-button>
+						<el-button>停止监测</el-button>
+						<el-button>解除监测</el-button>
+						<el-button>忽略告警</el-button>
+						<el-button>取消忽略</el-button>
+						<el-button>离线设备</el-button>
+					</div>
 					<!--表格-->
 					<el-table :data="tableData" stripe @cell-click="cellClickColumn">
 						<el-table-column type="selection" label="$t('EquipmentMonitoring.FutureGenerations')" width="55">
@@ -294,6 +324,10 @@
 		},
 		data() {
 			return {
+				/*节点名称*/
+				nameOfTheNode: '',
+				/*顺序*/
+				order: '',
 				// 查询表单
 				formItem: {
 					/*设备类型*/
@@ -317,17 +351,62 @@
 					manufacturer: null,
 					/*目录ID 左侧树形控件*/
 					catalogId: null,
+
 				},
+				/*父级节点*/
+				forItems: {
+					computerRooms: '',
+				},
+
 				// 设备告警详情提交字段
 				addEdit: {
 					id: ''
+				},
+				addEdits:{
+					nodeName:'',
+					parentId:'',
+					
 				},
 				// 设备告警详情数据
 				equipmentData: {},
 				// 设备类型树形下拉框数据
 				equipmentTypeList: [],
 				// 机房树形下拉框的数据
-				computerRoomList: [],
+				computerRoomList: [{
+					label: '一级 1',
+					children: [{
+						label: '二级 1-1',
+						children: [{
+							label: '三级 1-1-1'
+						}]
+					}]
+				}, {
+					label: '一级 2',
+					children: [{
+						label: '二级 2-1',
+						children: [{
+							label: '三级 2-1-1'
+						}]
+					}, {
+						label: '二级 2-2',
+						children: [{
+							label: '三级 2-2-1'
+						}]
+					}]
+				}, {
+					label: '一级 3',
+					children: [{
+						label: '二级 3-1',
+						children: [{
+							label: '三级 3-1-1'
+						}]
+					}, {
+						label: '二级 3-2',
+						children: [{
+							label: '三级 3-2-1'
+						}]
+					}]
+				}],
 				// 机架下拉框数据
 				rackNameList: [],
 				// 设备状态下拉框
@@ -349,6 +428,7 @@
 
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowComputerPopover: false, // 控制机房下拉框的显示隐藏
+				isShowComputerPopoverss: false, // 控制父级节点下拉框的显示隐藏
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
 				dialogVisible: false, // 设备详情信息弹出层
@@ -416,37 +496,69 @@
 				},
 				//新增设备分组
 				gridData: [{
-					label1: '',
-					label2: '',
-					label3: '',
-					label4: ''
+					id: '12987121',
+					amount1: '1.1',
+					amount2: '1.1.1',
+					amount3: '1.1.1.1'
 				}, {
-					label1: '',
-					label2: '',
-					label3: '',
-					label4: ''
+					id: '12987122',
+					amount1: '2.1',
+					amount2: '2.1.1',
+					amount3: '2.1.1.1'
 				}, {
-					label1: '',
-					label2: '',
-					label3: '',
-					label4: ''
+					id: '12987123',
+					amount1: '3.1',
+					amount2: '3.1.1',
+					amount3: '3.1.1.1'
 				}, {
-					label1: '',
-					label2: '',
-					label3: '',
-					label4: ''
+					id: '12987124',
+					amount1: '4.1',
+					amount2: '4.1.1',
+					amount3: '4.1.1.1'
 				}],
+				/*gridData: [{
+						label: '1',
+						children: [{
+							label: '1.1',
+							children: [{
+								label: '1.1.1',
+								children: [{
+									label: '1.1.1.1'
+								}]
+							}]
+						}, {
+							label: '1.2',
+							children: [{
+								label: '1.2.1',
+								children: [{
+									label: '1.2.1.1'
+								}]
+							}]
+						}]
+					},
+					{
+						label: '2',
+						children: [{
+							label: '2.1',
+							children: [{
+								label: '2.1.1',
+								children: [{
+									label: '2.1.1.1'
+								}]
+							}]
+						}]
+					}
+				],*/
 				parentNode: '',
-				gridDatas: '',
-				parentNodeList:[
-				{
-					value:'1',
-					label:'11'
-				},
-				{
-					value:'2',
-					label:'22'
-				}
+				/*gridDatas: '',*/
+				parentNodeList: [{
+						value: '1',
+						label: '11'
+					},
+					{
+						value: '2',
+						label: '22'
+					}
 				],
 
 			}
@@ -460,6 +572,14 @@
 			clickTypeNode(val) {},
 			// 点击机房下拉框的节点
 			clickRoomNode(val) {},
+			// 点击付集结点下拉框的节点
+			clickRoomNodes(val) {
+			
+				var _t = this;
+        _t.addEdits.parentId = val.nodeId;
+        _t.addEdits.nodeName = val.label;
+        _t.isShowComputerPopoverss = false;
+			},
 			// 查询表格数据
 			getData() {
 				var _t = this;
@@ -711,15 +831,36 @@
 			},
 			//机房下拉框数据获取
 			//机架/机柜下拉框数据获取
-			
+
 			//删除设备分组确认提示
 			handleClose(done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-      }
+				this.$confirm('确认关闭？')
+					.then(_ => {
+						done();
+					})
+					.catch(_ => {});
+			},
+			//表格合并列
+			objectSpanMethod({
+				row,
+				column,
+				rowIndex,
+				columnIndex
+			}) {
+				if(columnIndex === 0) {
+					if(rowIndex % 2 === 0) {
+						return {
+							rowspan: 2,
+							colspan: 1
+						};
+					} else {
+						return {
+							rowspan: 0,
+							colspan: 0
+						};
+					}
+				}
+			}
 		},
 
 		created() {}
@@ -807,10 +948,12 @@
 		width: 501px;
 		height: 325px;
 	}
+	
 	.EquipmentMonitoringSc .el-dialog {
 		width: 200px;
 		height: 180px;
 	}
+	
 	.EquipmentMonitoringBox .el-dialog {
 		width: 880px;
 		height: 600px;

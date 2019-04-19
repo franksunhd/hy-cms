@@ -66,11 +66,7 @@
                 <el-table-column prop="errorText " label="描述" show-overflow-tooltip/>
               </el-table>
               <!--分页-->
-              <pages
-            :total='options.total'
-            :currentPage='options.currentPage'
-            :pageSize='options.pageSize'
-            @handleCurrentChangeSub="handleCurrentChange"/>
+              <pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
             </div>
           </div>
         </el-col>
@@ -93,7 +89,7 @@
         BeganToSee: '',
         //表格
         options: {
-          total: 0, // 总条数
+          total: 4, // 总条数
           currentPage: 1, // 当前页码
           pageSize: 10, // 每页显示条数
         },
@@ -215,7 +211,7 @@
                 }
                 _t.tableData.push({
                   manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
-                  serialNumber: i + 1,
+                  /*serialNumber: i + 1,*/
                   ip: Income[i].ip,
                   discovery: Income[i].discovery,
                   errorText: Income[i].errorText
@@ -238,6 +234,8 @@
               _t.Dincome2 = [];
               _t.Dincome2 = Dincome2;
               _t.drawLine();
+              _t.options.currentPage = res.data.currentPage;
+							_t.options.total = res.data.count;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -286,7 +284,7 @@
                 }
                 _t.tableData.push({
                   manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
-                  serialNumber: i + 1,
+                  /*serialNumber: i + 1,*/
                   ip: Income[i].ip,
                   discovery: Income[i].discovery,
                   errorText : Income[i].errorText
@@ -308,7 +306,11 @@
 
               var Dincome2 = dateFilterSeconds(res.requesttime);
               _t.Dincome2 = Dincome2;
+              
+              _t.options.currentPage = res.data.currentPage;
+							_t.options.total = res.data.pageList.length;
               _t.drawLine();
+              
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -446,14 +448,15 @@
                 }
                   _t.tableData.push({
                   	manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
-                    serialNumber: i + 1,
+                    /*serialNumber: i + 1,*/
                     ip: Income[i].ip,
                     discovery: Income[i].discovery,
                     errorText : Income[i].errorText
                   })
                 }
                // alert(param.dataIndex - 1);
-
+               _t.options.currentPage = res.data.currentPage;
+							_t.options.total = res.data.count;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -472,6 +475,7 @@
       handleCurrentChange(val) {
       	var _t = this;
         _t.options.currentPage = val;
+        _t.refresh();
       },
       //返回设备手动发现
       BeganToSeeReturn() {
@@ -529,7 +533,8 @@
               _t.tableData.push(describes)
              _t.tableData = _t.tableData.set(_t.tableData,5,'ddd');
             console.log(_t.tableData);
-            
+            _t.options.currentPage = res.data.currentPage;
+							_t.options.total = res.data.count;
             
             /*for (var i = 0; i < Income.length; i++) {
                   if (Income[i].discovery === true) {

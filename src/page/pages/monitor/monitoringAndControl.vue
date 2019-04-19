@@ -133,7 +133,18 @@
         <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
       </span>
 		</el-dialog>
-
+		<!--标签页-->
+				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="alarmCurrent-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
+					<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
+						<div class="alarmCurrent-btn">
+							<!--收起-->
+							<span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+							<!--关闭弹出层-->
+							<span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+						</div>
+						<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+					</el-tab-pane>
+				</el-tabs>
 	</Box>
 </template>
 <script>
@@ -154,6 +165,15 @@
 					currentPage: 1, //当前页码
 					pageSize: 10, //显示条数
 				},
+				editableTabsValue: '1', // 当前页签
+				editableTabs: [
+					/*{
+										name: '1',
+										title: '标题1',
+										content: '1'
+									}*/
+				], // 页面集合
+				tabIndex: 1, // 页签序号
 				sortArr: [{
 						label: 'Top10',
 						value: 10
@@ -235,6 +255,8 @@
 				dialogVisible: false, // 设备告警详情弹出层
 				organizationList: [], // 树形下拉框的数据
 				equipmentData: {}, // 设备告警详情
+				isShowTabBox: false, // 控制标签页内容是否显示
+				isShowTabBox_tab: false, // 控制标签页区域是否显示
 
 			}
 		},
@@ -601,8 +623,70 @@
 				}
 				// 点击最新告警时间列
 				if(column.label == "最新告警时间") {
-					console.log('最新告警时间' + row.id);
+					_t.addTab(row.deviceName, row.id);
+					/*console.log('最新告警时间' + row.id);*/
 				}
+			},
+			// 删除页签
+			removeTab(targetName) {
+				var _t = this;
+				// 获取页面集合
+				var tabs = _t.editableTabs;
+				// 获取当前选中的页签
+				var activeName = _t.editableTabsValue;
+				if(activeName === targetName) {
+					tabs.forEach((tab, index) => {
+						if(tab.name === targetName) {
+							var nextTab = tabs[index + 1] || tabs[index - 1];
+							if(nextTab) {
+								activeName = nextTab.name;
+							} else {
+								_t.isShowTabBox_tab = false;
+							}
+						}
+					});
+				}
+				// 删除之后的页签
+				_t.editableTabsValue = activeName;
+				_t.editableTabs = tabs.filter(tab => tab.name !== targetName);
+			},
+			// 添加页签
+			addTab(title, id) {
+				var _t = this;
+				var newTabName = ++_t.tabIndex + '';
+				_t.editableTabs.push({
+					title: title,
+					name: newTabName,
+					content: id
+				});
+				_t.editableTabsValue = newTabName;
+				_t.isShowTabBox = true;
+				_t.isShowTabBox_tab = true;
+				if(_t.editableTabs.length > 1) {
+					document.getElementById('alarmCurrent-tabs').style.top = '118px';
+				}
+			},
+			// 收起
+			packUp() {
+				var _t = this;
+				_t.isShowTabBox = false;
+				document.getElementById('alarmCurrent-tabs').style.top = 'initial';
+				_t.editableTabsValue = '';
+			},
+			// 关闭标签页
+			closeTab() {
+				var _t = this;
+				_t.editableTabsValue = '';
+				_t.editableTabs = [];
+				_t.tabIndex = 0;
+				_t.isShowTabBox_tab = false;
+				_t.isShowTabBox = false;
+			},
+			// 点击标签页
+			clickTabs() {
+				var _t = this;
+				_t.isShowTabBox = true;
+				document.getElementById('alarmCurrent-tabs').style.top = '118px';
 			},
 		}
 	}
