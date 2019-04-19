@@ -360,6 +360,13 @@
                 }
                 // 不可重置自己的密码
                 _t.disableBtn.more = false;
+              } else {
+                _t.$alert('不可以禁用、删除本人,重置本人密码!', _t.$t('public.confirmTip'), {
+                  confirmButtonText: _t.$t('public.confirm'),
+                  confirmButtonClass:'alertBtn'
+                }).then(()=>{
+                  _t.resetFormAdd();
+                });
               }
             });
             break;
