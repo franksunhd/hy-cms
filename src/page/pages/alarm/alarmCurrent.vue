@@ -221,57 +221,72 @@
       :close-on-press-escape="false">
       <!--设备基本信息-->
       <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
-      <el-form class="alarmMessageBox-formItem" :model="alarmDetailData" label-position="right" label-width="76px">
+      <el-form class="alarmMessageBox-formItem" :model="alarmDetailDataAlarm" label-position="right" label-width="76px">
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">{{alarmDetailData.alarm.deviceName || ''}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">{{alarmDetailData.alarm.ip}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">{{alarmDetailData.alarm.servicetag}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">{{alarmDetailDataAlarm.deviceName || ''}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">{{alarmDetailDataAlarm.ip}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">{{alarmDetailDataAlarm.servicetag}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.equipmentType') + '：'">{{tableDataBase.AssetType[alarmDetailData.alarm.type]}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentVendor') + '：'">{{alarmDetailData.alarm.manufacturer}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentModel') + '：'">{{alarmDetailData.alarm.model}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentType') + '：'">{{tableDataBase.AssetType[alarmDetailDataAlarm.type]}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentVendor') + '：'">{{alarmDetailDataAlarm.manufacturer}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentModel') + '：'">{{alarmDetailDataAlarm.model}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">{{alarmDetailData.alarm.roomName}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.location') + '：'">{{alarmDetailData.alarm.frameName}},{{alarmDetailData.alarm.framePosition}}U</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">{{alarmDetailDataAlarm.roomName}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.location') + '：'">{{alarmDetailDataAlarm.frameName}},{{alarmDetailDataAlarm.framePosition}}U</el-form-item>
           </el-col>
         </el-row>
         <!--告警信息字段-->
         <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
         <el-row>
           <el-col :span="12">
-            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'">{{tableDataBase.AlarmSeverity[alarmDetailData.alarm.alarmLevel]}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.alarmNumber') + '：'">{{alarmDetailData.alarm.alarmTimes}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'">
+              <span v-if="alarmDetailDataAlarm.alarmLevel == 33" class="iconfontSuccess">{{tableDataBase.AlarmSeverity[alarmDetailDataAlarm.alarmLevel]}}</span>
+              <span v-if="alarmDetailDataAlarm.alarmLevel == 66" class="iconfontWarn">{{tableDataBase.AlarmSeverity[alarmDetailDataAlarm.alarmLevel]}}</span>
+              <span v-if="alarmDetailDataAlarm.alarmLevel == 99" class="iconfontError">{{tableDataBase.AlarmSeverity[alarmDetailDataAlarm.alarmLevel]}}</span>
+            </el-form-item>
+            <el-form-item :label="$t('alarmCurrent.alarmNumber') + '：'">
+              <span class="iconfontError">{{alarmDetailDataAlarm.alarmTimes}}</span>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item :label="$t('alarmCurrent.createTime') + '：'">{{alarmDetailData.alarm.occurrenceTime | dateFilter}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.lastTime') + '：'">{{alarmDetailData.alarm.updateTime | dateFilter}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.createTime') + '：'">{{alarmDetailDataAlarm.occurrenceTime | dateFilter}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.lastTime') + '：'">{{alarmDetailDataAlarm.updateTime | dateFilter}}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="处理状态：">{{alarmDetailData.alarm.status}}</el-form-item>
+        <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.processStatus')}}</strong></p>
+        <el-form-item :label="$t('alarmCurrent.status') + '：'">
+          <span v-if="alarmDetailDataAlarm.status == 0" class="iconfontError">{{tableDataBase.AlarmHandleStatus[alarmDetailDataAlarm.status]}}</span>
+          <span v-else>{{tableDataBase.AlarmHandleStatus[alarmDetailDataAlarm.status]}}</span>
+        </el-form-item>
         <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmContent')}}</strong></p>
         <el-form-item :label="$t('alarmCurrent.part') + '：'">
-          {{alarmDetailData.alarm.part}}
+          {{alarmDetailDataAlarm.part}}
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.alarmInfo') + '：'">
-          {{alarmDetailData.alarm.currentStatus}}
+          {{alarmDetailDataAlarm.currentStatus}}
         </el-form-item>
         <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmDescription')}}</strong></p>
         <el-form-item label=" ">
-          <el-timeline>
-            <el-timeline-item v-for="(item,index) in alarmDetailData.commentList" :key="index" placement="top">
-              <p dot="timestamp" class="fsBold12">
-                <span>{{$t('alarmCurrent.descriptionUser')}}</span>
-                <span class="marginRight20">{{item.commUser}}</span>
-                <span>{{item.createTime | dateFilter}}</span>
-              </p>
-              <el-card>{{item.commContent}}</el-card>
+          <el-timeline class="alarmDetailDataComment">
+            <el-timeline-item
+              :size="item.titleStatus == true ? 'large' : 'normal'"
+              v-for="(item,index) in alarmDetailDataComment"
+              :key="index">
+              <div dot="timestamp" v-if="item.titleStatus == true">
+                <span class="fsBold14">{{item.title}}</span>
+              </div>
+              <div dot="timestamp" class="fs12" v-if="item.titleStatus == false">
+                <span class="col666">{{$t('alarmCurrent.descriptionUser')}}</span>
+                <span class="col666 marginRight20">{{item.commUser}}</span>
+                <span class="col666">{{item.createTime | dateFilter}}</span>
+                <p>{{item.commContent}}</p>
+              </div>
             </el-timeline-item>
           </el-timeline>
         </el-form-item>
-
         <el-form-item class="marginTop10" :label="$t('alarmCurrent.dealWithWays') + '：'">
           <el-radio-group v-model="formItem.status">
             <el-radio :label="0">{{$t('public.confirmAlarm')}}</el-radio>
@@ -325,7 +340,7 @@
 <script>
   import Box from '../../../components/Box';
   import AdministrationTags from '../../../components/AdministrationTabs';
-  import {dateFilterDay,dateFilter} from "../../../assets/js/filters";
+  import {dateFilterDay,dateFilter,dateFilterDayCN} from "../../../assets/js/filters";
 
   export default {
     name: "alarmCurrent",
@@ -384,15 +399,8 @@
           AssetType:[]
         },
         // 设备告警详情弹出层信息
-        alarmDetailData:{
-          alarm:{
-            type:''
-          },
-          commentList:[
-            {},
-            {}
-          ]
-        },
+        alarmDetailDataAlarm:{},
+        alarmDetailDataComment:[],
         // 处理状态
         dealWithStatusList:[],
         // 控制设备类型下拉框的显示隐藏
@@ -400,9 +408,9 @@
         // 关联业务树形下拉框显示隐藏
         isShowBusinessPopover:false,
         // 控制标签页内容是否显示
-        isShowTabBox:false,
+        isShowTabBox:true,
         // 控制标签页区域是否显示
-        isShowTabBox_tab:false,
+        isShowTabBox_tab:true,
         // 设备详情信息弹出层
         dialogVisible:false,
         defaultProps:{
@@ -583,7 +591,35 @@
         _t.$api.get('alarm/alarm/' + val,{},function (res) {
           switch (res.status) {
             case 200:
-              _t.alarmDetailData = res.data;
+              _t.alarmDetailDataAlarm = res.data.alarm;
+              var resData = res.data.commentList;
+              // 处理之后的评注列表数据
+              var alarmDetailData = new Array();
+              // 需要对比的时间
+              var timeLine = '';
+              if (resData.length == 0) {
+                _t.alarmDetailData = [];
+              } else {
+                resData.forEach(function (item) {
+                  var time = new Date(item.createTime);
+                  var timeNew = time.getFullYear().toString() + (time.getMonth() + 1).toString() + time.getDate().toString();
+                  if (timeNew !== timeLine) {
+                    // 没有本日数据
+                    timeLine = timeNew;
+                    var obj = new Object();
+                    obj.titleStatus = true;
+                    obj.title = dateFilterDayCN(item.createTime);
+                    alarmDetailData.push(obj);
+                    alarmDetailData.push(item);
+                  } else {
+                    // 有本日的数据
+                    alarmDetailData.push(item);
+                  }
+                  item.titleStatus = false;
+                  item.title = '';
+                });
+              }
+              _t.alarmDetailDataComment = alarmDetailData;
               _t.dialogVisible = true;
               break;
             case 1003: // 无操作权限

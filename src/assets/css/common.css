@@ -113,8 +113,17 @@ html,body,.Index-box {
   font-size: 12px;
 }
 
+.fs14 {
+  font-size: 14px;
+}
+
 .fsBold12 {
   font-size: 12px;
+  font-weight: bold;
+}
+
+.fsBold14 {
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -486,4 +495,13 @@ input::-webkit-input-placeholder {
 
 .cursorPointer {
   cursor: pointer;
+}
+
+.el-timeline-item {
+  padding-bottom: 0;
+  height: 100%;
+}
+
+.el-timeline-item__wrapper {
+  top: -7px;
 }
