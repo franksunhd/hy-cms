@@ -22,10 +22,10 @@
           <el-form-item label="温度状态：">OK</el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="18" style="position: relative;">
+      <el-col :span="18" class="positionRelative">
         <!--标签页-->
-        <el-tabs v-model="activeName" type="card">
-          <el-tab-pane label="用户管理" name="first">
+        <el-tabs v-model="activeName" class="monitoringDetails-header" type="card">
+          <el-tab-pane label="监测详情" name="one">
             <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
               <el-table-column type="expand" header-align="left" align="left">
                 <!--展开行-->
@@ -93,6 +93,13 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
+          <el-tab-pane label="告警事件" name="two"></el-tab-pane>
+          <el-tab-pane label="硬件配置" name="three"></el-tab-pane>
+          <el-tab-pane label="网络配置" name="four"></el-tab-pane>
+          <el-tab-pane label="管理信息" name="five"></el-tab-pane>
+          <el-tab-pane label="位置信息" name="six"></el-tab-pane>
+          <el-tab-pane label="维保信息" name="seven"></el-tab-pane>
+          <el-tab-pane label="变更信息" name="eight"></el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
@@ -107,32 +114,8 @@
     data() {
       return {
         // 当前激活标签页序号
-        activeName:'first',
-        // 标签页渲染列表
-        tabsList:[
-          {id:1,label:'监测详情'},
-          {id:2,label:'告警事件'},
-          {id:3,label:'硬件配置'},
-          {id:4,label:'网络配置'},
-          {id:5,label:'管理信息'},
-          {id:6,label:'位置信息'},
-          {id:7,label:'维保信息'},
-          {id:8,label:'变更信息'}
-        ],
-        monitoringDetailsData:[
-          {
-            id:1,
-            status:1
-          },
-          {
-            id:2,
-            status:2
-          },
-          {
-            id:3,
-            status:2
-          }
-        ], // 监测管理表格数据
+        activeName:'one',
+        monitoringDetailsData:[], // 监测管理表格数据
       }
     },
     props:{
@@ -150,6 +133,7 @@
       getClassName({row,rowIndex}){
         return row.status == 1 ? 'expendTable' : '';
       },
+      // 请求数据
       getData(){
         var _t = this;
       }
@@ -243,5 +227,10 @@
 
   .expendTable .el-table__expand-column .cell {
     display: none;
+  }
+
+  /*标签页头部*/
+  .monitoringDetails-header.el-tabs--card>.el-tabs__header {
+    background-color: #f0f0f0;
   }
 </style>

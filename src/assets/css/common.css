@@ -127,6 +127,10 @@ html,body,.Index-box {
   font-weight: bold;
 }
 
+.positionRelative {
+  position: relative;
+}
+
 /*messageBox弹出层 确认和取消按钮调换位置*/
 .btn-custom-cancel {
   float: right;
@@ -504,4 +508,10 @@ input::-webkit-input-placeholder {
 
 .el-timeline-item__wrapper {
   top: -7px;
+}
+
+.monitoringDetails-header.el-tabs--card>.el-tabs__header,
+.el-tabs--card>.el-tabs__header .el-tabs__item,
+.el-tabs--card>.el-tabs__header .el-tabs__nav {
+  border: none;
 }
