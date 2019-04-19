@@ -530,7 +530,11 @@ export default {
     dealWithWays:'dealWithWays',
     alarmWarranty:'alarmWarranty',
     alarmClose:'alarmClose',
-    alarmCloseIgnore:'alarmCloseIgnore'
+    alarmCloseIgnore:'alarmCloseIgnore',
+    confirmOpinions:'confirmOpinions',
+    addDescription:'addDescription',
+    warrantyOpinions:'warrantyOpinions',
+    closeOpinions:'closeOpinions'
   },
   // 历史告警
   alarmHistory: {

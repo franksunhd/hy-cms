@@ -22,85 +22,78 @@
           <el-form-item label="温度状态：">OK</el-form-item>
         </el-form>
       </el-col>
-      <el-col :span="18">
+      <el-col :span="18" style="position: relative;">
         <!--标签页-->
-        <ul class="clearfix" id="administration-tabs-title">
-          <li :class="tabsActive == (index + 1) ? 'active' :''"
-              v-for="(item,index) in tabsList"
-              :key="index"
-              @click="clickTabsNode(item)">
-            <span>{{item.label}}</span>
-          </li>
-        </ul>
-        <!--标签页具体内容-->
-        <div>
-          <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
-            <el-table-column type="expand" header-align="left" align="left">
-              <!--展开行-->
-              <template>
-                <el-table stripe>
-                  <el-table-column label="状态" header-align="left" align="left">
-                    <template>
-                      <el-tooltip effect="dark" content="紧急" placement="top-start">
-                        <span class="iconfont iconfontError">&#xe609;</span>
-                      </el-tooltip>
-                      <el-tooltip effect="dark" content="正常" placement="top-start">
-                        <span class="iconfont iconfontSuccess">&#xe618;</span>
-                      </el-tooltip>
-                    </template>
-                  </el-table-column>
-                  <el-table-column v-if="true" label="类型" header-align="left" align="left" />
-                  <el-table-column v-if="true" label="名称" header-align="left" align="left" />
-                  <el-table-column v-if="false" label="资源名称" header-align="left" align="left" />
-                  <el-table-column label="最新状态" header-align="left" align="left" />
-                  <el-table-column label="取值方式" header-align="left" align="left" />
-                  <el-table-column label="取值间隔" header-align="left" align="left" />
-                  <el-table-column label="更新时间" header-align="left" align="left" />
-                </el-table>
-              </template>
-            </el-table-column>
-            <el-table-column label="状态" header-align="left" align="left">
-              <template slot-scope="scope">
-                <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <el-tooltip v-if="scope.row.status == 2" effect="dark" content="正常" placement="top-start">
-                  <span class="iconfont iconfontSuccess">&#xe618;</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-            <el-table-column label="资源名称" header-align="left" align="left" />
-            <el-table-column label="最新状态" header-align="left" align="left" />
-            <el-table-column label="更新时间" header-align="left" align="left" />
-            <el-table-column label="操作" header-align="left" align="left">
-              <template slot-scope="scope">
-                <el-tooltip effect="dark" content="离线设备" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe62b;</span>
-                </el-tooltip>
-                <span>已离线</span>
-                <el-tooltip effect="dark" content="页面不显示" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="删除监测" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <span>已删除</span>
-                <el-tooltip effect="dark" content="忽略告警" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="取消忽略" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="暂停监测" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe629;</span>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="启动监测" placement="top-start">
-                  <span class="iconfont iconfontError">&#xe609;</span>
-                </el-tooltip>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+        <el-tabs v-model="activeName" type="card">
+          <el-tab-pane label="用户管理" name="first">
+            <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
+              <el-table-column type="expand" header-align="left" align="left">
+                <!--展开行-->
+                <template>
+                  <el-table stripe>
+                    <el-table-column label="状态" header-align="left" align="left">
+                      <template>
+                        <el-tooltip effect="dark" content="紧急" placement="top-start">
+                          <span class="iconfont iconfontError">&#xe609;</span>
+                        </el-tooltip>
+                        <el-tooltip effect="dark" content="正常" placement="top-start">
+                          <span class="iconfont iconfontSuccess">&#xe618;</span>
+                        </el-tooltip>
+                      </template>
+                    </el-table-column>
+                    <el-table-column v-if="true" label="类型" header-align="left" align="left" />
+                    <el-table-column v-if="true" label="名称" header-align="left" align="left" />
+                    <el-table-column v-if="false" label="资源名称" header-align="left" align="left" />
+                    <el-table-column label="最新状态" header-align="left" align="left" />
+                    <el-table-column label="取值方式" header-align="left" align="left" />
+                    <el-table-column label="取值间隔" header-align="left" align="left" />
+                    <el-table-column label="更新时间" header-align="left" align="left" />
+                  </el-table>
+                </template>
+              </el-table-column>
+              <el-table-column label="状态" header-align="left" align="left">
+                <template slot-scope="scope">
+                  <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                  <el-tooltip v-if="scope.row.status == 2" effect="dark" content="正常" placement="top-start">
+                    <span class="iconfont iconfontSuccess">&#xe618;</span>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+              <el-table-column label="资源名称" header-align="left" align="left" />
+              <el-table-column label="最新状态" header-align="left" align="left" />
+              <el-table-column label="更新时间" header-align="left" align="left" />
+              <el-table-column label="操作" header-align="left" align="left">
+                <template slot-scope="scope">
+                  <el-tooltip effect="dark" content="离线设备" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe62b;</span>
+                  </el-tooltip>
+                  <span>已离线</span>
+                  <el-tooltip effect="dark" content="页面不显示" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="删除监测" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                  <span>已删除</span>
+                  <el-tooltip effect="dark" content="忽略告警" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="取消忽略" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="暂停监测" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe629;</span>
+                  </el-tooltip>
+                  <el-tooltip effect="dark" content="启动监测" placement="top-start">
+                    <span class="iconfont iconfontError">&#xe609;</span>
+                  </el-tooltip>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
   </div>
@@ -114,7 +107,7 @@
     data() {
       return {
         // 当前激活标签页序号
-        tabsActive:1,
+        activeName:'first',
         // 标签页渲染列表
         tabsList:[
           {id:1,label:'监测详情'},
@@ -153,11 +146,6 @@
       }
     },
     methods: {
-      // 点击标签页节点
-      clickTabsNode(item){
-        console.log(item.id);
-        this.tabsActive = item.id;
-      },
       // 控制某些状态下的表格不展开行
       getClassName({row,rowIndex}){
         return row.status == 1 ? 'expendTable' : '';
