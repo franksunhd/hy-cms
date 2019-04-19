@@ -219,60 +219,77 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
-          <el-form class="alarmMessageBox-formItem" :model="alarmDetailData" label-position="right" label-width="76px">
+      <!--设备基本信息-->
+      <div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
+      <el-form class="alarmMessageBox-formItem" :model="alarmDetailData" label-position="right" label-width="76px">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">{{alarmDetailData.alarm.deviceName || ''}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">{{alarmDetailData.alarm.ip}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">{{alarmDetailData.alarm.servicetag}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item :label="$t('alarmCurrent.equipmentType') + '：'">{{tableDataBase.AssetType[alarmDetailData.alarm.type]}}</el-form-item>
             <el-form-item :label="$t('alarmCurrent.equipmentVendor') + '：'">{{alarmDetailData.alarm.manufacturer}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">{{alarmDetailData.alarm.ip}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">{{alarmDetailData.alarm.deviceName || ''}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'">{{tableDataBase.AlarmSeverity[alarmDetailData.alarm.alarmLevel]}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">{{alarmDetailData.alarm.servicetag}}</el-form-item>
+            <el-form-item :label="$t('alarmCurrent.equipmentModel') + '：'">{{alarmDetailData.alarm.model}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">{{alarmDetailData.alarm.roomName}}</el-form-item>
             <el-form-item :label="$t('alarmCurrent.location') + '：'">{{alarmDetailData.alarm.frameName}},{{alarmDetailData.alarm.framePosition}}U</el-form-item>
+          </el-col>
+        </el-row>
+        <!--告警信息字段-->
+        <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item :label="$t('alarmCurrent.severityLevel') + '：'">{{tableDataBase.AlarmSeverity[alarmDetailData.alarm.alarmLevel]}}</el-form-item>
             <el-form-item :label="$t('alarmCurrent.alarmNumber') + '：'">{{alarmDetailData.alarm.alarmTimes}}</el-form-item>
-            <el-form-item :label="$t('alarmCurrent.noticeTimes') + '：'">{{alarmDetailData.alarm.sendCount}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item :label="$t('alarmCurrent.createTime') + '：'">{{alarmDetailData.alarm.occurrenceTime | dateFilter}}</el-form-item>
             <el-form-item :label="$t('alarmCurrent.lastTime') + '：'">{{alarmDetailData.alarm.updateTime | dateFilter}}</el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="16">
-          <div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
-          <el-form :model="alarmDetailData" label-position="right" label-width="76px">
-            <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmContent')}}</strong></p>
-            <el-form-item :label="$t('alarmCurrent.part') + '：'">
-              {{alarmDetailData.alarm.part}}
-            </el-form-item>
-            <el-form-item :label="$t('alarmCurrent.alarmInfo') + '：'">
-              {{alarmDetailData.alarm.currentStatus}}
-            </el-form-item>
-            <p class="paddingLeft-10 fsBold12"><strong>{{$t('alarmCurrent.alarmDealWith')}}</strong></p>
-            <template v-for="(item,index) in alarmDetailData.commentList">
-              <div class="fs12 marginTop10 displayInlineBlock marginRight20">
-                <label>{{$t('alarmCurrent.description') + (index + 1) + '：'}}</label>
-                <span>{{item.commContent}}</span>
-              </div>
-              <div class="fs12 marginTop10 displayInlineBlock marginRight20">
-                <label>{{$t('alarmCurrent.descriptionUser') + '：'}}</label>
-                <span>{{item.commUser}}</span>
-              </div>
-              <div class="fs12 marginTop10 displayInlineBlock">
-                <label>{{$t('alarmCurrent.descriptionTime') + '：'}}</label>
+          </el-col>
+        </el-row>
+        <el-form-item label="处理状态：">{{alarmDetailData.alarm.status}}</el-form-item>
+        <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmContent')}}</strong></p>
+        <el-form-item :label="$t('alarmCurrent.part') + '：'">
+          {{alarmDetailData.alarm.part}}
+        </el-form-item>
+        <el-form-item :label="$t('alarmCurrent.alarmInfo') + '：'">
+          {{alarmDetailData.alarm.currentStatus}}
+        </el-form-item>
+        <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.alarmDescription')}}</strong></p>
+        <el-form-item label=" ">
+          <el-timeline>
+            <el-timeline-item v-for="(item,index) in alarmDetailData.commentList" :key="index" placement="top">
+              <p dot="timestamp" class="fsBold12">
+                <span>{{$t('alarmCurrent.descriptionUser')}}</span>
+                <span class="marginRight20">{{item.commUser}}</span>
                 <span>{{item.createTime | dateFilter}}</span>
-              </div>
-              <br>
-            </template>
-            <el-form-item class="marginTop10" :label="$t('alarmCurrent.alarmDescription') + '：'">
-              <el-input type="textarea" :autosize="{minRows: 3}" />
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
+              </p>
+              <el-card>{{item.commContent}}</el-card>
+            </el-timeline-item>
+          </el-timeline>
+        </el-form-item>
+
+        <el-form-item class="marginTop10" :label="$t('alarmCurrent.dealWithWays') + '：'">
+          <el-radio-group v-model="formItem.status">
+            <el-radio :label="0">{{$t('public.confirmAlarm')}}</el-radio>
+            <el-radio :label="1">{{$t('alarmCurrent.alarmDescription')}}</el-radio>
+            <el-radio :label="2">{{$t('alarmCurrent.alarmWarranty')}}</el-radio>
+            <el-radio :label="3">{{$t('alarmCurrent.alarmClose')}}</el-radio>
+            <el-radio :label="4">{{$t('alarmCurrent.alarmCloseIgnore')}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item class="marginTop10" :label="$t('alarmCurrent.alarmDescription') + '：'">
+          <el-input type="textarea" :autosize="{minRows: 3}" />
+        </el-form-item>
+      </el-form>
       <span slot="footer">
-        <el-button type="primary" class="alertBtn">{{$t('public.ignoreAlarm')}}</el-button>
-        <el-button type="primary" class="alertBtn">{{$t('public.confirmAlarm')}}</el-button>
-        <el-button type="primary" class="alertBtn">{{$t('public.toWarranty')}}</el-button>
+        <el-button v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button v-if="formItem.status == 1" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button v-if="formItem.status == 2" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button v-if="formItem.status == 3" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
         <el-button type="default" class="alertBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -327,7 +344,8 @@
           businessName:null,
           equipmentStatus:null,
           dealWithStatus:null,
-          dateTime:null
+          dateTime:null,
+          status:0
         },
         statusMenu:true,
         // 设备告警详情提交字段
@@ -369,7 +387,11 @@
         alarmDetailData:{
           alarm:{
             type:''
-          }
+          },
+          commentList:[
+            {},
+            {}
+          ]
         },
         // 处理状态
         dealWithStatusList:[],
