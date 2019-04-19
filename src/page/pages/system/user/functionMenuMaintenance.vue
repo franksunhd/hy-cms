@@ -171,7 +171,7 @@
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData" :key="index">
             <!--标题部分循环-->
-            <p style="font-size: 16px;">
+            <p style="font-size: 12px;">
               <template v-for="(k,i) in item.title">
                 <span>{{k}}</span>
                 <i v-if="i !== item.title.length - 1" class="el-icon-arrow-right"></i>
@@ -179,7 +179,7 @@
             </p>
             <!--标签部分循环-->
             <el-tag
-              style="margin: 10px 10px 0 0;"
+              style="margin: 0 10px 10px 0;"
               v-for="tag in item.tags"
               :key="tag.id"
               @close="handleClose(tag)"
@@ -480,7 +480,7 @@
       // 根据菜单id 查询 需要编辑的数据下的角色列表
       getEditRoleData(data) {
         var _t = this;
-        _t.$api.get('system/menu/getRoleByMenu', {
+        _t.$api.get('system/role/getRoleByMenu', {
           jsonString: JSON.stringify({
             systemMenu: {
               id: data
@@ -816,6 +816,12 @@
         var _t = this;
         _t.dialogVisibleAlert = false;
         _t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        } else {
+          _t.selectUserIsNull = false;
+        }
+        _t.$refs.tree.setCheckedKeys([]);
       },
       // 删除标签
       handleClose(tag) {
@@ -842,6 +848,10 @@
             });
           }
         });
+        // 删除标签之后 角色为空 显示提示
+        if (_t.listData.length == 0) {
+          _t.selectUserIsNull = true;
+        }
       },
       // 剩余人员
       result() {
