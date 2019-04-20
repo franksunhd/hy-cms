@@ -17,6 +17,7 @@
       @check-change="currentChange"
       :default-expand-all="true"
       :props="defaultProps"
+      :default-checked-keys="keys"
       :check-strictly="true"
     />
   </Box>
@@ -27,7 +28,7 @@
   import orgRole from '../../../../assets/js/orga_role';
   import menu from '../../../../assets/js/menuData';
   import {valInDeep,flattenDeepParents,flattenDeep,regDeepParents} from "../../../../assets/js/array";
-  import {getMenuWithId,getParent,uniqArr,getChildren} from '../../../../assets/js/recursive';
+  import {getMenuWithId,getParent,uniqArr,getChildren,unique} from '../../../../assets/js/recursive';
 
   export default {
     name: "testLog",
@@ -45,23 +46,30 @@
     methods: {
       currentChange(node,status){
         var _t = this;
+        var nodeChildrenArr = [];
+        var keys = new Array();
+        var uniqArrKeys = new Array();
         if (status) {
           var parent = getParent(_t.treeData,node.id,'id','children','parentId');
           parent.forEach(function (item) {
-            _t.keys.push(item.id);
+            keys.push(item.id);
           });
-          _t.$refs.tree.setCheckedKeys(uniqArr(_t.keys));
+          uniqArrKeys = uniqArr(keys);
+          _t.keys = uniqArrKeys;
         } else {
           _t.keys.forEach(function (item,index) {
             if (item === node.id) {
               _t.keys.splice(index,1);
             }
           });
-          var aaa = getChildren(_t.treeData,node.id,'id','children');
-          _t.$refs.tree.setChecked(aaa,false);
-          // console.log(aaa);
+          // 获取勾选带子级的节点
+          nodeChildrenArr = getChildren(_t.treeData,node.id,'id','children');
+          // 循环设置取消勾选节点子集的所有节点
+          nodeChildrenArr.forEach(function (item) {
+            // item key值, false: 不勾选
+            _t.$refs.tree.setChecked(item,false,true);
+          });
         }
-        // console.log(uniqArr(_t.keys));
       }
     },
     created() {

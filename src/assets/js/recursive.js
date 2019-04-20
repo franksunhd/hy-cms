@@ -301,10 +301,12 @@ export function getChildren(treeData, val, id, children) {
   var arrRes = new Array();
   var thisArr = valInDeep(treeData, val, id, children);
   var newArr = new Array();
-  newArr = serverArray(thisArr[0][children],id,children);
-  newArr.forEach((item)=>{
-    arrRes.push(item[id]);
-  });
+  if (thisArr[0][children] !== undefined) {
+    newArr = serverArray(thisArr[0][children],id,children);
+    newArr.forEach((item)=>{
+      arrRes.push(item[id]);
+    });
+  }
   return arrRes;
 }
 
@@ -317,9 +319,6 @@ function valInDeep(arr = [], val, id, children) {
   }, []);
 }
 
-
-
-
 function serverArray(arr,id,children,newArr = []){
   arr.forEach((item)=>{
     if (item[children]) {
@@ -328,4 +327,11 @@ function serverArray(arr,id,children,newArr = []){
     newArr.push(item);
   });
   return newArr;
+}
+
+// 两个数组做对比 删除相同部分, 返回剩余部分
+export function unique (obj, ary) {
+  return obj.filter(function(item){
+    return ary.indexOf(item) === -1;
+  })
 }
