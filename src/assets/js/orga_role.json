@@ -1,129 +1,129 @@
 {
   "orgRole": [
     {
-      "nodeId": "0",
-      "nodeName": "组织结构",
-      "childrenNode": [
+      "id": "0",
+      "label": "组织结构",
+      "children": [
         {
           "type": "2",
-          "nodeId": "org_01",
-          "nodeName": "集团亚洲总部",
-          "parentNodeId": "0",
-          "childrenNode": [
+          "id": "org_01",
+          "label": "集团亚洲总部",
+          "parentId": "0",
+          "children": [
             {
               "type": "1",
-              "nodeId": "role_01",
-              "parentNodeId": "org_01",
-              "nodeName": "亚洲总部经理"
+              "id": "role_01",
+              "parentId": "org_01",
+              "label": "亚洲总部经理"
             },
             {
               "type": "1",
-              "nodeId": "role_02",
-              "parentNodeId": "org_01",
-              "nodeName": "亚洲总部分管副总"
+              "id": "role_02",
+              "parentId": "org_01",
+              "label": "亚洲总部分管副总"
             },
             {
               "type": "1",
-              "nodeId": "role_03",
-              "parentNodeId": "org_01",
-              "nodeName": "亚洲总部采购总监"
+              "id": "role_03",
+              "parentId": "org_01",
+              "label": "亚洲总部采购总监"
             },
             {
               "type": "2",
-              "nodeId": "org_01_01",
-              "nodeName": "中国总部",
-              "parentNodeId": "org_01",
-              "childrenNode": [
+              "id": "org_01_01",
+              "label": "中国总部",
+              "parentId": "org_01",
+              "children": [
                 {
                   "type": "2",
-                  "nodeId": "org_01_01_01",
-                  "nodeName": "广州分部",
-                  "parentNodeId": "org_01_01",
-                  "childrenNode": []
+                  "id": "org_01_01_01",
+                  "label": "广州分部",
+                  "parentId": "org_01_01",
+                  "children": []
                 },
                 {
                   "type": "2",
-                  "nodeId": "org_01_01_02",
-                  "nodeName": "上海分部",
-                  "parentNodeId": "org_01_01",
-                  "childrenNode": [
+                  "id": "org_01_01_02",
+                  "label": "上海分部",
+                  "parentId": "org_01_01",
+                  "children": [
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_02_01",
-                      "parentNodeId": "org_01_01_02",
-                      "nodeName": "上海分部副总"
+                      "id": "role_01_01_02_01",
+                      "parentId": "org_01_01_02",
+                      "label": "上海分部副总"
                     },
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_02_02",
-                      "parentNodeId": "org_01_01_02",
-                      "nodeName": "上海技术经理"
+                      "id": "role_01_01_02_02",
+                      "parentId": "org_01_01_02",
+                      "label": "上海技术经理"
                     }
                   ]
                 },
                 {
                   "type": "2",
-                  "nodeId": "org_01_01_03",
-                  "nodeName": "北京分部",
-                  "parentNodeId": "org_01_01",
-                  "childrenNode": [
+                  "id": "org_01_01_03",
+                  "label": "北京分部",
+                  "parentId": "org_01_01",
+                  "children": [
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_03_01",
-                      "parentNodeId": "org_01_01_03",
-                      "nodeName": "北京分部副总"
+                      "id": "role_01_01_03_01",
+                      "parentId": "org_01_01_03",
+                      "label": "北京分部副总"
                     },
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_03_02",
-                      "parentNodeId": "org_01_01_03",
-                      "nodeName": "北京技术经理"
+                      "id": "role_01_01_03_02",
+                      "parentId": "org_01_01_03",
+                      "label": "北京技术经理"
                     }
                   ]
                 },
                 {
                   "type": "2",
-                  "nodeId": "org_01_01_04",
-                  "nodeName": "杭州分部",
-                  "parentNodeId": "org_01_01",
-                  "childrenNode": [
+                  "id": "org_01_01_04",
+                  "label": "杭州分部",
+                  "parentId": "org_01_01",
+                  "children": [
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_04_01",
-                      "parentNodeId": "org_01_01_04",
-                      "nodeName": "杭州分部副总"
+                      "id": "role_01_01_04_01",
+                      "parentId": "org_01_01_04",
+                      "label": "杭州分部副总"
                     },
                     {
                       "type": "1",
-                      "nodeId": "role_01_01_04_02",
-                      "parentNodeId": "org_01_01_04",
-                      "nodeName": "杭州技术经理"
+                      "id": "role_01_01_04_02",
+                      "parentId": "org_01_01_04",
+                      "label": "杭州技术经理"
                     }
                   ]
                 },
                 {
                   "type": "2",
-                  "nodeId": "org_01_01_05",
-                  "nodeName": "温州分部",
-                  "parentNodeId": "org_01_01",
-                  "childrenNode": [
+                  "id": "org_01_01_05",
+                  "label": "温州分部",
+                  "parentId": "org_01_01",
+                  "children": [
                     {
                       "type": "2",
-                      "nodeId": "org_01_01_05_01",
-                      "nodeName": "义务分部",
-                      "parentNodeId": "org_01_01_05",
-                      "childrenNode": [
+                      "id": "org_01_01_05_01",
+                      "label": "义务分部",
+                      "parentId": "org_01_01_05",
+                      "children": [
                         {
                           "type": "1",
-                          "nodeId": "role_01_01_05_01",
-                          "parentNodeId": "org_01_01_05_01",
-                          "nodeName": "义务技术经理"
+                          "id": "role_01_01_05_01",
+                          "parentId": "org_01_01_05_01",
+                          "label": "义务技术经理"
                         },
                         {
                           "type": "1",
-                          "nodeId": "role_01_01_05_02",
-                          "parentNodeId": "org_01_01_05_01",
-                          "nodeName": "义务产品经理"
+                          "id": "role_01_01_05_02",
+                          "parentId": "org_01_01_05_01",
+                          "label": "义务产品经理"
                         }
                       ]
                     }
@@ -135,55 +135,55 @@
         },
         {
           "type": "2",
-          "nodeId": "org_02",
-          "nodeName": "集团欧洲总部",
-          "parentNodeId": "0",
-          "childrenNode": [
+          "id": "org_02",
+          "label": "集团欧洲总部",
+          "parentId": "0",
+          "children": [
             {
               "type": "2",
-              "nodeId": "org_02_01",
-              "nodeName": "瑞士分部",
-              "parentNodeId": "org_02",
-              "childrenNode": [
+              "id": "org_02_01",
+              "label": "瑞士分部",
+              "parentId": "org_02",
+              "children": [
                 {
                   "type": "1",
-                  "nodeId": "role_02_01_01",
-                  "parentNodeId": "org_02_01",
-                  "nodeName": "瑞士部门经理"
+                  "id": "role_02_01_01",
+                  "parentId": "org_02_01",
+                  "label": "瑞士部门经理"
                 },
                 {
                   "type": "1",
-                  "nodeId": "role_02_01_02",
-                  "parentNodeId": "org_02_01",
-                  "nodeName": "瑞士总监"
+                  "id": "role_02_01_02",
+                  "parentId": "org_02_01",
+                  "label": "瑞士总监"
                 }
               ]
             },
             {
               "type": "2",
-              "nodeId": "org_02_02",
-              "nodeName": "意大利分部",
-              "parentNodeId": "org_02",
-              "childrenNode": [
+              "id": "org_02_02",
+              "label": "意大利分部",
+              "parentId": "org_02",
+              "children": [
                 {
                   "type": "1",
-                  "nodeId": "role_02_02_01",
-                  "nodeName": "意大利运营部经理",
-                  "parentNodeId": "org_02_02"
+                  "id": "role_02_02_01",
+                  "label": "意大利运营部经理",
+                  "parentId": "org_02_02"
                 }
               ]
             },
             {
               "type": "1",
-              "nodeId": "role_02_01",
-              "nodeName": "欧洲总部分区副总",
-              "parentNodeId": "org_02"
+              "id": "role_02_01",
+              "label": "欧洲总部分区副总",
+              "parentId": "org_02"
             },
             {
               "type": "1",
-              "nodeId": "role_02_02",
-              "nodeName": "欧洲总部市场部经理",
-              "parentNodeId": "org_02"
+              "id": "role_02_02",
+              "label": "欧洲总部市场部经理",
+              "parentId": "org_02"
             }
           ]
         }
@@ -191,29 +191,29 @@
     }
   ],
   "organizationList": {
-    "nodeId": "0",
-    "nodeName": "组织结构",
+    "id": "0",
+    "label": "组织结构",
     "parentId": null,
     "children": [
       {
-        "nodeId": "org_01",
-        "nodeName": "集团欧洲总部",
+        "id": "org_01",
+        "label": "集团欧洲总部",
         "parentId": "0",
         "children": [
           {
-            "nodeId": "org_01_01",
-            "nodeName": "瑞士分部",
+            "id": "org_01_01",
+            "label": "瑞士分部",
             "parentId": "org_01",
             "children": []
           },
           {
-            "nodeId": "org_01_02",
-            "nodeName": "意大利总部",
+            "id": "org_01_02",
+            "label": "意大利总部",
             "parentId": "org_01",
             "children": [
               {
-                "nodeId": "org_01_02_01",
-                "nodeName": "罗马分部",
+                "id": "org_01_02_01",
+                "label": "罗马分部",
                 "parentId": "org_01_02",
                 "children": []
               }
@@ -222,55 +222,55 @@
         ]
       },
       {
-        "nodeId": "org_02",
-        "nodeName": "集团欧洲总部",
+        "id": "org_02",
+        "label": "集团欧洲总部",
         "parentId": "0",
         "children": [
           {
-            "nodeId": "org_02_01",
-            "nodeName": "中国总部",
+            "id": "org_02_01",
+            "label": "中国总部",
             "parentId": "org_02",
             "children": [
               {
-                "nodeId": "org_02_01_01",
-                "nodeName": "北京分部",
+                "id": "org_02_01_01",
+                "label": "北京分部",
                 "parentId": "org_02_01",
                 "children": [
                   {
-                    "nodeId": "org_02_01_01_01",
-                    "nodeName": "朝阳区",
+                    "id": "org_02_01_01_01",
+                    "label": "朝阳区",
                     "parentId": "org_02_01_01",
                     "children": []
                   },
                   {
-                    "nodeId": "org_02_01_01_02",
-                    "nodeName": "海淀区",
+                    "id": "org_02_01_01_02",
+                    "label": "海淀区",
                     "parentId": "org_02_01_01",
                     "children": []
                   }
                 ]
               },
               {
-                "nodeId": "org_02_01_02",
-                "nodeName": "上海分部",
+                "id": "org_02_01_02",
+                "label": "上海分部",
                 "parentId": "org_02_01",
                 "children": []
               }
             ]
           },
           {
-            "nodeId": "org_02_02",
-            "nodeName": "俄罗斯总部",
+            "id": "org_02_02",
+            "label": "俄罗斯总部",
             "parentId": "org_02",
             "children": [
               {
-                "nodeId": "org_02_02_01",
-                "nodeName": "莫斯科总部",
+                "id": "org_02_02_01",
+                "label": "莫斯科总部",
                 "parentId": "org_02_02",
                 "children": [
                   {
-                    "nodeId": "org_02_02_01_01",
-                    "nodeName": "干涸分部",
+                    "id": "org_02_02_01_01",
+                    "label": "干涸分部",
                     "parentId": "org_02_02_01",
                     "children": []
                   }
