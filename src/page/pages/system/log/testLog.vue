@@ -26,9 +26,7 @@
 <script>
   import Box from '../../../../components/Box';
   import orgRole from '../../../../assets/js/orga_role';
-  import menu from '../../../../assets/js/menuData';
-  import {valInDeep,flattenDeepParents,flattenDeep,regDeepParents} from "../../../../assets/js/array";
-  import {getMenuWithId,getParent,uniqArr,getChildren,unique} from '../../../../assets/js/recursive';
+  import {getParent,uniqArr,getChildren} from '../../../../assets/js/recursive';
 
   export default {
     name: "testLog",
