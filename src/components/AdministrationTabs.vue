@@ -23,7 +23,7 @@
             <!--展开行-->
             <template slot-scope="scope">
               <el-table :data="scope.row.deviceMonitorList" stripe>
-                <el-table-column label="状态" header-align="left" align="left">
+                <el-table-column width="100px" label="状态" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
@@ -47,9 +47,16 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column prop="name" label="资源名称" header-align="left" align="left"/>
-                <el-table-column prop="statusText" label="最新状态" header-align="left" align="left"/>
-                <el-table-column label="更新时间" header-align="left" align="left">
+                <el-table-column min-width="70px" prop="name" label="资源名称" header-align="left" align="left"/>
+                <el-table-column min-width="150px" prop="statusText" label="最新状态" header-align="left" align="left">
+                  <template slot-scope="scopeInset">
+                    <el-tooltip effect="dark" placement="left-start">
+                      <div slot="content" style="max-width: 200px">{{scopeInset.row.statusText}}</div>
+                      <span>{{scopeInset.row.statusText}}</span>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+                <el-table-column width="160px" label="更新时间" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <span>{{scopeInset.row.monitorTime | dateFilter}}</span>
                   </template>
@@ -83,7 +90,14 @@
             </template>
           </el-table-column>
           <el-table-column prop="name" label="资源名称" header-align="left" align="left"/>
-          <el-table-column prop="statusText" label="最新状态" header-align="left" align="left"/>
+          <el-table-column prop="statusText" label="最新状态" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-tooltip effect="dark" placement="left-start">
+                <div slot="content" style="max-width: 200px">{{scope.row.statusText}}</div>
+                <span>{{scope.row.statusText}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column label="更新时间" header-align="left" align="left">
             <template slot-scope="scope">
               <span>{{scope.row.monitorTime | dateFilter}}</span>
@@ -98,7 +112,7 @@
       </el-tab-pane>
       <el-tab-pane label="告警事件" name="two">
         <el-table :data="alarmListData" stripe class="indexTableBox">
-          <el-table-column label="级别" header-align="left" align="left">
+          <el-table-column width="90px" label="级别" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
@@ -133,7 +147,14 @@
             </template>
           </el-table-column>
           <el-table-column prop="part" label="告警对象" header-align="left" align="left"/>
-          <el-table-column prop="currentStatus" label="最新状态" header-align="left" align="left"/>
+          <el-table-column label="最新状态" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-tooltip effect="dark" placement="left-start">
+                <div slot="content" style="max-width: 200px;">{{scope.row.currentStatus}}</div>
+                <span>{{scope.row.currentStatus}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" header-align="left" align="left">
             <template slot-scope="scope">
               <span>-</span>
@@ -192,7 +213,7 @@
     methods: {
       // 控制某些状态下的表格不展开行
       getClassName({row, rowIndex}) {
-        return row.status == 1 ? 'expendTable' : '';
+        return row.deviceMonitorList.length == 0 ? 'expendTable' : '';
       },
       // 请求设备基本信息
       getEquipmentInfoData() {
