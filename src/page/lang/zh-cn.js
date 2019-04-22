@@ -535,7 +535,8 @@ export default {
     addDescription:'添加评注',
     warrantyOpinions:'报修意见',
     closeOpinions:'关闭意见',
-    alarmLevelText:'告警级别'
+    alarmLevelText:'告警级别',
+    alarmThisTime:'告警发生时间'
 	},
 	// 历史告警
 	alarmHistory: {

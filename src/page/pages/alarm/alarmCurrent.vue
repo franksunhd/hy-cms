@@ -166,7 +166,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="160px" :label="$t('alarmCurrent.lastAlarmTime')" header-align="left" align="left">
+        <el-table-column width="160px" :label="$t('alarmCurrent.alarmThisTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.updateTime | dateFilter}}</span>
           </template>
@@ -178,7 +178,7 @@
             <span>{{scope.row.framePosition == null ? '' : (scope.row.framePosition == '' ? '' : scope.row.framePosition + 'U')}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
+        <el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.equipmentIp')" header-align="left" align="left"/>
         <el-table-column width="120px" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{tableDataBase.AssetType[scope.row.type]}}</span>
