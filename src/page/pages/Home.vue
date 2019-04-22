@@ -12,7 +12,7 @@
             </span>
             <div class="displayFlex-flex home-main-title-text">
               <p class="title">设备总数</p>
-              <p class="textNum">1122 <span class="num">台</span> </p>
+              <p class="textNum">179 <span class="num">台</span> </p>
             </div>
           </div>
         </el-col>
@@ -24,9 +24,9 @@
               </span>
             </span>
             <div class="displayFlex-flex home-main-title-text">
-              <p class="title">设备总数</p>
+              <p class="title">告警设备数</p>
               <p class="textNum">
-                <span>1122</span>
+                <span>10</span>
                 <span class="num">台</span>
               </p>
             </div>
@@ -40,9 +40,9 @@
               </span>
             </span>
             <div class="displayFlex-flex home-main-title-text">
-              <p class="title">设备总数</p>
+              <p class="title">今日新增告警数</p>
               <p class="textNum">
-                <span>1122</span>
+                <span>2</span>
                 <span class="num">台</span>
               </p>
             </div>
@@ -56,9 +56,9 @@
               </span>
             </span>
             <div class="displayFlex-flex home-main-title-text">
-              <p class="title">设备总数</p>
+              <p class="title">今日告警恢复数</p>
               <p class="textNum">
-                <span>1122</span>
+                <span>3</span>
                 <span class="num">台</span>
               </p>
             </div>
@@ -72,35 +72,36 @@
       </el-row>
       <el-row>
         <el-col>
-          <div>当前告警设备列表</div>
-          <el-table :data="tableData" border style="width: 100%">
-            <el-table-column prop="serialNumber" label="序号" width="180">
+          <div class="home-main-title">当前告警设备列表</div>
+          <el-table :data="tableData" class="indexTableBox" border style="width: 100%">
+            <el-table-column prop="serialNumber" label="序号" width="90">
             </el-table-column>
-            <el-table-column prop="alarmTime" label="告警时间" width="180">
+            <el-table-column prop="alarmTime" label="告警时间" width="160">
             </el-table-column>
-            <el-table-column prop="state" label="状态">
+            <el-table-column width="60px" prop="state" label="状态">
               <template slot-scope="scope">
                 <span v-if="scope.row.latestState.emergency !== null"><i title="紧急" class="el-icon-error"></i></span>
-                <span v-if="scope.row.latestState.warning !== null"><i title="警告" class="el-icon-warning"></i></span>
-                <span v-if="scope.row.latestState.ignore !== null"><i title="忽略" class="el-icon-info"></i></span>
-                <span v-if="scope.row.latestState.ban !== null"><i title="禁止" class="el-icon-remove"></i></span>
+                <!--<span v-if="scope.row.latestState.warning !== null"><i title="警告" class="el-icon-warning"></i></span>-->
+                <!--<span v-if="scope.row.latestState.ignore !== null"><i title="忽略" class="el-icon-info"></i></span>-->
+                <!--<span v-if="scope.row.latestState.ban !== null"><i title="禁止" class="el-icon-remove"></i></span>-->
               </template>
             </el-table-column>
-            <el-table-column prop="DeviceName" label="设备名称" width="180">
+            <el-table-column prop="DeviceName" label="设备名称">
             </el-table-column>
-            <el-table-column prop="latestState" label="最新状态" width="180">
-              <template slot-scope="scope">
-                <span v-if="scope.row.latestState.emergency !== null"><i title="紧急" class="el-icon-error"></i> {{scope.row.latestState.emergency}}</span>
-                <span v-if="scope.row.latestState.warning !== null"><i title="警告" class="el-icon-warning"></i>{{scope.row.latestState.warning}}</span>
-                <span v-if="scope.row.latestState.ignore !== null"><i title="忽略" class="el-icon-info"></i>{{scope.row.latestState.ignore}}</span>
-                <span v-if="scope.row.latestState.ban !== null"><i title="禁止" class="el-icon-remove"></i> {{scope.row.latestState.ban}}</span>
-              </template>
+            <el-table-column prop="latestState" label="告警内容" />
+            <!--<el-table-column prop="latestState" label="最新状态">-->
+              <!--<template slot-scope="scope">-->
+                <!--<span v-if="scope.row.latestState.emergency !== null"><i title="紧急" class="el-icon-error"></i> {{scope.row.latestState.emergency}}</span>-->
+                <!--<span v-if="scope.row.latestState.warning !== null"><i title="警告" class="el-icon-warning"></i>{{scope.row.latestState.warning}}</span>-->
+                <!--<span v-if="scope.row.latestState.ignore !== null"><i title="忽略" class="el-icon-info"></i>{{scope.row.latestState.ignore}}</span>-->
+                <!--<span v-if="scope.row.latestState.ban !== null"><i title="禁止" class="el-icon-remove"></i> {{scope.row.latestState.ban}}</span>-->
+              <!--</template>-->
+            <!--</el-table-column>-->
+            <el-table-column prop="ComputerRoom" label="机房">
             </el-table-column>
-            <el-table-column prop="ComputerRoom" label="机房" width="180">
+            <el-table-column prop="rack" label="机架">
             </el-table-column>
-            <el-table-column prop="rack" label="机架" width="180">
-            </el-table-column>
-            <el-table-column prop="locations" label="位置" width="180">
+            <el-table-column prop="locations" label="位置">
             </el-table-column>
           </el-table>
         </el-col>
@@ -120,17 +121,12 @@
         tableData: [
           {
             serialNumber: '1',
-            alarmTime: '2016-05-02',
-            DeviceName: '1',
-            latestState: {
-              emergency:'11',
-              warning:'3',
-              ignore:'7',
-              ban:'10',
-            },
+            alarmTime: '2019-04-02 11:05:23',
+            DeviceName: 'swd77',
+            latestState: 'Admin Status[Switch Port: 39]: Offline [adminStatus=Offline]',
             ComputerRoom: '温州机房',
             rack: 'A8-3',
-            locations: 'U22',
+            locations: '22U',
           }
         ],
         options:{
