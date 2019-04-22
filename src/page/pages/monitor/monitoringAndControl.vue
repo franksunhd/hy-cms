@@ -101,7 +101,7 @@
 					<!--关闭弹出层-->
 					<span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
 				</div>
-				<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+				<AdministrationTags v-if="isShowTabBox" :page-device-id="item.content" />
 			</el-tab-pane>
 		</el-tabs>
 	</Box>
@@ -127,13 +127,9 @@
 					currentPage: 1, //当前页码
 					pageSize: 10, //显示条数
 				},
-				editableTabsValue: '1', // 当前页签
-				editableTabs: [{
-					name: '1',
-					title: '标题1',
-					content: '1'
-				}], // 页面集合
-				tabIndex: 1, // 页签序号
+				editableTabsValue: '', // 当前页签
+				editableTabs: [], // 页面集合
+				tabIndex: 0, // 页签序号
 				sortArr: [{
 						label: 'Top10',
 						value: 10
@@ -154,24 +150,12 @@
 
 				addEdit: {
 					id: '',
-					sortValue: 10, // 绑定的pageSize值
+					/*sortValue: 10, // 绑定的pageSize值
 					organizationName: '', // 树形下拉框绑定的值
-					organizationId: '', // 树形下拉框的绑定的id
+					organizationId: '', // 树形下拉框的绑定的id*/
 				},
 				/*表格数据*/
-				tableData: [{
-					id: '1',
-					state: '1',
-					DeviceName: 'H3C',
-					alarmContent: '告警内容告警内容告警内容告警内容告警内容告警内容告警内容',
-					LatestAlarmTime: '2019-01-31',
-					StatusSummary: '1 2 3 4',
-					ComputerRoom: '苏州',
-					rack: 'A8-3',
-					location: 'U22',
-					operation: '详情'
-
-				}],
+				tableData: [],
 				treeData: [{
 					label: '一级 1',
 					children: [{
@@ -221,6 +205,10 @@
 				Dincome: [],
 				/*设备类型占比图时间*/
 				Income1: '',
+				/*设备告警级别占比图时间*/
+				income1: '',
+				/*设备告警级别占比图数据*/
+				Dincome1: '',
 				// 表格数据字典
 				tableDataBase: {
 					AlarmHandleStatus: {},
@@ -233,6 +221,7 @@
 
 		mounted() {
 			this.refresh();
+			this.refresh2();
 			this.getData();
 			this.drawLine();
 			this.drawLine2();
@@ -256,7 +245,7 @@
 						case 200:
 							console.log(res);
 							var Income1 = res.data.list;
-							console.log(Income);
+
 							var Income = [];
 							for(var i = 0; i < Income1.length; i++) {
 								/*if(Income1[i].status=="11"){
@@ -266,11 +255,12 @@
 								}else if(Income1[i].status=="")
 								*/
 								Income.push({
+									id: Income1[i].id,
 									deviceName: Income1[i].deviceName,
 									roomName: Income1[i].roomName,
 									frameName: Income1[i].frameName,
-									framePosition: (Income1[i].framePosition) == null ? null:(Income1[i].framePosition)+'U',
-									lastMonitorTime:dateFilter(Income1[i].lastMonitorTime),
+									framePosition: (Income1[i].framePosition) == null ? null : (Income1[i].framePosition) + 'U',
+									lastMonitorTime: dateFilter(Income1[i].lastMonitorTime),
 									status: Income1[i].status,
 								})
 							}
@@ -300,18 +290,17 @@
 				//_t.addEdit.organizationId = val.id;
 				_t.isShowEditPopover = false;
 			},
-			refresh() {
+			refresh2() {
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/devicetype', {
 
 				}, function(res) {
 					switch(res.status) {
 						case 200:
-							console.log(res)
 							var Income2 = res.data;
 							var Income1 = dateFilter(res.requesttime);
 							_t.Income1 = Income1;
-							console.log(_t.Income1)
+
 							var Income = [];
 							for(var i = 0; i < Income2.length; i++) {
 								Income.push({
@@ -365,7 +354,6 @@
 						/*left: 400,*/
 						/*top: 30,*/
 						data: _t.Dincome,
-						/*['机架/塔式服务器', '小型机', '刀片/刀箱', '网络设备', '存储设备']*/
 					},
 					toolbox: {
 						show: true,
@@ -412,38 +400,56 @@
 							}
 						},
 						data: _t.Dincome,
-						/*[{
-								value: 335,
-								name: '机架/塔式服务器'
-							},
-							{
-								value: 310,
-								name: '小型机'
-							},
-							{
-								value: 234,
-								name: '刀片/刀箱'
-							},
-							{
-								value: 135,
-								name: '网络设备'
-							},
-							{
-								value: 1548,
-								name: '存储设备'
-							}
-						],*/
 					}]
 				};
 				// 使用刚指定的配置项和数据显示图表。
 				myChart2.setOption(option);
 			},
+
+			/*设备告警级别占比图*/
+			refresh() {
+				var _t = this;
+				_t.$api.get('/alarm/alarm/dev', {
+
+				}, function(res) {
+					switch(res.status) {
+						case 200:
+							console.log(res)
+							var Income2 = res.data;
+							var Income1 = dateFilter(res.requesttime);
+							_t.income1 = Income1;
+							console.log(_t.income1)
+							var Income = [];
+							for(var i = 0; i < Income2.length; i++) {
+								Income.push({
+									value: Income2[i].count,
+									name: Income2[i].name
+								})
+							}
+							_t.Dincome1 = Income;
+							_t.drawLine();
+							console.log(_t.Dincome1)
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+
+				})
+			},
+
 			drawLine() {
+				var _t = this;
 				let myChart = this.$echarts.init(document.getElementById("echart"));
 				var option = {
 					title: {
 						text: '设备告警级别实时监测',
-						subtext: '2017 年 3 月 12 日 11 时 29 分 29 秒',
+						subtext: _t.income1,
 						top: 5,
 						left: 20,
 						textStyle: {
@@ -464,7 +470,8 @@
 						orient: 'horizontal',
 						x: 'center',
 						y: 'bottom',
-						data: ['正常', '紧急', '警告', '离线', '禁止', '忽略']
+						data: _t.Dincome1
+						/*['正常', '紧急', '警告', '离线', '禁止', '忽略']*/
 					},
 					toolbox: {
 						show: true,
@@ -503,32 +510,8 @@
 									}
 								},
 								radius: [i * 3 + 40, i * 3 + 43], //图形大小角度 层级
-								/*radius: [i * 4 + 40, i * 4 + 43],*/
-								data: [{
-										value: i * 128 + 80,
-										name: '正常'
-									},
-									{
-										value: i * 64 + 160,
-										name: '紧急'
-									},
-									{
-										value: i * 32 + 320,
-										name: '警告'
-									},
-									{
-										value: i * 16 + 640,
-										name: '离线'
-									},
-									{
-										value: i * 8 + 1280,
-										name: '禁止'
-									},
-									{
-										value: i * 4 + 2560,
-										name: '忽略'
-									}
-								]
+								data: _t.Dincome1,
+
 							})
 						}
 
@@ -619,14 +602,16 @@
 			cellClickColumn(row, column) {
 				var _t = this;
 				// 点击状态列
-				if(column.label == '状态') {
+				/*if(column.label == '状态') {
+					console.log(row.id)
 					_t.addEdit.id = row.id;
-					_t.dialogVisible = true;
-					// 父组件调用 子组件 获取数据的方法
-					_t.$refs.alarmDialog.getData(_t.addEdit.id);
-				}
+					_t.dialogVisible = true;*/
+				// 父组件调用 子组件 获取数据的方法
+				/*	_t.$refs.alarmDialog.getData(_t.addEdit.id);
+				}*/
 				// 点击设备名称列
-				if(column.label == "设备名称") {
+				if((column.label == '状态') || (column.label == "设备名称") || (column.label == "最新告警时间") || (column.label == "机房") || (column.label == "机架") || (column.label == "位置")) {
+					console.log(row.id)
 					_t.addTab(row.deviceName, row.id);
 				}
 				// 点击告警内容列
@@ -635,10 +620,9 @@
 					_t.addEdit.id = row.id;
 				}*/
 				// 点击最新告警时间列
-				if(column.label == "最新告警时间") {
-					_t.addTab(row.deviceName, row.id);
-					/*console.log('最新告警时间' + row.id);*/
-				}
+				/*if(column.label == "最新告警时间") {
+					_t.addTab(row.lastMonitorTime, row.id);
+				}*/
 			},
 			// 删除页签
 			removeTab(targetName) {
@@ -705,11 +689,6 @@
 	}
 </script>
 <style>
-	.alarmMessageBox_monitoringAndControl .el-dialog {
-		width: 780px;
-		height: 500px;
-	}
-	
 	#monitoringAndControl-tabs {
 		position: fixed;
 		bottom: 0;
@@ -717,7 +696,6 @@
 		left: 80px;
 		top: 118px;
 		z-index: 1100;
-		border: 1px solid #000;
 	}
 	
 	#monitoringAndControl-tabs .el-tabs__header.is-bottom {
@@ -726,7 +704,11 @@
 		bottom: 0;
 		left: -24px;
 		right: -20px;
-		background-color: gray;
+	}
+	
+	#monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item {
+		font-size: 12px;
+		position: relative;
 	}
 	
 	#monitoringAndControl-tabs>.el-tabs__content {
@@ -737,19 +719,54 @@
 		top: 0;
 	}
 	
+	#monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
+		content: '';
+		width: 10px;
+		height: 10px;
+		background-color: #dee1e6;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		left: -10px;
+		border-radius: 0 10px 0 0;
+		box-shadow: 2px -2px 0 #fff;
+	}
+	
+	#monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
+		content: '';
+		width: 10px;
+		height: 10px;
+		background-color: #dee1e6;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		right: -10px;
+		border-radius: 10px 0 0 0;
+		box-shadow: -2px -2px 0 #fff;
+	}
+	
+	#monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
+		padding: 0 20px;
+	}
+	
 	.monitoringAndControl-btn {
 		position: absolute;
 		top: 10px;
 		right: 10px;
 		z-index: 100;
 	}
-	/* .closeCheckBox {
-    margin-left: 30px;
-  }
-
-  .closeCheckBox .el-checkbox__label {
-    font-size: 12px;
-  }*/
+	/*.monitoringAndControl-deviceName{
+		width: 800px;
+		height: 500px;
+	}*/
+	
+	.closeCheckBox {
+		margin-left: 30px;
+	}
+	
+	.closeCheckBox .el-checkbox__label {
+		font-size: 12px;
+	}
 </style>
 <style scoped>
 	.equipmentList {

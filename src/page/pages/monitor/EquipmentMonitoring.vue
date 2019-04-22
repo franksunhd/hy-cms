@@ -195,7 +195,7 @@
 							</template>
 						</el-table-column>
 						<!--设备状态-->
-						<el-table-column width="80px"  prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
+						<el-table-column width="80px" prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
@@ -234,7 +234,8 @@
 					<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 				</div>
 				<!--设备告警详情弹出层-->
-				<el-dialog class="EquipmentMonitoringBox" :title="$t('alarmCurrent.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+				<equipmentAlarmDetails ref="alarmDialog" :dialogVisible="dialogVisible" :AssetType="tableDataBase.AssetType" :AlarmSeverity="tableDataBase.AlarmSeverity" :AlarmHandleStatus="tableDataBase.AlarmHandleStatus" @dialogVisibleStatus="dialogVisibleStatus" />
+				<!--<el-dialog class="EquipmentMonitoringBox" :title="$t('alarmCurrent.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
 					<div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
 					<el-form :model="equipmentData" inline label-position="right" label-width="76px">
 						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentName') + ':'"></el-form-item>
@@ -276,8 +277,9 @@
         <el-button type="primary">{{$t('public.toWarranty')}}</el-button>
         <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
       </span>
-				</el-dialog>
+				</el-dialog>-->
 				<!--设备责任人弹出层-->
+
 				<el-dialog :title="$t('alarmCurrent.ownerInfo')" append-to-body :visible.sync="dialogVisibleOwnerInfo" :close-on-click-modal="false" :close-on-press-escape="false">
 					<el-form label-width="150px">
 						<el-form-item :label="$t('alarmCurrent.userName') + ':'"></el-form-item>
@@ -292,15 +294,15 @@
       </span>
 				</el-dialog>
 				<!--标签页-->
-				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="alarmCurrent-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
+				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="EquipmentMonitoring-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
 					<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
-						<div class="alarmCurrent-btn">
+						<div class="EquipmentMonitoring-btn">
 							<!--收起-->
-							<span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+							<span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
 							<!--关闭弹出层-->
-							<span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+							<span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
 						</div>
-						<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+						<AdministrationTags v-if="isShowTabBox" :page-device-id="item.content" />
 					</el-tab-pane>
 				</el-tabs>
 			</Box>
@@ -312,12 +314,14 @@
 <script>
 	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
+	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
 	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
 		name: "EquipmentMonitoring",
 		components: {
 			Box,
-			AdministrationTags
+			AdministrationTags,
+			equipmentAlarmDetails
 		},
 		data() {
 			return {
@@ -325,6 +329,12 @@
 				nameOfTheNode: '',
 				/*顺序*/
 				order: '',
+				// 表格数据字典
+				tableDataBase: {
+					AlarmHandleStatus: {},
+					AlarmSeverity: {},
+					AssetType: {}
+				},
 				// 查询表单
 				formItem: {
 					/*设备类型*/
@@ -440,15 +450,9 @@
 					currentPage: 1, // 当前页码
 					pageSize: 10, // 显示条数
 				},
-				editableTabsValue: '1', // 当前页签
-				editableTabs: [
-					/*{
-										name: '1',
-										title: '标题1',
-										content: '1'
-									}*/
-				], // 页面集合
-				tabIndex: 1, // 页签序号
+				editableTabsValue: '', // 当前页签
+				editableTabs: [], // 页面集合
+				tabIndex: 0, // 页签序号
 				isShow: true,
 				levelList: null,
 				//树形控件模拟数据
@@ -513,7 +517,7 @@
 					amount2: '4.1.1',
 					amount3: '4.1.1.1'
 				}],
-				rowIndex:'',
+				rowIndex: '',
 				/*gridData: [{
 						label: '1',
 						children: [{
@@ -566,6 +570,10 @@
 			this.getData();
 		},
 		methods: {
+			// 接受弹出层关闭的参数
+			dialogVisibleStatus(val) {
+				this.dialogVisible = val;
+			},
 			// 点击设备类型下拉框节点
 			clickTypeNode(val) {},
 			// 点击机房下拉框的节点
@@ -624,10 +632,11 @@
 								} else if(Income1[i].type == '4') {
 									Income1[i].type = "刀片/刀箱"
 								} else if(Income1[i].type == '5') {
-									Income1[i].type = "刀片/刀箱"
+									Income1[i].type = "存储设备"
 								}
 
 								Income.push({
+									id:Income1[i].id,
 									workStatus: Income1[i].workStatus,
 									/*监测状态*/
 									status: Income1[i].status,
@@ -674,10 +683,14 @@
 				_t.options.currentPage = val;
 				_t.getData();
 			},
-
+			// 改变每页显示条数
+			handleSizeChangeSub(val) {
+				var _t = this;
+				_t.options.pageSize = val;
+				_t.getData();
+			},
 			// 单元格点击
 			cellClickColumn(row, column) {
-
 				/*
 				 * 点击表格的单元格
 				 *    row 当前行绑定的 数据
@@ -685,37 +698,16 @@
 				 */
 				var _t = this;
 				// 点击设备状态列
-				if(column.label == _t.$t('EquipmentMonitoring.status')) {
-					_t.dialogVisible = true;
+				/*if(column.label == _t.$t('EquipmentMonitoring.status')) {
 					_t.addEdit.id = row.id;
-				}
-
-				/*if(column.label == _t.$t('alarmCurrent.status')) {
-					_t.dialogVisible = true;
-					_t.addEdit.id = row.id;
-				}*/
+					_t.dialogVisible = true;*/
+					// 父组件调用 子组件 获取数据的方法
+					/*_t.$refs.alarmDialog.getData(_t.addEdit.id);*/
+				/*}*/
 				// 点击资产信息列
-				if(column.label == _t.$t('EquipmentMonitoring.AssetInformation')) {
+				if((column.label == _t.$t('EquipmentMonitoring.AssetInformation'))||(column.label == _t.$t('EquipmentMonitoring.status'))) {
 					_t.addTab(row.AssetInformation, row.id);
 				}
-
-				/*// 点击设备名称列
-				if(column.label == _t.$t('alarmCurrent.equipmentName')) {
-					_t.addTab(row.equipmentName, row.id);
-				}*/
-				/*// 点击告警内容列
-				if(column.label == _t.$t('alarmCurrent.alarmContent')) {
-					_t.dialogVisible = true;
-					_t.addEdit.id = row.id;
-				}*/
-				/*// 点击最新告警时间列
-				if(column.label == _t.$t('alarmCurrent.lastAlarmTime')) {
-					_t.addTab(row.equipmentName, row.id);
-				}*/
-				/*// 点击设备责任人列
-				if(column.label == _t.$t('alarmCurrent.equipmentOwner')) {
-					_t.dialogVisibleOwnerInfo = true;
-				}*/
 			},
 			// 删除页签
 			removeTab(targetName) {
@@ -753,30 +745,29 @@
 				_t.isShowTabBox = true;
 				_t.isShowTabBox_tab = true;
 				if(_t.editableTabs.length > 1) {
-					document.getElementById('alarmCurrent-tabs').style.top = '118px';
+					document.getElementById('EquipmentMonitoring-tabs').style.top = '118px';
 				}
 			},
 			// 收起
 			packUp() {
 				var _t = this;
 				_t.isShowTabBox = false;
-				document.getElementById('alarmCurrent-tabs').style.top = 'initial';
-				_t.editableTabsValue = '';
+				document.getElementById('EquipmentMonitoring-tabs').style.top = 'initial';
 			},
 			// 关闭标签页
 			closeTab() {
 				var _t = this;
+				_t.isShowTabBox_tab = false;
+				document.getElementById('EquipmentMonitoring-tabs').style.top = 'initial';
 				_t.editableTabsValue = '';
 				_t.editableTabs = [];
 				_t.tabIndex = 0;
-				_t.isShowTabBox_tab = false;
-				_t.isShowTabBox = false;
 			},
 			// 点击标签页
 			clickTabs() {
 				var _t = this;
 				_t.isShowTabBox = true;
-				document.getElementById('alarmCurrent-tabs').style.top = '118px';
+				document.getElementById('EquipmentMonitoring-tabs').style.top = '118px';
 			},
 			// 收缩
 			clickInset() {
@@ -839,21 +830,24 @@
 					.catch(_ => {});
 			},
 			/*获取行index*/
-			tableRowClassName({row, rowIndex}){
+			tableRowClassName({
+				row,
+				rowIndex
+			}) {
 				/*console.log(rowIndex)*/
-				this.rowIndex=rowIndex;
+				this.rowIndex = rowIndex;
 			},
 			/*添加行事件*/
-			openDetails(row,column) {
-				 var newValue = {
-                  amount0: '',
+			openDetails(row, column) {
+				var newValue = {
+					amount0: '',
 					amount1: '',
 					amount2: '',
 					amount3: ''
-              };
-            //添加新的行数
-            
-            this.gridData.push(newValue);
+				};
+				//添加新的行数
+
+				this.gridData.push(newValue);
 				console.log(row);
 			},
 
@@ -971,52 +965,50 @@
 		height: 180px;
 	}
 	
-	.EquipmentMonitoringBox .el-dialog {
-		width: 880px;
-		height: 600px;
-	}
-	
-	.EquipmentMonitoringBox .el-dialog__body {
-		padding-top: 10px;
-	}
-	
 	.alarmCurrentBox .el-form--inline .el-form-item {
 		margin: 0;
 	}
 	
-	#alarmCurrent-tabs {
-		position: fixed;
-		bottom: 0;
-		right: 20px;
-		left: 80px;
-		top: 118px;
-		z-index: 1100;
-		border: 1px solid #000;
-	}
 	
-	#alarmCurrent-tabs .el-tabs__header.is-bottom {
-		margin-top: 0;
-		position: absolute;
-		bottom: 0;
-		left: -24px;
-		right: -20px;
-		background-color: gray;
-	}
-	
-	#alarmCurrent-tabs .el-tabs__content {
-		position: fixed;
-		left: 100px;
-		right: 40px;
-		bottom: 50px;
-		top: 150px;
-		overflow-y: scroll;
-		overflow-x: hidden;
-	}
-	
-	.alarmCurrent-btn {
-		position: absolute;
-		top: 10px;
-		right: 10px;
-		z-index: 100;
-	}
+	#EquipmentMonitoring-tabs {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    left: 80px;
+    top: 118px;
+    z-index: 1100;
+    border: 1px solid #000;
+  }
+
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
+    margin-top: 0;
+    position: absolute;
+    bottom: 0;
+    left: -24px;
+    right: -20px;
+    background-color: gray;
+  }
+
+  #EquipmentMonitoring-tabs > .el-tabs__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 40px;
+    top: 0;
+  }
+
+  .EquipmentMonitoring-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 100;
+  }
+
+  .closeCheckBox {
+    margin-left: 30px;
+  }
+
+  .closeCheckBox .el-checkbox__label {
+    font-size: 12px;
+  }
 </style>
