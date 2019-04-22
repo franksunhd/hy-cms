@@ -332,9 +332,9 @@
         // 关联业务树形下拉框显示隐藏
         isShowBusinessPopover:false,
         // 控制标签页内容是否显示
-        isShowTabBox:true,
+        isShowTabBox:false,
         // 控制标签页区域是否显示
-        isShowTabBox_tab:true,
+        isShowTabBox_tab:false,
         // 设备详情信息弹出层
         dialogVisible:false,
         defaultProps:{
@@ -351,20 +351,9 @@
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
-        editableTabsValue:'1', // 当前页签
-        editableTabs:[
-          {
-            title:'标签一',
-            name:'1',
-            id:'1'
-          },
-          {
-            title:'标签二',
-            name:'2',
-            id:'2'
-          }
-        ], // 页面集合
-        tabIndex: 1, // 页签序号
+        editableTabsValue:'', // 当前页签
+        editableTabs:[], // 页面集合
+        tabIndex: 0, // 页签序号
       }
     },
     methods: {

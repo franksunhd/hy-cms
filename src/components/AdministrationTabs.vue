@@ -34,7 +34,7 @@
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
-              <el-table :data="scope.row.deviceMonitorList" stripe>
+              <el-table :data="scope.row.deviceMonitorList" stripe class="monitoringDetails-innerTable">
                 <el-table-column width="100px" label="状态" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
@@ -447,7 +447,6 @@
     display: inline-block;
     line-height: 20px;
     height: 20px;
-    border-right: 1px solid #ddd;
   }
 
   #administration-tabs-title li.active > span {
@@ -455,8 +454,6 @@
   }
 
   #administration-tabs-title li.active {
-    color: #409EFF;
-    background-color: #fff;
     border-radius: 10px 10px 0 0;
     position: relative;
   }
@@ -508,11 +505,11 @@
 
   /*标签页头部*/
   .monitoringDetails-header.el-tabs--card > .el-tabs__header {
-    background-color: #f0f0f0;
     position: absolute;
     top: 0;
     left: 310px;
     right: 0;
+    padding-top: 5px;
   }
 
   .monitoringDetails-header.el-tabs--card > .el-tabs__content {
@@ -522,5 +519,40 @@
     left: 310px;
     right: 0;
     overflow-y: auto;
+  }
+
+  .monitoringDetails-header .el-tabs__header.is-top .el-tabs__nav-scroll {
+    padding: 0 20px;
+  }
+
+  .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active {
+    border-radius: 10px 10px 0 0;
+    position: relative;
+  }
+
+  .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active:before,
+  .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active:after {
+    position: absolute;
+    content: '';
+    display: inline-block;
+    bottom: 2px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active:before {
+    border-radius: 0 0 10px 0;
+    left: -10px;
+  }
+
+  .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active:after {
+    border-radius: 0 0 0 10px;
+    right: -10px;
+  }
+
+  .monitoringDetails-header .el-tabs__header.is-top .el-tabs__item {
+    height: 35px;
+    line-height: 35px;
+    font-size: 12px;
   }
 </style>
