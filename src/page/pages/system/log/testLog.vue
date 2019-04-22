@@ -100,7 +100,7 @@
           _t.tags = _t.uniqArr(_t.hashPushData(selection,tags,'id'));
         } else {
           _t.tags.forEach((item,index)=>{
-            if (item.id == row.id) {
+            if (item.id === row.id) {
               _t.tags.splice(index, 1);
               _t.$refs.table.toggleRowSelection(row,false);
             }
