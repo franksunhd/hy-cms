@@ -505,7 +505,7 @@ export default {
 		AutoNegotiation: '自动协商',
 		linkSpeed: '链路速度',
 		currentStatus: '当前状态',
-		equipmentTypeInfo: '设备分类/类型',
+		equipmentTypeInfo: '设备类型',
 		equipmentNameInfo: '设备名称/资产信息',
 		rackNameInfo: '机架/机柜',
 		equipmentStatus: '设备状态',
@@ -534,7 +534,8 @@ export default {
     confirmOpinions:'确认意见',
     addDescription:'添加评注',
     warrantyOpinions:'报修意见',
-    closeOpinions:'关闭意见'
+    closeOpinions:'关闭意见',
+    alarmLevelText:'告警级别'
 	},
 	// 历史告警
 	alarmHistory: {

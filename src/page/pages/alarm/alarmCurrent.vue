@@ -77,9 +77,14 @@
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
+        <el-form-item :label="$t('alarmCurrent.alarmLevelText') + '：'">
           <el-select v-model="formItem.equipmentStatus" class="width200" clearable>
-            <el-option v-for="(item,index) in formBaseData.AlarmSeverity" :key="index" :label="item.name" :value="item.type" />
+            <el-option
+              v-for="(item,index) in formBaseData.AlarmSeverity"
+              :key="index"
+              v-if="item.type == 66 || item.type == 99"
+              :label="item.name"
+              :value="item.type" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.processStatus') + '：'">
@@ -228,6 +233,7 @@
       v-if="isShowTabBox_tab"
       v-model="editableTabsValue"
       type="card"
+      ref="alarmCurrenTabs"
       class="whiteBg"
       id="alarmCurrent-tabs"
       tab-position="bottom"
@@ -500,7 +506,7 @@
         }
         // 点击设备名称列 点击最新告警时间列
         if (column.label === _t.$t('alarmCurrent.equipmentName') || column.label === _t.$t('alarmCurrent.lastAlarmTime')) {
-          _t.addTab(row.deviceName,row.id);
+          _t.addTab(row.deviceName,row.deviceId);
         }
       },
       // 删除页签
@@ -603,7 +609,7 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              var equipmentTypeList = res.data.treeNode.children;
+              var equipmentTypeList = res.data.treeNode.children[0].children;
               equipmentTypeList.unshift({nodeName:'全部',level:1,children:null,nodeCode:null,parentId:'0'})
               _t.equipmentTypeList = equipmentTypeList;
               break;

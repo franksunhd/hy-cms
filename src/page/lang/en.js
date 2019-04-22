@@ -534,7 +534,8 @@ export default {
     confirmOpinions:'confirmOpinions',
     addDescription:'addDescription',
     warrantyOpinions:'warrantyOpinions',
-    closeOpinions:'closeOpinions'
+    closeOpinions:'closeOpinions',
+    alarmLevelText:'alarmLevelText'
   },
   // 历史告警
   alarmHistory: {

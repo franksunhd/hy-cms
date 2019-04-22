@@ -97,7 +97,7 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="告警事件" name="two">
-        <el-table :data="alarmListData" stripe>
+        <el-table :data="alarmListData" stripe class="indexTableBox">
           <el-table-column label="级别" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
@@ -241,7 +241,7 @@
           jsonString: JSON.stringify({
             deviceMonitor: {
               parentId: '0',
-              deviceId: '4bc569cd386149778b9a266e4c9db614',
+              deviceId: _t.pageDeviceId,
             }
           })
         }, function (res) {
@@ -350,6 +350,7 @@
       this.getStatusDataBase();
       this.getEquipmentInfoData();
       this.getEquipmentAllStatusData();
+      this.getMonitorData();
     }
   }
 </script>
