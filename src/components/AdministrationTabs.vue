@@ -18,6 +18,18 @@
     <!--标签页-->
     <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <el-tab-pane label="监测详情" name="one">
+        <el-form :model="formItem" inline>
+          <el-form-item style="margin-bottom: 10px;" label="筛选：">
+            <el-select v-model="formItem.status">
+              <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 10px;" label="操作：">
+            <el-select v-model="formItem.operation">
+              <el-option v-for="(item,index) in operationList" :key="index" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+        </el-form>
         <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
@@ -212,6 +224,13 @@
           pageSize: 10, // 显示条数
         },
         dialogVisible:false, // 点击告警事件行弹出蒙版层
+        // 监测详情表单
+        formItem:{
+          status:'',
+          operation:''
+        },
+        statusList:[], // 监测详情表单筛选下拉框数据
+        operationList:[], // 监测详情 表单筛选 操作下拉框数据
       }
     },
     props: {
