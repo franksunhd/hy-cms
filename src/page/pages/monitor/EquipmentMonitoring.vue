@@ -10,33 +10,29 @@
 						<div class="padding20" style="padding-top:0;">
 							<label style="padding-right:10px ;">父级节点</label>
 							<el-select v-model="parentNode" placeholder="请选择">
-								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value" />
+								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value">
+								</el-option>
 							</el-select>
 						</div>
-						<el-table :data="gridData" :span-method="objectSpanMethod" border align="center" indent style="width: 100%">
+						<el-table :row-class-name="tableRowClassName" type="index" :data="gridData" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
 							<el-table-column label="第一级" align="center">
 								<template slot-scope="scope">
-									<span>{{scope.row.id}}</span>
-									<!--<el-input size="small" v-model="scope.row.label" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+									<el-input size="small" v-model="scope.row.amount0" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
 								</template>
-								<!--<el-input v-model="gridDatas" size="small"></el-input>-->
 							</el-table-column>
 							<el-table-column label="第二级" align="center">
 								<template slot-scope="scope">
-									<span>{{scope.row.amount1}}</span>
-									<!--<el-input size="small" v-model="scope.row.label.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+									<el-input size="small" v-model="scope.row.amount1" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
 								</template>
 							</el-table-column>
 							<el-table-column label="第三级" align="center">
 								<template slot-scope="scope">
-									<span>{{scope.row.amount2}}</span>
-									<!--<el-input size="small" v-model="scope.row.label.children.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+									<el-input size="small" v-model="scope.row.amount2" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
 								</template>
 							</el-table-column>
 							<el-table-column label="第四级" align="center">
 								<template slot-scope="scope">
-									<span>{{scope.row.amount3}}</span>
-									<!--<el-input size="small" v-model="scope.row.label.children.children.children" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input> <span>{{scope.row.date}}</span>-->
+									<el-input size="small" v-model="scope.row.amount3" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
 								</template>
 							</el-table-column>
 						</el-table>
@@ -172,11 +168,11 @@
 						<el-button>离线设备</el-button>
 					</div>
 					<!--表格-->
-					<el-table :data="tableData" stripe @cell-click="cellClickColumn">
+					<el-table min-width='1080px' :data="tableData" stripe @cell-click="cellClickColumn">
 						<el-table-column type="selection" label="$t('EquipmentMonitoring.FutureGenerations')" width="55">
 						</el-table-column>
 						<!--序号-->
-						<el-table-column :label="$t('public.index')" header-align="left" align="left">
+						<el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -184,7 +180,7 @@
 							</template>
 						</el-table-column>
 						<!--监测状态-->
-						<el-table-column :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
+						<el-table-column width="80px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
@@ -199,7 +195,7 @@
 							</template>
 						</el-table-column>
 						<!--设备状态-->
-						<el-table-column prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
+						<el-table-column width="80px"  prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
@@ -230,7 +226,7 @@
 						<!--设备类型-->
 						<el-table-column prop="type" :label="$t('EquipmentMonitoring.type')" header-align="left" align="left" />
 						<!--更新时间-->
-						<el-table-column prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
+						<el-table-column width="160px" prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
 						<!--操作-->
 						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left" />
 					</el-table>
@@ -314,6 +310,7 @@
 </template>
 
 <script>
+	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
 	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
@@ -362,10 +359,10 @@
 				addEdit: {
 					id: ''
 				},
-				addEdits:{
-					nodeName:'',
-					parentId:'',
-					
+				addEdits: {
+					nodeName: '',
+					parentId: '',
+
 				},
 				// 设备告警详情数据
 				equipmentData: {},
@@ -496,26 +493,27 @@
 				},
 				//新增设备分组
 				gridData: [{
-					id: '12987121',
+					amount0: '12987121',
 					amount1: '1.1',
 					amount2: '1.1.1',
 					amount3: '1.1.1.1'
 				}, {
-					id: '12987122',
+					amount0: '12987122',
 					amount1: '2.1',
 					amount2: '2.1.1',
 					amount3: '2.1.1.1'
 				}, {
-					id: '12987123',
+					amount0: '12987123',
 					amount1: '3.1',
 					amount2: '3.1.1',
 					amount3: '3.1.1.1'
 				}, {
-					id: '12987124',
+					amount0: '12987124',
 					amount1: '4.1',
 					amount2: '4.1.1',
 					amount3: '4.1.1.1'
 				}],
+				rowIndex:'',
 				/*gridData: [{
 						label: '1',
 						children: [{
@@ -574,11 +572,11 @@
 			clickRoomNode(val) {},
 			// 点击付集结点下拉框的节点
 			clickRoomNodes(val) {
-			
+
 				var _t = this;
-        _t.addEdits.parentId = val.nodeId;
-        _t.addEdits.nodeName = val.label;
-        _t.isShowComputerPopoverss = false;
+				_t.addEdits.parentId = val.nodeId;
+				_t.addEdits.nodeName = val.label;
+				_t.isShowComputerPopoverss = false;
 			},
 			// 查询表格数据
 			getData() {
@@ -642,7 +640,7 @@
 									/*厂商型号*/
 									type: Income1[i].type,
 									/*设备类型*/
-									lastMonitorTime: Income1[i].lastMonitorTime,
+									lastMonitorTime: dateFilter(Income1[i].lastMonitorTime),
 									/*更新时间*/
 									operation: Income1[i].operation,
 									/*操作*/
@@ -840,7 +838,26 @@
 					})
 					.catch(_ => {});
 			},
-			//表格合并列
+			/*获取行index*/
+			tableRowClassName({row, rowIndex}){
+				/*console.log(rowIndex)*/
+				this.rowIndex=rowIndex;
+			},
+			/*添加行事件*/
+			openDetails(row,column) {
+				 var newValue = {
+                  amount0: '',
+					amount1: '',
+					amount2: '',
+					amount3: ''
+              };
+            //添加新的行数
+            
+            this.gridData.push(newValue);
+				console.log(row);
+			},
+
+			/*//表格合并列
 			objectSpanMethod({
 				row,
 				column,
@@ -860,7 +877,7 @@
 						};
 					}
 				}
-			}
+			}*/
 		},
 
 		created() {}

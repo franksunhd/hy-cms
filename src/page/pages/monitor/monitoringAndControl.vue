@@ -37,14 +37,14 @@
 		</div>
 		<div class="equipmentList clearfix">
 			<el-table :data="tableData" stripe @cell-click="cellClickColumn">
-				<el-table-column label="序号" header-align="left" align="left">
+				<el-table-column width="80px" label="序号" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>
                         {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
                         </span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="status" label="状态"  header-align="left" align="left">
+				<el-table-column width="80px" prop="status" label="状态" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 							<span class="iconfont iconfontError">&#xe609;</span>
@@ -91,70 +91,32 @@
 			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 		</div>
 		<!--设备告警详情弹出层-->
-		<el-dialog class="alarmMessageBox_monitoringAndControl" :title="$t('alarmManagement.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
-			<div class="dialogTitle">设备基本信息</div>
-			<el-form :model="equipmentData" inline label-position="right" label-width="76px">
-				<el-form-item style="width: 33%;" label="设备名称:"></el-form-item>
-				<el-form-item style="width: 33%;" label="产品名称:"></el-form-item>
-				<el-form-item style="width: 33%;" label="设备IP:"></el-form-item>
-				<el-form-item style="width: 33%;" label="UUID:"></el-form-item>
-				<el-form-item style="width: 33%;" label="设备厂商:"></el-form-item>
-				<el-form-item style="width: 33%;" label="序列号:"></el-form-item>
-				<el-form-item style="width: 33%;" label="对象类型:"></el-form-item>
-				<el-form-item style="width: 33%;" label="严重级别:"></el-form-item>
-				<el-form-item style="width: 33%;" label="告警次数:"></el-form-item>
-				<el-form-item style="width: 33%;" label="事件类别:"></el-form-item>
-				<el-form-item style="width: 33%;" label="起始时间:"></el-form-item>
-				<el-form-item style="width: 33%;" label="最新时间:"></el-form-item>
-			</el-form>
-			<div class="dialogTitle">告警信息</div>
-			<el-form inline label-position="right" label-width="76px">
-				<p class="paddingLeft-10"><strong>告警字段</strong></p>
-				<el-form-item label="状态:">Down != Up</el-form-item>
-				<p class="paddingLeft-10"><strong>当前状态</strong></p>
-				<el-form-item style="width: 50%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-				<el-form-item label="状态:">Down</el-form-item>
-				<p class="paddingLeft-10"><strong>附加字段</strong></p>
-				<el-form-item label="状态:">Down != Up</el-form-item>
-				<p class="paddingLeft-10"><strong>附加信息</strong></p>
-				<el-form-item style="width: 60%;" label="产品名称:">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-				<el-form-item style="width: 30%;" label="名称:">NIC.Integrated.1-3-1</el-form-item>
-				<br <el-form-item style="width: 30%;" label="自动协商:">Enabled</el-form-item>
-				<el-form-item style="width: 30%;" label="链路速度:">Unknown</el-form-item>
-				<el-form-item style="width: 30%;" label="MAC地址:">EC:F4:BB:C1:0C:CA</el-form-item>
-				<el-form-item label="告警评注:">
-					<el-input type="textarea" style="width: 734px;" />
-				</el-form-item>
-			</el-form>
-			<span slot="footer">
-        <el-button class="queryBtn" type="primary">忽略告警</el-button>
-        <el-button class="queryBtn" type="primary">确认告警</el-button>
-        <el-button class="queryBtn" type="primary">转保修</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">取消</el-button>
-      </span>
-		</el-dialog>
+		<equipmentAlarmDetails ref="alarmDialog" :dialogVisible="dialogVisible" :AssetType="tableDataBase.AssetType" :AlarmSeverity="tableDataBase.AlarmSeverity" :AlarmHandleStatus="tableDataBase.AlarmHandleStatus" @dialogVisibleStatus="dialogVisibleStatus" />
 		<!--标签页-->
-				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="alarmCurrent-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
-					<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
-						<div class="alarmCurrent-btn">
-							<!--收起-->
-							<span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
-							<!--关闭弹出层-->
-							<span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
-						</div>
-						<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
-					</el-tab-pane>
-				</el-tabs>
+		<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="monitoringAndControl-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
+			<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
+				<div class="monitoringAndControl-btn">
+					<!--收起-->
+					<span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
+					<!--关闭弹出层-->
+					<span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
+				</div>
+				<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+			</el-tab-pane>
+		</el-tabs>
 	</Box>
 </template>
 <script>
+	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
+	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
 	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
 		name: 'monitoringAndControl',
 		components: {
 			Box,
-			AdministrationTags
+			AdministrationTags,
+			equipmentAlarmDetails
 		},
 		data() {
 			return {
@@ -166,13 +128,11 @@
 					pageSize: 10, //显示条数
 				},
 				editableTabsValue: '1', // 当前页签
-				editableTabs: [
-					/*{
-										name: '1',
-										title: '标题1',
-										content: '1'
-									}*/
-				], // 页面集合
+				editableTabs: [{
+					name: '1',
+					title: '标题1',
+					content: '1'
+				}], // 页面集合
 				tabIndex: 1, // 页签序号
 				sortArr: [{
 						label: 'Top10',
@@ -257,33 +217,48 @@
 				equipmentData: {}, // 设备告警详情
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
+				/*设备类型占比图数据*/
+				Dincome: [],
+				/*设备类型占比图时间*/
+				Income1: '',
+				// 表格数据字典
+				tableDataBase: {
+					AlarmHandleStatus: {},
+					AlarmSeverity: {},
+					AssetType: {}
+				},
 
 			}
 		},
 
 		mounted() {
+			this.refresh();
 			this.getData();
 			this.drawLine();
 			this.drawLine2();
 		},
 		methods: {
+			// 接受弹出层关闭的参数
+			dialogVisibleStatus(val) {
+				this.dialogVisible = val;
+			},
 			// 查询表格数据
 			getData() {
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
-						alarmDevice:true,
-						currentPage: 1,
-						pageSize: 10
+						alarmDevice: true,
+						currentPage: _t.options.currentPage,
+						pageSize: _t.options.pageSize
 					})
 				}, function(res) {
 					switch(res.status) {
 						case 200:
 							console.log(res);
-							var Income1=res.data.list;
+							var Income1 = res.data.list;
 							console.log(Income);
-							var Income=[];
-							for(var i=0;i<Income1.length;i++){
+							var Income = [];
+							for(var i = 0; i < Income1.length; i++) {
 								/*if(Income1[i].status=="11"){
 									
 								}else if(Income1[i].status=="22"){
@@ -291,15 +266,15 @@
 								}else if(Income1[i].status=="")
 								*/
 								Income.push({
-								deviceName:Income1[i].deviceName,
-								roomName:Income1[i].roomName,
-								frameName:Income1[i].frameName,
-								framePosition:Income1[i].framePosition,
-								lastMonitorTime:Income1[i].lastMonitorTime,
-								status:Income1[i].status,
-							})
+									deviceName: Income1[i].deviceName,
+									roomName: Income1[i].roomName,
+									frameName: Income1[i].frameName,
+									framePosition: (Income1[i].framePosition) == null ? null:(Income1[i].framePosition)+'U',
+									lastMonitorTime:dateFilter(Income1[i].lastMonitorTime),
+									status: Income1[i].status,
+								})
 							}
-							
+
 							_t.tableData = Income;
 							_t.options.currentPage = res.data.currentPage;
 							_t.options.total = res.data.count;
@@ -325,6 +300,40 @@
 				//_t.addEdit.organizationId = val.id;
 				_t.isShowEditPopover = false;
 			},
+			refresh() {
+				var _t = this;
+				_t.$api.get('/asset/assetDevice/devicetype', {
+
+				}, function(res) {
+					switch(res.status) {
+						case 200:
+							console.log(res)
+							var Income2 = res.data;
+							var Income1 = dateFilter(res.requesttime);
+							_t.Income1 = Income1;
+							console.log(_t.Income1)
+							var Income = [];
+							for(var i = 0; i < Income2.length; i++) {
+								Income.push({
+									value: Income2[i].count,
+									name: Income2[i].name
+								})
+							}
+							_t.Dincome = Income
+							_t.drawLine2();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+
+				})
+			},
 			drawLine2() {
 				var _t = this;
 				var myChart2 = this.$echarts.init(document.getElementById("echartText"))
@@ -332,7 +341,7 @@
 					color: ['#fde33f', '#32cc35 ', '#fb6041', '#975de1', '#40a8ff'],
 					title: {
 						text: '设备占比实时监测',
-						subtext: '2017 年 3 月 12 日 11 时 29 分 29 秒',
+						subtext: _t.Income1,
 						top: 5,
 						left: 20,
 						textStyle: {
@@ -355,7 +364,8 @@
 						y: 'bottom',
 						/*left: 400,*/
 						/*top: 30,*/
-						data: ['机架/塔式服务器', '小型机', '刀片/刀箱', '网络设备', '存储设备']
+						data: _t.Dincome,
+						/*['机架/塔式服务器', '小型机', '刀片/刀箱', '网络设备', '存储设备']*/
 					},
 					toolbox: {
 						show: true,
@@ -401,7 +411,8 @@
 								length2: 10,
 							}
 						},
-						data: [{
+						data: _t.Dincome,
+						/*[{
 								value: 335,
 								name: '机架/塔式服务器'
 							},
@@ -421,7 +432,7 @@
 								value: 1548,
 								name: '存储设备'
 							}
-						],
+						],*/
 					}]
 				};
 				// 使用刚指定的配置项和数据显示图表。
@@ -609,18 +620,20 @@
 				var _t = this;
 				// 点击状态列
 				if(column.label == '状态') {
-					_t.dialogVisible = true;
 					_t.addEdit.id = row.id;
+					_t.dialogVisible = true;
+					// 父组件调用 子组件 获取数据的方法
+					_t.$refs.alarmDialog.getData(_t.addEdit.id);
 				}
 				// 点击设备名称列
 				if(column.label == "设备名称") {
 					_t.addTab(row.deviceName, row.id);
 				}
 				// 点击告警内容列
-				if(column.label == "告警内容") {
+				/*if(column.label == "告警内容") {
 					_t.dialogVisible = true;
 					_t.addEdit.id = row.id;
-				}
+				}*/
 				// 点击最新告警时间列
 				if(column.label == "最新告警时间") {
 					_t.addTab(row.deviceName, row.id);
@@ -663,30 +676,30 @@
 				_t.isShowTabBox = true;
 				_t.isShowTabBox_tab = true;
 				if(_t.editableTabs.length > 1) {
-					document.getElementById('alarmCurrent-tabs').style.top = '118px';
+					document.getElementById('monitoringAndControl-tabs').style.top = '118px';
 				}
 			},
 			// 收起
 			packUp() {
 				var _t = this;
 				_t.isShowTabBox = false;
-				document.getElementById('alarmCurrent-tabs').style.top = 'initial';
-				_t.editableTabsValue = '';
+				document.getElementById('monitoringAndControl-tabs').style.top = 'initial';
+				/*_t.editableTabsValue = '';*/
 			},
 			// 关闭标签页
 			closeTab() {
 				var _t = this;
+				_t.isShowTabBox_tab = false;
+				document.getElementById('monitoringAndControl-tabs').style.top = 'initial';
 				_t.editableTabsValue = '';
 				_t.editableTabs = [];
 				_t.tabIndex = 0;
-				_t.isShowTabBox_tab = false;
-				_t.isShowTabBox = false;
 			},
 			// 点击标签页
 			clickTabs() {
 				var _t = this;
 				_t.isShowTabBox = true;
-				document.getElementById('alarmCurrent-tabs').style.top = '118px';
+				document.getElementById('monitoringAndControl-tabs').style.top = '118px';
 			},
 		}
 	}
@@ -696,6 +709,47 @@
 		width: 780px;
 		height: 500px;
 	}
+	
+	#monitoringAndControl-tabs {
+		position: fixed;
+		bottom: 0;
+		right: 20px;
+		left: 80px;
+		top: 118px;
+		z-index: 1100;
+		border: 1px solid #000;
+	}
+	
+	#monitoringAndControl-tabs .el-tabs__header.is-bottom {
+		margin-top: 0;
+		position: absolute;
+		bottom: 0;
+		left: -24px;
+		right: -20px;
+		background-color: gray;
+	}
+	
+	#monitoringAndControl-tabs>.el-tabs__content {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 40px;
+		top: 0;
+	}
+	
+	.monitoringAndControl-btn {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 100;
+	}
+	/* .closeCheckBox {
+    margin-left: 30px;
+  }
+
+  .closeCheckBox .el-checkbox__label {
+    font-size: 12px;
+  }*/
 </style>
 <style scoped>
 	.equipmentList {

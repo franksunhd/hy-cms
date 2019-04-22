@@ -60,10 +60,17 @@
                 </span>
               </template>
             </el-table-column>
+            <!--prop="errorText"-->
                 <el-table-column prop="ip" label="IP地址" width="120"/>
                 <el-table-column prop="manufacturerModel" label="品牌型号" show-overflow-tooltip/>
                 <el-table-column prop="discovery" label="发现状态" show-overflow-tooltip/>
-                <el-table-column prop="errorText " label="描述" show-overflow-tooltip/>
+                <el-table-column  label="描述" show-overflow-tooltip>
+                	<template slot-scope="scope">
+                		<span v-if="describes[scope.row.ip]=='-1'">已存在</span>
+                		<span v-if="describes[scope.row.ip]=='1'">添加成功</span>
+                		<span v-if="describes[scope.row.ip]=='0'">添加失败</span>
+                	</template>
+                </el-table-column>
               </el-table>
               <!--分页-->
               <pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
@@ -121,6 +128,8 @@
         }],
         value: '',
         tableData: [],
+        /*描述*/
+        describes:{},
         multipleSelection: [],
         ips: [],
         Dincome: [],
@@ -515,8 +524,10 @@
           switch (res.status) {
             case 200:
             console.log(res);
-            
-            var describes = [];
+            _t.describes=res.data;
+            console.log(_t.describes);
+            /*_t.tableData*/
+            /*var describes = [];
               for (var key in res.data) {
                 if (res.data[key] === "-1") {
                   res.data[key] = "已存在"
@@ -528,13 +539,9 @@
                 describes.push({
                   describe:res.data[key]
                 })
-              }
-              console.log(describes)
-              _t.tableData.push(describes)
-             _t.tableData = _t.tableData.set(_t.tableData,5,'ddd');
-            console.log(_t.tableData);
+              }*/
             _t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.count;
+							_t.options.total = res.data.length;
             
             /*for (var i = 0; i < Income.length; i++) {
                   if (Income[i].discovery === true) {
