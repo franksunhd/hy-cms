@@ -44,7 +44,7 @@
                         </span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="status" label="状态"  header-align="left" align="left">
+				<el-table-column prop="status" label="状态" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 							<span class="iconfont iconfontError">&#xe609;</span>
@@ -134,20 +134,21 @@
       </span>
 		</el-dialog>
 		<!--标签页-->
-				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="alarmCurrent-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
-					<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
-						<div class="alarmCurrent-btn">
-							<!--收起-->
-							<span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
-							<!--关闭弹出层-->
-							<span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
-						</div>
-						<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
-					</el-tab-pane>
-				</el-tabs>
+		<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="alarmCurrent-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
+			<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
+				<div class="alarmCurrent-btn">
+					<!--收起-->
+					<span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
+					<!--关闭弹出层-->
+					<span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
+				</div>
+				<AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+			</el-tab-pane>
+		</el-tabs>
 	</Box>
 </template>
 <script>
+	import {dateFilter} from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
 	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
@@ -257,11 +258,16 @@
 				equipmentData: {}, // 设备告警详情
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
+				/*设备类型占比图数据*/
+				Dincome:[],
+				/*设备类型占比图时间*/
+				Income1:'',
 
 			}
 		},
 
 		mounted() {
+			this.refresh();
 			this.getData();
 			this.drawLine();
 			this.drawLine2();
@@ -272,18 +278,18 @@
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
-						alarmDevice:true,
-						currentPage: 1,
-						pageSize: 10
+						alarmDevice: true,
+						currentPage: _t.options.currentPage,
+						pageSize: _t.options.pageSize
 					})
 				}, function(res) {
 					switch(res.status) {
 						case 200:
 							console.log(res);
-							var Income1=res.data.list;
+							var Income1 = res.data.list;
 							console.log(Income);
-							var Income=[];
-							for(var i=0;i<Income1.length;i++){
+							var Income = [];
+							for(var i = 0; i < Income1.length; i++) {
 								/*if(Income1[i].status=="11"){
 									
 								}else if(Income1[i].status=="22"){
@@ -291,15 +297,15 @@
 								}else if(Income1[i].status=="")
 								*/
 								Income.push({
-								deviceName:Income1[i].deviceName,
-								roomName:Income1[i].roomName,
-								frameName:Income1[i].frameName,
-								framePosition:Income1[i].framePosition,
-								lastMonitorTime:Income1[i].lastMonitorTime,
-								status:Income1[i].status,
-							})
+									deviceName: Income1[i].deviceName,
+									roomName: Income1[i].roomName,
+									frameName: Income1[i].frameName,
+									framePosition: Income1[i].framePosition,
+									lastMonitorTime: Income1[i].lastMonitorTime,
+									status: Income1[i].status,
+								})
 							}
-							
+
 							_t.tableData = Income;
 							_t.options.currentPage = res.data.currentPage;
 							_t.options.total = res.data.count;
@@ -325,6 +331,40 @@
 				//_t.addEdit.organizationId = val.id;
 				_t.isShowEditPopover = false;
 			},
+			refresh() {
+				var _t = this;
+				_t.$api.get('/asset/assetDevice/devicetype',{
+					
+				},function(res){
+					switch (res.status) {
+            case 200:
+            console.log(res)
+             var Income2=res.data;
+             var Income1=dateFilter(res.requesttime);
+             _t.Income1=Income1;
+             console.log(_t.Income1)
+             var Income=[];
+					for(var i=0;i<Income2.length;i++){
+						Income.push({
+							value:Income2[i].count,
+							name:Income2[i].name
+						})
+					}
+					_t.Dincome=Income
+					_t.drawLine2();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+					
+				})
+			},
 			drawLine2() {
 				var _t = this;
 				var myChart2 = this.$echarts.init(document.getElementById("echartText"))
@@ -332,7 +372,7 @@
 					color: ['#fde33f', '#32cc35 ', '#fb6041', '#975de1', '#40a8ff'],
 					title: {
 						text: '设备占比实时监测',
-						subtext: '2017 年 3 月 12 日 11 时 29 分 29 秒',
+						subtext: _t.Income1,
 						top: 5,
 						left: 20,
 						textStyle: {
@@ -355,7 +395,8 @@
 						y: 'bottom',
 						/*left: 400,*/
 						/*top: 30,*/
-						data: ['机架/塔式服务器', '小型机', '刀片/刀箱', '网络设备', '存储设备']
+						data: _t.Dincome,
+						/*['机架/塔式服务器', '小型机', '刀片/刀箱', '网络设备', '存储设备']*/
 					},
 					toolbox: {
 						show: true,
@@ -401,7 +442,8 @@
 								length2: 10,
 							}
 						},
-						data: [{
+						data: _t.Dincome,
+						/*[{
 								value: 335,
 								name: '机架/塔式服务器'
 							},
@@ -421,7 +463,7 @@
 								value: 1548,
 								name: '存储设备'
 							}
-						],
+						],*/
 					}]
 				};
 				// 使用刚指定的配置项和数据显示图表。
