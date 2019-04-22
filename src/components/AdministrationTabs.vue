@@ -168,7 +168,7 @@
     data() {
       return {
         // 当前激活标签页序号
-        activeName: 'two',
+        activeName: 'one',
         equipmentInfoList:{}, // 设备基本信息
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
@@ -184,12 +184,8 @@
       }
     },
     props: {
-      // 页面类型 监测管理(1) 和 告警管理(2) 共用
-      // tagType:{
-      //   type:Number
-      // },
       // 页面Id 用于接口请求数据
-      pagesId: {
+      pageDeviceId: {
         type: String
       }
     },
@@ -199,9 +195,9 @@
         return row.status == 1 ? 'expendTable' : '';
       },
       // 请求设备基本信息
-      getEquipmentInfoData(val) {
+      getEquipmentInfoData() {
         var _t = this;
-        _t.$api.get('monitor/deviceMonitorAttr/baseinfo/' + val,{},function (res) {
+        _t.$api.get('monitor/deviceMonitorAttr/baseinfo/' + _t.pageDeviceId,{},function (res) {
           switch (res.status) {
             case 200:
               _t.equipmentInfoList = res.data;
@@ -218,9 +214,10 @@
           }
         });
       },
-      getEquipmentAllStatusData(val){
+      // 获取设备整体状态列表
+      getEquipmentAllStatusData(){
         var _t = this;
-        _t.$api.get('monitor/deviceMonitorAttr/overallstatus/' + val,{},function (res) {
+        _t.$api.get('monitor/deviceMonitorAttr/overallstatus/' + _t.pageDeviceId,{},function (res) {
           switch (res.status) {
             case 200:
               _t.equipmentAllStatus = res.data;
@@ -265,12 +262,12 @@
         });
       },
       // 获取告警事件列表的接口数据
-      getAlarmListData(val) {
+      getAlarmListData() {
         var _t = this;
         _t.$api.get('alarm/alarm/pagelist', {
           jsonString: JSON.stringify({
             alarm: {
-              deviceId: val
+              deviceId: _t.pageDeviceId
             },
             page: {
               currentPage: _t.optionsAlarm.currentPage,
@@ -351,10 +348,8 @@
     },
     created() {
       this.getStatusDataBase();
-      this.getEquipmentInfoData('4bc569cd386149778b9a266e4c9db614');
-      this.getEquipmentAllStatusData('4bc569cd386149778b9a266e4c9db614');
-      this.getMonitorData();
-      this.getAlarmListData('4bc569cd386149778b9a266e4c9db614');
+      this.getEquipmentInfoData();
+      this.getEquipmentAllStatusData();
     }
   }
 </script>

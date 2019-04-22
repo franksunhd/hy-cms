@@ -58,7 +58,7 @@
             <div class="displayFlex-flex home-main-title-text">
               <p class="title">今日告警恢复数</p>
               <p class="textNum">
-                <span>3</span>
+                <span>1</span>
                 <span class="num">台</span>
               </p>
             </div>
@@ -121,12 +121,39 @@
         tableData: [
           {
             serialNumber: '1',
-            alarmTime: '2019-04-02 11:05:23',
+            alarmTime: '2019-04-22 13:01:30',
             DeviceName: 'swd77',
             latestState: 'Admin Status[Switch Port: 39]: Offline [adminStatus=Offline]',
             ComputerRoom: '温州机房',
             rack: 'A8-3',
-            locations: '22U',
+            locations: '12U',
+          },
+          {
+            serialNumber: '2',
+            alarmTime: '2019-04-06 12:10:13',
+            DeviceName: 'swd65',
+            latestState: 'Admin Status[Switch Port: 39]: Offline [adminStatus=Offline]',
+            ComputerRoom: '温州机房',
+            rack: 'A8-3',
+            locations: '20U',
+          },
+          {
+            serialNumber: '3',
+            alarmTime: '2019-04-05 15:15:33',
+            DeviceName: 'swd75',
+            latestState: 'Admin Status[Switch Port: 39]: Offline [adminStatus=Offline]',
+            ComputerRoom: '温州机房',
+            rack: 'A8-3',
+            locations: '13U',
+          },
+          {
+            serialNumber: '4',
+            alarmTime: '2019-04-02 11:05:23',
+            DeviceName: 'swd70',
+            latestState: 'Admin Status[Switch Port: 39]: Offline [adminStatus=Offline]',
+            ComputerRoom: '温州机房',
+            rack: 'A8-3',
+            locations: '25U',
           }
         ],
         options:{

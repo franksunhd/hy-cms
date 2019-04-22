@@ -151,7 +151,7 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="150px" :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
+        <el-table-column :label="$t('alarmCurrent.alarmContent')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip effect="dark" placement="left-start">
               <div slot="content" style="width: 150px">
@@ -168,7 +168,11 @@
         </el-table-column>
         <el-table-column width="100px" prop="roomName" :label="$t('alarmCurrent.computerRoomName')" header-align="left" align="left"/>
         <el-table-column width="100px" prop="frameName" :label="$t('alarmCurrent.rackName')" header-align="left" align="left"/>
-        <el-table-column width="120px" prop="framePosition" :label="$t('alarmCurrent.location')" header-align="left" align="left"/>
+        <el-table-column width="120px" prop="framePosition" :label="$t('alarmCurrent.location')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <span>{{scope.row.framePosition == null ? '' : (scope.row.framePosition == '' ? '' : scope.row.framePosition + 'U')}}</span>
+          </template>
+        </el-table-column>
         <el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.Ip')" header-align="left" align="left"/>
         <el-table-column width="120px" :label="$t('alarmCurrent.equipmentType')" header-align="left" align="left">
           <template slot-scope="scope">
@@ -242,7 +246,7 @@
           <!--关闭弹出层-->
           <span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
         </div>
-        <AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
+        <AdministrationTags v-if="isShowTabBox" :page-device-id="item.content"/>
       </el-tab-pane>
     </el-tabs>
   </Box>
@@ -322,9 +326,9 @@
         // 关联业务树形下拉框显示隐藏
         isShowBusinessPopover:false,
         // 控制标签页内容是否显示
-        isShowTabBox:true,
+        isShowTabBox:false,
         // 控制标签页区域是否显示
-        isShowTabBox_tab:true,
+        isShowTabBox_tab:false,
         // 设备详情信息弹出层
         dialogVisible:false,
         defaultProps:{
@@ -341,15 +345,9 @@
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
         },
-        editableTabsValue:'1', // 当前页签
-        editableTabs:[
-          {
-            id:'1',
-            title:'表歉意',
-            name:'1'
-          }
-        ], // 页面集合
-        tabIndex: 1, // 页签序号
+        editableTabsValue:'', // 当前页签
+        editableTabs:[], // 页面集合
+        tabIndex: 0, // 页签序号
       }
     },
     methods: {
