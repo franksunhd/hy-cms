@@ -707,6 +707,21 @@
     height: 560px;
   }
 
+  .alarmCurrent-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 100;
+  }
+
+  .closeCheckBox {
+    margin-left: 30px;
+  }
+
+  .closeCheckBox .el-checkbox__label {
+    font-size: 12px;
+  }
+
   #alarmCurrent-tabs {
     position: fixed;
     bottom: 0;
@@ -735,21 +750,6 @@
     right: 0;
     bottom: 40px;
     top: 0;
-  }
-
-  .alarmCurrent-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 100;
-  }
-
-  .closeCheckBox {
-    margin-left: 30px;
-  }
-
-  .closeCheckBox .el-checkbox__label {
-    font-size: 12px;
   }
 
   #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
