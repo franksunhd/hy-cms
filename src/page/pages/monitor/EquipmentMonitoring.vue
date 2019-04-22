@@ -168,11 +168,11 @@
 						<el-button>离线设备</el-button>
 					</div>
 					<!--表格-->
-					<el-table :data="tableData" stripe @cell-click="cellClickColumn">
+					<el-table min-width='1080px' :data="tableData" stripe @cell-click="cellClickColumn">
 						<el-table-column type="selection" label="$t('EquipmentMonitoring.FutureGenerations')" width="55">
 						</el-table-column>
 						<!--序号-->
-						<el-table-column :label="$t('public.index')" header-align="left" align="left">
+						<el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -180,7 +180,7 @@
 							</template>
 						</el-table-column>
 						<!--监测状态-->
-						<el-table-column :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
+						<el-table-column width="80px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
@@ -195,7 +195,7 @@
 							</template>
 						</el-table-column>
 						<!--设备状态-->
-						<el-table-column prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
+						<el-table-column width="80px"  prop="status" :label="$t('EquipmentMonitoring.status')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
@@ -226,7 +226,7 @@
 						<!--设备类型-->
 						<el-table-column prop="type" :label="$t('EquipmentMonitoring.type')" header-align="left" align="left" />
 						<!--更新时间-->
-						<el-table-column prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
+						<el-table-column width="160px" prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
 						<!--操作-->
 						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left" />
 					</el-table>
@@ -310,6 +310,7 @@
 </template>
 
 <script>
+	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
 	import AdministrationTags from '../../../components/AdministrationTabs';
 	export default {
@@ -639,7 +640,7 @@
 									/*厂商型号*/
 									type: Income1[i].type,
 									/*设备类型*/
-									lastMonitorTime: Income1[i].lastMonitorTime,
+									lastMonitorTime: dateFilter(Income1[i].lastMonitorTime),
 									/*更新时间*/
 									operation: Income1[i].operation,
 									/*操作*/
