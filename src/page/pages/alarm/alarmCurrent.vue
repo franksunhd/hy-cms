@@ -756,26 +756,30 @@
     content: '';
     width: 10px;
     height: 10px;
-    background-color: #dee1e6;
     display: inline-block;
     position: absolute;
     top: 0;
     left: -10px;
     border-radius: 0 10px 0 0;
-    box-shadow: 2px -2px 0 #fff;
+  }
+
+  #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 0;
+    height: 20px;
   }
 
   #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
     content: '';
     width: 10px;
     height: 10px;
-    background-color: #dee1e6;
     display: inline-block;
     position: absolute;
     top: 0;
     right: -10px;
     border-radius: 10px 0 0 0;
-    box-shadow: -2px -2px 0 #fff;
   }
 
   #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {

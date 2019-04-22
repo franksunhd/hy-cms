@@ -590,12 +590,17 @@ span.el-tree-node__label {
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
-  content: '';
-  position: absolute;
-  top: 10px;
-  right: 0;
-  height: 20px;
   border-right: 1px solid #f1f1f1;
+}
+
+#alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
+  background-color: #dee1e6;
+  box-shadow: 2px -2px 0 #fff;
+}
+
+#alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
+  background-color: #dee1e6;
+  box-shadow: -2px -2px 0 #fff;
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item:hover {
