@@ -8,205 +8,230 @@
         <el-breadcrumb-item>{{$t('breadcrumb.testLog')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div v-if="false">
-      <el-row :gutter="30">
-        <el-col :span="12">
-          <div style="border: 1px solid red;padding: 20px;margin-right: 20px;margin-bottom: 20px;">
-            <el-tree
-              ref="orgList"
-              node-key="nodeId"
-              @node-click="clickNodeAlert"
-              default-expand-all
-              :expand-on-click-node="false"
-              :props="orgList"
-              :data="organizationList"/>
-          </div>
-        </el-col>
-        <el-col :span="12">
-          <div style="border: 1px solid red;padding: 20px;margin-right: 20px;margin-bottom: 20px;">
-            <p style="font-size: 16px;">
-              <template v-for="(item,index) in organizationName">
-                <span>{{item}}</span>
-                <i v-if="index !== organizationName.length - 1" class="el-icon-arrow-right"></i>
-              </template>
-            </p>
-          </div>
-        </el-col>
-      </el-row>
-      <el-button type="primary" @click="clickNode">点击</el-button>
-      <el-row>
-        <el-col :span="8">
-          <el-tree
-            ref="tree"
-            show-checkbox
-            node-key="nodeId"
-            default-expand-all
-            :props="defaultProps"
-            :data="treeData">
-            <!--<span slot-scope="{node,data}">-->
-            <!--<span v-if="data.type == 1">{{data.roleName}}</span>-->
-            <!--<span v-if="data.type == 2">{{data.nodeName}}</span>-->
-            <!--</span>-->
-          </el-tree>
-        </el-col>
-        <el-col :span="16">
-          <div style="border: 1px solid red;padding: 20px;margin-right: 20px;min-height: 500px;">
-            <!--循环结构-->
-            <div v-for="(item,index) in selectArr" :key="index" style="margin-bottom: 40px;">
-              <!--标题部分循环-->
-              <p style="font-size: 16px;">
-                <template v-for="(k,i) in item.title">
-                  <span>{{k}}</span>
-                  <i v-if="i !== item.title.length - 1" class="el-icon-arrow-right"></i>
-                </template>
-              </p>
-              <!--标签部分循环-->
-              <el-tag
-                style="margin: 10px 10px 0 0;"
-                v-for="tag in item.tags"
-                :key="tag.id"
-                @close="handleClose(tag)"
-                closable>
-                {{tag.nodeName}}
-              </el-tag>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
+    <!--<el-tree-->
+    <!--style="width: 300px;"-->
+    <!--:data="treeData"-->
+    <!--node-key="id"-->
+    <!--show-checkbox-->
+    <!--ref="tree"-->
+    <!--@check-change="currentChange"-->
+    <!--:default-expand-all="true"-->
+    <!--:props="defaultProps"-->
+    <!--:default-checked-keys="keys"-->
+    <!--:check-strictly="true"/>-->
+    <div class="padding20 borderBottom">
+      <el-tag
+        v-for="(tag,index) in tags"
+        :key="index"
+        closable
+        @close="handleClose(tag)">
+        {{tag.displayName}}
+      </el-tag>
     </div>
-    <!--动态编辑标签页-->
-    <el-button @click="addTab(editableTabsValue2)">点击</el-button>
-
-    <el-tabs v-model="editableTabsValue2" type="card" tab-position="bottom" closable @tab-remove="removeTab">
-      <el-tab-pane
-        :key="item.name"
-        v-for="(item, index) in editableTabs2"
-        :label="item.title"
-        :name="item.name">
-        <AdministrationTags :pages-id="item.content" />
-      </el-tab-pane>
-    </el-tabs>
+    <div class="padding20">
+      <el-button @click="checkTable(1)">上一页</el-button>
+      <el-button @click="checkTable(2)">下一页</el-button>
+      <el-button @click="addData">点击</el-button>
+      <el-table
+        ref="table"
+        @select="selectHandle"
+        :row-key="getRowKeys"
+        @select-all="selectHandleAll"
+        :data="tableData">
+        <el-table-column :reserve-selection="true" type="selection" fixed/>
+        <el-table-column prop="displayName" label="姓名"/>
+        <el-table-column prop="age" label="年龄"/>
+      </el-table>
+    </div>
   </Box>
 </template>
 
 <script>
   import Box from '../../../../components/Box';
-  import orgArr from '../../../../assets/js/orga_role';
-  import {queryOrgWithRole, orgBreadcrumb} from "../../../../assets/js/recursive";
-  import AdministrationTags from '../../../../components/AdministrationTabs';
+  import orgRole from '../../../../assets/js/orga_role';
+  import {getParent, uniqArr, getChildren,unique} from '../../../../assets/js/recursive';
 
   export default {
     name: "testLog",
-    components:{Box,AdministrationTags},
+    components: {Box},
     data() {
       return {
-        treeData: orgArr.orgRole[0].childrenNode,
+        treeData: orgRole.orgRole,
         defaultProps: {
-          label: 'nodeName',
-          children: 'childrenNode'
+          label: 'label',
+          children: 'children'
         },
-        orgList: {
-          label: 'nodeName',
-          children: 'children',
-        },
-        selectArr: [], // 选中组织角色的结构
-        organizationList: orgArr.organizationList.children, // 所属组织下拉列表
-        organizationName: [],
+        keys: [],
+        tags: [
+          {id: 2, displayName: '李四', age: 28,status:true},
+          {id: 6, displayName: '嗯嗯', age: 30,status:true},
+          {id: 1, displayName: '王文英', age: 29,status:true},
+        ],
+        tableData: [],
+        tableData1: [
+          {id: 1, displayName: '王文英', age: 29,status:false},
+          {id: 2, displayName: '李四', age: 28,status:false},
+          {id: 3, displayName: '赵柳', age: 30,status:false},
+          {id: 4, displayName: '哈哈', age: 29,status:false},
 
-
-        editableTabsValue2: '2',
-        editableTabs2: [{
-          title: 'Tab 1',
-          name: '1',
-          content: '1'
-        }, {
-          title: 'Tab 2',
-          name: '2',
-          content: '2'
-        }],
-        tabIndex: 2
+        ],
+        tableData2: [
+          {id: 5, displayName: '看看', age: 28,status:false},
+          {id: 6, displayName: '嗯嗯', age: 30,status:false},
+        ]
       }
     },
     methods: {
-      // 点击获取节点
-      clickNode() {
+      addData(){
         var _t = this;
-        _t.selectArr = queryOrgWithRole(orgArr.orgRole, this.$refs.tree.getCheckedNodes(), 1);
-      },
-      // 删除节点
-      handleClose(tag) {
-        var _t = this;
-        var selectArr = _t.selectArr;
-        selectArr.forEach(function (item, index) {
-          var tags = item.tags;
-          if (tags.length > 1) { // 该区域删除之后还有标签
-            tags.forEach(function (val, i) {
-              if (tag.nodeId == tags[i].nodeId) {
-                tags.splice(i, 1);
-                _t.getResultNode();
-                return false;
-              }
-            });
-          } else { // 该区域删除之后没有标签了 删除该区域
-            tags.forEach(function (val, i) {
-              if (tag.nodeId == tags[i].nodeId) {
-                tags.splice(i, 1);
-                selectArr.splice(index, 1);
-                _t.getResultNode();
-                return false;
-              }
-            });
-          }
+        _t.tags.forEach((item)=>{
         });
       },
-      // 获取剩余节点
-      getResultNode() {
+      getRowKeys(row){
+        return row.id;
+      },
+      // 点击单行
+      selectHandle(selection,row) {
         var _t = this;
-        var selectArr = _t.selectArr;
-        var nodeArr = new Array();
-        selectArr.forEach(function (item) {
-          if (item.tags.length !== 0) {
-            item.tags.forEach(function (val) {
-              nodeArr.push(val);
-            });
-          }
-        });
-        return nodeArr;
-      },
-      // 点击树节点
-      clickNodeAlert(val) {
-        var _t = this;
-        _t.organizationName = orgBreadcrumb(orgArr.organizationList.children, val.nodeId);
-      },
-
-      addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs2.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
-        });
-        this.editableTabsValue2 = newTabName;
-      },
-      removeTab(targetName) {
-        let tabs = this.editableTabs2;
-        let activeName = this.editableTabsValue2;
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              let nextTab = tabs[index + 1] || tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              }
+        var tags = _t.tags.length === 0 ? [] : _t.tags;
+        row.status = row.status == true ? false : true;
+        _t.$refs.table.toggleRowSelection(row,row.status);
+        if (row.status) {
+          _t.tags = _t.uniqArr(_t.hashPushData(selection,tags,'id'));
+        } else {
+          _t.tags.forEach((item,index)=>{
+            if (item.id === row.id) {
+              _t.tags.splice(index, 1);
+              _t.$refs.table.toggleRowSelection(row,false);
             }
           });
         }
+      },
+      // 全选
+      selectHandleAll(selection){
+        var _t = this;
+        var tags = _t.tags.length === 0 ? [] : _t.tags;
+        if (selection.length !== 0) {
+          // 添加
+          selection.forEach((item)=>{
+            item.status = item.status == false ? true : true;
+            _t.$refs.table.toggleRowSelection(item,item.status);
+            if (item.status) {
+              _t.tags = _t.uniqArr(_t.hashPushData(selection,tags,'id'));
+            }
+          });
+        } else {
+          // 删除
+          _t.tableData.forEach((item)=>{
+            item.status = false;
+          });
+          _t.tags = unique(_t.tableData,_t.tags);
+        }
+      },
 
-        this.editableTabsValue2 = activeName;
-        this.editableTabs2 = tabs.filter(tab => tab.name !== targetName);
-      }
+      // 对比两个数组 没有就添加
+      hashPushData(newArr,oldArr,id){
+        var _t = this;
+        var arr = newArr.concat(oldArr);
+        var hash = [];//一定要在这里置空啊
+        for (var i = 0; i < arr.length; i++) {
+          for (var j = i+1; j < arr.length; j++) {
+            if(arr[i][id] === arr[j][id]){
+              arr[i].status = true;
+            }
+          }
+          hash.push(arr[i]);
+        }
+        return hash;
+      },
+      // 数组对象去重
+      uniqArr(arr) {
+        var result = [];
+        var obj = {};
+        for(var i = 0; i < arr.length; i++){
+          if(!obj[arr[i].id]){
+            result.push(arr[i]);
+            obj[arr[i].id] = true;
+          }
+        }
+        return result;
+      },
+      // 树节点的点击
+      currentChange(node, status) {
+        var _t = this;
+        var nodeChildrenArr = [];
+        var keys = new Array();
+        var uniqArrKeys = new Array();
+        if (status) {
+          var parent = getParent(_t.treeData, node.id, 'id', 'children', 'parentId');
+          parent.forEach(function (item) {
+            keys.push(item.id);
+          });
+          uniqArrKeys = uniqArr(keys);
+          _t.keys = uniqArrKeys;
+        } else {
+          _t.keys.forEach(function (item, index) {
+            if (item === node.id) {
+              _t.keys.splice(index, 1);
+            }
+          });
+          // 获取勾选带子级的节点
+          nodeChildrenArr = getChildren(_t.treeData, node.id, 'id', 'children');
+          // 循环设置取消勾选节点子集的所有节点
+          nodeChildrenArr.forEach(function (item) {
+            // item key值, false: 不勾选
+            _t.$refs.tree.setChecked(item, false, true);
+          });
+        }
+      },
+      // 关闭标签
+      handleClose(tag) {
+        var _t = this;
+        _t.tags.splice(_t.tags.indexOf(tag), 1);
+        _t.tableData.forEach((item)=>{
+          if (item.id === tag.id) {
+            item.status = false;
+            _t.$refs.table.toggleRowSelection(item,false);
+          }
+        });
+      },
+      // 换页
+      checkTable(val) {
+        var _t = this;
+        if (val == 1) {
+          _t.tableData = _t.tableData1;
+        } else {
+          _t.tableData = _t.tableData2;
+        }
+        _t.$nextTick(()=>{
+          _t.tags.forEach((item)=>{
+            _t.tableData.forEach((data)=>{
+              if (item.id == data.id) {
+                data.status = true;
+                _t.$refs.table.toggleRowSelection(data,true);
+              }
+            })
+          });
+        })
+      },
+      // 获取数据
+      getData(){
+        var _t = this;
+        _t.$nextTick(()=>{
+          _t.tableData = _t.tableData1;
+          _t.tags.forEach((item)=>{
+            _t.tableData.forEach((data)=>{
+              if (item.id == data.id) {
+                data.status = true;
+                _t.$refs.table.toggleRowSelection(data,true);
+              }
+            })
+          });
+        })
+      },
     },
     created() {
+      this.getData();
     }
   }
 </script>

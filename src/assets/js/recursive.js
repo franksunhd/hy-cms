@@ -258,3 +258,80 @@ export function getMenuWithParentIdByMenuId(allNodes,allSelectedNodes) {
   }
   return selectWithParentIdArr;
 }
+
+
+// 根据 id 遍历树节点的所有组节点
+export function getParent(treeData, val, id, children, parent) {
+  var arrRes = [];
+  if (treeData.length === 0) {
+    if (!!val) {
+      arrRes.unshift(treeData)
+    }
+    return arrRes;
+  }
+  let rev = (dataArr, nodeId) => {
+    for (var i = 0, length = dataArr.length; i < length; i++) {
+      let node = dataArr[i];
+      if (node[id] === nodeId) {
+        arrRes.unshift(node);
+        rev(treeData, node[parent]);
+        break;
+      }
+      else {
+        if (!!node[children]) {
+          rev(node[children], nodeId);
+        }
+      }
+    }
+    return arrRes;
+  };
+  arrRes = rev(treeData, val);
+  return arrRes;
+}
+
+// 数组去重
+export function uniqArr(arr = []) {
+  return arr.filter(function(element,index,self){
+    return self.indexOf(element) === index;
+  });
+}
+
+// 根据 id 遍历树节点的所有子节点
+export function getChildren(treeData, val, id, children) {
+  var arrRes = new Array();
+  var thisArr = valInDeep(treeData, val, id, children);
+  var newArr = new Array();
+  if (thisArr[0][children] !== undefined) {
+    newArr = serverArray(thisArr[0][children],id,children);
+    newArr.forEach((item)=>{
+      arrRes.push(item[id]);
+    });
+  }
+  return arrRes;
+}
+
+// 遍历寻找id 所对饮的集合
+function valInDeep(arr = [], val, id, children) {
+  return arr.reduce((flat, item) => {
+    return flat.concat(
+      item[id] === val ? item : valInDeep(item[children] || [], val, id, children)
+    );
+  }, []);
+}
+
+function serverArray(arr,id,children,newArr = []){
+  arr.forEach((item)=>{
+    if (item[children]) {
+      serverArray(item[children],id,children,newArr);
+    }
+    newArr.push(item);
+  });
+  return newArr;
+}
+
+// 两个数组做对比 删除相同部分, 返回剩余部分
+export function unique (obj, ary) {
+  return obj.filter(function(item){
+    return ary.indexOf(item) === -1;
+  })
+}

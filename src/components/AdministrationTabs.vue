@@ -1,150 +1,315 @@
 <template>
   <div class="administration-box">
     <!--设备信息-->
-    <el-row :gutter="10">
-      <el-col :span="6">
-        <div class="grayBg administration-title"><strong>设备基本信息</strong></div>
-        <el-form label-width="96px" label-position="right" class="administration-info-box">
-          <el-form-item label="设备名称：">MININT-LF81PCF-惠普</el-form-item>
-          <el-form-item label="产品名称：">ProLiant DL360 G7</el-form-item>
-          <el-form-item label="设备IP：">192.168.8.36</el-form-item>
-          <el-form-item label="UUID：">33323137-3731-4336-5534-343</el-form-item>
-          <el-form-item label="设备厂商：">HP</el-form-item>
-          <el-form-item label="序列号：">6CU4473LL0</el-form-item>
-        </el-form>
-        <div class="grayBg administration-title"><strong>设备整体状态</strong></div>
-        <el-form label-width="96px" label-position="right" class="administration-info-box">
-          <el-form-item label="硬盘状态：">OK</el-form-item>
-          <el-form-item label="CPU状态：">OK</el-form-item>
-          <el-form-item label="内存状态：">Redundant</el-form-item>
-          <el-form-item label="电源状态：">OK</el-form-item>
-          <el-form-item label="风扇状态：">Not Redundant</el-form-item>
-          <el-form-item label="温度状态：">OK</el-form-item>
-        </el-form>
-      </el-col>
-      <el-col :span="18" class="positionRelative">
-        <!--标签页-->
-        <el-tabs v-model="activeName" class="monitoringDetails-header" type="card">
-          <el-tab-pane label="监测详情" name="one">
-            <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
-              <el-table-column type="expand" header-align="left" align="left">
-                <!--展开行-->
-                <template>
-                  <el-table stripe>
-                    <el-table-column label="状态" header-align="left" align="left">
-                      <template>
-                        <el-tooltip effect="dark" content="紧急" placement="top-start">
-                          <span class="iconfont iconfontError">&#xe609;</span>
-                        </el-tooltip>
-                        <el-tooltip effect="dark" content="正常" placement="top-start">
-                          <span class="iconfont iconfontSuccess">&#xe618;</span>
-                        </el-tooltip>
-                      </template>
-                    </el-table-column>
-                    <el-table-column v-if="true" label="类型" header-align="left" align="left" />
-                    <el-table-column v-if="true" label="名称" header-align="left" align="left" />
-                    <el-table-column v-if="false" label="资源名称" header-align="left" align="left" />
-                    <el-table-column label="最新状态" header-align="left" align="left" />
-                    <el-table-column label="取值方式" header-align="left" align="left" />
-                    <el-table-column label="取值间隔" header-align="left" align="left" />
-                    <el-table-column label="更新时间" header-align="left" align="left" />
-                  </el-table>
-                </template>
-              </el-table-column>
-              <el-table-column label="状态" header-align="left" align="left">
-                <template slot-scope="scope">
-                  <el-tooltip v-if="scope.row.status == 1" effect="dark" content="紧急" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                  <el-tooltip v-if="scope.row.status == 2" effect="dark" content="正常" placement="top-start">
-                    <span class="iconfont iconfontSuccess">&#xe618;</span>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-              <el-table-column label="资源名称" header-align="left" align="left" />
-              <el-table-column label="最新状态" header-align="left" align="left" />
-              <el-table-column label="更新时间" header-align="left" align="left" />
-              <el-table-column label="操作" header-align="left" align="left">
-                <template slot-scope="scope">
-                  <el-tooltip effect="dark" content="离线设备" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe62b;</span>
-                  </el-tooltip>
-                  <span>已离线</span>
-                  <el-tooltip effect="dark" content="页面不显示" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                  <el-tooltip effect="dark" content="删除监测" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                  <span>已删除</span>
-                  <el-tooltip effect="dark" content="忽略告警" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                  <el-tooltip effect="dark" content="取消忽略" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                  <el-tooltip effect="dark" content="暂停监测" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe629;</span>
-                  </el-tooltip>
-                  <el-tooltip effect="dark" content="启动监测" placement="top-start">
-                    <span class="iconfont iconfontError">&#xe609;</span>
-                  </el-tooltip>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="告警事件" name="two"></el-tab-pane>
-          <el-tab-pane label="硬件配置" name="three"></el-tab-pane>
-          <el-tab-pane label="网络配置" name="four"></el-tab-pane>
-          <el-tab-pane label="管理信息" name="five"></el-tab-pane>
-          <el-tab-pane label="位置信息" name="six"></el-tab-pane>
-          <el-tab-pane label="维保信息" name="seven"></el-tab-pane>
-          <el-tab-pane label="变更信息" name="eight"></el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
+    <div class="equipmentDetail-info-box">
+      <div class="grayBg administration-title"><strong>设备基本信息</strong></div>
+      <el-form label-width="96px" label-position="right" class="administration-info-box">
+        <el-form-item label="设备名称："></el-form-item>
+        <el-form-item label="产品名称："></el-form-item>
+        <el-form-item label="设备IP："></el-form-item>
+        <el-form-item label="UUID："></el-form-item>
+        <el-form-item label="设备厂商："></el-form-item>
+        <el-form-item label="序列号："></el-form-item>
+      </el-form>
+      <div class="grayBg administration-title"><strong>设备整体状态</strong></div>
+      <el-form label-width="96px" label-position="right" class="administration-info-box">
+        <el-form-item label="硬盘状态："></el-form-item>
+        <el-form-item label="CPU状态："></el-form-item>
+        <el-form-item label="内存状态："></el-form-item>
+        <el-form-item label="电源状态："></el-form-item>
+        <el-form-item label="风扇状态："></el-form-item>
+        <el-form-item label="温度状态："></el-form-item>
+      </el-form>
+    </div>
+    <!--标签页-->
+    <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
+      <el-tab-pane label="监测详情" name="one">
+        <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
+          <el-table-column type="expand" header-align="left" align="left">
+            <!--展开行-->
+            <template slot-scope="scope">
+              <el-table :data="scope.row.deviceMonitorList" stripe>
+                <el-table-column label="状态" header-align="left" align="left">
+                  <template slot-scope="scopeInset">
+                    <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
+                                :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
+                      <span class="iconfont iconfontError">&#xe60b;</span>
+                    </el-tooltip>
+                    <el-tooltip v-if="scopeInset.row.status == 22" effect="dark"
+                                :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
+                      <span class="iconfont iconfontWarn">&#xe60a;</span>
+                    </el-tooltip>
+                    <el-tooltip v-if="scopeInset.row.status == 33" effect="dark"
+                                :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
+                      <span class="iconfont iconfontSuccess">&#xe618;</span>
+                    </el-tooltip>
+                    <el-tooltip v-if="scopeInset.row.status == 66" effect="dark"
+                                :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
+                      <span class="iconfont iconfontWarn">&#xe608;</span>
+                    </el-tooltip>
+                    <el-tooltip v-if="scopeInset.row.status == 99" effect="dark"
+                                :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
+                      <span class="iconfont iconfontError">&#xe609;</span>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="nodeClass" v-if="true" label="类型" header-align="left" align="left"/>
+                <el-table-column prop="name" v-if="true" label="名称" header-align="left" align="left"/>
+                <el-table-column v-if="false" label="资源名称" header-align="left" align="left"/>
+                <el-table-column prop="statusText" label="最新状态" header-align="left" align="left"/>
+                <el-table-column label="取值方式" header-align="left" align="left"/>
+                <el-table-column label="取值间隔" header-align="left" align="left"/>
+                <el-table-column label="更新时间" header-align="left" align="left">
+                  <template slot-scope="scopeInset">
+                    <span>{{scopeInset.row.lastModifyTime | dateFilter}}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </template>
+          </el-table-column>
+          <el-table-column type="selection" header-align="left" align="left"/>
+          <el-table-column label="状态" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-tooltip v-if="scope.row.status == 11" effect="dark" :content="AlarmSeverity[scope.row.status]"
+                          placement="top-start">
+                <span class="iconfont iconfontError">&#xe60b;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.status == 22" effect="dark" :content="AlarmSeverity[scope.row.status]"
+                          placement="top-start">
+                <span class="iconfont iconfontWarn">&#xe60a;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.status == 33" effect="dark" :content="AlarmSeverity[scope.row.status]"
+                          placement="top-start">
+                <span class="iconfont iconfontSuccess">&#xe618;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.status == 66" effect="dark" :content="AlarmSeverity[scope.row.status]"
+                          placement="top-start">
+                <span class="iconfont iconfontWarn">&#xe608;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.status == 99" effect="dark" :content="AlarmSeverity[scope.row.status]"
+                          placement="top-start">
+                <span class="iconfont iconfontError">&#xe609;</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="资源名称" header-align="left" align="left"/>
+          <el-table-column prop="statusText" label="最新状态" header-align="left" align="left"/>
+          <el-table-column label="更新时间" header-align="left" align="left">
+            <template slot-scope="scope">
+              <span>{{scope.row.monitorTime | dateFilter}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-button type="text">阈值</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="告警事件" name="two">
+        <el-table :data="alarmListData" stripe>
+          <el-table-column label="级别" header-align="left" align="left"/>
+          <el-table-column label="告警状态" header-align="left" align="left"/>
+          <el-table-column label="发生时间" header-align="left" align="left"/>
+          <el-table-column label="告警对象" header-align="left" align="left"/>
+          <el-table-column label="最新状态" header-align="left" align="left"/>
+          <el-table-column label="操作" header-align="left" align="left">
+            <template slot-scope="scope">
+              <span>-</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--分页-->
+        <pages
+          :total='optionsAlarm.total'
+          :currentPage='optionsAlarm.currentPage'
+          :page-size="optionsAlarm.pageSize"
+          @handleSizeChangeSub="handleSizeChangeSubAlarm"
+          @handleCurrentChangeSub="handleCurrentChangeAlarm"/>
+      </el-tab-pane>
+      <el-tab-pane label="硬件配置" name="three">硬件配置</el-tab-pane>
+      <el-tab-pane label="网络配置" name="four">网络配置</el-tab-pane>
+      <el-tab-pane label="管理信息" name="five">管理信息</el-tab-pane>
+      <el-tab-pane label="位置信息" name="six">位置信息</el-tab-pane>
+      <el-tab-pane label="维保信息" name="seven">维保信息</el-tab-pane>
+      <el-tab-pane label="变更信息" name="eight">变更信息</el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
   import Box from '../components/Box';
+  import {dateFilter} from "../assets/js/filters";
+
   export default {
     name: "AdministrationTabs",
-    components:{Box},
+    components: {Box},
     data() {
       return {
         // 当前激活标签页序号
-        activeName:'one',
-        monitoringDetailsData:[], // 监测管理表格数据
+        activeName: 'one',
+        monitoringDetailsData: [], // 监测管理表格数据
+        alarmListData: [], // 告警事件列表数据
+        AlarmHandleStatus: {}, // 处理状态
+        AlarmSeverity: {}, // 告警状态
+        AssetType: {}, // 设备类型
+        optionsAlarm: {
+          total: 0, // 总条数
+          currentPage: 1, // 当前页码
+          pageSize: 10, // 显示条数
+        }
       }
     },
-    props:{
+    props: {
       // 页面类型 监测管理(1) 和 告警管理(2) 共用
       // tagType:{
       //   type:Number
       // },
       // 页面Id 用于接口请求数据
-      pagesId:{
-        type:String
+      pagesId: {
+        type: String
       }
     },
     methods: {
       // 控制某些状态下的表格不展开行
-      getClassName({row,rowIndex}){
+      getClassName({row, rowIndex}) {
         return row.status == 1 ? 'expendTable' : '';
       },
-      // 请求数据
-      getData(){
+      // 请求左侧设备详情数据
+      getLeftListData() {
         var _t = this;
-      }
+      },
+      // 获取监测详情的接口数据
+      getMonitorData() {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        _t.$api.get('monitor/deviceMonitor/all', {
+          jsonString: JSON.stringify({
+            deviceMonitor: {
+              parentId: '0',
+              deviceId: '4bc569cd386149778b9a266e4c9db614',
+            }
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.monitoringDetailsData = res.data;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.monitoringDetailsData = [];
+              break;
+          }
+        });
+      },
+      // 获取告警事件列表的接口数据
+      getAlarmListData(val) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        _t.$api.get('alarm/alarm/pagelist', {
+          jsonString: JSON.stringify({
+            alarm: {
+              deviceId: val
+            },
+            page: {
+              currentPage: _t.optionsAlarm.currentPage,
+              pageSize: _t.optionsAlarm.pageSize
+            }
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              console.log(res.data)
+              _t.alarmListData = res.data.list;
+              _t.optionsAlarm.total = res.data.page.totalResultSize;
+              _t.optionsAlarm.currentPage = res.data.currentPage;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.alarmListData = [];
+              break;
+          }
+        });
+      },
+      // 获取状态字典
+      getStatusDataBase() {
+        var _t = this;
+        _t.$api.post('system/basedata/map', {
+          dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity"],
+          languageMark: localStorage.getItem("hy-language")
+        }, function (res) {
+          switch (res.status) {
+            case 200:
+              _t.AlarmHandleStatus = res.data.AlarmHandleStatus;
+              _t.AssetType = res.data.AssetType;
+              _t.AlarmSeverity = res.data.AlarmSeverity;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.AlarmHandleStatus = {};
+              _t.AssetType = {};
+              _t.AlarmSeverity = {};
+              break;
+          }
+        });
+      },
+      // 点击页签时
+      clickTabs(tab) {
+        var _t = this;
+        if (tab.name === 'one') {
+          // 点击监测详情 获取表格数据
+          _t.getMonitorData();
+        } else if (tab.name === 'two') {
+          // 点击告警事件 获取表格数据
+          _t.getAlarmListData('0fec72282d8f4e499a2e24c34bb9a502');
+        } else {
+
+        }
+      },
+      // 改变当前页码
+      handleCurrentChangeAlarm(val) {
+        var _t = this;
+        _t.optionsAlarm.currentPage = val;
+        _t.getAlarmListData();
+      },
+      // 改变每页显示条数
+      handleSizeChangeSubAlarm(val) {
+        var _t = this;
+        _t.optionsAlarm.pageSize = val;
+        _t.getAlarmListData();
+      },
     },
     created() {
-      this.getData();
+      this.getStatusDataBase();
+      this.getLeftListData();
+      this.getMonitorData();
+      this.getAlarmListData('0fec72282d8f4e499a2e24c34bb9a502');
     }
   }
 </script>
 
 <style scoped>
+  .equipmentDetail-info-box {
+    width: 300px;
+  }
+
   .administration-title {
     line-height: 30px;
     height: 30px;
@@ -197,7 +362,8 @@
   }
 
   #administration-tabs-title li.active::before {
-    left: -10px;overflow: hidden;
+    left: -10px;
+    overflow: hidden;
     border-radius: 0 0 10px 0;
   }
 
@@ -220,7 +386,7 @@
     bottom: 0;
   }
 
-  .administration-info-box .el-form-item{
+  .administration-info-box .el-form-item {
     font-size: 12px;
     margin-bottom: 0;
   }
@@ -230,7 +396,20 @@
   }
 
   /*标签页头部*/
-  .monitoringDetails-header.el-tabs--card>.el-tabs__header {
+  .monitoringDetails-header.el-tabs--card > .el-tabs__header {
     background-color: #f0f0f0;
+    position: absolute;
+    top: 0;
+    left: 310px;
+    right: 0;
+  }
+
+  .monitoringDetails-header.el-tabs--card > .el-tabs__content {
+    position: absolute;
+    top: 50px;
+    bottom: 10px;
+    left: 310px;
+    right: 0;
+    overflow-y: auto;
   }
 </style>

@@ -322,9 +322,9 @@
         // 关联业务树形下拉框显示隐藏
         isShowBusinessPopover:false,
         // 控制标签页内容是否显示
-        isShowTabBox:false,
+        isShowTabBox:true,
         // 控制标签页区域是否显示
-        isShowTabBox_tab:false,
+        isShowTabBox_tab:true,
         // 设备详情信息弹出层
         dialogVisible:false,
         defaultProps:{
@@ -344,9 +344,9 @@
         editableTabsValue:'1', // 当前页签
         editableTabs:[
           {
-            title: '标题1',
-            name:'1',
-            content: '1'
+            id:'1',
+            title:'表歉意',
+            name:'1'
           }
         ], // 页面集合
         tabIndex: 1, // 页签序号
@@ -547,14 +547,23 @@
       // 收起
       packUp(){
         var _t = this;
+        _t.isShowTabBox = false;
+        document.getElementById('alarmCurrent-tabs').style.top = 'initial';
       },
       // 关闭标签页
       closeTab(){
         var _t = this;
+        _t.isShowTabBox_tab = false;
+        document.getElementById('alarmCurrent-tabs').style.top = 'initial';
+        _t.editableTabsValue = '';
+        _t.editableTabs = [];
+        _t.tabIndex = 0;
       },
       // 点击标签页
       clickTabs(){
         var _t = this;
+        _t.isShowTabBox = true;
+        document.getElementById('alarmCurrent-tabs').style.top = '118px';
       },
       // 表单部分机房机架下拉框数据
       getFormData(){

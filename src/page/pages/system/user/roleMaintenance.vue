@@ -231,11 +231,17 @@
         <el-form-item>
           <el-tree
             :data="selectArr"
-            :props="menuProps"
-            :default-expanded-keys="menuExpanded"
             node-key="id"
             show-checkbox
-            ref="tree"/>
+            ref="tree"
+            @check-change="currentChange"
+            :props="menuProps"
+            :check-strictly="true"
+            :default-checked-keys="keys"
+            :default-expanded-keys="menuExpanded"
+
+
+            />
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
           <div v-if="selectMenuMark" class="isNotNull">必填项不能为空</div>
@@ -291,7 +297,7 @@
   import Box from '../../../../components/Box';
   import {isNotNull} from "../../../../assets/js/validator";
   import {dateFilter} from '../../../../assets/js/filters';
-  import {orgBreadcrumb,getMenuWithParentIdByMenuId} from "../../../../assets/js/recursive";
+  import {orgBreadcrumb,getMenuWithParentIdByMenuId,getParent, uniqArr, getChildren} from "../../../../assets/js/recursive";
 
   export default {
     name: "role-maintenance",
@@ -348,6 +354,7 @@
         // 组织结构名
         organizationName: [],
         menuExpanded:[], // 功能菜单授权数据回显 展开树
+        keys:[],
         // 外层分页
         options: {
           total: 0, // 总条数
@@ -399,6 +406,34 @@
       }
     },
     methods: {
+      // 树节点的点击
+      currentChange(node, status) {
+        var _t = this;
+        var nodeChildrenArr = [];
+        var keys = new Array();
+        var uniqArrKeys = new Array();
+        if (status) {
+          var parent = getParent(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList', 'parentId');
+          parent.forEach(function (item) {
+            keys.push(item.id);
+          });
+          uniqArrKeys = uniqArr(keys);
+          _t.keys = uniqArrKeys;
+        } else {
+          _t.keys.forEach(function (item, index) {
+            if (item === node.id) {
+              _t.keys.splice(index, 1);
+            }
+          });
+          // 获取勾选带子级的节点
+          nodeChildrenArr = getChildren(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList');
+          // 循环设置取消勾选节点子集的所有节点
+          nodeChildrenArr.forEach(function (item) {
+            // item key值, false: 不勾选
+            _t.$refs.tree.setChecked(item, false, true);
+          });
+        }
+      },
       // 功能权限
       functionData() {
         var _t = this;
@@ -417,6 +452,7 @@
         },function (res) {
           switch (res.status) {
             case 200:
+              console.log(status);
               var menuData = new Array();
               res.data.forEach(function (item) {
                 menuData.push(item.id);
@@ -453,6 +489,7 @@
                 _t.dialogVisibleFunction = false;
                 _t.$refs.tree.setCheckedKeys([]);
                 _t.$bus.emit('getMenu',true);
+                _t.resetFormData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
