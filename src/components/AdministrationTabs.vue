@@ -3,22 +3,16 @@
     <!--设备信息-->
     <div class="equipmentDetail-info-box">
       <div class="grayBg administration-title"><strong>设备基本信息</strong></div>
-      <el-form label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item label="设备名称："></el-form-item>
-        <el-form-item label="产品名称："></el-form-item>
-        <el-form-item label="设备IP："></el-form-item>
-        <el-form-item label="UUID："></el-form-item>
-        <el-form-item label="设备厂商："></el-form-item>
-        <el-form-item label="序列号："></el-form-item>
+      <el-form :model="equipmentInfoList" label-width="96px" label-position="right" class="administration-info-box">
+        <el-form-item label="设备名称：">{{equipmentInfoList.deviceName}}</el-form-item>
+        <el-form-item label="设备IP：">{{equipmentInfoList.ip}}</el-form-item>
+        <el-form-item label="型号：">{{equipmentInfoList.model}}</el-form-item>
+        <el-form-item label="设备厂商：">{{equipmentInfoList.manufacturer}}</el-form-item>
+        <el-form-item label="序列号：">{{equipmentInfoList.servicetag}}</el-form-item>
       </el-form>
       <div class="grayBg administration-title"><strong>设备整体状态</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item label="硬盘状态："></el-form-item>
-        <el-form-item label="CPU状态："></el-form-item>
-        <el-form-item label="内存状态："></el-form-item>
-        <el-form-item label="电源状态："></el-form-item>
-        <el-form-item label="风扇状态："></el-form-item>
-        <el-form-item label="温度状态："></el-form-item>
+        <el-form-item v-for="(item,index) in equipmentAllStatus" :key="index" :label="item.name + '：'">{{item.status}}</el-form-item>
       </el-form>
     </div>
     <!--标签页-->
@@ -53,15 +47,11 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column prop="nodeClass" v-if="true" label="类型" header-align="left" align="left"/>
-                <el-table-column prop="name" v-if="true" label="名称" header-align="left" align="left"/>
-                <el-table-column v-if="false" label="资源名称" header-align="left" align="left"/>
+                <el-table-column prop="name" label="资源名称" header-align="left" align="left"/>
                 <el-table-column prop="statusText" label="最新状态" header-align="left" align="left"/>
-                <el-table-column label="取值方式" header-align="left" align="left"/>
-                <el-table-column label="取值间隔" header-align="left" align="left"/>
                 <el-table-column label="更新时间" header-align="left" align="left">
                   <template slot-scope="scopeInset">
-                    <span>{{scopeInset.row.lastModifyTime | dateFilter}}</span>
+                    <span>{{scopeInset.row.monitorTime | dateFilter}}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -108,11 +98,42 @@
       </el-tab-pane>
       <el-tab-pane label="告警事件" name="two">
         <el-table :data="alarmListData" stripe>
-          <el-table-column label="级别" header-align="left" align="left"/>
-          <el-table-column label="告警状态" header-align="left" align="left"/>
-          <el-table-column label="发生时间" header-align="left" align="left"/>
-          <el-table-column label="告警对象" header-align="left" align="left"/>
-          <el-table-column label="最新状态" header-align="left" align="left"/>
+          <el-table-column label="级别" header-align="left" align="left">
+            <template slot-scope="scope">
+              <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
+                          placement="top-start">
+                <span class="iconfont iconfontError">&#xe60b;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.alarmLevel == 22" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
+                          placement="top-start">
+                <span class="iconfont iconfontWarn">&#xe60a;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
+                          placement="top-start">
+                <span class="iconfont iconfontSuccess">&#xe618;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.alarmLevel == 66" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
+                          placement="top-start">
+                <span class="iconfont iconfontWarn">&#xe608;</span>
+              </el-tooltip>
+              <el-tooltip v-if="scope.row.alarmLevel == 99" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
+                          placement="top-start">
+                <span class="iconfont iconfontError">&#xe609;</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+          <el-table-column label="告警状态" header-align="left" align="left">
+            <template slot-scope="scope">
+              <span>{{AlarmHandleStatus[scope.row.status]}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="发生时间" header-align="left" align="left">
+            <template slot-scope="scope">
+              <span>{{scope.row.occurrenceTime | dateFilter}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="part" label="告警对象" header-align="left" align="left"/>
+          <el-table-column prop="currentStatus" label="最新状态" header-align="left" align="left"/>
           <el-table-column label="操作" header-align="left" align="left">
             <template slot-scope="scope">
               <span>-</span>
@@ -147,7 +168,9 @@
     data() {
       return {
         // 当前激活标签页序号
-        activeName: 'one',
+        activeName: 'two',
+        equipmentInfoList:{}, // 设备基本信息
+        equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
         alarmListData: [], // 告警事件列表数据
         AlarmHandleStatus: {}, // 处理状态
@@ -175,14 +198,48 @@
       getClassName({row, rowIndex}) {
         return row.status == 1 ? 'expendTable' : '';
       },
-      // 请求左侧设备详情数据
-      getLeftListData() {
+      // 请求设备基本信息
+      getEquipmentInfoData(val) {
         var _t = this;
+        _t.$api.get('monitor/deviceMonitorAttr/baseinfo/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.equipmentInfoList = res.data;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.equipmentInfoList = {};
+              break;
+          }
+        });
+      },
+      getEquipmentAllStatusData(val){
+        var _t = this;
+        _t.$api.get('monitor/deviceMonitorAttr/overallstatus/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              _t.equipmentAllStatus = res.data;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.equipmentAllStatus = {};
+              break;
+          }
+        });
       },
       // 获取监测详情的接口数据
       getMonitorData() {
         var _t = this;
-        _t.$store.commit('setLoading', true);
         _t.$api.get('monitor/deviceMonitor/all', {
           jsonString: JSON.stringify({
             deviceMonitor: {
@@ -191,7 +248,6 @@
             }
           })
         }, function (res) {
-          _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
               _t.monitoringDetailsData = res.data;
@@ -211,7 +267,6 @@
       // 获取告警事件列表的接口数据
       getAlarmListData(val) {
         var _t = this;
-        _t.$store.commit('setLoading', true);
         _t.$api.get('alarm/alarm/pagelist', {
           jsonString: JSON.stringify({
             alarm: {
@@ -223,10 +278,8 @@
             }
           })
         }, function (res) {
-          _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
-              console.log(res.data)
               _t.alarmListData = res.data.list;
               _t.optionsAlarm.total = res.data.page.totalResultSize;
               _t.optionsAlarm.currentPage = res.data.currentPage;
@@ -278,7 +331,7 @@
           _t.getMonitorData();
         } else if (tab.name === 'two') {
           // 点击告警事件 获取表格数据
-          _t.getAlarmListData('0fec72282d8f4e499a2e24c34bb9a502');
+          _t.getAlarmListData();
         } else {
 
         }
@@ -298,9 +351,10 @@
     },
     created() {
       this.getStatusDataBase();
-      this.getLeftListData();
+      this.getEquipmentInfoData('4bc569cd386149778b9a266e4c9db614');
+      this.getEquipmentAllStatusData('4bc569cd386149778b9a266e4c9db614');
       this.getMonitorData();
-      this.getAlarmListData('0fec72282d8f4e499a2e24c34bb9a502');
+      this.getAlarmListData('4bc569cd386149778b9a266e4c9db614');
     }
   }
 </script>

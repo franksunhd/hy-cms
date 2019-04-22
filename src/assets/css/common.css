@@ -515,3 +515,7 @@ input::-webkit-input-placeholder {
 .el-tabs--card>.el-tabs__header .el-tabs__nav {
   border: none;
 }
+
+.el-table__expanded-cell[class*=cell] {
+  padding: 10px;
+}
