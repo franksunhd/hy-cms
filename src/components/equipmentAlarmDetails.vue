@@ -216,6 +216,17 @@
   }
 </script>
 
-<style scoped>
+<style>
+  .alarmCurrentBox-dialog .el-dialog {
+    width: 930px;
+    height: 560px;
+  }
 
+  .closeCheckBox {
+    margin-left: 30px;
+  }
+
+  .closeCheckBox .el-checkbox__label {
+    font-size: 12px;
+  }
 </style>
