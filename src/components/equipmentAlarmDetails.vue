@@ -23,7 +23,10 @@
         </el-col>
         <el-col :span="8">
           <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">{{alarmDetailDataAlarm.roomName}}</el-form-item>
-          <el-form-item :label="$t('alarmCurrent.location') + '：'">{{alarmDetailDataAlarm.frameName}},{{alarmDetailDataAlarm.framePosition}}U</el-form-item>
+          <el-form-item :label="$t('alarmCurrent.location') + '：'">
+            <span>{{alarmDetailDataAlarm.frameName}}</span>
+            <span v-if="alarmDetailDataAlarm.framePosition !== null">,{{alarmDetailDataAlarm.framePosition}}U</span>
+          </el-form-item>
         </el-col>
       </el-row>
       <!--告警信息字段-->
