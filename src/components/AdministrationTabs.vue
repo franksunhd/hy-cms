@@ -111,7 +111,7 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="告警事件" name="two">
-        <el-table :data="alarmListData" stripe class="indexTableBox">
+        <el-table :data="alarmListData" stripe class="indexTableBox" @row-click="alarmEventTableRow">
           <el-table-column width="90px" label="级别" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
@@ -176,16 +176,25 @@
       <el-tab-pane label="维保信息" name="seven">维保信息</el-tab-pane>
       <el-tab-pane label="变更信息" name="eight">变更信息</el-tab-pane>
     </el-tabs>
+    <!--设备告警详情弹出层-->
+    <equipmentAlarmDetail
+      ref="alarmDialog"
+      :dialogVisible="dialogVisible"
+      :AssetType="AssetType"
+      :AlarmSeverity="AlarmSeverity"
+      :AlarmHandleStatus="AlarmHandleStatus"
+      @dialogVisibleStatus="dialogVisibleStatus" />
   </div>
 </template>
 
 <script>
   import Box from '../components/Box';
   import {dateFilter} from "../assets/js/filters";
+  import equipmentAlarmDetail from './equipmentAlarmDetails';
 
   export default {
     name: "AdministrationTabs",
-    components: {Box},
+    components: {Box,equipmentAlarmDetail},
     data() {
       return {
         // 当前激活标签页序号
@@ -201,7 +210,8 @@
           total: 0, // 总条数
           currentPage: 1, // 当前页码
           pageSize: 10, // 显示条数
-        }
+        },
+        dialogVisible:false, // 点击告警事件行弹出蒙版层
       }
     },
     props: {
@@ -211,6 +221,17 @@
       }
     },
     methods: {
+      // 点击告警事件 行
+      alarmEventTableRow(row){
+        var _t = this;
+        _t.dialogVisible = true;
+        // 父组件调用 子组件 获取数据的方法
+        _t.$refs.alarmDialog.getData(row.id);
+      },
+      // 接受设备信息蒙版层返回的状态
+      dialogVisibleStatus(val){
+        this.dialogVisible = val;
+      },
       // 控制某些状态下的表格不展开行
       getClassName({row, rowIndex}) {
         return row.deviceMonitorList.length == 0 ? 'expendTable' : '';
