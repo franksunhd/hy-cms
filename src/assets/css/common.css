@@ -93,6 +93,10 @@ html,body,.Index-box {
   margin-bottom: 10px;
 }
 
+.marBottom50 {
+	margin-bottom: 50px;
+} 
+
 .padding10 {
   padding: 10px;
 }

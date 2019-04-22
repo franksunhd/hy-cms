@@ -100,7 +100,7 @@
 						<el-breadcrumb-item>设备监测</el-breadcrumb-item>
 					</el-breadcrumb>
 				</div>
-				<div class="padding20">
+				<div class="padding20" style="margin-bottom: 50px;">
 					<!--表单-->
 					<el-form :model="formItem" inline label-width="120px">
 						<!--设备分类/类型-->
@@ -235,64 +235,6 @@
 				</div>
 				<!--设备告警详情弹出层-->
 				<equipmentAlarmDetails ref="alarmDialog" :dialogVisible="dialogVisible" :AssetType="tableDataBase.AssetType" :AlarmSeverity="tableDataBase.AlarmSeverity" :AlarmHandleStatus="tableDataBase.AlarmHandleStatus" @dialogVisibleStatus="dialogVisibleStatus" />
-				<!--<el-dialog class="EquipmentMonitoringBox" :title="$t('alarmCurrent.addUpdateAlarm')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
-					<div class="dialogTitle">{{$t('alarmCurrent.equipmentInfo')}}</div>
-					<el-form :model="equipmentData" inline label-position="right" label-width="76px">
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentName') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.productName') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentIp') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.UUID') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.equipmentVendor') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.serialNumber') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.objectType') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.severityLevel') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.alarmNumber') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.eventType') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.createTime') + ':'"></el-form-item>
-						<el-form-item style="width: 33%;" :label="$t('alarmCurrent.lastTime') + ':'"></el-form-item>
-					</el-form>
-					<div class="dialogTitle">{{$t('alarmCurrent.alarmInfo')}}</div>
-					<el-form inline label-position="right" label-width="76px">
-						<p class="paddingLeft-10"><strong>{{$t('alarmCurrent.alarmField')}}</strong></p>
-						<el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
-						<p class="paddingLeft-10"><strong>{{$t('alarmCurrent.currentStatus')}}</strong></p>
-						<el-form-item style="width: 50%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.status') + ':'">Down</el-form-item>
-						<p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addField')}}</strong></p>
-						<el-form-item :label="$t('alarmCurrent.status') + ':'">Down != Up</el-form-item>
-						<p class="paddingLeft-10"><strong>{{$t('alarmCurrent.addInfo')}}</strong></p>
-						<el-form-item style="width: 60%;" :label="$t('alarmCurrent.productName') + ':'">Intel(R) Gigabit 4P I350-t rNDC - EC:F4:BB:C1:0C:CA</el-form-item>
-						<el-form-item style="width: 30%;" :label="$t('alarmCurrent.name') + ':'">NIC.Integrated.1-3-1</el-form-item>
-						<br>
-						<el-form-item style="width: 30%;" :label="$t('alarmCurrent.AutoNegotiation') + ':'">Enabled</el-form-item>
-						<el-form-item style="width: 30%;" :label="$t('alarmCurrent.linkSpeed') + ':'">Unknown</el-form-item>
-						<el-form-item style="width: 30%;" :label="$t('alarmCurrent.macLocation') + ':'">EC:F4:BB:C1:0C:CA</el-form-item>
-						<el-form-item :label="$t('alarmCurrent.alarmDescription') + ':'">
-							<el-input type="textarea" style="width: 734px;" />
-						</el-form-item>
-					</el-form>
-					<span slot="footer">
-        <el-button type="primary">{{$t('public.ignoreAlarm')}}</el-button>
-        <el-button type="primary">{{$t('public.confirmAlarm')}}</el-button>
-        <el-button type="primary">{{$t('public.toWarranty')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisible = false">{{$t('public.cancel')}}</el-button>
-      </span>
-				</el-dialog>-->
-				<!--设备责任人弹出层-->
-
-				<el-dialog :title="$t('alarmCurrent.ownerInfo')" append-to-body :visible.sync="dialogVisibleOwnerInfo" :close-on-click-modal="false" :close-on-press-escape="false">
-					<el-form label-width="150px">
-						<el-form-item :label="$t('alarmCurrent.userName') + ':'"></el-form-item>
-						<el-form-item :label="$t('alarmCurrent.organizationName') + ':'"></el-form-item>
-						<el-form-item :label="$t('alarmCurrent.businessCode') + ':'"></el-form-item>
-						<el-form-item :label="$t('alarmCurrent.email') + ':'"></el-form-item>
-						<el-form-item :label="$t('alarmCurrent.phoneNumber') + ':'"></el-form-item>
-					</el-form>
-					<span slot="footer">
-        <el-button class="queryBtn" type="primary">{{$t('public.confirm')}}</el-button>
-        <el-button class="queryBtn" @click="dialogVisibleOwnerInfo = false">{{$t('public.cancel')}}</el-button>
-      </span>
-				</el-dialog>
 				<!--标签页-->
 				<el-tabs v-if="isShowTabBox_tab" v-model="editableTabsValue" type="card" class="whiteBg" id="EquipmentMonitoring-tabs" tab-position="bottom" closable @tab-click="clickTabs" @tab-remove="removeTab">
 					<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
@@ -636,7 +578,7 @@
 								}
 
 								Income.push({
-									id:Income1[i].id,
+									id: Income1[i].id,
 									workStatus: Income1[i].workStatus,
 									/*监测状态*/
 									status: Income1[i].status,
@@ -701,11 +643,11 @@
 				/*if(column.label == _t.$t('EquipmentMonitoring.status')) {
 					_t.addEdit.id = row.id;
 					_t.dialogVisible = true;*/
-					// 父组件调用 子组件 获取数据的方法
-					/*_t.$refs.alarmDialog.getData(_t.addEdit.id);*/
+				// 父组件调用 子组件 获取数据的方法
+				/*_t.$refs.alarmDialog.getData(_t.addEdit.id);*/
 				/*}*/
 				// 点击资产信息列
-				if((column.label == _t.$t('EquipmentMonitoring.AssetInformation'))||(column.label == _t.$t('EquipmentMonitoring.status'))) {
+				if((column.label == _t.$t('EquipmentMonitoring.AssetInformation')) || (column.label == _t.$t('EquipmentMonitoring.status'))) {
 					_t.addTab(row.AssetInformation, row.id);
 				}
 			},
@@ -969,6 +911,20 @@
 		margin: 0;
 	}
 	
+	.EquipmentMonitoring-btn {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 100;
+	}
+	
+	.closeCheckBox {
+		margin-left: 30px;
+	}
+	
+	.closeCheckBox .el-checkbox__label {
+		font-size: 12px;
+	}
 	
 	#EquipmentMonitoring-tabs {
     position: fixed;
@@ -977,7 +933,6 @@
     left: 80px;
     top: 118px;
     z-index: 1100;
-    border: 1px solid #000;
   }
 
   #EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
@@ -986,7 +941,11 @@
     bottom: 0;
     left: -24px;
     right: -20px;
-    background-color: gray;
+  }
+
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
+    font-size: 12px;
+    position: relative;
   }
 
   #EquipmentMonitoring-tabs > .el-tabs__content {
@@ -997,18 +956,37 @@
     top: 0;
   }
 
-  .EquipmentMonitoring-btn {
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: -10px;
+    border-radius: 0 10px 0 0;
+  }
+
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
+    content: '';
     position: absolute;
     top: 10px;
-    right: 10px;
-    z-index: 100;
+    right: 0;
+    height: 20px;
   }
 
-  .closeCheckBox {
-    margin-left: 30px;
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: -10px;
+    border-radius: 10px 0 0 0;
   }
 
-  .closeCheckBox .el-checkbox__label {
-    font-size: 12px;
+  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
+    padding: 0 20px;
   }
 </style>

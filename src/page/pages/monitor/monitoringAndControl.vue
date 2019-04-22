@@ -35,7 +35,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class="equipmentList clearfix">
+		<div class="equipmentList clearfix" style="margin-bottom: 50px;">
 			<el-table :data="tableData" stripe @cell-click="cellClickColumn">
 				<el-table-column width="80px" label="序号" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -770,7 +770,6 @@
 </style>
 <style scoped>
 	.equipmentList {
-		/*overflow: hidden;*/
 		background-color: #fff;
 		margin: 0 10px;
 	}
