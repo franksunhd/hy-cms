@@ -114,19 +114,19 @@
       <el-form inline class="fr" :model="formItem">
         <el-form-item>
           <el-button @click="downloadData" :disabled="disableBtn.more">
-            <span class="iconfont">&#xe617;</span>
+            <span class="iconfont">&#xe64a;</span>
             {{$t('alarmCurrent.exportExcel')}}
           </el-button>
         </el-form-item>
         <el-form-item>
           <el-button :disabled="disableBtn.more" @click="batchOpenAlarm">
-            <span class="iconfont">&#xe618;</span>
+            <span class="iconfont">&#xe64a;</span>
             {{$t('alarmCurrent.batchOpenAlarm')}}
           </el-button>
         </el-form-item>
         <el-form-item>
           <el-button :disabled="disableBtn.more" @click="batchCloseAlarm">
-            <span class="iconfont">&#xe619;</span>
+            <span class="iconfont">&#xe64a;</span>
             {{$t('alarmCurrent.batchCloseAlarm')}}
           </el-button>
         </el-form-item>

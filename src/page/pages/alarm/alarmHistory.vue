@@ -108,7 +108,7 @@
     <div class="padding20 clearfix">
       <div class="fr">
         <el-button @click="downloadData" :disabled="disableBtn.more">
-          <span class="iconfont">&#xe617;</span>
+          <span class="iconfont">&#xe64a;</span>
           {{$t('alarmHistory.exportExcel')}}
         </el-button>
       </div>

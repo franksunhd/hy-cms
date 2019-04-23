@@ -688,3 +688,7 @@ span.el-tree-node__label {
 .messageBoxError .el-message--info .el-message__content {
   color: #666;
 }
+
+.monitoringDetails-checkedBox .el-checkbox__input.is-checked+.el-checkbox__label {
+  color: #3f81d0;
+}

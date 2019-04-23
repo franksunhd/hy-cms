@@ -18,19 +18,19 @@
     <!--标签页-->
     <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
-        <el-form :model="formItem" inline>
-          <el-form-item style="margin-bottom: 10px;" label="筛选：">
-            <el-select v-model="formItem.status">
-              <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item style="margin-bottom: 10px;" label="操作：">
-            <el-select v-model="formItem.operation">
-              <el-option v-for="(item,index) in operationList" :key="index" :label="item.label" :value="item.value" />
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName">
+        <div class="clearfix">
+          <el-form :model="formItem" inline class="fr">
+            <el-form-item>
+              <el-checkbox class="monitoringDetails-checkedBox" v-model="formItem.checked">单内容展开</el-checkbox>
+            </el-form-item>
+            <el-form-item style="margin-bottom: 10px;margin-right: 5px;">
+              <el-select v-model="formItem.operation" @change="changeOperation(formItem.operation)">
+                <el-option v-for="(item,index) in operationList" :key="index" :label="item.name" :value="item.type" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
+        <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName" @selection-change="monitoringChange">
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
@@ -76,7 +76,6 @@
               </el-table>
             </template>
           </el-table-column>
-          <el-table-column type="selection" header-align="left" align="left"/>
           <el-table-column :label="$t('administrationTabs.status')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.status == 11" effect="dark" :content="AlarmSeverity[scope.row.status]"
@@ -115,11 +114,12 @@
               <span>{{scope.row.monitorTime | dateFilter}}</span>
             </template>
           </el-table-column>
-          <el-table-column :label="$t('public.operation')" header-align="left" align="left">
+          <el-table-column width="60px" :label="$t('public.operation')" fixed="right" header-align="left" align="left">
             <template slot-scope="scope">
               <el-button type="text">{{$t('administrationTabs.threshold')}}</el-button>
             </template>
           </el-table-column>
+          <el-table-column type="selection" fixed="right" header-align="left" align="left"/>
         </el-table>
       </el-tab-pane>
       <el-tab-pane :label="$t('administrationTabs.alarmEvent')" name="two">
@@ -214,6 +214,7 @@
         equipmentInfoList:{}, // 设备基本信息
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
+        monitoringDetailsCheckList:[], // 监测详情表格选中数据
         alarmListData: [], // 告警事件列表数据
         AlarmHandleStatus: {}, // 处理状态
         AlarmSeverity: {}, // 告警状态
@@ -227,7 +228,8 @@
         // 监测详情表单
         formItem:{
           status:'',
-          operation:''
+          operation:null,
+          checked:true
         },
         statusList:[], // 监测详情表单筛选下拉框数据
         operationList:[], // 监测详情 表单筛选 操作下拉框数据
@@ -240,6 +242,59 @@
       }
     },
     methods: {
+      // 控制监测详情是否单行展开
+      expandChange(row, expandedRows){
+        var _t = this;
+        _t.$refs.table.toggleRowExpansion(row,true);
+        if (expandedRows.length !== 0) {
+          _t.monitoringDetailsData.forEach((item)=>{
+            // console.log(item)
+            if (item.id !== row.id) {
+              // console.log(item)
+              // _t.$refs.table.toggleRowExpansion(item,false);
+            }
+          });
+          // _t.$refs.table.toggleRowExpansion(row,true);
+        }
+      },
+      // 监测详情批量操作提交
+      changeOperation(val){
+        var _t = this;
+        if (val !== null) {
+          _t.$api.post('monitor/deviceMonitorAttr/execute',{
+            option:val,
+            isDevice:false,
+            ids:_t.monitoringDetailsCheckList
+          },function (res) {
+            switch (res.status) {
+              case 200:
+                _t.getMonitorData();
+                _t.formItem.operation = null;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.formItem.operation = null;
+                break;
+            }
+          });
+        }
+      },
+      // 获取监测详情表格选中的数据
+      monitoringChange(data){
+        var _t = this;
+        var dataList = new Array();
+        data.forEach((item)=>{
+          if (item.deviceId !== null) {
+            dataList.push(item.deviceId);
+          }
+        });
+        _t.monitoringDetailsCheckList = dataList;
+      },
       // 点击告警事件 行
       alarmEventTableRow(row){
         var _t = this;
@@ -258,7 +313,9 @@
       // 请求设备基本信息
       getEquipmentInfoData() {
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('monitor/deviceMonitorAttr/baseinfo/' + _t.pageDeviceId,{},function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.equipmentInfoList = res.data;
@@ -278,7 +335,9 @@
       // 获取设备整体状态列表
       getEquipmentAllStatusData(){
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('monitor/deviceMonitorAttr/overallstatus/' + _t.pageDeviceId,{},function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.equipmentAllStatus = res.data;
@@ -298,6 +357,7 @@
       // 获取监测详情的接口数据
       getMonitorData() {
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('monitor/deviceMonitor/all', {
           jsonString: JSON.stringify({
             deviceMonitor: {
@@ -306,6 +366,7 @@
             }
           })
         }, function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.monitoringDetailsData = res.data;
@@ -325,6 +386,7 @@
       // 获取告警事件列表的接口数据
       getAlarmListData() {
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.get('alarm/alarm/pagelist', {
           jsonString: JSON.stringify({
             alarm: {
@@ -336,6 +398,7 @@
             }
           })
         }, function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.alarmListData = res.data.list;
@@ -357,10 +420,12 @@
       // 获取状态字典
       getStatusDataBase() {
         var _t = this;
+        _t.$store.commit('setLoading',true);
         _t.$api.post('system/basedata/map', {
           dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity"],
           languageMark: localStorage.getItem("hy-language")
         }, function (res) {
+          _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
               _t.AlarmHandleStatus = res.data.AlarmHandleStatus;
@@ -407,12 +472,46 @@
         _t.optionsAlarm.pageSize = val;
         _t.getAlarmListData();
       },
+      // 获取监测管理批量操作数据接口
+      getOperationList(){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.post('system/basedata/maplist',{
+          dictionaryTypes:['WorkStatus'],
+          languageMark: localStorage.getItem('hy-language')
+        },function (res) {
+          _t.$store.commit('setLoading',true);
+          switch (res.status) {
+            case 200:
+              var operationList = new Array();
+              res.data.WorkStatus.forEach((item)=>{
+                // 过滤 数据
+                if (item.type === '47') {} else if (item.type === '48') {}
+                else {
+                  operationList.push(item);
+                }
+              });
+              operationList.unshift({name:'批量操作',type:null});
+              _t.operationList = operationList;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      }
     },
     created() {
       this.getStatusDataBase();
       this.getEquipmentInfoData();
       this.getEquipmentAllStatusData();
       this.getMonitorData();
+      this.getOperationList();
     }
   }
 </script>
