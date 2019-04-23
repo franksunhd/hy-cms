@@ -47,6 +47,7 @@
           <el-form-item :label="$t('alarmCurrent.lastTime') + '：'">{{alarmDetailDataAlarm.updateTime | dateFilter}}</el-form-item>
         </el-col>
       </el-row>
+      <!--处理状态-->
       <p class="paddingLeft-10 marginTop10 fsBold12"><strong>{{$t('alarmCurrent.processStatus')}}</strong></p>
       <el-form-item :label="$t('alarmCurrent.status') + '：'">
         <span v-if="alarmDetailDataAlarm.status == 0" class="iconfontError">{{AlarmHandleStatus[alarmDetailDataAlarm.status]}}</span>
@@ -88,15 +89,21 @@
         <el-checkbox v-if="formItem.status == 3" v-model="formItem.checked" class="closeCheckBox">{{$t('alarmCurrent.alarmCloseIgnore')}}</el-checkbox>
       </el-form-item>
       <el-form-item class="marginTop10" :label="formItem.statusTip + '：'">
-        <el-input type="textarea" :autosize="{minRows: 3}" />
+        <el-input id="textContent"
+                  type="textarea"
+                  @input="inputTextContent(formItem.status,formItem.textContent)"
+                  v-model="formItem.textContent"
+                  :autosize="{minRows: 3}" />
+        <div class="positionRelative" v-if="formItem.textStatus">
+          <span class="isNotNull" style="top: 0;">{{$t('public.isNotNull')}}</span>
+        </div>
       </el-form-item>
     </el-form>
     <span slot="footer">
-        <!--<el-button v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>-->
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 0" type="primary" class="alertBtn">确认告警</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 1" type="primary" class="alertBtn">告警评注</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 2" type="primary" class="alertBtn">告警保修</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 3" type="primary" class="alertBtn">告警关闭</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 1" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 2" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 3" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
         <el-button type="default" class="alertBtn" @click="cancelBtn">{{$t('public.cancel')}}</el-button>
       </span>
   </el-dialog>
@@ -113,7 +120,10 @@
         formItem:{
           status:0,
           checked:false,
-          statusTip:this.$t('alarmCurrent.confirmOpinions')
+          statusTip:this.$t('alarmCurrent.confirmOpinions'),
+          textContent:'', // 多行文本输入内容
+          textStatus:false,
+          id:''
         },
         // 表单集合
         alarmDetailDataAlarm:{
@@ -129,6 +139,7 @@
           framePosition: '',
           manufacturer:''
         },
+        // 告警评注列表
         alarmDetailDataComment:[]
       }
     },
@@ -159,13 +170,41 @@
           switch (res.status) {
             case 200:
               _t.alarmDetailDataAlarm = res.data.alarm;
-              var resData = res.data.commentList;
+              // 存入告警id
+              _t.formItem.id = val;
+              // 调用告警评注
+              _t.getAlarmComment(val);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 获取告警评注列表数据
+      getAlarmComment(val){
+        var _t = this;
+        _t.$api.get('alarm/alarmComment/all' ,{
+          jsonString:JSON.stringify({
+            alarmComment:{
+              alarmId:val
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              var resData = res.data;
               // 处理之后的评注列表数据
               var alarmDetailData = new Array();
               // 需要对比的时间
               var timeLine = '';
-              if (resData.length == 0) {
-                _t.alarmDetailData = [];
+              if (resData.length === 0) {
+                _t.alarmDetailDataComment = [];
               } else {
                 resData.forEach(function (item) {
                   var time = new Date(item.createTime);
@@ -202,14 +241,20 @@
       // 处理方式不同时 多行输入label值得切换
       changeDealWithStatus(val){
         var _t = this;
-        if (val == 0) {
+        if (val === 0) {
           _t.formItem.statusTip = _t.$t('alarmCurrent.confirmOpinions');
-        } else if (val == 1) {
+        } else if (val === 1) {
           _t.formItem.statusTip = _t.$t('alarmCurrent.addDescription');
-        } else if (val == 2) {
+        } else if (val === 2) {
           _t.formItem.statusTip = _t.$t('alarmCurrent.warrantyOpinions');
         } else {
           _t.formItem.statusTip = _t.$t('alarmCurrent.closeOpinions');
+        }
+        // 多行输入样式恢复
+        _t.formItem.textStatus = false;
+        _t.formItem.textContent = '';
+        if (document.getElementById('textContent')) {
+          document.getElementById('textContent').style.borderColor = '#DCDFE6';
         }
       },
       // 点击取消按钮或关闭按钮时 给父组件传值 取消蒙版
@@ -221,22 +266,73 @@
         var _t = this;
         // 0 确认告警 1 告警评注 2 告警保修 3告警关闭
         if (val === 0) {
-
+          _t.confirmAlarmBtn();
         } else if (val === 1) {
-
+          _t.alarmDescription();
         } else if (val === 2) {
-
+          _t.alarmWarranty();
         } else if (val === 3) {
-
+          _t.alarmClose();
         }
       },
       // 确认告警提交提交
-      confirmAlarm(){
+      confirmAlarmBtn(){
         var _t = this;
+        var alarmIds = new Array();
+        alarmIds.push(_t.formItem.id);
+        _t.$api.post('alarm/alarm/batchconfirm',{
+          confirmComment:_t.formItem.textContent,
+          alarmIds:alarmIds
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.alarmDetailDataAlarm.status = res.data.count;
+              // 清空多行输入
+              _t.formItem.textContent = '';
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
       },
       // 告警评注提交
       alarmDescription(){
         var _t = this;
+        if (_t.formItem.textContent.trim() === '') {
+          _t.formItem.textStatus = true;
+          document.getElementById('textContent').style.borderColor = '#fb6041';
+        } else {
+          if (_t.formItem.id !== '') {
+            _t.$api.post('alarm/alarmComment/',{
+              alarmComment:{
+                alarmId:_t.formItem.id,
+                commContent:_t.formItem.textContent
+              }
+            },function (res) {
+              switch (res.status) {
+                case 200:
+                  _t.formItem.textContent = '';
+                  _t.getAlarmComment(_t.formItem.id);
+                  break;
+                case 1003: // 无操作权限
+                case 1004: // 登录过期
+                case 1005: // token过期
+                case 1006: // token不通过
+                  _t.exclude(_t, res.message);
+                  break;
+                default:
+                  _t.formItem.textContent = '';
+                  break;
+              }
+            });
+          }
+        }
       },
       // 告警保修提交
       alarmWarranty(){
@@ -245,6 +341,44 @@
       // 告警关闭提交
       alarmClose(){
         var _t = this;
+        var alarmIds = new Array();
+        alarmIds.push(_t.formItem.id);
+        _t.$api.post('alarm/alarm/batchdelete',{
+          alarmIgnore:_t.formItem.checked,
+          confirmComment:_t.formItem.textContent,
+          alarmIds:alarmIds
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.$emit('dialogVisibleStatus',false);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.formItem.textContent = '';
+              break;
+          }
+        });
+      },
+      // 多行输入校验
+      inputTextContent(status,text){
+        var _t = this;
+        if (status === 1 && text.trim() !== '') {
+          // 告警评注输入框 内容不为空
+          _t.formItem.textStatus = false;
+          document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        } else if (status === 1 && text.trim() === '') {
+          // 告警评注输入框 内容为空
+          _t.formItem.textStatus = true;
+          document.getElementById('textContent').style.borderColor = '#fb6041';
+        } else {
+          _t.formItem.textStatus = false;
+          document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        }
       }
     }
   }
