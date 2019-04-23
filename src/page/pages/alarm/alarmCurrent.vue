@@ -92,13 +92,13 @@
             <el-option v-for="(item,index) in formBaseData.AlarmHandleStatus" :key="index" :label="item.name" :value="item.type" />
           </el-select>
         </el-form-item>
-        <el-form-item label="发生日期：">
+        <el-form-item :label="$t('public.happenTime') + '：'">
           <el-date-picker
             v-model="formItem.dateTime"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"/>
+            :range-separator="$t('public.to')"
+            :start-placeholder="$t('public.startTime')"
+            :end-placeholder="$t('public.endTime')"/>
         </el-form-item>
         <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
@@ -284,7 +284,7 @@
       return {
         // 查询表单
         formItem:{
-          equipmentType:'全部',
+          equipmentType:this.$t('public.all'),
           equipmentTypeId:null,
           computerRoomId:null,
           rackNameId:null,
@@ -553,14 +553,18 @@
         var _t = this;
         // 点击状态列 点击告警内容列
         if (column.label === _t.$t('alarmCurrent.status') || column.label === _t.$t('alarmCurrent.alarmContent')) {
-          _t.addEdit.id = row.id;
-          _t.dialogVisible = true;
-          // 父组件调用 子组件 获取数据的方法
-          _t.$refs.alarmDialog.getData(_t.addEdit.id);
+          if (row.id !== null) {
+            _t.addEdit.id = row.id;
+            _t.dialogVisible = true;
+            // 父组件调用 子组件 获取数据的方法
+            _t.$refs.alarmDialog.getData(_t.addEdit.id);
+          }
         }
         // 点击设备名称列 点击最新告警时间列
-        if (column.label === _t.$t('alarmCurrent.equipmentName') || column.label === _t.$t('alarmCurrent.lastAlarmTime')) {
-          _t.addTab(row.deviceName,row.deviceId);
+        if (column.label === _t.$t('alarmCurrent.equipmentName') || column.label === _t.$t('alarmCurrent.alarmThisTime')) {
+          if (row.deviceId !== null) {
+            _t.addTab(row.deviceName,row.deviceId);
+          }
         }
       },
       // 删除页签

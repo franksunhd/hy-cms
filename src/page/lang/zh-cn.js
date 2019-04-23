@@ -54,7 +54,12 @@ export default {
 		isNotNull: '必填项不能为空',
 		ignoreAlarm: '忽略告警',
 		confirmAlarm: '确认告警',
-		toWarranty: '转保修'
+		toWarranty: '转保修',
+    startTime:'开始日期',
+    endTime:'结束日期',
+    happenTime:'发生日期',
+    all:'全部',
+    to:'至'
 	},
 	// 系统设置模块 导航
 	system: {
@@ -608,7 +613,9 @@ export default {
     warrantyOpinions:'报修意见',
     closeOpinions:'关闭意见',
     alarmLevelText:'告警级别',
-    alarmThisTime:'告警发生时间'
+    alarmThisTime:'告警发生时间',
+    closeBy:'关闭人',
+    closeTime:'关闭时间'
 	},
 	//设备监测
 	EquipmentMonitoring: {

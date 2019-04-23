@@ -54,7 +54,12 @@ export default {
     isNotNull:'isNotNull',
     ignoreAlarm:'ignoreAlarm',
     confirmAlarm:'confirmAlarm',
-    toWarranty:'toWarranty'
+    toWarranty:'toWarranty',
+    startTime:'startTime',
+    endTime:'endTime',
+    happenTime:'happenTime',
+    all:'all',
+    to:'-'
   },
   // 系统设置模块
   system: {
@@ -608,7 +613,9 @@ export default {
     warrantyOpinions:'warrantyOpinions',
     closeOpinions:'closeOpinions',
     alarmLevelText:'alarmLevelText',
-    alarmThisTime:'alarmThisTime'
+    alarmThisTime:'alarmThisTime',
+    closeBy:'closeBy',
+    closeTime:'closeTime'
   },
   //设备监测
 	EquipmentMonitoring: {
