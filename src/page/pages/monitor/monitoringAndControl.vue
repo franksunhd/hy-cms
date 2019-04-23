@@ -223,8 +223,8 @@
 			this.refresh2();
 			this.getData();
 			this.getBaseData();
-			this.drawLine();
-			this.drawLine2();
+			/*this.drawLine();
+			this.drawLine2();*/
 		},
 		methods: {
 			// 接受弹出层关闭的参数
@@ -236,8 +236,10 @@
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
+						assetDevice:{
+							type:_t.formItem.equipmentTypeId
+						},
 						alarmDevice: true,
-						type:_t.formItem.equipmentTypeId,
 						currentPage: _t.options.currentPage,
 						pageSize: _t.options.pageSize
 					})
@@ -472,7 +474,6 @@
 						x: 'center',
 						y: 'bottom',
 						data: _t.Dincome1
-						/*['正常', '紧急', '警告', '离线', '禁止', '忽略']*/
 					},
 					toolbox: {
 						show: true,
@@ -516,7 +517,7 @@
 							})
 						}
 
-						series[0].markPoint = {
+						/*series[0].markPoint = {
 							symbol: 'image://https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1554907158685&di=3ed03cd97d6ac71f30e51dab04c93403&imgtype=0&src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F19f7a76f9205e1452eb958e75739d95ee05fc5e04a4bf-yHYrfg_fw658',
 							symbolSize: series[0].radius[0],
 							//effect: {
@@ -546,7 +547,7 @@
 									textShadowBlur: "200"
 								}
 							}]
-						};
+						};*/
 						return series;
 					})()
 				};
