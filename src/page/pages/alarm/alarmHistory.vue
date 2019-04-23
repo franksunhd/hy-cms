@@ -105,19 +105,19 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="padding20">
-      <div class="marBottom16">
+    <div class="padding20 clearfix">
+      <div class="fr">
+        <el-button @click="downloadData" :disabled="disableBtn.more">
+          <span class="iconfont">&#xe617;</span>
+          {{$t('alarmHistory.exportExcel')}}
+        </el-button>
+      </div>
+      <div class="fl">
         <el-form inline :model="formItem">
           <el-form-item label="筛选：">
             <el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">
               <el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />
             </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button @click="downloadData" :disabled="disableBtn.more">
-              <span class="iconfont">&#xe617;</span>
-              {{$t('alarmHistory.exportExcel')}}
-            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -201,21 +201,20 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="100px" label="告警状态" header-align="left" align="left">
-          <template slot-scope="scope">
-          </template>
-        </el-table-column>
         <el-table-column width="160px" label="关闭时间" header-align="left" align="left">
           <template slot-scope="scope">
+            <span>{{scope.row.closeTime | dateFilter}}</span>
           </template>
         </el-table-column>
         <el-table-column width="100px" label="关闭人" header-align="left" align="left">
           <template slot-scope="scope">
+            <el-tooltip effect="light" :content="scope.row.closeBy" placement="left-start">
+              <span>{{scope.row.closeBy}}</span>
+            </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="150px" :label="$t('public.operation')">
+        <el-table-column width="100px" fixed="right" :label="$t('public.operation')">
           <template slot-scope="scope">
-            <el-button type="text">{{$t('alarmHistory.turnWarranty')}}</el-button>
             <el-button type="text">{{$t('alarmHistory.dealWithAlarm')}}</el-button>
           </template>
         </el-table-column>
@@ -351,7 +350,7 @@
       getData(){
         var _t = this;
         _t.$store.commit('setLoading',true);
-        _t.$api.get('',{
+        _t.$api.get('alarm/alarmHistory/pagelist',{
           jsonString:JSON.stringify({
             alarm:{
               type:_t.formItem.equipmentTypeId == null ? null : _t.formItem.equipmentTypeId,
@@ -383,6 +382,43 @@
               _t.exclude(_t, res.message);
               break;
             default:
+              break;
+          }
+        });
+      },
+      // 查询表格中状态对应的数据值
+      getTableDataValue(resData){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.post('system/basedata/map',{
+          dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
+          languageMark:localStorage.getItem("hy-language")
+        },function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              // 获取表格对应的状态值
+              _t.tableDataBase = res.data;
+              _t.tableData = resData.list;
+              _t.options.currentPage = resData.page.currentPage;
+              _t.options.total = resData.page.totalResultSize;
+              // 用于判断鼠标是否移入设备责任人列 默认为false
+              _t.tableData.forEach(function (item) {
+                item.statusMenu = false;
+              });
+              _t.tableDataAll = _t.tableData;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableDataBase = [];
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
               break;
           }
         });
