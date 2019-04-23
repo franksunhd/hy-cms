@@ -92,10 +92,11 @@
       </el-form-item>
     </el-form>
     <span slot="footer">
-        <el-button v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button v-if="formItem.status == 1" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button v-if="formItem.status == 2" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button v-if="formItem.status == 3" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <!--<el-button v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>-->
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 0" type="primary" class="alertBtn">确认告警</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 1" type="primary" class="alertBtn">告警评注</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 2" type="primary" class="alertBtn">告警保修</el-button>
+        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 3" type="primary" class="alertBtn">告警关闭</el-button>
         <el-button type="default" class="alertBtn" @click="cancelBtn">{{$t('public.cancel')}}</el-button>
       </span>
   </el-dialog>
@@ -214,6 +215,36 @@
       // 点击取消按钮或关闭按钮时 给父组件传值 取消蒙版
       cancelBtn(){
         this.$emit('dialogVisibleStatus',false);
+      },
+      // 确认按钮
+      confirmAlarm(val){
+        var _t = this;
+        // 0 确认告警 1 告警评注 2 告警保修 3告警关闭
+        if (val === 0) {
+
+        } else if (val === 1) {
+
+        } else if (val === 2) {
+
+        } else if (val === 3) {
+
+        }
+      },
+      // 确认告警提交提交
+      confirmAlarm(){
+        var _t = this;
+      },
+      // 告警评注提交
+      alarmDescription(){
+        var _t = this;
+      },
+      // 告警保修提交
+      alarmWarranty(){
+        var _t = this;
+      },
+      // 告警关闭提交
+      alarmClose(){
+        var _t = this;
       }
     }
   }

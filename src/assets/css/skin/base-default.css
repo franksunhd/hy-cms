@@ -662,3 +662,7 @@ span.el-tree-node__label {
 .monitoringDetails-innerTable.el-table .el-table__body tr {
   background-color: #f0f0f0;
 }
+
+.el-checkbox__input.is-checked+.el-checkbox__label {
+  color: #3f81d0;
+}
