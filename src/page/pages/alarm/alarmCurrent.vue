@@ -105,8 +105,13 @@
         </el-form-item>
       </el-form>
     </div>
-    <div class="padding20">
-      <el-form inline :model="formItem">
+    <div class="padding20 clearfix">
+      <!--<el-form-item label="筛选：">-->
+        <!--<el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">-->
+          <!--<el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />-->
+        <!--</el-select>-->
+      <!--</el-form-item>-->
+      <el-form inline class="fr" :model="formItem">
         <el-form-item>
           <el-button @click="downloadData" :disabled="disableBtn.more">
             <span class="iconfont">&#xe617;</span>
@@ -125,17 +130,14 @@
             {{$t('alarmCurrent.batchCloseAlarm')}}
           </el-button>
         </el-form-item>
-        <el-form-item label="筛选：">
-          <el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">
-            <el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />
-          </el-select>
-        </el-form-item>
+
       </el-form>
       <!--表格-->
       <el-table
         :data="tableData"
         ref="table"
         stripe
+        @selection-change="selectTableNum"
         @cell-click="cellClickColumn"
         @cell-mouse-enter="cellMouseEnter"
         @cell-mouse-leave="cellMouseLeave">
@@ -346,6 +348,8 @@
         alarmDetailDataComment:[],
         // 处理状态
         dealWithStatusList:[],
+        // 表格选中的数据集合
+        checkValueList:[],
         // 控制设备类型下拉框的显示隐藏
         isShowTypePopover:false,
         // 关联业务树形下拉框显示隐藏
@@ -376,6 +380,20 @@
       }
     },
     methods: {
+      // 表格选中的值
+      selectTableNum(data){
+        var _t = this;
+        if (data.length !== 0) {
+          _t.disableBtn.more = false;
+        } else {
+          _t.disableBtn.more = true;
+        }
+        var checkValueList = new Array();
+        data.forEach((item)=>{
+          checkValueList.push(item.id);
+        });
+        _t.checkValueList = checkValueList;
+      },
       // 改变筛选值
       changeOperation(val) {
         var _t = this;
@@ -744,7 +762,7 @@
       this.getBaseData();
       this.getBusinessTreeData();
       this.getBaseDataList();
-      // this.getOptionsList();
+      this.getOptionsList();
     }
   }
 </script>
