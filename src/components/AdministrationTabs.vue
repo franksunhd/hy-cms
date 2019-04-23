@@ -273,7 +273,7 @@
           }
         }
         // 点击最新状态
-        if (column.label === _t.$t('administrationTabs.latestState')) {
+        if (column.label === _t.$t('administrationTabs.resourceName')) {
           _t.dialogVisible_info = true;
           _t.informationInfoList = row.resultConcentParse;
         }
