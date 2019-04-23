@@ -180,9 +180,13 @@
 							</template>
 						</el-table-column>
 						<!--监测状态-->
-						<el-table-column width="80px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
+						<el-table-column width="100px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
 							<template slot-scope="scope">
-								<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
+								<el-tooltip effect="dark" :content="tableDataBase.DeviceMonitorStatus[scope.row.workStatus]" placement="top-start">
+									<span>{{tableDataBase.DeviceMonitorStatus[scope.row.workStatus]}}</span>
+								</el-tooltip>
+								
+								<!--<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
 								</el-tooltip>
 								<el-tooltip v-if="scope.row.workStatus == 22" effect="dark" content="暂时忽略" placement="top-start">
@@ -190,7 +194,7 @@
 								</el-tooltip>
 								<el-tooltip v-if="scope.row.workStatus == 33" effect="dark" content="启用监测" placement="top-start">
 									<span class="iconfont iconfontDisable">&#xe60a;</span>
-								</el-tooltip>
+								</el-tooltip>-->
 
 							</template>
 						</el-table-column>
@@ -218,15 +222,49 @@
 							</template>
 						</el-table-column>
 						<!--资产信息-->
-						<el-table-column prop="AssetInformation" :label="$t('EquipmentMonitoring.AssetInformation')" header-align="left" align="left" />
+						<el-table-column :label="$t('EquipmentMonitoring.AssetInformation')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.deviceName+','+scope.row.ip" placement="top-start">
+									<span>{{scope.row.deviceName}},{{scope.row.ip}}</span>
+								</el-tooltip>
+
+							</template>
+						</el-table-column>
 						<!--序列号-->
-						<el-table-column prop="servicetag" :label="$t('EquipmentMonitoring.servicetag')" header-align="left" align="left" />
+						<el-table-column :label="$t('EquipmentMonitoring.servicetag')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.servicetag" placement="top-start">
+									<span>{{scope.row.servicetag}}</span>
+								</el-tooltip>
+							</template>
+						</el-table-column>
 						<!--厂商型号-->
-						<el-table-column prop="ManufacturersModel" :label="$t('EquipmentMonitoring.ManufacturersModel')" header-align="left" align="left" />
+						<el-table-column :label="$t('EquipmentMonitoring.ManufacturersModel')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.manufacturer+','+scope.row.model" placement="top-start">
+									<span>{{scope.row.manufacturer}},{{scope.row.model}}</span>
+								</el-tooltip>
+								
+							</template>
+						</el-table-column>
 						<!--设备类型-->
-						<el-table-column prop="type" :label="$t('EquipmentMonitoring.type')" header-align="left" align="left" />
+						<el-table-column :label="$t('EquipmentMonitoring.type')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="tableDataBase.AssetType[scope.row.type]" placement="top-start">
+									<span>{{tableDataBase.AssetType[scope.row.type]}}</span>
+								</el-tooltip>
+								
+							</template>
+						</el-table-column>
 						<!--更新时间-->
-						<el-table-column width="160px" prop="lastMonitorTime" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left" />
+						<el-table-column width="160px" :label="$t('EquipmentMonitoring.lastMonitorTime')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter" placement="top-start">
+									<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
+								</el-tooltip>
+								
+							</template>
+						</el-table-column>
 						<!--操作-->
 						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left" />
 					</el-table>
@@ -275,7 +313,8 @@
 				tableDataBase: {
 					AlarmHandleStatus: {},
 					AlarmSeverity: {},
-					AssetType: {}
+					AssetType: {},
+					DeviceMonitorStatus: {}
 				},
 				// 查询表单
 				formItem: {
@@ -531,6 +570,7 @@
 			// 查询表格数据
 			getData() {
 				var _t = this;
+				_t.$store.commit('setLoading', true);
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
 						//						assetDevice: {
@@ -558,11 +598,12 @@
 						pageSize: _t.options.pageSize,
 					})
 				}, function(res) {
+					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
 							console.log(res);
-							var Income1 = res.data.list;
-							//console.log(Income);
+							_t.getTableDataValue(res.data);
+							/*var Income1 = res.data.list;
 							var Income = [];
 							for(var i = 0; i < Income1.length; i++) {
 								if(Income1[i].type == '1') {
@@ -579,29 +620,29 @@
 
 								Income.push({
 									id: Income1[i].id,
-									workStatus: Income1[i].workStatus,
-									/*监测状态*/
-									status: Income1[i].status,
-									/*设备状态*/
-									AssetInformation: Income1[i].deviceName + ',' + Income1[i].ip,
-									/*资产信息*/
-									servicetag: Income1[i].servicetag,
-									/*序列号*/
-									ManufacturersModel: Income1[i].manufacturer + ',' + Income1[i].model,
-									/*厂商型号*/
-									type: Income1[i].type,
-									/*设备类型*/
-									lastMonitorTime: dateFilter(Income1[i].lastMonitorTime),
-									/*更新时间*/
-									operation: Income1[i].operation,
-									/*操作*/
+									workStatus: Income1[i].workStatus,*/
+							/*监测状态*/
+							/*status: Income1[i].status,*/
+							/*设备状态*/
+							/*AssetInformation: Income1[i].deviceName + ',' + Income1[i].ip,*/
+							/*资产信息*/
+							/*servicetag: Income1[i].servicetag,*/
+							/*序列号*/
+							/*ManufacturersModel: Income1[i].manufacturer + ',' + Income1[i].model,*/
+							/*厂商型号*/
+							/*type: Income1[i].type,*/
+							/*设备类型*/
+							/*lastMonitorTime: dateFilter(Income1[i].lastMonitorTime),*/
+							/*更新时间*/
+							/*operation: Income1[i].operation,*/
+							/*操作*/
 
-								})
-							}
+							/*})*/
+							/*}*/
 
-							_t.tableData = Income;
+							/*_t.tableData = Income;
 							_t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.count;
+							_t.options.total = res.data.count;*/
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -610,9 +651,9 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
-							_t.tableData = [];
+							/*_t.tableData = [];
 							_t.options.currentPage = 1;
-							_t.options.total = 0;
+							_t.options.total = 0;*/
 							break;
 					}
 				});
@@ -792,28 +833,73 @@
 				this.gridData.push(newValue);
 				console.log(row);
 			},
-
-			/*//表格合并列
-			objectSpanMethod({
-				row,
-				column,
-				rowIndex,
-				columnIndex
-			}) {
-				if(columnIndex === 0) {
-					if(rowIndex % 2 === 0) {
-						return {
-							rowspan: 2,
-							colspan: 1
-						};
-					} else {
-						return {
-							rowspan: 0,
-							colspan: 0
-						};
+			// 查询表格中状态对应的数据值
+			getTableDataValue(resData) {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/map', {
+					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity", "DeviceMonitorStatus"],
+					languageMark: localStorage.getItem("hy-language")
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							// 获取表格对应的状态值
+							_t.tableDataBase = res.data;
+							console.log(res.data);
+							_t.tableData = resData.list;
+							console.log(_t.tableData);
+							_t.options.currentPage = resData.page.currentPage;
+							_t.options.total = resData.page.totalResultSize;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableDataBase = [];
+							_t.tableData = [];
+							_t.options.currentPage = 1;
+							_t.options.total = 0;
+							break;
 					}
-				}
-			}*/
+				});
+			},
+			// 查询设备类型
+      getBaseData(){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('system/basedata/all',{
+          jsonString: JSON.stringify({
+            systemBasedata:{
+              dictionaryType:'AssetType',
+              languageMark: localStorage.getItem('hy-language')
+            }
+          })
+        },function (res) {
+        	console.log(res)
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              var equipmentTypeList = res.data.treeNode.children[0].children;
+              equipmentTypeList.unshift({nodeName:'全部',level:1,children:null,nodeCode:null,parentId:'0'})
+              _t.equipmentTypeList = equipmentTypeList;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.equipmentTypeList = [];
+              break;
+          }
+        });
+      },
+
 		},
 
 		created() {}
@@ -927,66 +1013,66 @@
 	}
 	
 	#EquipmentMonitoring-tabs {
-    position: fixed;
-    bottom: 0;
-    right: 20px;
-    left: 80px;
-    top: 118px;
-    z-index: 1100;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
-    margin-top: 0;
-    position: absolute;
-    bottom: 0;
-    left: -24px;
-    right: -20px;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
-    font-size: 12px;
-    position: relative;
-  }
-
-  #EquipmentMonitoring-tabs > .el-tabs__content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 40px;
-    top: 0;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
-    content: '';
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: -10px;
-    border-radius: 0 10px 0 0;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 0;
-    height: 20px;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
-    content: '';
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    right: -10px;
-    border-radius: 10px 0 0 0;
-  }
-
-  #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
-    padding: 0 20px;
-  }
+		position: fixed;
+		bottom: 0;
+		right: 20px;
+		left: 80px;
+		top: 118px;
+		z-index: 1100;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
+		margin-top: 0;
+		position: absolute;
+		bottom: 0;
+		left: -24px;
+		right: -20px;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
+		font-size: 12px;
+		position: relative;
+	}
+	
+	#EquipmentMonitoring-tabs>.el-tabs__content {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 40px;
+		top: 0;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
+		content: '';
+		width: 10px;
+		height: 10px;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		left: -10px;
+		border-radius: 0 10px 0 0;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
+		content: '';
+		position: absolute;
+		top: 10px;
+		right: 0;
+		height: 20px;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
+		content: '';
+		width: 10px;
+		height: 10px;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		right: -10px;
+		border-radius: 10px 0 0 0;
+	}
+	
+	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
+		padding: 0 20px;
+	}
 </style>

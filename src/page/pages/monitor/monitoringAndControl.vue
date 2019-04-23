@@ -22,11 +22,11 @@
 		<div class="equipmentList clearfix">
 			<ul class="clearfix">
 				<li><span>最新告警设备列表</span></li>
-				<!--<li>
+				<li>
 					<el-select class="fr selectArr" v-model="addEdit.sortValue">
 						<el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value" />
 					</el-select>
-				</li>-->
+				</li>
 				<li>
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover" style="float: left;">
 						<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
