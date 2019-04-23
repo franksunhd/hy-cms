@@ -106,20 +106,31 @@
       </el-form>
     </div>
     <div class="padding20">
-      <div class="marBottom16">
-        <el-button @click="downloadData" :disabled="disableBtn.more">
-          <span class="iconfont">&#xe617;</span>
-          {{$t('alarmCurrent.exportExcel')}}
-        </el-button>
-        <el-button :disabled="disableBtn.more">
-          <span class="iconfont">&#xe618;</span>
-          {{$t('alarmCurrent.batchOpenAlarm')}}
-        </el-button>
-        <el-button :disabled="disableBtn.more">
-          <span class="iconfont">&#xe619;</span>
-          {{$t('alarmCurrent.batchCloseAlarm')}}
-        </el-button>
-      </div>
+      <el-form inline :model="formItem">
+        <el-form-item>
+          <el-button @click="downloadData" :disabled="disableBtn.more">
+            <span class="iconfont">&#xe617;</span>
+            {{$t('alarmCurrent.exportExcel')}}
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button :disabled="disableBtn.more">
+            <span class="iconfont">&#xe618;</span>
+            {{$t('alarmCurrent.batchOpenAlarm')}}
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button :disabled="disableBtn.more">
+            <span class="iconfont">&#xe619;</span>
+            {{$t('alarmCurrent.batchCloseAlarm')}}
+          </el-button>
+        </el-form-item>
+        <el-form-item label="筛选：">
+          <el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">
+            <el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />
+          </el-select>
+        </el-form-item>
+      </el-form>
       <!--表格-->
       <el-table
         :data="tableData"
@@ -284,6 +295,7 @@
           dateTime:null,
           status:0,
           checked:false,
+          operation:null,
           statusTip:this.$t('alarmCurrent.confirmOpinions')
         },
         statusMenu:true,
@@ -304,12 +316,19 @@
         // 机架下拉框数据
         rackNameList:[],
         framesData:[],
+        // 筛选列表
+        optionsList:[
+          {label:1,id:1},
+          {label:2,id:2}
+        ],
         // 设备状态下拉框
         equipmentStatusList:[],
         // 关联业务树形下拉框集合
         businessTreeData:[],
         // 表格数据
         tableData:[],
+        // 缓存表格数据用于纯前端筛选
+        tableDataAll:[],
         // 表格数据字典
         tableDataBase:{
           AlarmHandleStatus:{},
@@ -357,6 +376,21 @@
       }
     },
     methods: {
+      // 改变筛选值
+      changeOperation(val) {
+        var _t = this;
+        var tableData = new Array();
+        if (val !== '') {
+          _t.tableDataAll.forEach((item)=>{
+            if (item.id === val.id) {
+              tableData.push(item);
+            }
+          });
+        } else {
+          tableData = _t.tableDataAll;
+        }
+        _t.tableData = tableData;
+      },
       // 接受弹出层关闭的参数
       dialogVisibleStatus(val){
         this.dialogVisible = val;
@@ -445,9 +479,11 @@
               _t.tableData = resData.list;
               _t.options.currentPage = resData.page.currentPage;
               _t.options.total = resData.page.totalResultSize;
+              // 用于判断鼠标是否移入设备责任人列 默认为false
               _t.tableData.forEach(function (item) {
                 item.statusMenu = false;
               });
+              _t.tableDataAll = _t.tableData;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -677,6 +713,28 @@
               break;
           }
         });
+      },
+      // 表格左上角数据筛选接口
+      getOptionsList(){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('',{},function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              _t.optionsList = res.data.listData;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.optionsList = [];
+              break;
+          }
+        });
       }
     },
     created() {
@@ -686,6 +744,7 @@
       this.getBaseData();
       this.getBusinessTreeData();
       this.getBaseDataList();
+      // this.getOptionsList();
     }
   }
 </script>

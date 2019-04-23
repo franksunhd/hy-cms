@@ -109,7 +109,7 @@
       <div class="marBottom16">
         <el-form inline :model="formItem">
           <el-form-item label="筛选：">
-            <el-select v-model="formItem.operation">
+            <el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">
               <el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -283,6 +283,8 @@
         businessTreeData:[],
         // 表格数据
         tableData:[],
+        // 缓存表格数据用于纯前端筛选
+        tableDataAll:[],
         // 表格数据字典
         tableDataBase:{
           AlarmHandleStatus:{},
@@ -330,6 +332,21 @@
       }
     },
     methods:{
+      // 改变筛选值
+      changeOperation(val) {
+        var _t = this;
+        var tableData = new Array();
+        if (val !== '') {
+          _t.tableDataAll.forEach((item)=>{
+            if (item.id === val.id) {
+              tableData.push(item);
+            }
+          });
+        } else {
+          tableData = _t.tableDataAll;
+        }
+        _t.tableData = tableData;
+      },
       // 获取数据
       getData(){
         var _t = this;
