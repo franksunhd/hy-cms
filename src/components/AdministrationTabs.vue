@@ -39,23 +39,23 @@
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
-                      <span class="iconfont iconfontError">&#xe60b;</span>
+                      <span class="iconfont iconfontError">&#xe64b;</span>
                     </el-tooltip>
                     <el-tooltip v-if="scopeInset.row.status == 22" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
-                      <span class="iconfont iconfontWarn">&#xe60a;</span>
+                      <span class="iconfont iconfontWarn">&#xe64f;</span>
                     </el-tooltip>
                     <el-tooltip v-if="scopeInset.row.status == 33" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
-                      <span class="iconfont iconfontSuccess">&#xe618;</span>
+                      <span class="iconfont iconfontSuccess">&#xe648;</span>
                     </el-tooltip>
                     <el-tooltip v-if="scopeInset.row.status == 66" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
-                      <span class="iconfont iconfontWarn">&#xe608;</span>
+                      <span class="iconfont iconfontWarn">&#xe649;</span>
                     </el-tooltip>
                     <el-tooltip v-if="scopeInset.row.status == 99" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
-                      <span class="iconfont iconfontError">&#xe609;</span>
+                      <span class="iconfont iconfontError">&#xe64a;</span>
                     </el-tooltip>
                   </template>
                 </el-table-column>
@@ -81,23 +81,23 @@
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.status == 11" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
-                <span class="iconfont iconfontError">&#xe60b;</span>
+                <span class="iconfont iconfontError">&#xe64b;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.status == 22" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
-                <span class="iconfont iconfontWarn">&#xe60a;</span>
+                <span class="iconfont iconfontWarn">&#xe64f;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.status == 33" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
-                <span class="iconfont iconfontSuccess">&#xe618;</span>
+                <span class="iconfont iconfontSuccess">&#xe648;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.status == 66" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
-                <span class="iconfont iconfontWarn">&#xe608;</span>
+                <span class="iconfont iconfontWarn">&#xe649;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.status == 99" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
-                <span class="iconfont iconfontError">&#xe609;</span>
+                <span class="iconfont iconfontError">&#xe64a;</span>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -128,23 +128,23 @@
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
-                <span class="iconfont iconfontError">&#xe60b;</span>
+                <span class="iconfont iconfontError">&#xe64b;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.alarmLevel == 22" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
-                <span class="iconfont iconfontWarn">&#xe60a;</span>
+                <span class="iconfont iconfontWarn">&#xe64f;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
-                <span class="iconfont iconfontSuccess">&#xe618;</span>
+                <span class="iconfont iconfontSuccess">&#xe648;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.alarmLevel == 66" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
-                <span class="iconfont iconfontWarn">&#xe608;</span>
+                <span class="iconfont iconfontWarn">&#xe649;</span>
               </el-tooltip>
               <el-tooltip v-if="scope.row.alarmLevel == 99" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
-                <span class="iconfont iconfontError">&#xe609;</span>
+                <span class="iconfont iconfontError">&#xe64a;</span>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -366,6 +366,7 @@
               _t.AlarmHandleStatus = res.data.AlarmHandleStatus;
               _t.AssetType = res.data.AssetType;
               _t.AlarmSeverity = res.data.AlarmSeverity;
+              console.log(_t.AlarmSeverity)
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

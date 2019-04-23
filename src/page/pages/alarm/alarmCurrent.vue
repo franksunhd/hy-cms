@@ -151,13 +151,13 @@
         <el-table-column width="50px" :label="$t('alarmCurrent.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
-              <span class="iconfont iconfontSuccess">&#xe618;</span>
+              <span class="iconfont iconfontSuccess">&#xe648;</span>
             </el-tooltip>
             <el-tooltip v-if="scope.row.alarmLevel == 66" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
-              <span class="iconfont iconfontWarn">&#xe608;</span>
+              <span class="iconfont iconfontWarn">&#xe649;</span>
             </el-tooltip>
             <el-tooltip v-if="scope.row.alarmLevel == 99" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
-              <span class="iconfont iconfontError">&#xe609;</span>
+              <span class="iconfont iconfontError">&#xe64a;</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -261,9 +261,9 @@
         :label="item.title">
         <div class="alarmCurrent-btn">
           <!--收起-->
-          <span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
+          <span @click="packUp" class="iconfont cursorPointer">&#xe64a;</span>
           <!--关闭弹出层-->
-          <span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
+          <span @click="closeTab" class="iconfont cursorPointer">&#xe64e;</span>
         </div>
         <AdministrationTags v-if="isShowTabBox" :page-device-id="item.content"/>
       </el-tab-pane>
