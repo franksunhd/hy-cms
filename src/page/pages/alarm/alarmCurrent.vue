@@ -119,13 +119,13 @@
           </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button :disabled="disableBtn.more">
+          <el-button :disabled="disableBtn.more" @click="batchOpenAlarm">
             <span class="iconfont">&#xe618;</span>
             {{$t('alarmCurrent.batchOpenAlarm')}}
           </el-button>
         </el-form-item>
         <el-form-item>
-          <el-button :disabled="disableBtn.more">
+          <el-button :disabled="disableBtn.more" @click="batchCloseAlarm">
             <span class="iconfont">&#xe619;</span>
             {{$t('alarmCurrent.batchCloseAlarm')}}
           </el-button>
@@ -220,7 +220,7 @@
         <el-table-column width="150px" fixed="right" :label="$t('public.operation')">
           <template slot-scope="scope">
             <el-button type="text">{{$t('alarmCurrent.turnWarranty')}}</el-button>
-            <el-button type="text">{{$t('alarmCurrent.dealWithAlarm')}}</el-button>
+            <el-button type="text" @click="dealWithAlarm(scope.row)">{{$t('alarmCurrent.dealWithAlarm')}}</el-button>
           </template>
         </el-table-column>
         <el-table-column type="selection" fixed="right" header-align="left" align="left" />
@@ -502,6 +502,7 @@
                 item.statusMenu = false;
               });
               _t.tableDataAll = _t.tableData;
+              _t.disableBtn.more = true;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -514,6 +515,7 @@
               _t.tableData = [];
               _t.options.currentPage = 1;
               _t.options.total = 0;
+              _t.disableBtn.more = true;
               break;
           }
         });
@@ -546,6 +548,16 @@
         // 设备责任人列
         if (column.label == _t.$t('alarmCurrent.equipmentOwner')) {
           row.statusMenu = false;
+        }
+      },
+      // 处理告警
+      dealWithAlarm(row){
+        var _t = this;
+        if (row.id !== null) {
+          _t.addEdit.id = row.id;
+          _t.dialogVisible = true;
+          // 父组件调用 子组件 获取数据的方法
+          _t.$refs.alarmDialog.getData(_t.addEdit.id);
         }
       },
       // 单元格点击
@@ -754,6 +766,74 @@
               break;
             default:
               _t.optionsList = [];
+              break;
+          }
+        });
+      },
+      // 批量确认告警
+      batchOpenAlarm(){
+        var _t = this;
+        _t.$api.post('alarm/alarm/batchconfirm',{
+          alarmIds:_t.checkValueList,
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
+                customClass:'messageBoxSuccess',
+                duration:2000
+              });
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.getData();
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
+                customClass:'messageBoxError',
+                duration:2000
+              });
+              break;
+          }
+        });
+      },
+      // 批量关闭告警
+      batchCloseAlarm(){
+        var _t = this;
+        _t.$api.post('alarm/alarm/batchdelete',{
+          alarmIds:_t.checkValueList,
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
+                customClass:'messageBoxSuccess',
+                duration:2000
+              });
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.getData();
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
+                customClass:'messageBoxError',
+                duration:2000
+              });
               break;
           }
         });

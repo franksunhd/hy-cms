@@ -95,7 +95,7 @@ html,body,.Index-box {
 
 .marBottom50 {
 	margin-bottom: 50px;
-} 
+}
 
 .padding10 {
   padding: 10px;
@@ -530,4 +530,10 @@ input::-webkit-input-placeholder {
 
 .el-tabs__nav-scroll {
   overflow: inherit;
+}
+
+
+.messageBoxSuccess.el-message .el-icon-info,
+.messageBoxError.el-message .el-icon-info {
+  display: none;
 }
