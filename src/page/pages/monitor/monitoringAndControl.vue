@@ -4,6 +4,7 @@
 		<div class="Breadcrumb">
 			<el-breadcrumb>
 				<el-breadcrumb-item>监测管理</el-breadcrumb-item>
+				<el-breadcrumb-item>监测汇总</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<!--echarts区域-->
@@ -22,17 +23,23 @@
 		<div class="equipmentList clearfix">
 			<ul class="clearfix">
 				<li><span>最新告警设备列表</span></li>
+				<!--设备类型-->
 				<li>
-					<el-select class="fr selectArr" v-model="addEdit.sortValue">
+					<el-popover trigger="click" placement="bottom-start" v-model="isShowTypePopover" ref="popover">
+						<el-tree :data="equipmentTypeList" highlight-current :expand-on-click-node="false" @node-click="clickTypeNode" :props="defaultProps" />
+						<el-input v-model="formItem.equipmentType" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+					</el-popover>
+
+					<!--<el-select class="fr selectArr" v-model="addEdit.sortValue">
 						<el-option v-for="(item,index) in sortArr" :key="index" :label="item.label" :value="item.value" />
-					</el-select>
+					</el-select>-->
 				</li>
-				<li>
+				<!--<li>
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover" style="float: left;">
 						<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
 						<el-input v-model="addEdit.organizationName" style="width: 230px; height: 30px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 					</el-popover>
-				</li>
+				</li>-->
 			</ul>
 		</div>
 		<div class="equipmentList clearfix" style="margin-bottom: 50px;">
@@ -88,7 +95,7 @@
 				<!--<el-table-column prop="operation" label="操作" header-align="left" align="left" />-->
 			</el-table>
 			<!--分页-->
-			<pages v-if="tableData.length > 10" :total="options.total" :currentPage="options.currentPage" :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
+			<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
 		</div>
 		<!--设备告警详情弹出层-->
 		<equipmentAlarmDetails ref="alarmDialog" :dialogVisible="dialogVisible" :AssetType="tableDataBase.AssetType" :AlarmSeverity="tableDataBase.AlarmSeverity" :AlarmHandleStatus="tableDataBase.AlarmHandleStatus" @dialogVisibleStatus="dialogVisibleStatus" />
@@ -130,24 +137,12 @@
 				editableTabsValue: '', // 当前页签
 				editableTabs: [], // 页面集合
 				tabIndex: 0, // 页签序号
-				sortArr: [{
-						label: 'Top10',
-						value: 10
-					},
-					{
-						label: 'Top15',
-						value: 15
-					},
-					{
-						label: 'Top20',
-						value: 20
-					},
-					{
-						label: 'Top30',
-						value: 30
-					},
-				], // 排序
-
+				formItem:{
+					/*设备类型*/
+					equipmentType: '全部',
+					equipmentTypeId: null,
+				},
+				 // 排序
 				addEdit: {
 					id: '',
 					/*sortValue: 10, // 绑定的pageSize值
@@ -191,10 +186,14 @@
 						}]
 					}]
 				}],
+				/*设备类型tree*/
 				defaultProps: {
 					children: 'children',
-					label: 'label'
+					label: 'nodeName'
 				},
+				// 设备类型树形下拉框数据
+				equipmentTypeList: [],
+				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowEditPopover: false, // 控制树形下拉框的显示隐藏
 				dialogVisible: false, // 设备告警详情弹出层
 				organizationList: [], // 树形下拉框的数据
@@ -223,6 +222,7 @@
 			this.refresh();
 			this.refresh2();
 			this.getData();
+			this.getBaseData();
 			this.drawLine();
 			this.drawLine2();
 		},
@@ -237,6 +237,7 @@
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
 						alarmDevice: true,
+						type:_t.formItem.equipmentTypeId,
 						currentPage: _t.options.currentPage,
 						pageSize: _t.options.pageSize
 					})
@@ -684,6 +685,51 @@
 				var _t = this;
 				_t.isShowTabBox = true;
 				document.getElementById('monitoringAndControl-tabs').style.top = '118px';
+			},
+			// 点击设备类型下拉框节点
+			clickTypeNode(val) {
+				var _t = this;
+				_t.formItem.equipmentType = val.nodeName;
+				_t.formItem.equipmentTypeId = val.nodeCode;
+				_t.getData();
+				_t.isShowTypePopover = false;
+			},
+			// 查询设备类型
+			getBaseData() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('system/basedata/all', {
+					jsonString: JSON.stringify({
+						systemBasedata: {
+							dictionaryType: 'AssetType',
+							languageMark: localStorage.getItem('hy-language')
+						}
+					})
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							var equipmentTypeList = res.data.treeNode.children[0].children;
+							equipmentTypeList.unshift({
+								nodeName: '全部',
+								level: 1,
+								children: null,
+								nodeCode: null,
+								parentId: '0'
+							})
+							_t.equipmentTypeList = equipmentTypeList;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.equipmentTypeList = [];
+							break;
+					}
+				});
 			},
 		}
 	}

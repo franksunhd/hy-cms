@@ -51,7 +51,7 @@
 							<ul>
 								<li><label for="">父级节点:</label>
 									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoverss" ref="popover">
-										<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultProps" />
+										<el-tree :data="computerRoomListFj" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultPropsss" />
 										<el-input v-model="addEdits.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 									</el-popover>
 								</li>
@@ -81,7 +81,7 @@
 					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
-				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current @node-click="getCurrentNode" :props="defaultProps" :expand-on-click-node="false" :default-expand-all="false" />
+				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current @node-click="getCurrentNode" :props="defaultPropssss" :expand-on-click-node="false" :default-expand-all="false" />
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -120,34 +120,34 @@
 						</el-form-item>
 						<!--机房-->
 						<el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
-							<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopover" ref="popover">
-								<el-tree :data="computerRoomList" highlight-current :expand-on-click-node="false" @node-click="clickRoomNode" :props="defaultProps" />
-								<el-input v-model="formItem.computerRoom" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
-							</el-popover>
+							<el-select v-model="formItem.computerRoomId" @change="changeRoom(formItem.computerRoomId)" class="width200">
+								<el-option v-for="(item,index) in computerRoomList" :key="index" :label="item.name" :value="item.id" />
+							</el-select>
 						</el-form-item>
+
 						<!--机架/机柜-->
 						<el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
 							<el-select v-model="formItem.rackNameId" class="width200" clearable>
-								<el-option v-for="(item,index) in rackNameList" :key="index" :label="item.label" :value="item.value" />
+								<el-option v-for="(item,index) in rackNameList" :key="index" :label="item.name" :value="item.id" />
 							</el-select>
 						</el-form-item>
 						<!--关联业务-->
 						<el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'">
-							<el-select v-model="formItem.business" class="width200" clearable>
-								<el-option v-for="(item,index) in businessList" :key="index" :label="item.label" :value="item.value" />
-							</el-select>
-
+							<el-popover trigger="click" placement="bottom-start" v-model="isShowBusinessPopover" ref="popover">
+								<el-tree :data="businessTreeData" highlight-current :expand-on-click-node="false" @node-click="clickBusinessNode" :props="defaultPropsBusiness" />
+								<el-input v-model="formItem.businessName" readonly style="width: 200px;" suffix-icon="el-icon-arrow-down" slot="reference" />
+							</el-popover>
 						</el-form-item>
 						<!--设备状态-->
 						<el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
 							<el-select v-model="formItem.equipmentStatus" class="width200" clearable>
-								<el-option v-for="(item,index) in equipmentStatusList" :key="index" :label="item.label" :value="item.value" />
+								<el-option v-for="(item,index) in formBaseData.AlarmSeverity" :key="index" :label="item.name" :value="item.type" />
 							</el-select>
 						</el-form-item>
 						<!--厂商  manufacturer-->
 						<el-form-item :label="$t('EquipmentMonitoring.manufacturer')+ '：'">
 							<el-select v-model="formItem.manufacturer" class="width200">
-								<el-option v-for="(item,index) in manufacturerList" :key="index" :label="item.label" :value="item.value" />
+								<el-option v-for="(item,index) in manufacturerList" :key="index" :label="item.name" :value="item.value" />
 							</el-select>
 						</el-form-item>
 						<!--查询按钮-->
@@ -185,7 +185,7 @@
 								<el-tooltip effect="dark" :content="tableDataBase.DeviceMonitorStatus[scope.row.workStatus]" placement="top-start">
 									<span>{{tableDataBase.DeviceMonitorStatus[scope.row.workStatus]}}</span>
 								</el-tooltip>
-								
+
 								<!--<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
 									<span class="iconfont iconfontError">&#xe609;</span>
 								</el-tooltip>
@@ -244,7 +244,7 @@
 								<el-tooltip effect="dark" :content="scope.row.manufacturer+','+scope.row.model" placement="top-start">
 									<span>{{scope.row.manufacturer}},{{scope.row.model}}</span>
 								</el-tooltip>
-								
+
 							</template>
 						</el-table-column>
 						<!--设备类型-->
@@ -253,7 +253,7 @@
 								<el-tooltip effect="dark" :content="tableDataBase.AssetType[scope.row.type]" placement="top-start">
 									<span>{{tableDataBase.AssetType[scope.row.type]}}</span>
 								</el-tooltip>
-								
+
 							</template>
 						</el-table-column>
 						<!--更新时间-->
@@ -262,7 +262,7 @@
 								<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter" placement="top-start">
 									<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
 								</el-tooltip>
-								
+
 							</template>
 						</el-table-column>
 						<!--操作-->
@@ -316,10 +316,17 @@
 					AssetType: {},
 					DeviceMonitorStatus: {}
 				},
+				// 表单数据字典
+				formBaseData: {
+					AlarmHandleStatus: [],
+					AlarmSeverity: [],
+					AssetType: [],
+					DeviceMonitorStatus: []
+				},
 				// 查询表单
 				formItem: {
 					/*设备类型*/
-					equipmentType: 1,
+					equipmentType: '全部',
 					equipmentTypeId: null,
 					/*设备名称/资产信息*/
 					equipmentName: null,
@@ -332,7 +339,8 @@
 					/*机架ID*/
 					rackNameId: null,
 					/*业务ID*/
-					business: null,
+					businessId: null,
+					businessName: null,
 					/*状态*/
 					equipmentStatus: null,
 					/*厂商*/
@@ -359,46 +367,21 @@
 				equipmentData: {},
 				// 设备类型树形下拉框数据
 				equipmentTypeList: [],
+
 				// 机房树形下拉框的数据
 				computerRoomList: [{
-					label: '一级 1',
-					children: [{
-						label: '二级 1-1',
-						children: [{
-							label: '三级 1-1-1'
-						}]
-					}]
-				}, {
-					label: '一级 2',
-					children: [{
-						label: '二级 2-1',
-						children: [{
-							label: '三级 2-1-1'
-						}]
-					}, {
-						label: '二级 2-2',
-						children: [{
-							label: '三级 2-2-1'
-						}]
-					}]
-				}, {
-					label: '一级 3',
-					children: [{
-						label: '二级 3-1',
-						children: [{
-							label: '三级 3-1-1'
-						}]
-					}, {
-						label: '二级 3-2',
-						children: [{
-							label: '三级 3-2-1'
-						}]
-					}]
+					name: '所有纳管的设备',
+					id: null
 				}],
+				/*编辑分组 父级节点*/
+				computerRoomListFj: [],
 				// 机架下拉框数据
 				rackNameList: [],
+				framesData: [],
 				// 设备状态下拉框
 				equipmentStatusList: [],
+				// 关联业务树形下拉框集合
+				businessTreeData: [],
 				//关联业务下拉框数据
 				businessList: [],
 				//厂商下拉框数据
@@ -415,7 +398,7 @@
 				// 处理状态
 
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
-				isShowComputerPopover: false, // 控制机房下拉框的显示隐藏
+				isShowBusinessPopover: false, // 关联业务树形下拉框显示隐藏
 				isShowComputerPopoverss: false, // 控制父级节点下拉框的显示隐藏
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
@@ -424,7 +407,7 @@
 				dialogGroupingBj: false, //编辑设备分组弹出层
 				dialogGroupingSc: false, //删除设备分组弹出层
 				dialogVisibleOwnerInfo: false, // 业务责任人信息弹出层
-				defaultProps: {},
+				/*defaultProps: {},*/
 				// 分页
 				options: {
 					total: 0, // 总条数
@@ -472,9 +455,30 @@
 						}]
 					}]
 				}],
+				/*设备类型tree*/
 				defaultProps: {
 					children: 'children',
+					label: 'nodeName'
+				},
+				/*机房tree*/
+				defaultPropss: {
+					children: 'children',
+					label: 'nodeName'
+				},
+				/*编辑设备分组父级节点tree*/
+				defaultPropsss: {
+					children: 'children',
+					label: 'nodeName'
+				},
+				/*删除设备分组tree*/
+				defaultPropssss: {
+					children: 'children',
 					label: 'label'
+				},
+				/*关联业务*/
+				defaultPropsBusiness: {
+					label: 'nodeName',
+					children: 'children'
 				},
 				//新增设备分组
 				gridData: [{
@@ -547,8 +551,13 @@
 			}
 		},
 		mounted() {
-			this.manufacturerDropDown();
+			this.getManufacturer();
 			this.getData();
+			this.getFormData();
+			this.getBaseData();
+			this.getBusinessTreeData();
+			this.getBaseDataList();
+
 		},
 		methods: {
 			// 接受弹出层关闭的参数
@@ -556,10 +565,35 @@
 				this.dialogVisible = val;
 			},
 			// 点击设备类型下拉框节点
-			clickTypeNode(val) {},
-			// 点击机房下拉框的节点
-			clickRoomNode(val) {},
-			// 点击付集结点下拉框的节点
+			clickTypeNode(val) {
+				var _t = this;
+				_t.formItem.equipmentType = val.nodeName;
+				_t.formItem.equipmentTypeId = val.nodeCode;
+				_t.isShowTypePopover = false;
+			},
+			// 点击关联业务下拉框节点
+			clickBusinessNode(val) {
+				var _t = this;
+				_t.formItem.businessId = val.nodeId;
+				_t.formItem.businessName = val.nodeName;
+				_t.isShowBusinessPopover = false;
+			},
+			// 改变表单的机房时加载机柜的数据
+			changeRoom(val) {
+				var _t = this;
+				if(_t.formItem.computerRoomId !== null) {
+					_t.framesData.forEach(function(item) {
+						if(item.roomId == val) {
+							_t.rackNameList = item.frame;
+						}
+					});
+				} else {
+					_t.rackNameList = [];
+				}
+				_t.formItem.rackNameId = '';
+			},
+
+			// 点击父级结点下拉框的节点
 			clickRoomNodes(val) {
 
 				var _t = this;
@@ -601,7 +635,6 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							console.log(res);
 							_t.getTableDataValue(res.data);
 							/*var Income1 = res.data.list;
 							var Income = [];
@@ -778,31 +811,6 @@
 				_t.addEdit.level = 0;
 				_t.getData();
 			},
-			//厂商下拉框数据获取
-			manufacturerDropDown() {
-				var _t = this;
-				_t.$api.get('/asset/assetDevice/manufacture', {}, function(res) {
-					console.log(res);
-					var Income1 = res.data;
-					console.log(Income1)
-				});
-			},
-			//设备类型下拉框数据获取
-			DeviceTypeDropDown() {
-				var _t = this;
-				_t.$api.get('/asset/assetDevice/manufacture', {}, function(res) {
-					console.log(res);
-				});
-			},
-			//设备状态下拉框数据获取
-			EquipmentStateDropDown() {
-				var _t = this;
-				_t.$api.get('/asset/assetDevice/manufacture', {}, function(res) {
-					console.log(res);
-				});
-			},
-			//机房下拉框数据获取
-			//机架/机柜下拉框数据获取
 
 			//删除设备分组确认提示
 			handleClose(done) {
@@ -817,7 +825,6 @@
 				row,
 				rowIndex
 			}) {
-				/*console.log(rowIndex)*/
 				this.rowIndex = rowIndex;
 			},
 			/*添加行事件*/
@@ -831,7 +838,7 @@
 				//添加新的行数
 
 				this.gridData.push(newValue);
-				console.log(row);
+
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -846,9 +853,7 @@
 						case 200:
 							// 获取表格对应的状态值
 							_t.tableDataBase = res.data;
-							console.log(res.data);
 							_t.tableData = resData.list;
-							console.log(_t.tableData);
 							_t.options.currentPage = resData.page.currentPage;
 							_t.options.total = resData.page.totalResultSize;
 							break;
@@ -868,37 +873,159 @@
 				});
 			},
 			// 查询设备类型
-      getBaseData(){
-        var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('system/basedata/all',{
-          jsonString: JSON.stringify({
-            systemBasedata:{
-              dictionaryType:'AssetType',
-              languageMark: localStorage.getItem('hy-language')
-            }
-          })
-        },function (res) {
-        	console.log(res)
-          _t.$store.commit('setLoading',false);
-          switch (res.status) {
-            case 200:
-              var equipmentTypeList = res.data.treeNode.children[0].children;
-              equipmentTypeList.unshift({nodeName:'全部',level:1,children:null,nodeCode:null,parentId:'0'})
-              _t.equipmentTypeList = equipmentTypeList;
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.equipmentTypeList = [];
-              break;
-          }
-        });
-      },
+			getBaseData() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('system/basedata/all', {
+					jsonString: JSON.stringify({
+						systemBasedata: {
+							dictionaryType: 'AssetType',
+							languageMark: localStorage.getItem('hy-language')
+						}
+					})
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							var equipmentTypeList = res.data.treeNode.children[0].children;
+							equipmentTypeList.unshift({
+								nodeName: '全部',
+								level: 1,
+								children: null,
+								nodeCode: null,
+								parentId: '0'
+							})
+							_t.equipmentTypeList = equipmentTypeList;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.equipmentTypeList = [];
+							break;
+					}
+				});
+			},
+			// 查找关联业务树形列表
+			getBusinessTreeData() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('asset/assetBusiness/all', {
+					jsonString: JSON.stringify({
+						isTree: true
+					})
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							_t.businessTreeData = res.data.children;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.businessTreeData = [];
+							break;
+					}
+				});
+			},
+			// 表单部分机房机架下拉框数据
+			getFormData() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('asset/assetEngineroom/maplist', {}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							var computerRoomList = res.data.rooms;
+							_t.framesData = res.data.frames;
+							computerRoomList.unshift({
+								name: '所有纳管的设备',
+								id: null
+							});
+							_t.computerRoomList = computerRoomList;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.computerRoomList = [{
+								name: '所有纳管的设备',
+								id: null
+							}];
+							break;
+					}
+				});
+			},
+			// 查询字典集合
+			getBaseDataList() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/maplist', {
+					languageMark: localStorage.getItem('hy-language'),
+					dictionaryTypes: ['AlarmHandleStatus', 'AssetType', 'AlarmSeverity', 'DeviceMonitorStatus']
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							_t.formBaseData.AlarmSeverity = res.data.AlarmSeverity;
+							_t.formBaseData.AlarmHandleStatus = res.data.AlarmHandleStatus;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.formBaseData.AlarmSeverity = [];
+							_t.formBaseData.AlarmHandleStatus = [];
+							break;
+					}
+				});
+			},
+			//厂商下拉框数据获取
+			getManufacturer() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('/asset/assetDevice/manufacture', {}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+						
+							//console.log(res.data)
+							var Income1 = [];
+							for(var key in res.data) {
+								Income1.push({
+									'name' : res.data[key],
+									'value' : key,
+								})
+							}
+							_t.manufacturerList=Income1;
+							console.log(Income1);
+							
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+
+							break;
+					}
+				});
+			},
 
 		},
 
