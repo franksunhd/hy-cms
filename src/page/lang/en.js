@@ -631,4 +631,31 @@ export default {
 		lastMonitorTime: 'lastMonitorTime ',
 		operation: 'operation'
 	},
+  // 监测 告警弹出的标签页
+  administrationTabs:{
+    equipmentInfo:'equipmentInfo',
+    equipmentAllStatus:'equipmentAllStatus',
+    equipmentName:'equipmentName',
+    equipmentIp:'equipmentIp',
+    equipmentModel:'equipmentModel',
+    serialNumber:'serialNumber',
+    equipmentMonitoring:'equipmentMonitoring',
+    status:'status',
+    monitorDetail:'monitorDetail',
+    alarmEvent:'alarmEvent',
+    resourceName:'resourceName',
+    latestState:'latestState',
+    updateTime:'updateTime',
+    level:'level',
+    alarmStatus:'alarmStatus',
+    happenTime: 'happenTime',
+    alarmObject:'alarmObject',
+    hardware:'hardware',
+    network:'network',
+    manageInformation:'manageInformation',
+    locationInformation:'locationInformation',
+    maintenanceInformation:'maintenanceInformation',
+    changeInformation:'changeInformation',
+    threshold:'threshold'
+  }
 }

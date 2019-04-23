@@ -631,4 +631,31 @@ export default {
 		lastMonitorTime: '更新时间 ',
 		operation: '操作'
 	},
+  // 监测 告警弹出的标签页
+  administrationTabs:{
+	  equipmentInfo:'设备基本信息',
+    equipmentAllStatus:'设备整体状态',
+    equipmentName:'设备名称',
+    equipmentIp:'设备IP',
+    equipmentModel:'型号',
+    serialNumber:'序列号',
+    equipmentMonitoring:'设备厂商',
+    status:'状态',
+    monitorDetail:'监测详情',
+    alarmEvent:'告警事件',
+    resourceName:'资源名称',
+    latestState:'最新状态',
+    updateTime:'更新时间',
+    level:'级别',
+    alarmStatus:'告警状态',
+    happenTime: '发生时间',
+    alarmObject:'告警对象',
+    hardware:'硬件配置',
+    network:'网络配置',
+    manageInformation:'管理信息',
+    locationInformation:'位置信息',
+    maintenanceInformation:'维保信息',
+    changeInformation:'变更信息',
+    threshold:'阈值'
+  }
 }

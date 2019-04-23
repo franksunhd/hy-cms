@@ -2,22 +2,22 @@
   <div class="administration-box">
     <!--设备信息-->
     <div class="equipmentDetail-info-box">
-      <div class="grayBg administration-title"><strong>设备基本信息</strong></div>
+      <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentInfo')}}</strong></div>
       <el-form :model="equipmentInfoList" label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item label="设备名称：">{{equipmentInfoList.deviceName}}</el-form-item>
-        <el-form-item label="设备IP：">{{equipmentInfoList.ip}}</el-form-item>
-        <el-form-item label="型号：">{{equipmentInfoList.model}}</el-form-item>
-        <el-form-item label="设备厂商：">{{equipmentInfoList.manufacturer}}</el-form-item>
-        <el-form-item label="序列号：">{{equipmentInfoList.servicetag}}</el-form-item>
+        <el-form-item :label="$t('administrationTabs.equipmentName') + '：'">{{equipmentInfoList.deviceName}}</el-form-item>
+        <el-form-item :label="$t('administrationTabs.equipmentIp') + '：'">{{equipmentInfoList.ip}}</el-form-item>
+        <el-form-item :label="$t('administrationTabs.equipmentModel') + '：'">{{equipmentInfoList.model}}</el-form-item>
+        <el-form-item :label="$t('administrationTabs.equipmentMonitoring') + '：'">{{equipmentInfoList.manufacturer}}</el-form-item>
+        <el-form-item :label="$t('administrationTabs.serialNumber') + '：'">{{equipmentInfoList.servicetag}}</el-form-item>
       </el-form>
-      <div class="grayBg administration-title"><strong>设备整体状态</strong></div>
+      <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentAllStatus')}}</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
         <el-form-item v-for="(item,index) in equipmentAllStatus" :key="index" :label="item.name + '：'">{{item.status}}</el-form-item>
       </el-form>
     </div>
     <!--标签页-->
     <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
-      <el-tab-pane label="监测详情" name="one">
+      <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
         <el-form :model="formItem" inline>
           <el-form-item style="margin-bottom: 10px;" label="筛选：">
             <el-select v-model="formItem.status">
@@ -35,7 +35,7 @@
             <!--展开行-->
             <template slot-scope="scope">
               <el-table :data="scope.row.deviceMonitorList" stripe class="monitoringDetails-innerTable">
-                <el-table-column width="100px" label="状态" header-align="left" align="left">
+                <el-table-column width="100px" :label="$t('administrationTabs.status')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
                                 :content="AlarmSeverity[scopeInset.row.status]" placement="top-start">
@@ -59,8 +59,8 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column min-width="70px" prop="name" label="资源名称" header-align="left" align="left"/>
-                <el-table-column min-width="150px" prop="statusText" label="最新状态" header-align="left" align="left">
+                <el-table-column min-width="70px" prop="name" :label="$t('administrationTabs.resourceName')" header-align="left" align="left"/>
+                <el-table-column min-width="150px" prop="statusText" :label="$t('administrationTabs.latestState')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip effect="dark" placement="left-start">
                       <div slot="content" style="max-width: 200px">{{scopeInset.row.statusText}}</div>
@@ -68,7 +68,7 @@
                     </el-tooltip>
                   </template>
                 </el-table-column>
-                <el-table-column width="160px" label="更新时间" header-align="left" align="left">
+                <el-table-column width="160px" :label="$t('administrationTabs.updateTime')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <span>{{scopeInset.row.monitorTime | dateFilter}}</span>
                   </template>
@@ -77,7 +77,7 @@
             </template>
           </el-table-column>
           <el-table-column type="selection" header-align="left" align="left"/>
-          <el-table-column label="状态" header-align="left" align="left">
+          <el-table-column :label="$t('administrationTabs.status')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.status == 11" effect="dark" :content="AlarmSeverity[scope.row.status]"
                           placement="top-start">
@@ -101,8 +101,8 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column prop="name" label="资源名称" header-align="left" align="left"/>
-          <el-table-column prop="statusText" label="最新状态" header-align="left" align="left">
+          <el-table-column prop="name" :label="$t('administrationTabs.resourceName')" header-align="left" align="left"/>
+          <el-table-column prop="statusText" :label="$t('administrationTabs.latestState')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip effect="dark" placement="left-start">
                 <div slot="content" style="max-width: 200px">{{scope.row.statusText}}</div>
@@ -110,21 +110,21 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="更新时间" header-align="left" align="left">
+          <el-table-column :label="$t('administrationTabs.updateTime')" header-align="left" align="left">
             <template slot-scope="scope">
               <span>{{scope.row.monitorTime | dateFilter}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" header-align="left" align="left">
+          <el-table-column :label="$t('public.operation')" header-align="left" align="left">
             <template slot-scope="scope">
-              <el-button type="text">阈值</el-button>
+              <el-button type="text">{{$t('administrationTabs.threshold')}}</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="告警事件" name="two">
+      <el-tab-pane :label="$t('administrationTabs.alarmEvent')" name="two">
         <el-table :data="alarmListData" stripe class="indexTableBox" @row-click="alarmEventTableRow">
-          <el-table-column width="90px" label="级别" header-align="left" align="left">
+          <el-table-column width="90px" :label="$t('administrationTabs.level')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
                           placement="top-start">
@@ -148,18 +148,18 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="告警状态" header-align="left" align="left">
+          <el-table-column :label="$t('administrationTabs.alarmStatus')" header-align="left" align="left">
             <template slot-scope="scope">
               <span>{{AlarmHandleStatus[scope.row.status]}}</span>
             </template>
           </el-table-column>
-          <el-table-column label="发生时间" header-align="left" align="left">
+          <el-table-column :label="$t('administrationTabs.happenTime')" header-align="left" align="left">
             <template slot-scope="scope">
               <span>{{scope.row.occurrenceTime | dateFilter}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="part" label="告警对象" header-align="left" align="left"/>
-          <el-table-column label="最新状态" header-align="left" align="left">
+          <el-table-column prop="part" :label="$t('administrationTabs.alarmObject')" header-align="left" align="left"/>
+          <el-table-column :label="$t('administrationTabs.latestState')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip effect="dark" placement="left-start">
                 <div slot="content" style="max-width: 200px;">{{scope.row.currentStatus}}</div>
@@ -167,7 +167,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="操作" header-align="left" align="left">
+          <el-table-column :label="$t('public.operation')" header-align="left" align="left">
             <template slot-scope="scope">
               <span>-</span>
             </template>
@@ -181,12 +181,12 @@
           @handleSizeChangeSub="handleSizeChangeSubAlarm"
           @handleCurrentChangeSub="handleCurrentChangeAlarm"/>
       </el-tab-pane>
-      <el-tab-pane label="硬件配置" name="three">硬件配置</el-tab-pane>
-      <el-tab-pane label="网络配置" name="four">网络配置</el-tab-pane>
-      <el-tab-pane label="管理信息" name="five">管理信息</el-tab-pane>
-      <el-tab-pane label="位置信息" name="six">位置信息</el-tab-pane>
-      <el-tab-pane label="维保信息" name="seven">维保信息</el-tab-pane>
-      <el-tab-pane label="变更信息" name="eight">变更信息</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.hardware')" name="three">硬件配置</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.network')" name="four">网络配置</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.manageInformation')" name="five">管理信息</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.locationInformation')" name="six">位置信息</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.maintenanceInformation')" name="seven">维保信息</el-tab-pane>
+      <el-tab-pane :label="$t('administrationTabs.changeInformation')" name="eight">变更信息</el-tab-pane>
     </el-tabs>
     <!--设备告警详情弹出层-->
     <equipmentAlarmDetail
@@ -428,70 +428,18 @@
     padding-left: 10px;
   }
 
-  #administration-tabs-title {
-    padding: 5px 10px 0;
-    margin-bottom: 16px;
-  }
-
-  #administration-tabs-title li {
-    width: 100px;
-    text-align: center;
-    height: 34px;
-    line-height: 34px;
-    float: left;
-    cursor: pointer;
-  }
-
-  #administration-tabs-title li > span {
-    width: 100%;
-    display: inline-block;
-    line-height: 20px;
-    height: 20px;
-  }
-
-  #administration-tabs-title li.active > span {
-    border-right: 0;
-  }
-
-  #administration-tabs-title li.active {
-    border-radius: 10px 10px 0 0;
-    position: relative;
-  }
-
-  #administration-tabs-title li.active::before,
-  #administration-tabs-title li.active::after {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    content: '';
-    position: absolute;
-    bottom: 0;
-    overflow: hidden;
-  }
-
-  #administration-tabs-title li.active::before {
-    left: -10px;
-    overflow: hidden;
-    border-radius: 0 0 10px 0;
-  }
-
-  #administration-tabs-title li.active::after {
-    right: -10px;
-    border-radius: 0 0 0 10px;
-  }
-</style>
-<style>
-  .administration-box .box-wrap {
-    padding: 30px 10px 0 10px;
-    position: absolute;
-  }
-
   .administration-box {
     position: absolute;
     top: 30px;
     left: 20px;
     right: 20px;
     bottom: 0;
+  }
+</style>
+<style>
+  .administration-box .box-wrap {
+    padding: 30px 10px 0 10px;
+    position: absolute;
   }
 
   .administration-info-box .el-form-item {
