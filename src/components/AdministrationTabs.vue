@@ -21,7 +21,7 @@
         <div class="clearfix">
           <el-form :model="formItem" inline class="fr">
             <el-form-item>
-              <el-checkbox class="monitoringDetails-checkedBox" v-model="formItem.checked">单内容展开</el-checkbox>
+              <el-checkbox class="monitoringDetails-checkedBox" v-model="formItem.checked" @change="changeChecked(formItem.checked)">单内容展开</el-checkbox>
             </el-form-item>
             <el-form-item style="margin-bottom: 10px;margin-right: 5px;">
               <el-select v-model="formItem.operation" @change="changeOperation(formItem.operation)">
@@ -30,11 +30,11 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-table :data="monitoringDetailsData" ref="table" stripe :row-class-name="getClassName" @selection-change="monitoringChange">
+        <el-table :data="monitoringDetailsData" :row-key="getMonitoringDetailsRowKey" :expand-row-keys="expandChange" @expand-change="expandChangeKeys" ref="table" stripe :row-class-name="getClassName" @selection-change="monitoringChange">
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
-              <el-table :data="scope.row.deviceMonitorList" stripe class="monitoringDetails-innerTable">
+              <el-table :data="scope.row.deviceMonitorList" stripe class="monitoringDetails-innerTable" @cell-click="cellClickColumn">
                 <el-table-column width="100px" :label="$t('administrationTabs.status')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
@@ -216,6 +216,7 @@
         monitoringDetailsData: [], // 监测管理表格数据
         monitoringDetailsCheckList:[], // 监测详情表格选中数据
         alarmListData: [], // 告警事件列表数据
+        expandChange:[], // 监测详情表格手风琴默认展开单行
         AlarmHandleStatus: {}, // 处理状态
         AlarmSeverity: {}, // 告警状态
         AssetType: {}, // 设备类型
@@ -242,19 +243,35 @@
       }
     },
     methods: {
-      // 控制监测详情是否单行展开
-      expandChange(row, expandedRows){
+      // 监测详情最细一级单元格的点击
+      cellClickColumn(row,column){
         var _t = this;
-        _t.$refs.table.toggleRowExpansion(row,true);
-        if (expandedRows.length !== 0) {
-          _t.monitoringDetailsData.forEach((item)=>{
-            // console.log(item)
-            if (item.id !== row.id) {
-              // console.log(item)
-              // _t.$refs.table.toggleRowExpansion(item,false);
-            }
-          });
-          // _t.$refs.table.toggleRowExpansion(row,true);
+        if (column.label === _t.$t('administrationTabs.status')) {
+          console.log(row);
+          // if (row.id !== null) {
+          //   _t.addEdit.id = row.id;
+          //   _t.dialogVisible = true;
+          //   // 父组件调用 子组件 获取数据的方法
+          //   _t.$refs.alarmDialog.getData(_t.addEdit.id);
+          // }
+        }
+      },
+      changeChecked(val){
+        var _t = this;
+        if (val === true) {
+          _t.expandChange = [];
+        }
+      },
+      // 监测详情列表设置 行id
+      getMonitoringDetailsRowKey(row){
+        return row.id;
+      },
+      // 控制监测详情是否单行展开
+      expandChangeKeys(row){
+        var _t = this;
+        if (_t.formItem.checked) {
+          _t.expandChange = [];
+          _t.expandChange[0] = row.id;
         }
       },
       // 监测详情批量操作提交
@@ -270,6 +287,12 @@
               case 200:
                 _t.getMonitorData();
                 _t.formItem.operation = null;
+                _t.$message({
+                  dangerouslyUseHTMLString: true,
+                  message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
+                  customClass:'messageBoxSuccess',
+                  duration:2000
+                });
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -279,6 +302,12 @@
                 break;
               default:
                 _t.formItem.operation = null;
+                _t.$message({
+                  dangerouslyUseHTMLString: true,
+                  message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
+                  customClass:'messageBoxError',
+                  duration:2000
+                });
                 break;
             }
           });
@@ -290,7 +319,7 @@
         var dataList = new Array();
         data.forEach((item)=>{
           if (item.deviceId !== null) {
-            dataList.push(item.deviceId);
+            dataList.push(item.id);
           }
         });
         _t.monitoringDetailsCheckList = dataList;
