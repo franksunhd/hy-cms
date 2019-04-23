@@ -169,7 +169,9 @@
         _t.$api.get('alarm/alarm/' + val,{},function (res) {
           switch (res.status) {
             case 200:
-              _t.alarmDetailDataAlarm = res.data.alarm;
+              if (res.data.alarm !== null) {
+                _t.alarmDetailDataAlarm = res.data.alarm;
+              }
               // 存入告警id
               _t.formItem.id = val;
               // 调用告警评注

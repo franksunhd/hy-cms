@@ -196,6 +196,22 @@
       :AlarmSeverity="AlarmSeverity"
       :AlarmHandleStatus="AlarmHandleStatus"
       @dialogVisibleStatus="dialogVisibleStatus" />
+    <el-dialog
+      class="alarmAdministrationTabs-dialog"
+      title="设备状态信息"
+      append-to-body
+      :visible.sync="dialogVisible_info"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <el-table :data="informationInfoList" stripe :show-header="false">
+        <el-table-column prop="label" />
+        <el-table-column prop="value" />
+      </el-table>
+      <span slot="footer">
+        <el-button type="primary" class="alertBtn" @click="dialogVisible_info = false">{{$t('public.confirm')}}</el-button>
+        <el-button type="default" class="alertBtn" @click="dialogVisible_info = false">{{$t('public.cancel')}}</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -217,6 +233,7 @@
         monitoringDetailsCheckList:[], // 监测详情表格选中数据
         alarmListData: [], // 告警事件列表数据
         expandChange:[], // 监测详情表格手风琴默认展开单行
+        informationInfoList:[], // 设备信息详情
         AlarmHandleStatus: {}, // 处理状态
         AlarmSeverity: {}, // 告警状态
         AssetType: {}, // 设备类型
@@ -226,6 +243,7 @@
           pageSize: 10, // 显示条数
         },
         dialogVisible:false, // 点击告警事件行弹出蒙版层
+        dialogVisible_info:true,
         // 监测详情表单
         formItem:{
           status:'',
@@ -246,14 +264,19 @@
       // 监测详情最细一级单元格的点击
       cellClickColumn(row,column){
         var _t = this;
+        // 点击状态
         if (column.label === _t.$t('administrationTabs.status')) {
-          console.log(row);
-          // if (row.id !== null) {
-          //   _t.addEdit.id = row.id;
-          //   _t.dialogVisible = true;
-          //   // 父组件调用 子组件 获取数据的方法
-          //   _t.$refs.alarmDialog.getData(_t.addEdit.id);
-          // }
+          if (row.id !== null && row.status !== 33) {
+            _t.dialogVisible = true;
+            // 父组件调用 子组件 获取数据的方法
+            _t.$refs.alarmDialog.getData(row.id);
+          }
+        }
+        // 点击最新状态
+        if (column.label === _t.$t('administrationTabs.latestState')) {
+          _t.dialogVisible_info = true;
+          _t.informationInfoList = row.resultConcentParse;
+          console.log(_t.informationInfoList)
         }
       },
       changeChecked(val){
@@ -399,6 +422,24 @@
           switch (res.status) {
             case 200:
               _t.monitoringDetailsData = res.data;
+              _t.monitoringDetailsData.forEach((item)=>{
+                if (item.deviceMonitorList.length !== 0) {
+                  var deviceMonitorList = new Array();
+                  item.deviceMonitorList.forEach((val)=>{
+                    // json串
+                    val.resultConcent = JSON.parse(val.result);
+                    var listArr = new Array();
+                    for (var key in val.resultConcent) {
+                      var obj = new Object();
+                      obj.label = key;
+                      obj.value = val.resultConcent[key];
+                      listArr.push(obj);
+                    }
+                    val.resultConcentParse = listArr;
+                    return;
+                  });
+                }
+              });
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -460,7 +501,6 @@
               _t.AlarmHandleStatus = res.data.AlarmHandleStatus;
               _t.AssetType = res.data.AssetType;
               _t.AlarmSeverity = res.data.AlarmSeverity;
-              console.log(_t.AlarmSeverity)
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -631,5 +671,10 @@
     height: 35px;
     line-height: 35px;
     font-size: 12px;
+  }
+
+  .alarmAdministrationTabs-dialog .el-dialog {
+    width: 700px;
+    height: 500px;
   }
 </style>
