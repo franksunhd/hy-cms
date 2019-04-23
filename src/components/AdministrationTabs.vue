@@ -243,7 +243,7 @@
           pageSize: 10, // 显示条数
         },
         dialogVisible:false, // 点击告警事件行弹出蒙版层
-        dialogVisible_info:true,
+        dialogVisible_info:false,
         // 监测详情表单
         formItem:{
           status:'',
@@ -276,7 +276,6 @@
         if (column.label === _t.$t('administrationTabs.latestState')) {
           _t.dialogVisible_info = true;
           _t.informationInfoList = row.resultConcentParse;
-          console.log(_t.informationInfoList)
         }
       },
       changeChecked(val){
