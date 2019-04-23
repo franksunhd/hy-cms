@@ -141,7 +141,6 @@
         @cell-click="cellClickColumn"
         @cell-mouse-enter="cellMouseEnter"
         @cell-mouse-leave="cellMouseLeave">
-        <el-table-column type="selection" fixed header-align="left" align="left" />
         <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
@@ -218,12 +217,13 @@
             <span>{{tableDataBase.AlarmHandleStatus[scope.row.status]}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="150px" :label="$t('public.operation')">
+        <el-table-column width="150px" fixed="right" :label="$t('public.operation')">
           <template slot-scope="scope">
             <el-button type="text">{{$t('alarmCurrent.turnWarranty')}}</el-button>
             <el-button type="text">{{$t('alarmCurrent.dealWithAlarm')}}</el-button>
           </template>
         </el-table-column>
+        <el-table-column type="selection" fixed="right" header-align="left" align="left" />
       </el-table>
       <!--分页-->
       <pages
