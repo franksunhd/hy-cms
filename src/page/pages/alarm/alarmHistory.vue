@@ -125,12 +125,12 @@
       <el-table
         :data="tableData"
         ref="table"
+        class="indexTableBox"
         stripe
         @cell-click="cellClickColumn"
         @cell-mouse-enter="cellMouseEnter"
         @cell-mouse-leave="cellMouseLeave">
-        <el-table-column type="selection" fixed header-align="left" align="left" />
-        <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
+        <el-table-column width="90px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>
               {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -227,15 +227,52 @@
         @handleSizeChangeSub="handleSizeChangeSub"
         @handleCurrentChangeSub="handleCurrentChange"/>
     </div>
+    <!--设备告警详情弹出层-->
+    <equipmentAlarmDetails
+      ref="alarmDialog"
+      :dialogVisible="dialogVisible"
+      :AssetType="tableDataBase.AssetType"
+      :AlarmSeverity="tableDataBase.AlarmSeverity"
+      :AlarmHandleStatus="tableDataBase.AlarmHandleStatus"
+      @dialogVisibleStatus="dialogVisibleStatus" />
+    <!--标签页-->
+    <el-tabs
+      v-if="isShowTabBox_tab"
+      v-model="editableTabsValue"
+      type="card"
+      ref="alarmHistoryTabs"
+      class="whiteBg"
+      id="alarmHistory-tabs"
+      tab-position="bottom"
+      closable
+      @tab-click="clickTabs"
+      @tab-remove="removeTab">
+      <el-tab-pane
+        :key="index"
+        stretch
+        v-for="(item, index) in editableTabs"
+        :name="item.name"
+        :label="item.title">
+        <div class="alarmHistory-btn">
+          <!--收起-->
+          <span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
+          <!--关闭弹出层-->
+          <span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
+        </div>
+        <AdministrationTags v-if="isShowTabBox" :page-device-id="item.content"/>
+      </el-tab-pane>
+    </el-tabs>
   </Box>
 </template>
 
 <script>
   import Box from '../../../components/Box';
+  import AdministrationTags from '../../../components/AdministrationTabs';
+  import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
   import {dateFilterDay,dateFilter,dateFilterDayCN} from "../../../assets/js/filters";
   export default {
     name: "alarmHistory",
-    components:{Box},
+    components:{Box,AdministrationTags,equipmentAlarmDetails},
     data() {
       return {
         // 查询表单
@@ -331,6 +368,10 @@
       }
     },
     methods:{
+      // 接受弹出层关闭的参数
+      dialogVisibleStatus(val){
+        this.dialogVisible = val;
+      },
       // 改变筛选值
       changeOperation(val) {
         var _t = this;
@@ -604,7 +645,67 @@
               break;
           }
         });
-      }
+      },
+      // 删除页签
+      removeTab(targetName){
+        var _t = this;
+        // 获取页面集合
+        var tabs = _t.editableTabs;
+        // 获取当前选中的页签
+        var activeName = _t.editableTabsValue;
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              var nextTab = tabs[index + 1] || tabs[index - 1];
+              if (nextTab) {
+                activeName = nextTab.name;
+              } else {
+                _t.isShowTabBox_tab = false;
+              }
+            }
+          });
+        }
+        // 删除之后的页签
+        _t.editableTabsValue = activeName;
+        _t.editableTabs = tabs.filter(tab => tab.name !== targetName);
+      },
+      // 添加页签
+      addTab(title,id) {
+        var _t = this;
+        var newTabName = ++_t.tabIndex + '';
+        _t.editableTabs.push({
+          title: title,
+          name:newTabName,
+          content: id
+        });
+        _t.editableTabsValue = newTabName;
+        _t.isShowTabBox = true;
+        _t.isShowTabBox_tab = true;
+        if (_t.editableTabs.length > 1) {
+          document.getElementById('alarmHistory-tabs').style.top = '118px';
+        }
+      },
+      // 收起
+      packUp(){
+        var _t = this;
+        _t.isShowTabBox = false;
+        document.getElementById('alarmHistory-tabs').style.top = 'initial';
+      },
+      // 关闭标签页
+      closeTab(){
+        var _t = this;
+        _t.isShowTabBox_tab = false;
+        document.getElementById('alarmHistory-tabs').style.top = 'initial';
+        _t.editableTabsValue = '';
+        _t.editableTabs = [];
+        _t.tabIndex = 0;
+      },
+      // 点击标签页
+      clickTabs(){
+        var _t = this;
+        _t.isShowTabBox = true;
+        document.getElementById('alarmHistory-tabs').style.top = '118px';
+      },
     },
     created() {
       this.$store.commit('setLoading',true);

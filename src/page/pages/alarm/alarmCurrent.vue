@@ -246,7 +246,7 @@
       v-if="isShowTabBox_tab"
       v-model="editableTabsValue"
       type="card"
-      ref="alarmCurrenTabs"
+      ref="alarmCurrentTabs"
       class="whiteBg"
       id="alarmCurrent-tabs"
       tab-position="bottom"

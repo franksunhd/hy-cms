@@ -586,18 +586,21 @@ span.el-tree-node__label {
 
 /*标签页弹出层*/
 #alarmCurrent-tabs,
+#alarmHistory-tabs,
 #monitoringAndControl-tabs,
 #EquipmentMonitoring-tabs {
   border: 1px solid #f1f1f1;
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom,
+#alarmHistory-tabs .el-tabs__header.is-bottom,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom  {
   background-color: #dee1e6;
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active,
+#alarmHistory-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active {
   background-color: #fff;
@@ -605,12 +608,14 @@ span.el-tree-node__label {
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item:after,
+#alarmHistory-tabs .el-tabs__header.is-bottom .el-tabs__item:after,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item:after,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
   border-right: 1px solid #f1f1f1;
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before,
+#alarmHistory-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
   background-color: #dee1e6;
@@ -618,6 +623,7 @@ span.el-tree-node__label {
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after,
+#alarmHistory-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
   background-color: #dee1e6;
@@ -625,6 +631,7 @@ span.el-tree-node__label {
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom .el-tabs__item:hover,
+#alarmHistory-tabs .el-tabs__header.is-bottom .el-tabs__item:hover,
 #monitoringAndControl-tabs .el-tabs__header.is-bottom .el-tabs__item:hover,
 #EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:hover,
 .monitoringDetails-header .el-tabs__header .el-tabs__item:hover{
