@@ -169,7 +169,7 @@
         </el-table-column>
         <el-table-column width="160px" :label="$t('alarmHistory.alarmThisTime')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span>{{scope.row.updateTime | dateFilter}}</span>
+            <span>{{scope.row.occurrenceTime | dateFilter}}</span>
           </template>
         </el-table-column>
         <el-table-column width="100px" prop="roomName" :label="$t('alarmHistory.computerRoomName')" header-align="left" align="left"/>
