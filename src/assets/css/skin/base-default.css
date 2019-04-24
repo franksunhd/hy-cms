@@ -243,15 +243,35 @@
 }
 
 /*复选框*/
-.el-checkbox__input.is-checked .el-checkbox__inner,
-.el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #3f81d0;
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: #fff;
   border-color: #3f81d0;
 }
 
 .el-checkbox__input.is-checked .el-checkbox__inner {
   border-color: #3f81d0;
 }
+
+.el-checkbox__input.is-checked .el-checkbox__inner::after {
+  border-right: 2px solid #3f81d0;
+  border-bottom: 2px solid #3f81d0;
+}
+
+.el-checkbox__input.is-indeterminate .el-checkbox__inner {
+  background-color: #fff;
+  border-color: #3f81d0;
+}
+
+.el-checkbox__input.is-indeterminate .el-checkbox__inner::before {
+  background-color: #3f81d0;
+  width: 6px;
+  height: 6px;
+  transform:inherit;
+  top: 3px;
+  left: 3px;
+}
+
+
 
 /*登录页*/
 .login-logoText,
