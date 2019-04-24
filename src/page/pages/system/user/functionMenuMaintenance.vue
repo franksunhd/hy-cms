@@ -26,7 +26,7 @@
         <!--表单-->
         <el-form inline :model="formItem">
           <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
-            <el-input class="width200" v-model="formItem.dictionaryName"/>
+            <el-input class="width200" v-model="formItem.dictionaryName" clearable />
           </el-form-item>
           <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
             <el-select v-model="formItem.status" class="width200" clearable>
@@ -39,6 +39,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+            <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -336,6 +337,13 @@
       }
     },
     methods: {
+      // 重置筛选表单数据
+      resetData(){
+        var _t = this;
+        _t.formItem.dictionaryName = null;
+        _t.formItem.status = null;
+        _t.getData();
+      },
       // 重置表单数据
       resetFormData() {
         var _t = this;
