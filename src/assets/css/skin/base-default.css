@@ -96,13 +96,13 @@
 }
 
 /*按钮区域*/
-.el-button--default {
+.el-button--default,
+.el-button--default:focus {
   background-color: #fff;
   color: #252a2f;
   border-color: #DCDFE6;
 }
 
-.el-button--default:focus,
 .el-button--default:hover {
   background-color: #fff;
   border-color: #3f81d0;
@@ -115,13 +115,13 @@
   color: #3f81d0;
 }
 
-.el-button--primary {
+.el-button--primary,
+.el-button--primary:focus {
   background-color: #3f81d0;
   color: #fff;
   border-color: #3f81d0;
 }
 
-.el-button--primary:focus,
 .el-button--primary:hover {
   background-color: #4c97f0;
   color: #fff;
@@ -134,14 +134,14 @@
   border-color: #3976be;
 }
 
-.el-button--warning {
+.el-button--warning,
+.el-button--warning:focus {
   color: #fff;
   background-color: #e7a835;
   border-color: #e7a835;
 }
 
-.el-button--warning:focus,
-.el-button--warning:hover {
+.el-button--warning:hover{
   background-color: #fdbb41;
   color: #fff;
   border-color: #fdbb41;
@@ -153,13 +153,14 @@
   border-color: #d99d31;
 }
 
-.el-button--success {
+.el-button--success,
+.el-button--success:focus{
   border-color: #5bd25d;
   background-color: #5bd25d;
   color: #fff;
 }
 
-.el-button--success:focus,
+
 .el-button--success:hover {
   background-color: #74e677;
   color: #fff;

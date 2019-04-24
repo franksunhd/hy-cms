@@ -24,7 +24,7 @@
         </el-form-item>
         <el-form-item>
           <el-button class="alertBtn" type="primary" @click="request">{{$t('public.request')}}</el-button>
-          <el-button class="alertBtn" type="reset">{{$t('public.reset')}}</el-button>
+          <el-button class="alertBtn">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
       <!--接口响应区域-->

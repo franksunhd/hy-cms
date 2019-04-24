@@ -45,8 +45,9 @@ Object.keys(custom).forEach(key => {
 
 // 用户过期
 Vue.prototype.exclude = (name, message) => {
-  name.$alert(message, '温馨提示', {
-    confirmButtonText: '确定',
+  name.$alert(message, name.$t('public.confirmTip'), {
+    confirmButtonText: name.$t('public.confirm'),
+    confirmButtonClass:'alarmBtn',
     type: 'warning',
     callback: action => {
       name.$store.commit("setLoading", false);
