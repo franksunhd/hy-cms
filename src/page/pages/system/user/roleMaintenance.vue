@@ -522,6 +522,8 @@
         _t.addEdit.description = '';
         _t.$refs.table.clearSelection();
         _t.dialogVisible = false;
+        _t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.ruleForm.clearValidate(); //移除校验结果
       },
       // 提交授权用户
       userDataForm() {
