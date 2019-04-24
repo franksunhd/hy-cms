@@ -433,6 +433,7 @@ export default {
     orderIndex: 'orderIndex',
     statusAlert: 'statusAlert',
     selectUser: 'selectUser',
+    parentName:'parentName',
   },
   // 告警管理
   alarmManagement: {

@@ -433,6 +433,7 @@ export default {
 		orderIndex: '显示顺序',
 		statusAlert: '启用状态',
 		selectUser: '选择角色',
+    parentName:'父级菜单',
 	},
 	// 告警管理
 	alarmManagement: {

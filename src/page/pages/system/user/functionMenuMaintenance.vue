@@ -138,8 +138,28 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
+        <el-form-item :label="$t('functionMenuMaintenance.parentName') + '：'">
+          <el-popover
+            trigger="click"
+            placement="bottom-start"
+            v-model="isShowEditPopover"
+            ref="popover">
+            <el-tree
+              :data="treeData"
+              highlight-current
+              :expand-on-click-node="false"
+              @node-click="clickNodeAlert"
+              :props="defaultProps"/>
+            <el-input
+              v-model="addEdit.parentName"
+              style="width: 200px;"
+              suffix-icon="el-icon-arrow-down"
+              readonly
+              slot="reference"/>
+          </el-popover>
+        </el-form-item>
         <el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
-          <div style="position: relative;" v-for="(item,index) in languageList">
+          <div class="positionRelative" v-for="(item,index) in languageList">
             <el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;"
                       class="width200" :placeholder="item.languageName"/>
             <span class="isNotNull"
@@ -171,7 +191,7 @@
           <!--展示选择的用户数据-->
           <div v-for="(item,index) in listData" :key="index">
             <!--标题部分循环-->
-            <p style="font-size: 12px;">
+            <p class="fs12">
               <template v-for="(k,i) in item.title">
                 <span>{{k}}</span>
                 <i v-if="i !== item.title.length - 1" class="el-icon-arrow-right"></i>
@@ -188,9 +208,6 @@
             </el-tag>
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
-        </el-form-item>
-        <el-form-item class="star" :label="$t('functionMenuMaintenance.directoryLevel') + '：'" prop="menuLevel">
-          <el-input v-model="addEdit.menuLevel" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
           <el-input v-model="addEdit.orderMark" class="width200" readonly/>
@@ -221,8 +238,8 @@
         </span>
       </el-dialog>
       <span slot="footer">
-        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
-        <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd === true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd === false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -232,7 +249,7 @@
 <script>
   import Box from '../../../../components/Box';
   import {isNotNull,isMenuHref} from "../../../../assets/js/validator";
-  import {queryOrgWithRole} from "../../../../assets/js/recursive";
+  import {queryOrgWithRole,returnObjectById} from "../../../../assets/js/recursive";
   import {dateFilter} from "../../../../assets/js/filters";
 
   export default {
@@ -248,7 +265,8 @@
         addEdit: {
           id: '',
           parentId: null,
-          menuLevel: 0,
+          parentName:'',
+          menuLevel: 1,
           menuIcon: '',
           menuHref: '',
           jumpType: '',
@@ -263,7 +281,8 @@
         },
         dialogVisible: false, // 新增编辑弹出层
         dialogVisibleAlert: false, // 选择用户弹出层
-        ifAdd: false, // 是否新增
+        isShowEditPopover:false,
+        ifAdd: true, // 是否新增
         selectUserIsNull: false, // 选中用户是否为空
         statusList: [
           {label: '启用', value: 1},
@@ -279,6 +298,7 @@
         checkValueList: {}, // 选中数据集合 编辑时
         languageList: [], // 当前系统支持的语言列表
         checkedKeysArr: [], // 选择用户树形控件默认选中的节点组
+        organizationList:[], // 新增编辑 父级列表
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -322,13 +342,16 @@
         _t.dialogVisible = false;
         _t.addEdit.id = '';
         _t.addEdit.parentId = null;
-        _t.addEdit.menuLevel = 0;
+        _t.addEdit.parentName = '';
+        _t.addEdit.menuLevel = 1;
         _t.addEdit.menuIcon = '';
         _t.addEdit.menuHref = '';
         _t.addEdit.jumpType = '';
         _t.addEdit.enable = 1;
         _t.addEdit.orderMark = 1;
         _t.$refs.table.clearSelection();
+        _t.$refs.roleName.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.roleName.clearValidate(); //移除校验结果
         // 重置表单的时候取消 菜单名称非空的 红色边框
         _t.languageList.forEach(function (item) {
           if (item.languageName !== '') {
@@ -336,11 +359,19 @@
           }
         });
       },
+      // 改变父级组织 菜单
+      clickNodeAlert(val){
+        var _t = this;
+        _t.addEdit.parentId = val.id;
+        _t.addEdit.parentName = val.menuName;
+        _t.isShowEditPopover = false;
+        _t.addEdit.menuLevel = val.menuLevel + 1;
+      },
       // 输入框菜单名称校验
       menuNameInput(data) {
-        if (data.menuName.trim() == '') {
+        if (data.menuName.trim() === '') {
           data.flag = true;
-          document.getElementById(data.id).style.borderColor = '#F56C6C';
+          document.getElementById(data.id).style.borderColor = '#fb6041';
         } else {
           data.flag = false;
           document.getElementById(data.id).style.borderColor = '#DCDFE6';
@@ -377,7 +408,6 @@
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = true;
-        _t.addEdit.menuLevel += 1;
         _t.getLanguage();
       },
       // 新增提交
@@ -465,6 +495,10 @@
               });
               _t.languageList = languageList;
               _t.addEdit.parentId = res.data.parentId;
+              if (_t.addEdit.parentId !== null) {
+                var menuNameMap = returnObjectById(_t.treeData,_t.addEdit.parentId);
+                _t.addEdit.parentName = menuNameMap.menuName;
+              }
               _t.addEdit.menuHref = res.data.menuHref;
               _t.addEdit.menuLevel = Number(res.data.menuLevel);
               _t.addEdit.menuIcon = res.data.menuIcon;
