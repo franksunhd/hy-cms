@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
-          <el-button type="reset" class="queryBtn" @click="resetFormData">重置</el-button>
+          <el-button type="reset" class="queryBtn" @click="resetFormData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
