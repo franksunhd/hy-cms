@@ -12,9 +12,9 @@
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
 					<div class="TreeControl">
-						<el-tree :data="d" :props="defaultProps" @node-click="handleNodeClick">
-
+						<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" :expand-on-click-node="false" :default-expand-all="false">
 						</el-tree>
+
 					</div>
 				</div>
 			</el-col>
@@ -89,14 +89,15 @@
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP验证算法:"><!--str = val == "1"?"one":val=="2"?"two":"three"-->
-								<el-select v-model="list.snmpAuthAlgorithm" clearable placeholder="请选择" class="width200" :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false" >
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP验证算法:">
+								<!--str = val == "1"?"one":val=="2"?"two":"three"-->
+								<el-select v-model="list.snmpAuthAlgorithm" clearable placeholder="请选择" class="width200" :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false">
 									<el-option v-for="item in VerifyTheAlgorithm" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP验证密码:">
-								<el-input type="password" v-model="list.snmpAuthPassword" class="width200" clearable :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false" ></el-input>
+								<el-input type="password" v-model="list.snmpAuthPassword" class="width200" clearable :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
 							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP私有验证算法:">
 								<el-select v-model="list.snmpPrivacyAlgorithm" placeholder="请选择" class="width200" clearable :disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false">
@@ -152,9 +153,12 @@
 				}],
 				//树形控件
 				da: [],
+				//树形控件数据默认字段
 				defaultProps: {
-					children: 'children',
-					label: 'label'
+					parentId: 'parentId', // 父级唯一标识
+					value: 'id', // 唯一标识
+					label: 'nodeName', // 标签显示
+					children: 'children', // 子级
 				},
 				//表单
 				tables: [],
@@ -212,14 +216,14 @@
 				],
 				//验证算法
 				VerifyTheAlgorithm: [{
-				                        value: 'MD5',
-				                        label: 'MD5'
-				                    },
-				                    {
-				                        value: 'SHA',
-				                        label: 'SHA'
-				                    }
-				                ],
+						value: 'MD5',
+						label: 'MD5'
+					},
+					{
+						value: 'SHA',
+						label: 'SHA'
+					}
+				],
 				//私有验证算法
 				PrivateVerificationAlgorithm: [{
 						value: 'DES',
@@ -246,13 +250,12 @@
 				//版本对象
 				//versions:{},
 				type: '1',
-				label: '机架/塔式服务器（中）',
-				d: [],
+				label: '机架/塔式服务器（中）的信息',
+				treeData: [],
 
 			}
 		},
 		created() {
-
 			//树形控件取值接口
 			var _t = this;
 			_t.$api.get('/system/basedata/all', {
@@ -262,19 +265,12 @@
 					"languageMark": "zh_CN"
 				})
 			}, function(res) {
-				//console.log(res.message)
+				console.log(res)
 				switch(res.status) {
 					case 200:
-						var datas = res.data.treeNode;
-						var da = datas.children[0].children;
-						var objArr = new Array()
-						for(var i = 0; i < da.length; i++) {
-							var obj = new Object();
-							obj.label = da[i].nodeName;
-							obj.type = da[i].nodeCode;
-							objArr.push(obj);
-						}
-						_t.d = objArr;
+						console.log(res.data.treeNode.children[0].children);
+						_t.treeData= res.data.treeNode.children[0].children;
+						console.log(_t.treeData)
 						break;
 					case 1003: // 无操作权限
 					case 1004: // 登录过期
@@ -293,14 +289,14 @@
 			selectsnmpSecurityLevel(val) {
 				console.log(val);
 				if(val.snmpSecurityLevel === 'noAuthNoPriv') {
-					val.snmpAuthAlgorithm="";
-					val.snmpAuthPassword='';
-					val.snmpPrivacyAlgorithm='';
-					val.snmpPrivacyPassword='';
+					val.snmpAuthAlgorithm = "";
+					val.snmpAuthPassword = '';
+					val.snmpPrivacyAlgorithm = '';
+					val.snmpPrivacyPassword = '';
 
 				} else if(val === 'authNoPriv') {
-					val.snmpAuthAlgorithm="";
-					val.snmpAuthPassword='';
+					val.snmpAuthAlgorithm = "";
+					val.snmpAuthPassword = '';
 
 				} else if(val === 'authPriv') {
 
@@ -327,7 +323,7 @@
 								})
 							}
 							var processa = [];
-							//debugger;
+							
 							for(var i = 0; i < process.length; i++) {
 								processa.push({
 									"id": i + 1,
@@ -337,6 +333,7 @@
 								})
 							}
 							_t.process = processa;
+							console.log(_t.process)
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -363,7 +360,7 @@
 			//开始发现
 			BeganToSee() {
 				var _t = this;
-				
+
 				_t.$api.post('/asset/discovery/start', {
 					param: _t.lists,
 					type: _t.type
@@ -394,16 +391,17 @@
 					}
 				});
 			},
-			//树形控件拼接label
-			handleNodeClick(d) {
-				/*this.status = da.status;*/
-				this.label = d.label;
-				this.type = d.type;
-				if(this.type === 1) {
+			//点击树形控件拼接label
+			handleNodeClick(data) {
+				console.log(data)
+				var _t = this;
+				this.label = data.nodeName;
+				this.type = data.orderNum;
+				/*if(this.type === 1) {
 					this.label = this.label + '的信息'
 				} else if(this.type === 2) {
 					this.label = '【' + this.label + '】' + '的检索范围'
-				}
+				}*/
 			},
 			//增加检索范围
 			add: function() {
@@ -466,43 +464,43 @@
 		overflow: hidden;
 		padding: 20px 20px;
 	}
-
+	
 	.DeviceManualDetection-box-left {
 		height: auto;
 		padding: 20px;
 	}
-
+	
 	.DeviceType {
 		font-size: 14px;
 		font-weight: 500;
 		margin-bottom: 5px;
 	}
-
+	
 	.TreeControl {
 		overflow: hidden;
 	}
-
+	
 	.DeviceManualDetection-box-right {
 		height: auto;
 		padding: 20px 40px;
 	}
-
+	
 	.DeviceManualDetection-box-right-top {
 		overflow: hidden;
 	}
-
+	
 	.rackTowerServer {}
-
+	
 	.rackTowerServer span {
 		font-weight: 600;
 		color: #3F81D0;
 	}
-
+	
 	.DeviceManualDetection-button {
 		overflow: hidden;
 		padding: 16px 0;
 	}
-
+	
 	.IncreaseTheSearchScope {
 		float: left;
 		width: 138px;
@@ -514,7 +512,7 @@
 		line-height: 30px;
 		cursor: pointer;
 	}
-
+	
 	.BeganToSee {
 		float: left;
 		width: 110px;
@@ -526,7 +524,7 @@
 		color: #fff;
 		margin-left: 20px;
 	}
-
+	
 	.ListOfUncompletedDiscoveries {
 		float: left;
 		width: 130px;
@@ -538,28 +536,28 @@
 		line-height: 30px;
 		margin-left: 20px;
 	}
-
+	
 	.ListOfUncompletedDiscoveries:hover {
 		color: #3f81d0;
 		border: 1px solid #3F81D0;
 		cursor: pointer;
 	}
-
+	
 	.ListOfUncompletedDiscoveries-process {
 		overflow: hidden;
 	}
-
+	
 	.ListOfUncompletedDiscoveries-process h3 {
 		font-size: 14px;
 		color: #252a2f;
 		padding-left: 10px;
 	}
-
+	
 	.ListOfUncompletedDiscoveries-process ul {
 		padding-left: 10px;
 		overflow: hidden;
 	}
-
+	
 	.ListOfUncompletedDiscoveries-process ul li {
 		float: left;
 		font-size: 14px;
@@ -567,18 +565,18 @@
 		padding-top: 10px;
 		cursor: pointer;
 	}
-
+	
 	.ListOfUncompletedDiscoveries-process ul li:first-child {
 		padding-left: 0;
 	}
-
+	
 	.DeviceManualDetection-box-right-bottom {
 		overflow: hidden;
 		padding-top: 10px;
 		margin-bottom: 20px;
 		background-color: #f6f9f9;
 	}
-
+	
 	.DeviceManualDetection-box-right-bottom:hover {
 		background-color: #eaeef2;
 	}
@@ -588,7 +586,7 @@
 		width: 126px;
 		font-size: 12px;
 	}
-
+	
 	.aaa {
 		background-color: #000000;
 		opacity: 0.8;

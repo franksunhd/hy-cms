@@ -51,22 +51,40 @@
                         </span>
 					</template>
 				</el-table-column>
-				<el-table-column width="80px" prop="status" label="状态" header-align="left" align="left">
+				<el-table-column width="80px" prop="status" label="设备状态" header-align="left" align="left">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.status == 99" effect="dark" content="紧急" placement="top-start">
-							<span class="iconfont iconfontError">&#xe609;</span>
-						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 66" effect="dark" content="警告" placement="top-start">
-							<span class="iconfont iconfontWarn">&#xe608;</span>
-						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 3" effect="dark" content="忽略" placement="top-start">
-							<span class="iconfont iconfontDisable">&#xe60a;</span>
-						</el-tooltip>
-					</template>
+								<el-tooltip v-if="scope.row.status == 99" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+									<span class="iconfont iconfontError">&#xe64a;</span>
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.status == 66" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+									<span class="iconfont iconfontWarn">&#xe649;</span>
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.status == 22" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+									<span class="iconfont iconfontDisable">&#xe64f;</span>
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.status == 11" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+									<span class="iconfont iconfontDisable">&#xe64e;</span>
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.status == 33" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+									<span class="iconfont iconfontSuccess">&#xe648;</span>
+								</el-tooltip>
+							</template>
 				</el-table-column>
-				<el-table-column prop="deviceName" label="设备名称" header-align="left" align="left" />
+				<el-table-column prop="deviceName" label="设备名称" header-align="left" align="left">
+					<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.deviceName" placement="top-start">
+									<span>{{scope.row.deviceName}}</span>
+								</el-tooltip>
+							</template>
+				</el-table-column>
 				<!--<el-table-column prop="alarmContent" label="告警内容" main-width="" header-align="left" align="left" />-->
-				<el-table-column prop="lastMonitorTime" label="最新告警时间" header-align="left" align="left" />
+				<el-table-column prop="lastMonitorTime" label="最新告警时间" header-align="left" align="left">
+					<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter" placement="top-start">
+									<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
+								</el-tooltip>
+							</template>
+				</el-table-column>
 				<!--<el-table-column prop="StatusSummary" label="状态汇总" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" content="紧急" placement="top-start">
@@ -89,9 +107,28 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>-->
-				<el-table-column prop="roomName" label="机房" header-align="left" align="left" />
-				<el-table-column prop="frameName" label="机架" header-align="left" align="left" />
-				<el-table-column prop="framePosition" label="位置" header-align="left" align="left" />
+				<el-table-column prop="roomName" label="机房" header-align="left" align="left">
+					<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.roomName" placement="top-start">
+									<span>{{scope.row.roomName}}</span>
+								</el-tooltip>
+							</template>
+				</el-table-column>
+				<el-table-column prop="frameName" label="机架" header-align="left" align="left">
+					<template slot-scope="scope">
+								<el-tooltip effect="dark" :content="scope.row.frameName" placement="top-start">
+									<span>{{scope.row.frameName}}</span>
+								</el-tooltip>
+							</template>
+				</el-table-column>
+				<el-table-column prop="framePosition" label="位置" header-align="left" align="left">
+					<template slot-scope="scope">
+						<!--(Income1[i].framePosition) == null ? null : (Income1[i].framePosition) + 'U',-->
+								<el-tooltip effect="dark" :content="(scope.row.framePosition)==null ?null : (scope.row.framePosition)+'U'" placement="top-start">
+									<span>{{scope.row.framePosition}}</span>
+								</el-tooltip>
+							</template>
+				</el-table-column>
 				<!--<el-table-column prop="operation" label="操作" header-align="left" align="left" />-->
 			</el-table>
 			<!--分页-->
@@ -104,9 +141,9 @@
 			<el-tab-pane :key="index" stretch v-for="(item, index) in editableTabs" :name="item.name" :label="item.title">
 				<div class="monitoringAndControl-btn">
 					<!--收起-->
-					<span @click="packUp" class="iconfont cursorPointer">&#xe61d;</span>
+					<span @click="packUp" class="iconfont cursorPointer">&#xe64a;</span>
 					<!--关闭弹出层-->
-					<span @click="closeTab" class="iconfont cursorPointer">&#xe615;</span>
+					<span @click="closeTab" class="iconfont cursorPointer">&#xe64e;</span>
 				</div>
 				<AdministrationTags v-if="isShowTabBox" :page-device-id="item.content" />
 			</el-tab-pane>
@@ -137,12 +174,12 @@
 				editableTabsValue: '', // 当前页签
 				editableTabs: [], // 页面集合
 				tabIndex: 0, // 页签序号
-				formItem:{
+				formItem: {
 					/*设备类型*/
 					equipmentType: '全部',
 					equipmentTypeId: null,
 				},
-				 // 排序
+				// 排序
 				addEdit: {
 					id: '',
 					/*sortValue: 10, // 绑定的pageSize值
@@ -212,7 +249,8 @@
 				tableDataBase: {
 					AlarmHandleStatus: {},
 					AlarmSeverity: {},
-					AssetType: {}
+					AssetType: {},
+					DeviceMonitorStatus: {}
 				},
 
 			}
@@ -236,27 +274,36 @@
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
-						assetDevice:{
-							type:_t.formItem.equipmentTypeId
+						assetDevice: {
+							type: _t.formItem.equipmentTypeId
 						},
 						alarmDevice: true,
 						currentPage: _t.options.currentPage,
 						pageSize: _t.options.pageSize
 					})
 				}, function(res) {
+					_t.$store.commit('setLoading', false);
 					switch(res.status) {
+						case 200:
+							console.log(res)
+							_t.getTableDataValue(res.data);
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+					/*switch(res.status) {
 						case 200:
 							console.log(res);
 							var Income1 = res.data.list;
 
 							var Income = [];
 							for(var i = 0; i < Income1.length; i++) {
-								/*if(Income1[i].status=="11"){
-									
-								}else if(Income1[i].status=="22"){
-									
-								}else if(Income1[i].status=="")
-								*/
 								Income.push({
 									id: Income1[i].id,
 									deviceName: Income1[i].deviceName,
@@ -279,6 +326,39 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
+							_t.tableData = [];
+							_t.options.currentPage = 1;
+							_t.options.total = 0;
+							break;
+					}*/
+				});
+			},
+			// 查询表格中状态对应的数据值
+			getTableDataValue(resData) {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/map', {
+					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity", "DeviceMonitorStatus"],
+					languageMark: localStorage.getItem("hy-language")
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							console.log(resData)
+							// 获取表格对应的状态值
+							_t.tableDataBase = res.data;
+							_t.tableData = resData.list;
+							_t.options.currentPage = resData.currentPage;
+							_t.options.total = resData.count;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableDataBase = [];
 							_t.tableData = [];
 							_t.options.currentPage = 1;
 							_t.options.total = 0;
@@ -670,7 +750,6 @@
 				var _t = this;
 				_t.isShowTabBox = false;
 				document.getElementById('monitoringAndControl-tabs').style.top = 'initial';
-				/*_t.editableTabsValue = '';*/
 			},
 			// 关闭标签页
 			closeTab() {

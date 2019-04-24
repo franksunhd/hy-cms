@@ -149,7 +149,6 @@
         _t.$api.post('/asset/discovery/history', {}, function (res) {
           switch (res.status) {
             case 200:
-            console.log(res);
               var process = [];
               for (var key in res.data) {
                 if (res.data[key].type === "1") {
@@ -166,7 +165,7 @@
               var processa = [];
               for (var i = 0; i < process.length; i++) {
                 processa.push({
-                  "id": i + 1,
+                  /*"id": i + 1,*/
                   "date": process[i].dates,
                   "name": process[i].names,
                   'sn': process[i].sns
@@ -195,7 +194,6 @@
       refresh1() {
         var _t = this;
         var optionsData = _t.val;
-        //console.log("ref1----" + optionsData)
         _t.$api.post('/asset/discovery/result', {
           "sn": optionsData,
         }, function (res) {
@@ -244,7 +242,7 @@
               _t.Dincome2 = Dincome2;
               _t.drawLine();
               _t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.count;
+							_t.options.total = res.data.pageList.length;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -261,20 +259,22 @@
       refresh() {
         var _t = this;
         var optionsData2 = new Object();
-        optionsData2 = _t.$route.params.type ? _t.$route.params.type : JSON.parse(localStorage.getItem('hy-typesone'));
-        var optionsData = new Object();
-        if (optionsData2 == 2) {
-          optionsData = _t.$route.params.value2 ? _t.$route.params.value2 : JSON.parse(localStorage.getItem('hy-resdata2'));
-        } else if (optionsData2 == 1) {
-          optionsData = _t.$route.params.value ? _t.$route.params.value : JSON.parse(localStorage.getItem('hy-resdata'));
-        }
-        //console.log("ref-----" + optionsData)
+          optionsData2 = _t.$route.params.type ? _t.$route.params.type : JSON.parse(localStorage.getItem('hy-typesone'));
+          var optionsData = new Object();
+          if (optionsData2 == 2 && _t.val != '') {
+            optionsData = _t.val;
+          } else if (optionsData2 == 2 && _t.val == '') {
+            optionsData = _t.$route.params.value2 ? _t.$route.params.value2 : JSON.parse(localStorage.getItem('hy-resdata2'));
+          } else if (optionsData2 == 1 && _t.val == '') {
+            optionsData = _t.$route.params.value ? _t.$route.params.value : JSON.parse(localStorage.getItem('hy-resdata'));
+          } else if (optionsData2 == 1 && _t.val != '') {
+            optionsData = _t.val;
+          }
         _t.$api.post('/asset/discovery/result', {
           "sn": optionsData,
         }, function (res) {
           switch (res.status) {
             case 200:
-              console.log(res)
               var Income = [];
               Income = res.data.pageList;
               for (var i = 0; i < Income.length; i++) {
@@ -298,7 +298,6 @@
                   discovery: Income[i].discovery,
                   errorText : Income[i].errorText
                 })
-                //console.log(_t.tableData)
               }
               var Dincome = [];
               Dincome.push({
@@ -335,7 +334,6 @@
       //饼图
       drawLine() {
         var _t = this;
-        //console.log("tu------biao")
         var myChart = this.$echarts.init(document.getElementById("echart"))
         var option = {
           color: ['#fde33f', '#fb6041', '#40a8ff'],
@@ -430,14 +428,12 @@
           } else if (optionsData2 == 1 && _t.val != '') {
             optionsData = _t.val;
           }
-          //console.log("onclick-----" + optionsData);
           _t.$api.post('/asset/discovery/result', {
             "sn": optionsData,
             "status": param.dataIndex - 1
           }, function (res) {
             switch (res.status) {
               case 200:
-                //console.log(res)
                 var Income = [];
                 Income = res.data.pageList;
                 _t.tableData = [];
@@ -465,7 +461,7 @@
                 }
                // alert(param.dataIndex - 1);
                _t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.count;
+							_t.options.total = res.data.pageList.length;
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -523,49 +519,9 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-            console.log(res);
             _t.describes=res.data;
-            console.log(_t.describes);
-            /*_t.tableData*/
-            /*var describes = [];
-              for (var key in res.data) {
-                if (res.data[key] === "-1") {
-                  res.data[key] = "已存在"
-                } else if (res.data[key] === "0") {
-                  res.data[key] = "添加失败"
-                }else if (res.data[key] === "1") {
-                  res.data[key] = "添加成功"
-                }
-                describes.push({
-                  describe:res.data[key]
-                })
-              }*/
             _t.options.currentPage = res.data.currentPage;
 							_t.options.total = res.data.length;
-            
-            /*for (var i = 0; i < Income.length; i++) {
-                  if (Income[i].discovery === true) {
-                    Income[i].discovery = "成功"
-                  } else if (Income[i].discovery === false) {
-                    Income[i].discovery = "失败"
-                  } else {
-                    Income[i].discovery = "待发现"
-                  }
-                  if(Income[i].manufacturer==undefined){
-                	Income[i].manufacturer="";
-                }
-                if(Income[i].model==undefined){
-                	Income[i].model="";
-                }
-                  _t.tableData.push({
-                  	manufacturerModel: (Income[i].manufacturer =='' && Income[i].model=='') ? '' : (Income[i].manufacturer + ' ， ' + Income[i].model),
-                    serialNumber: i + 1,
-                    ip: Income[i].ip,
-                    discovery: Income[i].discovery,
-                    errorText : Income[i].errorText
-                  })
-                }
-              console.log(res);*/
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
