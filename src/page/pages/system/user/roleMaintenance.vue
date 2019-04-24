@@ -25,6 +25,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -311,7 +312,7 @@
         formItem: {
           roleName: null,
           dateTime: null,
-          userName: null
+          username: null
         },
         // 新增编辑表单
         addEdit: {
@@ -409,6 +410,12 @@
       }
     },
     methods: {
+      // 重置筛选表单
+      resetData(){
+        var _t = this;
+        _t.formItem.roleName = null;
+        _t.formItem.dateTime = null;
+      },
       // 树节点的点击
       currentChange(node, status) {
         var _t = this;
