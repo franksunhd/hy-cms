@@ -7,7 +7,8 @@ export default {
 		welcome: '欢迎您',
 		head: '修改头像',
 		pwd: '修改密码',
-		logOut: '退出登录'
+		logOut: '退出登录',
+    title:'控制台首页'
 	},
 	// 公共
 	public: {

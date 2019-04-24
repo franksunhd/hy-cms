@@ -457,7 +457,7 @@ input::-webkit-input-placeholder {
 .dataDictionary-tree.el-tree,
 .organizeMaintenance-tree.el-tree,
 .functionMenuMaintenance-tree.el-tree {
-  padding-left: 12px;
+  /*padding-left: 12px;*/
 }
 
 .el-tree-node__label {

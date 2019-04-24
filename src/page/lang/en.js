@@ -7,7 +7,8 @@ export default {
     welcome: 'Welcome',
     head: 'Modify the head',
     pwd: 'Modify the password',
-    logOut: 'log out'
+    logOut: 'log out',
+    title:'title'
   },
   // 公共
   public: {

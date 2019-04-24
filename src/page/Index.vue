@@ -4,7 +4,7 @@
     <div class="app-header clearfix">
       <div class="app-header-logo middle fl">
         <img src="../assets/img/logo.png" alt="logo"/>
-        <span @click="homePage" style="cursor: pointer;margin-left: 10px;">控制台首页</span>
+        <span @click="homePage" style="cursor: pointer;margin-left: 10px;">{{$t('header.title')}}</span>
       </div>
       <ul class="app-header-navBar fr">
         <li>
