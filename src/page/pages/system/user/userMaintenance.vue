@@ -12,9 +12,10 @@
       <!--表单-->
       <el-form inline v-model="formItem">
         <el-form-item :label="$t('userMaintenance.account') + '：'">
-          <el-input v-model="formItem.username" class="width200"/>
+          <el-input v-model="formItem.username" class="width200" clearable/>
         </el-form-item>
-        <el-form-item :label="$t('userMaintenance.organization') + '：'">
+        <el-form-item id="selectTreeBox" class="positionRelative" :label="$t('userMaintenance.organization') + '：'">
+          <i class="el-icon-error el-input__clear selectTreeBox_close"></i>
           <el-popover
             trigger="click"
             v-model="isShowFormPopover"
@@ -88,9 +89,21 @@
         <el-table-column prop="displayName" :label="$t('userMaintenance.username')" header-align="left" align="left"/>
         <el-table-column prop="username" :label="$t('userMaintenance.loginAccount')" header-align="left" align="left"/>
         <el-table-column prop="organizationName" :label="$t('userMaintenance.organization')" header-align="left" align="left"/>
-        <el-table-column prop="roleName" :label="$t('userMaintenance.userRole')" header-align="left" align="left"/>
+        <el-table-column :label="$t('userMaintenance.userRole')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" :content="scope.row.roleName" placement="top-start">
+              <span>{{scope.row.roleName}}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column prop="mobile" :label="$t('userMaintenance.mobile')" header-align="left" align="left"/>
-        <el-table-column prop="email" :label="$t('userMaintenance.email')" header-align="left" align="left"/>
+        <el-table-column :label="$t('userMaintenance.email')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" :content="scope.row.email" placement="top-start">
+              <span>{{scope.row.email}}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column :label="$t('userMaintenance.status')" header-align="left" align="left">
           <template slot-scope="scope">
             <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
@@ -120,7 +133,7 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="addEdit" inline label-width="116px" :rules="rules" ref="ruleForm">
+      <el-form :model="addEdit" autocomplete="off" inline label-width="116px" :rules="rules" ref="ruleForm" >
         <el-form-item class="star" :label="$t('userMaintenance.organization') + '：'" prop="organization">
           <el-popover
             trigger="click"
@@ -142,13 +155,13 @@
           </el-popover>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.username') + '：'" prop="username">
-          <el-input v-model="addEdit.username" class="width200"/>
+          <el-input v-model="addEdit.username" class="width200" />
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.loginAccount') + '：'" prop="loginAccount">
-          <el-input v-model="addEdit.loginAccount" class="width200"/>
+          <el-input v-model="addEdit.loginAccount" class="width200" autocomplete="off" />
         </el-form-item>
-        <el-form-item v-if="ifAdd == true" class="star" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
-          <el-input type="password" v-model="addEdit.loginPassword" class="width200"/>
+        <el-form-item v-if="ifAdd === true" class="star" :label="$t('userMaintenance.loginPassword') + '：'" prop="loginPassword">
+          <el-input type="password" v-model="addEdit.loginPassword" auto-complete="new-password" class="width200"/>
         </el-form-item>
         <el-form-item class="star" :label="$t('userMaintenance.mobileNum') + '：'" prop="mobileNum">
           <el-input v-model="addEdit.mobileNum" maxlength="11" class="width200"/>
@@ -201,7 +214,8 @@
           organization: null,
           status: null,
           username: null,
-          organizationId: null
+          organizationId: null,
+          rotateStatus:true
         },
         // 新增 编辑表单
         addEdit: {
@@ -264,9 +278,10 @@
           children: 'children', // 子级
         },
         organizationList: [],
+        // 校验
         rules: {
-          organization: [
-            {validator: isNotNull, trigger: ['blur', 'change']}
+          organization:[
+            {validator: isNotNull, trigger: ['blur']}
           ],
           username: [
             {validator: isNotNull, trigger: ['blur']}
@@ -309,9 +324,10 @@
       },
       // 查询表单所属组织下拉框
       clickNode(val) {
-        this.formItem.organization = val.nodeName;
-        this.formItem.organizationId = val.nodeId;
-        this.isShowFormPopover = false;
+        var _t = this;
+        _t.formItem.organization = val.nodeName;
+        _t.formItem.organizationId = val.nodeId;
+        _t.isShowFormPopover = false;
       },
       // 新增编辑弹出层所属组织下拉框
       clickNodeAlert(val) {
@@ -329,6 +345,7 @@
         _t.dialogVisible = false;
         _t.isShowRole = false;
         _t.addEdit.organizationId = '';
+        _t.addEdit.organization = '';
         _t.addEdit.username = '';
         _t.addEdit.loginAccount = '';
         _t.addEdit.loginPassword = '';
@@ -336,6 +353,8 @@
         _t.addEdit.status = 1;
         _t.addEdit.emails = '';
         _t.$refs.table.clearSelection();
+        _t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.ruleForm.clearValidate(); //移除校验结果
       },
       // 当前选中条数
       selectTableNum(data) {
@@ -361,11 +380,10 @@
                 // 不可重置自己的密码
                 _t.disableBtn.more = false;
               } else {
-                _t.$alert('不可以禁用、删除本人,重置本人密码!', _t.$t('public.confirmTip'), {
-                  confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
-                  _t.resetFormAdd();
+                _t.$message({
+                  message: "不可以禁用、删除本人,重置本人密码!",
+                  customClass:'messageBoxError',
+                  duration:3000
                 });
               }
             });

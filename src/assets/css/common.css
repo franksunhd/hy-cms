@@ -537,3 +537,12 @@ input::-webkit-input-placeholder {
 .messageBoxError.el-message .el-icon-info {
   display: none;
 }
+
+/*树形下拉框中删除图标样式*/
+.selectTreeBox_close {
+  position: absolute;
+  top: 9px;
+  right: 30px;
+  z-index: 1;
+  display: none;
+}
