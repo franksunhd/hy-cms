@@ -18,9 +18,9 @@
           <el-date-picker
             v-model="formItem.dateTime"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            :range-separator="$t('public.to')"
+            :start-placeholder="$t('public.startTime')"
+            :end-placeholder="$t('public.endTime')"
             :placeholder="$t('public.selectDate')"/>
         </el-form-item>
         <el-form-item>
@@ -68,12 +68,18 @@
       <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
         <el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="left" align="left"/>
-        <el-table-column prop="organizationName" :label="$t('roleMaintenance.organization')" header-align="left" align="left"/>
+        <el-table-column :label="$t('roleMaintenance.organization')" header-align="left" align="left">
+          <template slot-scope="scope">
+            <el-tooltip effect="dark" :content="scope.row.organizationName" placement="top-start">
+              <span>{{scope.row.organizationName}}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="left" align="left"/>
         <el-table-column :label="$t('roleMaintenance.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.enable === true">启用</span>
-            <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
+            <span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="left" align="left"/>
@@ -140,8 +146,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button class="alertBtn" type="primary" v-if="ifAdd == true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" type="primary" v-if="ifAdd == false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" type="primary" v-if="ifAdd === true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" type="primary" v-if="ifAdd === false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
@@ -342,7 +348,7 @@
         // 所属组织下拉框
         isShowEditPopover: false,
         // 是否编辑
-        ifAdd: false,
+        ifAdd: true,
         // 是否提交用户授权
         tagsLength: false,
         // 是否提交功能权限
