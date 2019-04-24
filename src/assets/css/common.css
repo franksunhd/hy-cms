@@ -355,7 +355,7 @@ html,body,.Index-box {
   left: 0;
   right: 0;
   padding: 20px;
-  overflow-y:scroll;
+  overflow-y:auto;
 }
 
 .el-dialog__footer {
