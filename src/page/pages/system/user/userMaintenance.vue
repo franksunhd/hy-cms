@@ -241,7 +241,7 @@
         // 新增弹出层
         dialogVisible: false,
         // 判断弹出层是新增还是编辑
-        ifAdd: false,
+        ifAdd: true,
         // 表单所属组织下拉区域
         isShowFormPopover: false,
         // 新增所属组织下拉区域
@@ -281,7 +281,7 @@
         // 校验
         rules: {
           organization:[
-            {validator: isNotNull, trigger: ['blur']}
+            {validator: isNotNull, trigger: ['blur','change']}
           ],
           username: [
             {validator: isNotNull, trigger: ['blur']}
@@ -343,6 +343,7 @@
       resetFormAdd() {
         var _t = this;
         _t.dialogVisible = false;
+        _t.ifAdd = true;
         _t.isShowRole = false;
         _t.addEdit.organizationId = '';
         _t.addEdit.organization = '';
