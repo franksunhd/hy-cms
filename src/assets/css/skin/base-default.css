@@ -20,6 +20,11 @@
 .systemSettings-navBar,
 .el-menu {
   background-color: #f6f9f9;
+  border-right: none;
+}
+
+.systemSettings-navBarContent {
+  border-right: 1px solid #eaedf1;
 }
 
 .grayBg {
@@ -204,6 +209,7 @@
 .el-table__body tr.current-row>td, .el-table__body tr.hover-row.current-row>td,
 .el-table__body tr.hover-row.el-table__row--striped.current-row>td,
 .el-table__body tr.hover-row.el-table__row--striped>td,
+.el-table--enable-row-hover .el-table__body tr:hover>td,
 .el-table__body tr.hover-row>td {
   background-color: #e9f3fe;
 }
@@ -721,4 +727,12 @@ span.el-tree-node__label {
 .el-date-table td.today span,
 .el-date-table td.available:hover {
   color: #3f81d0;
+}
+
+.el-tooltip__popper.is-dark {
+  background-color: rgba(0,0,0,0.7);
+}
+
+.el-date-editor .el-range-separator {
+  color: #666;
 }

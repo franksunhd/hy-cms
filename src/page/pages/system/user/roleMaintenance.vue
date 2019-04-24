@@ -241,19 +241,12 @@
             node-key="id"
             show-checkbox
             ref="tree"
-            @check-change="currentChange"
-            :props="menuProps"
-            :check-strictly="true"
-            :default-checked-keys="keys"
-            :default-expanded-keys="menuExpanded"/>
-        </el-form-item>
-        <el-form-item style="margin-bottom: 0;">
-          <div v-if="selectMenuMark" class="isNotNull">必填项不能为空</div>
+            :props="menuProps"/>
         </el-form-item>
       </el-form>
       <span slot="footer">
         <el-button class="alertBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" @click="dialogVisibleFunction = false; selectMenuMark = false;">{{$t('public.cancel')}}</el-button>
+        <el-button class="alertBtn" @click="dialogVisibleFunction = false;">{{$t('public.cancel')}}</el-button>
       </span>
     </el-dialog>
     <!--数据权限-->
@@ -301,7 +294,7 @@
   import Box from '../../../../components/Box';
   import {isNotNull} from "../../../../assets/js/validator";
   import {dateFilter} from '../../../../assets/js/filters';
-  import {orgBreadcrumb,getMenuWithParentIdByMenuId,getParent, uniqArr, getChildren} from "../../../../assets/js/recursive";
+  import {orgBreadcrumb,getMenuWithParentIdByMenuId,getParent, uniqArr, getChildren,unique} from "../../../../assets/js/recursive";
 
   export default {
     name: "role-maintenance",
@@ -458,18 +451,13 @@
           jsonString:JSON.stringify({
             systemRole:{
               id:val
-            }
+            },
+            languageMark:localStorage.getItem('hy-language')
           })
         },function (res) {
           switch (res.status) {
             case 200:
-              console.log(status);
-              var menuData = new Array();
-              res.data.forEach(function (item) {
-                menuData.push(item.id);
-              });
-              _t.menuExpanded = menuData;
-              _t.$refs.tree.setCheckedKeys(menuData);
+              _t.$refs.tree.setCheckedKeys(res.data);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -485,21 +473,40 @@
       // 提交授权菜单
       commitMenuData() {
         var _t = this;
-        var selectMenu = new Array();
-        selectMenu = getMenuWithParentIdByMenuId(_t.selectArr,_t.$refs.tree.getCheckedKeys());
-        if (selectMenu.length !== 0) {
-          _t.selectMenuMark = false;
+        var selectMenuArr = new Array();
+        var selectMenuList = new Array();
+        var getCheckedArr = _t.$refs.tree.getCheckedKeys();
+        selectMenuArr = getMenuWithParentIdByMenuId(_t.selectArr,getCheckedArr);
+        var parentIdArr = new Array();
+        parentIdArr = unique(selectMenuArr,getCheckedArr);
+        selectMenuArr.forEach((item)=>{
+          getCheckedArr.forEach((val)=>{
+            var obj = new Object();
+            if (item === val) {
+              obj.menuId = val;
+              obj.isChecked = true;
+              selectMenuList.push(obj);
+            }
+          });
+        });
+        parentIdArr.forEach((data)=>{
+          var obj = new Object();
+          obj.menuId = data;
+          obj.isChecked = false;
+          selectMenuList.push(obj);
+        });
+        if (selectMenuList.length !== 0) {
           _t.$api.post('system/role/impowerRoleByMenu', {
             systemRole: {
               id: _t.checkListIds.join(',')
             },
-            menuId: selectMenu.join(',')
+            menuList: selectMenuList
           }, function (res) {
             switch (res.status) {
               case 200:
                 _t.dialogVisibleFunction = false;
                 _t.$refs.tree.setCheckedKeys([]);
-                _t.$bus.emit('getMenu',true);
+                _t.$bus.emit('getMenu', true);
                 _t.resetFormData();
                 break;
               case 1003: // 无操作权限
@@ -512,8 +519,6 @@
                 break;
             }
           });
-        } else {
-          _t.selectMenuMark = true;
         }
       },
       // 重置表单
