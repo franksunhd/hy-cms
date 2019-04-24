@@ -19,7 +19,15 @@
     <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
         <div class="clearfix">
-          <el-form :model="formItem" inline class="fr">
+          <el-form inline class="fl marginBottom10">
+            <el-form-item v-for="(item,index) in monitorStatusArr" :key="index">
+              <el-button type="text">
+                <span class="iconfont"></span>
+                <span>{{WorkStatus[item.key]}}</span>
+              </el-button>
+            </el-form-item>
+          </el-form>
+          <el-form :model="formItem" inline class="fr marginBottom10">
             <el-form-item>
               <el-checkbox class="monitoringDetails-checkedBox" v-model="formItem.checked" @change="changeChecked(formItem.checked)">单内容展开</el-checkbox>
             </el-form-item>
@@ -30,7 +38,16 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-table :data="monitoringDetailsData" :row-key="getMonitoringDetailsRowKey" :expand-row-keys="expandChange" @expand-change="expandChangeKeys" ref="table" stripe :row-class-name="getClassName" @selection-change="monitoringChange">
+        <el-table
+          :data="monitoringDetailsData"
+          :row-key="getMonitoringDetailsRowKey"
+          :expand-row-keys="expandChange"
+          @expand-change="expandChangeKeys"
+          ref="table"
+          @cell-click="cellClickColumnTable"
+          stripe
+          :row-class-name="getClassName"
+          @selection-change="monitoringChange">
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
@@ -101,11 +118,33 @@
             </template>
           </el-table-column>
           <el-table-column prop="name" :label="$t('administrationTabs.resourceName')" header-align="left" align="left"/>
-          <el-table-column prop="statusText" :label="$t('administrationTabs.latestState')" header-align="left" align="left">
+          <el-table-column :label="$t('administrationTabs.latestState')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip effect="dark" placement="left-start">
-                <div slot="content" style="max-width: 200px">{{scope.row.statusText}}</div>
-                <span>{{scope.row.statusText}}</span>
+                <div slot="content" style="max-width: 200px">
+                  <span v-if="scope.row.resultConcentStatus == 1">{{scope.row.resultConcent}}</span>
+                  <span v-else-if="scope.row.resultConcentStatus == 2">
+                  <span v-for="(x,y) in scope.row.resultConcent" :key="y">
+                    <span v-if="x.key == null">{{x.value}}</span>
+                    <span v-else-if="x.key !== '33'">{{x.value}}个</span>
+                    <span v-if="x.key == null">个对象</span>
+                    <span v-else-if="x.key !== '33'">{{AlarmSeverity[x.key]}}</span>
+                    &nbsp;
+                  </span>
+                </span>
+                  <span v-else>{{scope.row.statusText}}</span>
+                </div>
+                <span v-if="scope.row.resultConcentStatus == 1" class="iconfontSuccess">{{scope.row.resultConcent}}</span>
+                <span v-else-if="scope.row.resultConcentStatus == 2">
+                  <span v-for="(x,y) in scope.row.resultConcent" :key="y">
+                    <span class="iconfontSuccess" v-if="x.key == null">{{x.value}}</span>
+                    <span class="iconfontError" v-else-if="x.key !== '33'">{{x.value}}个</span>
+                    <span class="iconfontSuccess" v-if="x.key == null">个对象</span>
+                    <span class="iconfontError" v-else-if="x.key !== '33'">{{AlarmSeverity[x.key]}}</span>
+                    &nbsp;
+                  </span>
+                </span>
+                <span v-else>{{scope.row.statusText}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -204,7 +243,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <el-table :data="informationInfoList" stripe :show-header="false">
-        <el-table-column prop="label" />
+        <el-table-column prop="key" />
         <el-table-column prop="value" />
       </el-table>
       <span slot="footer">
@@ -231,12 +270,14 @@
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
         monitoringDetailsCheckList:[], // 监测详情表格选中数据
+        monitorStatusArr:[],// 监测详情状态统计集合
         alarmListData: [], // 告警事件列表数据
         expandChange:[], // 监测详情表格手风琴默认展开单行
         informationInfoList:[], // 设备信息详情
         AlarmHandleStatus: {}, // 处理状态
         AlarmSeverity: {}, // 告警状态
         AssetType: {}, // 设备类型
+        WorkStatus:{}, // 监测筛选状态集合
         optionsAlarm: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -261,7 +302,27 @@
       }
     },
     methods: {
-      // 监测详情最细一级单元格的点击
+      // 监测详情最细一级单元格的点击 第一层
+      cellClickColumnTable(row,column){
+        var _t = this;
+        // 点击状态
+        if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
+          // 第一层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
+          if (row.id !== null && row.status !== 33 && row.nodeType === 1) {
+            _t.dialogVisible = true;
+            // 父组件调用 子组件 获取数据的方法
+            _t.$refs.alarmDialog.getData(row.id);
+          }
+        }
+        // 点击资源名称
+        if (column.label === _t.$t('administrationTabs.resourceName')) {
+          if (row.nodeType === 1)  {
+            _t.dialogVisible_info = true;
+            _t.informationInfoList = row.resultConcentParse;
+          }
+        }
+      },
+      // 监测详情最细一级单元格的点击 第二层
       cellClickColumn(row,column){
         var _t = this;
         // 点击状态
@@ -359,7 +420,7 @@
       },
       // 控制某些状态下的表格不展开行
       getClassName({row, rowIndex}) {
-        return row.deviceMonitorList.length == 0 ? 'expendTable' : '';
+        return row.nodeType === 1 ? 'expendTable' : '';
       },
       // 请求设备基本信息
       getEquipmentInfoData() {
@@ -420,25 +481,66 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              _t.monitoringDetailsData = res.data;
-              _t.monitoringDetailsData.forEach((item)=>{
+              var monitoringDetailsData = res.data;
+              // 一层循环
+              monitoringDetailsData.forEach((item)=>{
+                // 转换一级可展开的最新状态 nodeType 0 目录 可展开
+                if (item.nodeType === 0) {
+                  var monitorArr = new Array();
+                  var monitorList = JSON.parse(item.statusText);
+                  for (var key in monitorList) {
+                    var objArr = new Object();
+                    objArr.key = key;
+                    objArr.value = monitorList[key];
+                    monitorArr.push(objArr);
+                  }
+                  if (monitorArr.length === 1 && monitorArr[0].key === '33') {
+                    // 全部正常 状态为1
+                    item.resultConcentStatus = 1;
+                    item.resultConcent = monitorArr[0].value + '个对象全部正常';
+                  } else {
+                    // 多种状态 为2
+                    item.resultConcentStatus = 2;
+                    var monitorArrNumber = 0;
+                    monitorArr.forEach((val)=>{
+                      monitorArrNumber += val.value;
+                    });
+                    monitorArr.unshift({key:null,value:monitorArrNumber});
+                    item.resultConcent = monitorArr;
+                  }
+                } else {
+                  // nodeType == 1 最细一级 转换 result
+                  item.resultConcentArr = JSON.parse(item.result);
+                  var listArr = new Array();
+                  for (var key in item.resultConcentArr) {
+                    var obj = new Object();
+                    obj.key = key;
+                    obj.value = item.resultConcentArr[key];
+                    listArr.push(obj);
+                  }
+                  item.resultConcentParse = listArr;
+                }
+                // 转换二级 最新状态参数
                 if (item.deviceMonitorList.length !== 0) {
                   var deviceMonitorList = new Array();
+                  // 子集循环 (二级)
                   item.deviceMonitorList.forEach((val)=>{
                     // json串
                     val.resultConcent = JSON.parse(val.result);
                     var listArr = new Array();
                     for (var key in val.resultConcent) {
                       var obj = new Object();
-                      obj.label = key;
+                      obj.key = key;
                       obj.value = val.resultConcent[key];
                       listArr.push(obj);
                     }
                     val.resultConcentParse = listArr;
-                    return;
                   });
                 }
               });
+              _t.monitoringDetailsData = monitoringDetailsData;
+              // 状态统计
+              _t.getMonitoringDetail(_t.pageDeviceId);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -448,6 +550,31 @@
               break;
             default:
               _t.monitoringDetailsData = [];
+              break;
+          }
+        });
+      },
+      // 获取监测详情状态统计
+      getMonitoringDetail(val){
+        var _t = this;
+        _t.$api.get('monitor/deviceMonitor/countStatus/' + val,{},function (res) {
+          switch (res.status) {
+            case 200:
+              var monitorStatusArr = new Array();
+              for (var key in res.data) {
+                var obj = new Object();
+                obj.key = key;
+                obj.value = res.data[key];
+                monitorStatusArr.push(obj);
+              }
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
               break;
           }
         });
@@ -572,6 +699,31 @@
               break;
           }
         });
+      },
+      // 获取
+      getOperationMap(){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.post('system/basedata/map',{
+          dictionaryTypes:['WorkStatus'],
+          languageMark: localStorage.getItem('hy-language')
+        },function (res) {
+          _t.$store.commit('setLoading',true);
+          switch (res.status) {
+            case 200:
+              _t.WorkStatus = res.data.WorkStatus;
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.WorkStatus = {};
+              break;
+          }
+        });
       }
     },
     created() {
@@ -580,6 +732,7 @@
       this.getEquipmentAllStatusData();
       this.getMonitorData();
       this.getOperationList();
+      this.getOperationMap();
     }
   }
 </script>
