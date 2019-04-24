@@ -46,6 +46,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button type="reset" class="queryBtn" @click="resetFormData">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -310,6 +311,14 @@
       }
     },
     methods: {
+      // 重置筛选表单
+      resetFormData(){
+        var _t = this;
+        _t.formItem.organization = null;
+        _t.formItem.organizationId = null;
+        _t.formItem.status = null;
+        _t.formItem.username = null;
+      },
       // 选择组织下拉框中的角色
       selectRoleList(){
         var _t = this;

@@ -97,19 +97,23 @@
 
 /*按钮区域*/
 .el-button--default,
-.el-button--default:focus {
+.el-button--reset,
+.el-button--default:focus,
+.el-button--reset:focus {
   background-color: #fff;
   color: #252a2f;
   border-color: #DCDFE6;
 }
 
-.el-button--default:hover {
+.el-button--default:hover,
+.el-button--reset:hover {
   background-color: #fff;
   border-color: #3f81d0;
   color: #3f81d0;
 }
 
-.el-button--default:active {
+.el-button--default:active,
+.el-button--reset:active {
   background-color: #f6f8fa;
   border-color: #3f81d0;
   color: #3f81d0;
