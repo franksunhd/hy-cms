@@ -12,7 +12,7 @@
       <!--表单-->
       <el-form inline v-model="formItem">
         <el-form-item :label="$t('roleMaintenance.roleName') + '：'">
-          <el-input v-model="formItem.roleName" class="width200"/>
+          <el-input v-model="formItem.roleName" class="width200" clearable />
         </el-form-item>
         <el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
           <el-date-picker
@@ -415,6 +415,7 @@
         var _t = this;
         _t.formItem.roleName = null;
         _t.formItem.dateTime = null;
+        _t.getData();
       },
       // 树节点的点击
       currentChange(node, status) {

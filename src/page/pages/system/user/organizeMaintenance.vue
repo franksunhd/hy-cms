@@ -27,18 +27,19 @@
           <!--表单-->
           <el-form inline :model="formItem">
             <el-form-item :label="$t('organizeMaintenance.organizationName') +'：'">
-              <el-input class="width200" v-model="formItem.organizationName"/>
+              <el-input class="width200" v-model="formItem.organizationName" clearable />
             </el-form-item>
             <el-form-item :label="$t('organizeMaintenance.createUpdateDate') +'：'">
               <el-date-picker
                 v-model="formItem.dateTime"
                 type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"/>
+                :range-separator="$t('public.to')"
+                :start-placeholder="$t('public.startTime')"
+                :end-placeholder="$t('public.endTime')"/>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+              <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -226,6 +227,13 @@
       }
     },
     methods:{
+      // 重置筛选表单
+      resetData(){
+        var _t = this;
+        _t.formItem.dateTime = null;
+        _t.formItem.organizationName = null;
+        _t.getData();
+      },
       // 重置表单
       resetFormData(){
         var _t = this;

@@ -318,6 +318,7 @@
         _t.formItem.organizationId = null;
         _t.formItem.status = null;
         _t.formItem.username = null;
+        _t.getData();
       },
       // 选择组织下拉框中的角色
       selectRoleList(){
