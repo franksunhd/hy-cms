@@ -244,10 +244,7 @@
             :props="menuProps"
             :check-strictly="true"
             :default-checked-keys="keys"
-            :default-expanded-keys="menuExpanded"
-
-
-            />
+            :default-expanded-keys="menuExpanded"/>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
           <div v-if="selectMenuMark" class="isNotNull">必填项不能为空</div>

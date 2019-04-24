@@ -245,13 +245,8 @@
 /*复选框*/
 .el-checkbox__input.is-checked .el-checkbox__inner,
 .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-  background-color: #fff;
-  border-color: #eaedf1;
-}
-
-.el-checkbox__inner::after {
-  border-right: 1px solid #3f81d0;
-  border-bottom: 1px solid #3f81d0;
+  background-color: #3f81d0;
+  border-color: #3f81d0;
 }
 
 .el-checkbox__input.is-checked .el-checkbox__inner {
