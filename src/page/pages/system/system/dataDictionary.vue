@@ -27,10 +27,10 @@
           <!--表单-->
           <el-form :model="formItem" inline>
             <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-              <el-input class="width200" v-model="formItem.businessCode"/>
+              <el-input class="width200" v-model="formItem.businessCode" clearable />
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-              <el-input class="width200" v-model="formItem.dictionaryName"/>
+              <el-input class="width200" v-model="formItem.dictionaryName" clearable/>
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.status') + '：'">
               <el-select v-model="formItem.status" class="width200" clearable>
@@ -39,6 +39,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+              <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -129,29 +130,32 @@
               :props="defaultProps"/>
             <el-input
               v-model="addEdit.nodeName"
-              style="width: 200px;"
+              class="width200"
               suffix-icon="el-icon-arrow-down"
               readonly
+              clearable
               slot="reference"/>
           </el-popover>
         </el-form-item>
-        <el-form-item :label="$t('dataDictionary.dictionaryType') + '：'" prop="dictionaryType">
-          <el-input v-model="addEdit.dictionaryType" class="width200"/>
+        <el-form-item class="star" :label="$t('dataDictionary.dictionaryType') + '：'" prop="dictionaryType">
+          <el-input v-model="addEdit.dictionaryType" class="width200" clearable />
         </el-form-item>
-        <el-form-item :label="$t('dataDictionary.businessCode') + '：'" prop="dictionaryCode">
-          <el-input v-model="addEdit.dictionaryCode" class="width200"/>
+        <el-form-item class="star" :label="$t('dataDictionary.businessCode') + '：'" prop="dictionaryCode">
+          <el-input :disabled="ifAdd === false" v-model="addEdit.dictionaryCode" clearable class="width200"/>
         </el-form-item>
         <br>
         <el-form-item
+          :class="index === 0 ?'star':''"
           v-for="(item,index) in systemBaseDataLanguageList"
           :key="index"
           :label="index == 0 ? $t('dataDictionary.dictionaryName') + '：':' '">
-          <div style="position: relative;">
+          <div class="positionRelative">
             <el-input
               :id="item.id"
               @input="menuNameInput(item)"
               v-model="item.basedataName"
               class="width200"
+              clearable
               :placeholder="item.languageName" />
             <span
               class="isNotNull"
@@ -161,13 +165,13 @@
           </div>
         </el-form-item>
         <br>
-        <el-form-item :label="$t('dataDictionary.directoryLevel') + '：'" prop="level">
-          <el-input v-model="addEdit.level" readonly class="width200"/>
+        <el-form-item class="star" :label="$t('dataDictionary.directoryLevel') + '：'" prop="level">
+          <el-input v-model="addEdit.level" readonly class="width200" clearable />
         </el-form-item>
-        <el-form-item :label="$t('dataDictionary.orderIndex') + '：'" prop="orderMark">
-          <el-input v-model="addEdit.orderMark" class="width200" />
+        <el-form-item class="star" :label="$t('dataDictionary.orderIndex') + '：'" prop="orderMark">
+          <el-input v-model="addEdit.orderMark" class="width200" clearable />
         </el-form-item>
-        <el-form-item :label="$t('dataDictionary.statusAlert') + '：'" prop="enable">
+        <el-form-item class="star" :label="$t('dataDictionary.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable" class="width200">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
             <el-radio :label="0">{{$t('public.disable')}}</el-radio>
@@ -267,11 +271,18 @@
       menuNameInput(data){
         if (data.basedataName.trim() == '') {
           data.flag = true;
-          document.getElementById(data.id).style.borderColor = '#F56C6C';
+          document.getElementById(data.id).style.borderColor = '#fb6041';
         } else {
           data.flag = false;
           document.getElementById(data.id).style.borderColor = '#DCDFE6';
         }
+      },
+      // 重置筛选表单
+      resetData(){
+        var _t = this;
+        _t.formItem.businessCode = null;
+        _t.formItem.dictionaryName = null;
+        _t.formItem.status = null;
       },
       // 重置表单
       resetFormData(){
@@ -286,6 +297,11 @@
         _t.addEdit.orderMark = '';
         _t.addEdit.enable = 1;
         _t.$refs.table.clearSelection();
+        _t.$refs.roleName.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.roleName.clearValidate(); //移除校验结果
+        _t.systemBaseDataLanguageList.forEach((item)=>{
+          document.getElementById(item.id).style.borderColor = '#DCDFE6';
+        });
       },
       // 当前选中条数
       selectTableNum(data) {
@@ -554,7 +570,7 @@
         _t.systemBaseDataLanguageList.forEach(function (item) {
           if (item.basedataName.trim() === '') {
             item.flag = true;
-            document.getElementById(item.id).style.borderColor = '#F56C6C';
+            document.getElementById(item.id).style.borderColor = '#fb6041';
           } else {
             isNullNum += 1;
           }
@@ -673,7 +689,7 @@
         _t.systemBaseDataLanguageList.forEach(function (item) {
           if (item.basedataName.trim() == '') {
             item.flag = true;
-            document.getElementById(item.id).style.borderColor = '#F56C6C';
+            document.getElementById(item.id).style.borderColor = '#fb6041';
           } else {
             isNullNum += 1;
           }

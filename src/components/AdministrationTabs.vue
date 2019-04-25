@@ -16,15 +16,30 @@
       </el-form>
     </div>
     <!--标签页-->
-    <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
+    <el-tabs v-model="activeNameTabs" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
+      <!--监测详情-->
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
         <div class="clearfix">
           <el-form inline class="fl marginBottom10">
-            <el-form-item v-for="(item,index) in monitorStatusArr" :key="index">
-              <el-button type="text">
-                <span class="iconfont"></span>
-                <span>{{WorkStatus[item.key]}}</span>
-              </el-button>
+            <el-form-item v-if="AlarmSeverity[item.key] !== undefined" v-for="(item,index) in monitorStatusArr" :key="index">
+              <el-tooltip effect="dark" :content="AlarmSeverity[item.key]" placement="top-start">
+                <el-button type="text" style="color: #666;" @click="screenAlarmStatus(item.key)">
+                  <span v-if="item.key == 11" class="iconfont iconfontDisable">&#xe64b;</span>
+                  <span v-if="item.key == 22" class="iconfont iconfontDisable">&#xe64f;</span>
+                  <span v-if="item.key == 66" class="iconfont iconfontWarn">&#xe649;</span>
+                  <span v-if="item.key == 99" class="iconfont iconfontError">&#xe64a;</span>
+                  <span>{{item.value}}</span>
+                </el-button>
+              </el-tooltip>
+            </el-form-item>
+            <!--字典没有返回 从批量操作中获取-->
+            <el-form-item v-if="item.key == 38" v-for="(item,index) in monitorStatusArr" :key="index">
+              <el-tooltip effect="dark" :content="WorkStatus['38']" placement="top-start">
+                <el-button type="text" style="color: #666;" @click="screenAlarmStatus('38')">
+                  <span class="iconfont iconfontDisable">&#xe644;</span>
+                  <span>{{item.value}}</span>
+                </el-button>
+              </el-tooltip>
             </el-form-item>
           </el-form>
           <el-form :model="formItem" inline class="fr marginBottom10">
@@ -51,7 +66,7 @@
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
-              <el-table :data="scope.row.deviceMonitorList" stripe class="monitoringDetails-innerTable" @cell-click="cellClickColumn">
+              <el-table :data="scope.row.deviceMonitorListArr" stripe class="monitoringDetails-innerTable" @cell-click="cellClickColumn">
                 <el-table-column width="100px" :label="$t('administrationTabs.status')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
@@ -161,7 +176,33 @@
           <el-table-column type="selection" fixed="right" header-align="left" align="left"/>
         </el-table>
       </el-tab-pane>
+      <!--告警事件-->
       <el-tab-pane :label="$t('administrationTabs.alarmEvent')" name="two">
+        <el-form :model="alarmEvent" inline>
+          <el-form-item style="margin-right: 40px;">
+            <el-radio-group v-model="alarmEvent.alarmIsHistory">
+              <el-radio :label="false">当前告警</el-radio>
+              <el-radio :label="true">历史告警</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item :label="$t('alarmCurrent.alarmLevelText') + '：'">
+            <el-select v-model="alarmEvent.status" class="width200">
+              <el-option v-for="(item,index) in alarmEventList" :key="index" :label="item.label" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item :label="$t('public.happenTime') + '：'">
+            <el-date-picker
+              v-model="alarmEvent.dateTime"
+              type="daterange"
+              :range-separator="$t('public.to')"
+              :start-placeholder="$t('public.startTime')"
+              :end-placeholder="$t('public.endTime')"
+              :placeholder="$t('public.selectDate')"/>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" class="queryBtn" @click="getAlarmListData">{{$t('public.query')}}</el-button>
+          </el-form-item>
+        </el-form>
         <el-table :data="alarmListData" stripe class="indexTableBox" @row-click="alarmEventTableRow">
           <el-table-column width="90px" :label="$t('administrationTabs.level')" header-align="left" align="left">
             <template slot-scope="scope">
@@ -220,11 +261,17 @@
           @handleSizeChangeSub="handleSizeChangeSubAlarm"
           @handleCurrentChangeSub="handleCurrentChangeAlarm"/>
       </el-tab-pane>
+      <!--硬件配置-->
       <el-tab-pane :label="$t('administrationTabs.hardware')" name="three">硬件配置</el-tab-pane>
+      <!--网络配置-->
       <el-tab-pane :label="$t('administrationTabs.network')" name="four">网络配置</el-tab-pane>
+      <!--管理信息-->
       <el-tab-pane :label="$t('administrationTabs.manageInformation')" name="five">管理信息</el-tab-pane>
+      <!--位置信息-->
       <el-tab-pane :label="$t('administrationTabs.locationInformation')" name="six">位置信息</el-tab-pane>
+      <!--维保信息-->
       <el-tab-pane :label="$t('administrationTabs.maintenanceInformation')" name="seven">维保信息</el-tab-pane>
+      <!--变更信息-->
       <el-tab-pane :label="$t('administrationTabs.changeInformation')" name="eight">变更信息</el-tab-pane>
     </el-tabs>
     <!--设备告警详情弹出层-->
@@ -256,7 +303,7 @@
 
 <script>
   import Box from '../components/Box';
-  import {dateFilter} from "../assets/js/filters";
+  import {dateFilter,dateFilterDay} from "../assets/js/filters";
   import equipmentAlarmDetail from './equipmentAlarmDetails';
 
   export default {
@@ -264,11 +311,12 @@
     components: {Box,equipmentAlarmDetail},
     data() {
       return {
-        // 当前激活标签页序号
-        activeName: 'one',
+        activeNameTabs:this.activeName, // 用于接收标签页序号 默认从组建接收 切换时进行数据绑定
         equipmentInfoList:{}, // 设备基本信息
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
+        monitoringDetailsDataCache:[], // 缓存的监测管理的原始数据
+        monitoringDetailsCacheData:[], // 缓存的监测管理的过滤数据 用于状态筛选的数据回显
         monitoringDetailsCheckList:[], // 监测详情表格选中数据
         monitorStatusArr:[],// 监测详情状态统计集合
         alarmListData: [], // 告警事件列表数据
@@ -284,38 +332,265 @@
           pageSize: 10, // 显示条数
         },
         dialogVisible:false, // 点击告警事件行弹出蒙版层
-        dialogVisible_info:false,
+        dialogVisible_info:false, // 控制设备状态信息弹出层的显示隐藏
         // 监测详情表单
         formItem:{
           status:'',
-          operation:null,
-          checked:true
+          operation:null, // 批量操作
+          checked:true, // 单内容是否展开
+        },
+        // 告警事件表单
+        alarmEvent:{
+          alarmIsHistory:false, // 区分当前告警和历史告警单选按钮
+          status:null, // 告警级别筛选
+          dateTime:null, // 告警发生日期
         },
         statusList:[], // 监测详情表单筛选下拉框数据
         operationList:[], // 监测详情 表单筛选 操作下拉框数据
+        monitorChecked:{ // 监测详情筛选按钮 选中与否
+          pauseBtn:false, // 暂停是否点击过
+          ignoreBtn:false, // 忽略是否点击过
+          warnBtn:false, // 警告是否点击过
+          emergencyBtn:false, // 紧急是否点击过
+          notShowBtn:false, // 页面不显示是否点击过
+        },
+        alarmEventList:[], // 告警事件 告警级别下拉框
       }
     },
     props: {
-      // 页面Id 用于接口请求数据
+      // 接收设备Id 用于接口请求数据
       pageDeviceId: {
         type: String
+      },
+      // 接收标签页激活序号
+      activeName:{
+        type:String,
+        default:'one'
       }
     },
     methods: {
+      // 点击监测详情状态筛选
+      screenAlarmStatus(status) {
+        var _t = this;
+        // 判断筛选按钮是否点过
+        if (status == 11) { // 暂停
+          _t.monitorChecked.pauseBtn = !_t.monitorChecked.pauseBtn;
+          _t.monitorChecked.ignoreBtn = false;
+          _t.monitorChecked.warnBtn = false;
+          _t.monitorChecked.emergencyBtn = false;
+          _t.monitorChecked.notShowBtn = false;
+          if (_t.monitorChecked.pauseBtn) {
+            // 选中 需要过滤数据
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
+          } else {
+            // 取消选中 加载全部数据
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+          }
+        } else if (status == 22) { // 忽略
+          _t.monitorChecked.ignoreBtn = !_t.monitorChecked.ignoreBtn;
+          _t.monitorChecked.pauseBtn = false;
+          _t.monitorChecked.warnBtn = false;
+          _t.monitorChecked.emergencyBtn = false;
+          _t.monitorChecked.notShowBtn = false;
+          if (_t.monitorChecked.ignoreBtn) {
+            // 选中 需要过滤数据
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
+          } else {
+            // 取消选中 加载全部数据
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+          }
+        } else if (status == 66) { // 警告
+          _t.monitorChecked.warnBtn = !_t.monitorChecked.warnBtn;
+          _t.monitorChecked.pauseBtn = false;
+          _t.monitorChecked.ignoreBtn = false;
+          _t.monitorChecked.emergencyBtn = false;
+          _t.monitorChecked.notShowBtn = false;
+          if (_t.monitorChecked.warnBtn) {
+            // 选中 需要过滤数据
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
+          } else {
+            // 取消选中 加载全部数据
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+          }
+        } else if (status == 99) { // 紧急
+          _t.monitorChecked.emergencyBtn = !_t.monitorChecked.emergencyBtn;
+          _t.monitorChecked.pauseBtn = false;
+          _t.monitorChecked.ignoreBtn = false;
+          _t.monitorChecked.warnBtn = false;
+          _t.monitorChecked.notShowBtn = false;
+          if (_t.monitorChecked.emergencyBtn) {
+            // 选中 需要过滤数据
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
+          } else {
+            // 取消选中 加载全部数据
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+          }
+        } else if (status == 38) { // 页面不显示
+          _t.monitorChecked.notShowBtn = !_t.monitorChecked.notShowBtn;
+          _t.monitorChecked.pauseBtn = false;
+          _t.monitorChecked.ignoreBtn = false;
+          _t.monitorChecked.warnBtn = false;
+          _t.monitorChecked.emergencyBtn = false;
+          if (_t.monitorChecked.notShowBtn) {
+            // 选中 需要过滤数据
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',false);
+          } else {
+            // 取消选中 加载全部数据
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+          }
+        }
+      },
+      // 过滤监测数据
+      filterMonitorTableData(treeData,valField,val){
+        var _t = this;
+        var monitorArr = new Array();
+        // 遍历一级
+        treeData.forEach((item)=>{
+          // nodeType = 1 最细一级 符合条件就添加进数组
+          if (item.nodeType === 1) {
+            if (item[valField] == val) {
+              monitorArr.push(item);
+            }
+          } else {
+            // nodeType = 0 目录级别 一级符合条件 先记录一级 然后遍历二级
+            if (item[valField] == val) {
+              // 先记录一下一级 同时查看二级有没有 符合条件的数据
+              var monitorLevelFirst = item;
+              var monitorLevelFirstArr = new Array();
+              monitorLevelFirst.deviceMonitorList.forEach((innerData)=>{
+                if (innerData[valField] == val) {
+                  monitorLevelFirstArr.push(innerData);
+                }
+              });
+              item.deviceMonitorListArrStart = monitorLevelFirstArr;
+              monitorArr.push(item);
+            } else {
+              // 一级不符合条件 遍历二级 二级没有 不加 二级有符合数据 拿到二级数据集合 拿到一级 把一级存到 monitorArr
+              var monitorLevelFirst = item;
+              var monitorLevelFirstArr = new Array();
+              monitorLevelFirst.deviceMonitorList.forEach((innerData)=>{
+                if (innerData[valField] == val) {
+                  monitorLevelFirstArr.push(innerData);
+                }
+              });
+              item.deviceMonitorListArrStart = monitorLevelFirstArr;
+              if (item.deviceMonitorListArrStart.length !== 0) {
+                monitorArr.push(item);
+              }
+            }
+          }
+        });
+        return _t.switchMonitoringDetailsData(monitorArr);
+      },
+      // 转换监测详情接口json字符串 treeData 需要转换的数据
+      switchMonitoringDetailsData(treeData){
+        treeData.forEach((item)=>{
+          // 转换一级可展开的最新状态 nodeType 0 目录 可展开
+          if (item.nodeType === 0) {
+            var monitorArr = new Array();
+            var monitorList = JSON.parse(item.statusText);
+            for (var key in monitorList) {
+              var objArr = new Object();
+              objArr.key = key;
+              objArr.value = monitorList[key];
+              monitorArr.push(objArr);
+            }
+            if (monitorArr.length === 1 && monitorArr[0].key === '33') {
+              // 全部正常 状态为1
+              item.resultConcentStatus = 1;
+              item.resultConcent = monitorArr[0].value + '个对象全部正常';
+            } else {
+              // 多种状态 为2
+              item.resultConcentStatus = 2;
+              var monitorArrNumber = 0;
+              monitorArr.forEach((val)=>{
+                monitorArrNumber += val.value;
+              });
+              monitorArr.unshift({key:null,value:monitorArrNumber});
+              item.resultConcent = monitorArr;
+            }
+          } else {
+            // nodeType == 1 最细一级 转换 result
+            item.resultConcentArr = JSON.parse(item.result);
+            var listArr = new Array();
+            for (var key in item.resultConcentArr) {
+              var obj = new Object();
+              obj.key = key;
+              obj.value = item.resultConcentArr[key];
+              listArr.push(obj);
+            }
+            item.resultConcentParse = listArr;
+          }
+          // 转换二级 最新状态参数
+          if (item.nodeType === 0) {
+            // 子集循环 (二级)
+            item.deviceMonitorListArrStart.forEach((val)=>{
+              // json串
+              val.resultConcent = JSON.parse(val.result);
+              var listArr = new Array();
+              for (var key in val.resultConcent) {
+                var obj = new Object();
+                obj.key = key;
+                obj.value = val.resultConcent[key];
+                listArr.push(obj);
+              }
+              val.resultConcentParse = listArr;
+            });
+          }
+          item.deviceMonitorListArr = item.deviceMonitorListArrStart;
+        });
+        return treeData;
+      },
+      // 获取监测详情的接口数据
+      getMonitorData() {
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('monitor/deviceMonitor/all', {
+          jsonString: JSON.stringify({
+            deviceMonitor: {
+              parentId: '0',
+              deviceId: _t.pageDeviceId,
+            }
+          })
+        }, function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              // 缓存接口全部数据 用于前端筛选
+              _t.monitoringDetailsDataCache = res.data;
+              // 过滤不显示的数据 返回显示的数据
+              _t.monitoringDetailsData = _t.filterMonitorTableData(res.data,'isAlone',true);
+              _t.monitoringDetailsCacheData = _t.monitoringDetailsData;
+              // 状态统计
+              _t.getMonitoringDetail(_t.pageDeviceId);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.monitoringDetailsData = [];
+              break;
+          }
+        });
+      },
       // 监测详情最细一级单元格的点击 第一层
       cellClickColumnTable(row,column){
         var _t = this;
         // 点击状态
         if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
           // 第一层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
-          if (row.id !== null && row.status !== 33 && row.nodeType === 1) {
+          if (row.id !== null && row.status != '33' && row.nodeType === 1) {
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id);
+            _t.$refs.alarmDialog.getData(row.id,false);
           }
         }
         // 点击资源名称
         if (column.label === _t.$t('administrationTabs.resourceName')) {
+          // 最细一级 nodeType 不能展开
           if (row.nodeType === 1)  {
             _t.dialogVisible_info = true;
             _t.informationInfoList = row.resultConcentParse;
@@ -325,24 +600,22 @@
       // 监测详情最细一级单元格的点击 第二层
       cellClickColumn(row,column){
         var _t = this;
-        // 点击状态
-        if (column.label === _t.$t('administrationTabs.status')) {
-          if (row.id !== null && row.status !== 33) {
+        // 点击状态 或 最新状态
+        if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
+          // 第二层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
+          if (row.id !== null && row.status != '33' && row.nodeType === 1) {
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id);
+            _t.$refs.alarmDialog.getData(row.id,false);
           }
         }
-        // 点击最新状态
+        // 点击资源名称
         if (column.label === _t.$t('administrationTabs.resourceName')) {
-          _t.dialogVisible_info = true;
-          _t.informationInfoList = row.resultConcentParse;
-        }
-      },
-      changeChecked(val){
-        var _t = this;
-        if (val === true) {
-          _t.expandChange = [];
+          // 最细一级 nodeType 不能展开
+          if (row.nodeType === 1) {
+            _t.dialogVisible_info = true;
+            _t.informationInfoList = row.resultConcentParse;
+          }
         }
       },
       // 监测详情列表设置 行id
@@ -355,6 +628,13 @@
         if (_t.formItem.checked) {
           _t.expandChange = [];
           _t.expandChange[0] = row.id;
+        }
+      },
+      // 单内容展开 改为true 清空展开的
+      changeChecked(val){
+        var _t = this;
+        if (val === true) {
+          _t.expandChange = [];
         }
       },
       // 监测详情批量操作提交
@@ -412,7 +692,7 @@
         var _t = this;
         _t.dialogVisible = true;
         // 父组件调用 子组件 获取数据的方法
-        _t.$refs.alarmDialog.getData(row.id);
+        _t.$refs.alarmDialog.getData(row.id,_t.alarmEvent.alarmIsHistory);
       },
       // 接受设备信息蒙版层返回的状态
       dialogVisibleStatus(val){
@@ -466,94 +746,6 @@
           }
         });
       },
-      // 获取监测详情的接口数据
-      getMonitorData() {
-        var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('monitor/deviceMonitor/all', {
-          jsonString: JSON.stringify({
-            deviceMonitor: {
-              parentId: '0',
-              deviceId: _t.pageDeviceId,
-            }
-          })
-        }, function (res) {
-          _t.$store.commit('setLoading',false);
-          switch (res.status) {
-            case 200:
-              var monitoringDetailsData = res.data;
-              // 一层循环
-              monitoringDetailsData.forEach((item)=>{
-                // 转换一级可展开的最新状态 nodeType 0 目录 可展开
-                if (item.nodeType === 0) {
-                  var monitorArr = new Array();
-                  var monitorList = JSON.parse(item.statusText);
-                  for (var key in monitorList) {
-                    var objArr = new Object();
-                    objArr.key = key;
-                    objArr.value = monitorList[key];
-                    monitorArr.push(objArr);
-                  }
-                  if (monitorArr.length === 1 && monitorArr[0].key === '33') {
-                    // 全部正常 状态为1
-                    item.resultConcentStatus = 1;
-                    item.resultConcent = monitorArr[0].value + '个对象全部正常';
-                  } else {
-                    // 多种状态 为2
-                    item.resultConcentStatus = 2;
-                    var monitorArrNumber = 0;
-                    monitorArr.forEach((val)=>{
-                      monitorArrNumber += val.value;
-                    });
-                    monitorArr.unshift({key:null,value:monitorArrNumber});
-                    item.resultConcent = monitorArr;
-                  }
-                } else {
-                  // nodeType == 1 最细一级 转换 result
-                  item.resultConcentArr = JSON.parse(item.result);
-                  var listArr = new Array();
-                  for (var key in item.resultConcentArr) {
-                    var obj = new Object();
-                    obj.key = key;
-                    obj.value = item.resultConcentArr[key];
-                    listArr.push(obj);
-                  }
-                  item.resultConcentParse = listArr;
-                }
-                // 转换二级 最新状态参数
-                if (item.deviceMonitorList.length !== 0) {
-                  var deviceMonitorList = new Array();
-                  // 子集循环 (二级)
-                  item.deviceMonitorList.forEach((val)=>{
-                    // json串
-                    val.resultConcent = JSON.parse(val.result);
-                    var listArr = new Array();
-                    for (var key in val.resultConcent) {
-                      var obj = new Object();
-                      obj.key = key;
-                      obj.value = val.resultConcent[key];
-                      listArr.push(obj);
-                    }
-                    val.resultConcentParse = listArr;
-                  });
-                }
-              });
-              _t.monitoringDetailsData = monitoringDetailsData;
-              // 状态统计
-              _t.getMonitoringDetail(_t.pageDeviceId);
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.monitoringDetailsData = [];
-              break;
-          }
-        });
-      },
       // 获取监测详情状态统计
       getMonitoringDetail(val){
         var _t = this;
@@ -562,11 +754,14 @@
             case 200:
               var monitorStatusArr = new Array();
               for (var key in res.data) {
-                var obj = new Object();
-                obj.key = key;
-                obj.value = res.data[key];
-                monitorStatusArr.push(obj);
+                if (key != '33') {
+                  var obj = new Object();
+                  obj.key = key;
+                  obj.value = res.data[key];
+                  monitorStatusArr.push(obj);
+                }
               }
+              _t.monitorStatusArr = monitorStatusArr;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -583,10 +778,21 @@
       getAlarmListData() {
         var _t = this;
         _t.$store.commit('setLoading',true);
-        _t.$api.get('alarm/alarm/pagelist', {
+        var url = 'alarm/alarmHistory/pagelist';
+        if (_t.alarmEvent.alarmIsHistory) {
+          // 历史告警
+          url = 'alarm/alarmHistory/pagelist';
+        } else {
+          // 当前告警
+          url = 'alarm/alarm/pagelist'
+        }
+        _t.$api.get(url, {
           jsonString: JSON.stringify({
             alarm: {
-              deviceId: _t.pageDeviceId
+              deviceId: _t.pageDeviceId,
+              alarmLevel:_t.alarmEvent.status,
+              ocrStartTime:_t.alarmEvent.dateTime == null ? null : dateFilterDay(_t.formItem.dateTime[0].getTime()),
+              ocrEndTime:_t.alarmEvent.dateTime == null ? null : dateFilterDay(_t.formItem.dateTime[1].getTime()),
             },
             page: {
               currentPage: _t.optionsAlarm.currentPage,
@@ -627,6 +833,20 @@
               _t.AlarmHandleStatus = res.data.AlarmHandleStatus;
               _t.AssetType = res.data.AssetType;
               _t.AlarmSeverity = res.data.AlarmSeverity;
+              // 给告警事件中告警级别下拉框加数据
+              _t.alarmEventList.unshift({
+                value:null,
+                label:_t.$t('public.all')
+              });
+              for (var key in _t.AlarmSeverity){
+                if (key == '66' || key == '99') {
+                  _t.alarmEventList.push({
+                    value:key,
+                    label:_t.AlarmSeverity[key]
+                  });
+                }
+              }
+
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -667,40 +887,7 @@
         _t.optionsAlarm.pageSize = val;
         _t.getAlarmListData();
       },
-      // 获取监测管理批量操作数据接口
-      getOperationList(){
-        var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.post('system/basedata/maplist',{
-          dictionaryTypes:['WorkStatus'],
-          languageMark: localStorage.getItem('hy-language')
-        },function (res) {
-          _t.$store.commit('setLoading',true);
-          switch (res.status) {
-            case 200:
-              var operationList = new Array();
-              res.data.WorkStatus.forEach((item)=>{
-                // 过滤 数据
-                if (item.type === '47') {} else if (item.type === '48') {}
-                else {
-                  operationList.push(item);
-                }
-              });
-              operationList.unshift({name:'批量操作',type:null});
-              _t.operationList = operationList;
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              break;
-          }
-        });
-      },
-      // 获取
+      // 获取监测管理批量操作数据接口 map
       getOperationMap(){
         var _t = this;
         _t.$store.commit('setLoading',true);
@@ -711,6 +898,16 @@
           _t.$store.commit('setLoading',true);
           switch (res.status) {
             case 200:
+              // 转换 list map
+              var WorkStatus = new Array();
+              for (var key in res.data.WorkStatus){
+                if (key == '47' || key == '48') {} else {
+                  WorkStatus.push({name:res.data.WorkStatus[key],type:key})
+                }
+              }
+              WorkStatus.unshift({name:'批量操作',type:null});
+              _t.operationList = WorkStatus;
+              // 字典key:value
               _t.WorkStatus = res.data.WorkStatus;
               break;
             case 1003: // 无操作权限
@@ -721,6 +918,7 @@
               break;
             default:
               _t.WorkStatus = {};
+              _t.operationList = [{name:'批量操作',type:null}];
               break;
           }
         });
@@ -731,7 +929,6 @@
       this.getEquipmentInfoData();
       this.getEquipmentAllStatusData();
       this.getMonitorData();
-      this.getOperationList();
       this.getOperationMap();
     }
   }
