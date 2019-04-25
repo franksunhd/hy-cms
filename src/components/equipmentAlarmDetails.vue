@@ -311,8 +311,34 @@
           }
           _t.formItem.statusTip = _t.$t('alarmCurrent.addDescription');
         } else if (val === 2) {
+          // 告警保修
+          if (_t.formItem.isAlarmHistory) {
+            // 历史告警
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else if (_t.formItem.isAlarmHistory === false && _t.alarmDetailDataAlarm.status === 1) {
+            // 当前告警 已处理
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else {
+            _t.formItem.isDisabledTextArea = false;
+            _t.formItem.isDisabledAlarm = false;
+          }
           _t.formItem.statusTip = _t.$t('alarmCurrent.warrantyOpinions');
         } else {
+          // 告警关闭
+          if (_t.formItem.isAlarmHistory) {
+            // 历史告警
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else if (_t.formItem.isAlarmHistory === false && _t.alarmDetailDataAlarm.status === 1) {
+            // 当前告警 已处理
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else {
+            _t.formItem.isDisabledTextArea = false;
+            _t.formItem.isDisabledAlarm = false;
+          }
           _t.formItem.statusTip = _t.$t('alarmCurrent.closeOpinions');
         }
         // 多行输入样式恢复
