@@ -524,20 +524,10 @@
 	
 	.ListOfUncompletedDiscoveries {
 		float: left;
-		width: 130px;
 		height: 30px;
-		border: #c1c1c1 solid 1px;
-		background-color: #fff;
-		color: #252a2f;
 		text-align: center;
 		line-height: 30px;
 		margin-left: 20px;
-	}
-	
-	.ListOfUncompletedDiscoveries:hover {
-		color: #3f81d0;
-		border: 1px solid #3F81D0;
-		cursor: pointer;
 	}
 	
 	.ListOfUncompletedDiscoveries-process {

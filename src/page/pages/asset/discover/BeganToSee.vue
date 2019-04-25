@@ -8,7 +8,7 @@
 				<el-breadcrumb-item>{{$t('breadcrumb.jobLog')}}</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
-		<div class="BeganToSee-col">
+		<div class="BeganToSee-col clearfix">
 			<div class="BeganToSee-return" @click="BeganToSeeReturn"><i class="el-icon-back">&nbsp;&nbsp;{{$t('DeviceManualDetection.ReturnToDeviceManualDiscovery')}}</i></div>
 			<div class="BeganToSee-IncompleteDiscovery" @click="UncompletedDiscoveryTask">
 				<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
@@ -23,13 +23,13 @@
 					<el-button slot="reference">{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}</el-button>
 				</el-popover>
 			</div>
-			<div class="BeganToSee-RefreshRate">
+			<!--<div class="BeganToSee-RefreshRate">
 				<span>页面刷新频率</span>
 				<el-select v-model="value" placeholder="请选择" style="width: 100px;">
 					<el-option v-for="item in optionss" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
-			</div>
+			</div>-->
 		</div>
 		<div class="padding10">
 			<el-row>
@@ -482,7 +482,6 @@
 	
 	.BeganToSee-IncompleteDiscovery {
 		float: right;
-		width: 170px;
 		text-align: center;
 	}
 	
