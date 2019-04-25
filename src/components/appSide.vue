@@ -458,9 +458,9 @@
     -webkit-line-clamp: 1;
     overflow: hidden; 
     text-overflow: ellipsis;
-     autoprefixer: off ;
+     /* ！autoprefixer: off */
     -webkit-box-orient: vertical;
-     autoprefixer: on ;
+     /*autoprefixer: on*/ 
   }
 
   .box-left-two > li:nth-child(3) {

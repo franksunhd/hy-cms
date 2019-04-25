@@ -7,8 +7,8 @@
 				<el-breadcrumb-item>{{$t('breadcrumb.DeviceManualDetection')}}</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
-		<el-row :gutter="80">
-			<el-col :span="8">
+		<el-row >
+			<el-col :span="5" style="position: fixed;top: 104px;left: 56px;bottom: 0;max-width: 350px;height: 100%;border-right: 1px solid #ccc;">
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
 					<div class="TreeControl">
@@ -18,16 +18,16 @@
 					</div>
 				</div>
 			</el-col>
-			<el-col :span="16">
+
+			<el-col :span="19" style="float: right;">
 				<div class="DeviceManualDetection-box-right">
 					<div class="DeviceManualDetection-box-right-top">
 						<div class="rackTowerServer"><span>{{label}}</span></div>
 
 					</div>
 					<div class="DeviceManualDetection-button">
-						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;增加检索范围</i></div>
-						<div class="BeganToSee" @click="BeganToSee">开始发现
-						</div>
+						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.increaseRetrieve')}}</i></div>
+						<div class="BeganToSee" @click="BeganToSee">{{$t('DeviceManualDetection.BeganToSee')}}</div>
 						<div class="ListOfUncompletedDiscoveries" @click="UncompletedDiscoveryTask">
 							<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
 								<div class="ListOfUncompletedDiscoveries-process">
@@ -38,77 +38,77 @@
 										<li>{{item.name}}</li>
 									</ul>
 								</div>
-								<el-button slot="reference">未完成的发现任务</el-button>
+								<el-button slot="reference">{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}</el-button>
 							</el-popover>
 						</div>
 					</div>
 					<el-form inline>
 						<div v-for="(list,index) in lists" class="DeviceManualDetection-box-right-bottom">
 							<el-button @click="del(index)" style="float: right;margin-top: 20px;margin-right: 20px;"><i class="el-icon-delete"></i></el-button>
-							<el-form-item label="IP地址段:">
-								<el-button @click="addI(index)" style="float: right;">+</el-button>
+							<el-form-item :label="$t('DeviceManualDetection.ipAddresses') + '：'" style="display: block;margin: 0;">
+								<el-button @click="addI(index)" style="float: right;margin-top: 1px;">+</el-button>
 								<template v-for="(val,i) in list.ip">
-									<el-input v-model="val.startIp" class="width200"></el-input>
+									<el-input v-model="val.startIp" class="width200" style="margin-bottom: 20px;"></el-input>
 									<span>~</span>
-									<el-input v-model="val.endIp" class="width200"></el-input>
-									<el-button v-if="(i!==0)" @click="delI(index,i)">-</el-button>
+									<el-input v-model="val.endIp" class="width200" style="margin-bottom: 20px;"></el-input>
+									<el-button v-if="(i!==0)" @click="delI(index,i)" style="margin-bottom: 20px;">-</el-button>
 									<br/>
 								</template>
 							</el-form-item>
 
-							<el-form-item v-if="type == 1" label="带外用户名:">
+							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.username') + '：'">
 								<el-input v-model="list.username" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 1" label="带外用户密码:">
+							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.password') + '：'">
 								<el-input type="password" v-model="list.password" class="width200"></el-input>
 							</el-form-item>
 							<br/>
-							<el-form-item v-if="type == 1" label="端口:">
+							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.port') + '：'">
 								<el-input v-model="list.port" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2" label="SNMP版本:">
+							<el-form-item v-if="type == 2" :label="$t('DeviceManualDetection.snmpVersion') + '：'">
 								<el-select v-model="list.snmpVersion" placeholder="请选择" class="width200">
 									<el-option v-for="item in version" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 								<!--<el-input v-model="list.userName" class="width200"></el-input>-->
 							</el-form-item>
-							<el-form-item v-if="type == 2" label="SNMP端口:">
+							<el-form-item v-if="type == 2" :label="$t('DeviceManualDetection.snmpPort') + '：'">
 								<el-input v-model="list.snmpPort" class="width200"></el-input>
 							</el-form-item>
 							<br/>
-							<el-form-item v-if="type == 2&&list.snmpVersion!=='3'" label="SNMP团体名:">
+							<el-form-item v-if="type == 2&&list.snmpVersion!=='3'" :label="$t('DeviceManualDetection.snmpCommunity') + '：'">
 								<el-input type="password" v-model="list.snmpCommunity" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP用户名:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpUsername') + '：'">
 								<el-input v-model="list.snmpUsername" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP安全级别:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
 								<el-select v-model="list.snmpSecurityLevel" placeholder="请选择" class="width200" @change="selectsnmpSecurityLevel(list)">
 									<el-option v-for="item in SecurityLevel" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP验证算法:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
 								<!--str = val == "1"?"one":val=="2"?"two":"three"-->
 								<el-select v-model="list.snmpAuthAlgorithm" clearable placeholder="请选择" class="width200" :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false">
 									<el-option v-for="item in VerifyTheAlgorithm" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP验证密码:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
 								<el-input type="password" v-model="list.snmpAuthPassword" class="width200" clearable :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP私有验证算法:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
 								<el-select v-model="list.snmpPrivacyAlgorithm" placeholder="请选择" class="width200" clearable :disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false">
 									<el-option v-for="item in PrivateVerificationAlgorithm " :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP私有密码:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpPrivacyPassword') + '：'">
 								<el-input type="password" v-model="list.snmpPrivacyPassword" class="width200" clearable :disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" label="SNMP文本名称:">
+							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpContextName') + '：'">
 								<el-input v-model="list.snmpContextName" class="width200"></el-input>
 							</el-form-item>
 						</div>
@@ -262,15 +262,12 @@
 				jsonString: JSON.stringify({
 					"dictionaryType": "AssetType",
 					"enable": true,
-					"languageMark": "zh_CN"
+					"languageMark": localStorage.getItem("hy-language")
 				})
 			}, function(res) {
-				console.log(res)
 				switch(res.status) {
 					case 200:
-						console.log(res.data.treeNode.children[0].children);
-						_t.treeData= res.data.treeNode.children[0].children;
-						console.log(_t.treeData)
+						_t.treeData = res.data.treeNode.children[0].children;
 						break;
 					case 1003: // 无操作权限
 					case 1004: // 登录过期
@@ -287,7 +284,6 @@
 		methods: {
 			//安全级别筛选
 			selectsnmpSecurityLevel(val) {
-				console.log(val);
 				if(val.snmpSecurityLevel === 'noAuthNoPriv') {
 					val.snmpAuthAlgorithm = "";
 					val.snmpAuthPassword = '';
@@ -323,7 +319,7 @@
 								})
 							}
 							var processa = [];
-							
+
 							for(var i = 0; i < process.length; i++) {
 								processa.push({
 									"id": i + 1,
@@ -333,7 +329,6 @@
 								})
 							}
 							_t.process = processa;
-							console.log(_t.process)
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -393,7 +388,6 @@
 			},
 			//点击树形控件拼接label
 			handleNodeClick(data) {
-				console.log(data)
 				var _t = this;
 				this.label = data.nodeName;
 				this.type = data.orderNum;
@@ -466,8 +460,11 @@
 	}
 	
 	.DeviceManualDetection-box-left {
-		height: auto;
 		padding: 20px;
+		background-color: #fff;
+		z-index: 1001;
+		height: 100%;
+		overflow: hidden;
 	}
 	
 	.DeviceType {
@@ -583,8 +580,12 @@
 </style>
 <style>
 	.DeviceManualDetection-box-right-bottom .el-form-item__label {
-		width: 126px;
+		width: 156px;
 		font-size: 12px;
+	}
+	
+	.DeviceManualDetection-box-right .el-form--inline .el-form-item {
+		margin-right: 100px;
 	}
 	
 	.aaa {

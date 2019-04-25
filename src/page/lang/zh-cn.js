@@ -659,5 +659,33 @@ export default {
     maintenanceInformation:'维保信息',
     changeInformation:'变更信息',
     threshold:'阈值'
-  }
+  },
+  //设备手动发现
+  DeviceManualDetection:{
+  	ipAddresses:'Ip地址段',
+  	username:'带外用户名',
+  	password:'带外用户密码',
+  	port:'端口',
+  	snmpVersion:'SNMP版本',
+  	snmpPort:'SNMP端口',
+  	snmpCommunity:'SNMP团体名',
+  	snmpUsername:'SNMP用户名',
+  	snmpSecurityLevel:'SNMP安全级别',
+  	snmpAuthAlgorithm:'SNMP验证算法',
+  	snmpAuthPassword:'SNMP验证密码',
+  	snmpPrivacyAlgorithm:'SNMP私有验证算法',
+  	snmpPrivacyPassword:'SNMP私有密码',
+  	snmpContextName:'SNMP文本名称',
+  	increaseRetrieve:'增加检索范围',
+  	BeganToSee:'开始发现',
+  	UncompletedDiscoveryTask:'未完成的发现任务',
+  	ReturnToDeviceManualDiscovery:'返回设备手动发现',
+  	ListOfDevicesFound:'已发现的设备列表',
+  	AddTheSelectedDevice:'添加已选设备',
+  	DiscoveryExport:'发现结果导出',
+    BrandModels:'品牌型号',
+  	FoundThatTheState:'发现状态',
+  	describe:'描述',
+  	ipAddress:'IP地址'
+  },
 }

@@ -659,5 +659,33 @@ export default {
     maintenanceInformation:'maintenanceInformation',
     changeInformation:'changeInformation',
     threshold:'threshold'
-  }
+  },
+  //设备手动发现
+  DeviceManualDetection:{
+  	ipAddresses:'ipAddresses',
+  	username:'username',
+  	password:'password',
+  	port:'port',
+  	snmpVersion:'snmpVersion',
+  	snmpPort:'snmpPort',
+  	snmpCommunity:'snmpCommunity',
+  	snmpUsername:'snmpUsername',
+  	snmpSecurityLevel:'snmpSecurityLevel',
+  	snmpAuthAlgorithm:'snmpAuthAlgorithm',
+  	snmpAuthPassword:'snmpAuthPassword',
+  	snmpPrivacyAlgorithm:'snmpPrivacyAlgorithm',
+  	snmpPrivacyPassword:'snmpPrivacyPassword',
+  	snmpContextName:'snmpContextName',
+  	increaseRetrieve:'increaseRetrieve',
+  	BeganToSee:'BeganToSee',
+  	UncompletedDiscoveryTask:'UncompletedDiscoveryTask',
+  	ReturnToDeviceManualDiscovery:'ReturnToDeviceManualDiscovery',
+  	ListOfDevicesFound:'ListOfDevicesFound',
+  	AddTheSelectedDevice:'AddTheSelectedDevice',
+  	DiscoveryExport:'DiscoveryExport',
+  	BrandModels:'BrandModels',
+  	FoundThatTheState:'FoundThatTheState',
+  	describe:'describe',
+  	ipAddress:'ipAddress'
+  },
 }
