@@ -390,12 +390,15 @@
 }
 
 /*字体图标库代码*/
-.iconfontWarn,
-.el-icon-warning,
 .el-icon-info,
 .el-icon-error,
 .iconfontError {
   color: #fb6140;
+}
+
+.iconfontWarn,
+.el-icon-warning {
+  color: #fdbb41;
 }
 
 .iconfontDisable,
