@@ -129,7 +129,7 @@
         <el-form-item class="star" :label="$t('platformLanguage.languageName') + '：'" prop="languageName">
           <el-input class="width200" v-model="addEdit.languageName" clearable/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('platformLanguage.descriptionAlert') + '：'" prop="description">
+        <el-form-item :label="$t('platformLanguage.descriptionAlert') + '：'">
           <el-input class="width200" v-model="addEdit.description" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">
@@ -211,9 +211,6 @@
             {validator: isNotNull, trigger: ['blur']}
           ],
           languageName: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
-          description: [
             {validator: isNotNull, trigger: ['blur']}
           ],
           orderIndex: [
