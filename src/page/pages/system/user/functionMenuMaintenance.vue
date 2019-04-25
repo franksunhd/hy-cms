@@ -1073,7 +1073,13 @@
       // 获取组织角色列表
       getOrgRoleList() {
         var _t = this;
-        _t.$api.get('system/organization/getOrgRole', {}, function (res) {
+        _t.$api.get('system/organization/getOrgRole', {
+          jsonString:JSON.stringify({
+            systemMenu:{
+
+            }
+          })
+        }, function (res) {
           switch (res.status) {
             case 200:
               var selectUser = new Array();
