@@ -479,9 +479,7 @@
             }
           }
         });
-
-        var monitorArrEnd = _t.switchMonitoringDetailsData(monitorArr);
-        return monitorArrEnd;
+        return _t.switchMonitoringDetailsData(monitorArr);
       },
       // 转换监测详情接口json字符串 treeData 需要转换的数据
       switchMonitoringDetailsData(treeData){
