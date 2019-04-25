@@ -625,7 +625,6 @@
       // 控制监测详情是否单行展开
       expandChangeKeys(row){
         var _t = this;
-        console.log(_t.formItem.checked)
         if (_t.formItem.checked) {
           _t.expandChange = [];
           _t.expandChange[0] = row.id;
