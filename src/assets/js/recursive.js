@@ -335,3 +335,12 @@ export function unique (obj, ary) {
     return ary.indexOf(item) === -1;
   })
 }
+
+// 遍历寻找id 所对饮的集合
+export function getObjectById(arr = [], val, id, children) {
+  return arr.reduce((flat, item) => {
+    return flat.concat(
+      item[id] === val ? item : getObjectById(item[children] || [], val, id, children)
+    );
+  }, []);
+}
