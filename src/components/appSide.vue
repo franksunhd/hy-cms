@@ -14,7 +14,7 @@
         <li><i class="el-icon-picture"></i></li>
         <li v-show="show" :title="data.menuName">
           <router-link
-          	
+
             class="bg-white"
             @click.native="hiddenAlert(data.menuId)"
             :to="{path:data.menuHref,query:{id:data.menuId}}">{{data.menuName}}
@@ -94,7 +94,7 @@
       },
      /* //鼠标移除功能导航菜单
       MouseOutFul(){
-      	
+
         this.rshow = false;
       },*/
       // 鼠标移入便捷菜单
@@ -447,7 +447,7 @@
     width: 56px;
     font-size: 26px;
     text-align: center;
-    
+
   }
 
   .box-left-two > li:nth-child(2) {
@@ -456,11 +456,11 @@
     font-size: 12px;
     display: -webkit-box;
     -webkit-line-clamp: 1;
-    overflow: hidden; 
+    overflow: hidden;
     text-overflow: ellipsis;
-     /* ！autoprefixer: off */
+     /* !autoprefixer: off */
     -webkit-box-orient: vertical;
-     /*autoprefixer: on*/ 
+     /*autoprefixer: on*/
   }
 
   .box-left-two > li:nth-child(3) {
