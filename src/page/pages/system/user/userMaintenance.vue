@@ -329,8 +329,9 @@
       },
       // 新增按钮弹出层
       AddDataBtn() {
-        this.dialogVisible = true;
-        this.ifAdd = true;
+        var _t = this;
+        _t.dialogVisible = true;
+        _t.ifAdd = true;
       },
       // 查询表单所属组织下拉框
       clickNode(val) {
