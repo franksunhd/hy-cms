@@ -315,7 +315,8 @@
         equipmentInfoList:{}, // 设备基本信息
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
-        monitoringDetailsDataCache:[], // 缓存的监测管理的数据
+        monitoringDetailsDataCache:[], // 缓存的监测管理的原始数据
+        monitoringDetailsCacheData:[], // 缓存的监测管理的过滤数据 用于状态筛选的数据回显
         monitoringDetailsCheckList:[], // 监测详情表格选中数据
         monitorStatusArr:[],// 监测详情状态统计集合
         alarmListData: [], // 告警事件列表数据
@@ -383,7 +384,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsDataCache;
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
           }
         } else if (status == 22) { // 忽略
           _t.monitorChecked.ignoreBtn = !_t.monitorChecked.ignoreBtn;
@@ -396,7 +397,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsDataCache;
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
           }
         } else if (status == 66) { // 警告
           _t.monitorChecked.warnBtn = !_t.monitorChecked.warnBtn;
@@ -409,7 +410,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsDataCache;
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
           }
         } else if (status == 99) { // 紧急
           _t.monitorChecked.emergencyBtn = !_t.monitorChecked.emergencyBtn;
@@ -422,7 +423,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsDataCache;
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
           }
         } else if (status == 38) { // 页面不显示
           _t.monitorChecked.notShowBtn = !_t.monitorChecked.notShowBtn;
@@ -435,7 +436,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',false);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsDataCache;
+            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
           }
         }
       },
@@ -555,10 +556,11 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              // 过滤不显示的数据
-              _t.monitoringDetailsData = _t.filterMonitorTableData(res.data,'isAlone',true);
               // 缓存接口全部数据 用于前端筛选
-              _t.monitoringDetailsDataCache = _t.monitoringDetailsData;
+              _t.monitoringDetailsDataCache = res.data;
+              // 过滤不显示的数据 返回显示的数据
+              _t.monitoringDetailsData = _t.filterMonitorTableData(res.data,'isAlone',true);
+              _t.monitoringDetailsCacheData = _t.monitoringDetailsData;
               // 状态统计
               _t.getMonitoringDetail(_t.pageDeviceId);
               break;
@@ -623,6 +625,7 @@
       // 控制监测详情是否单行展开
       expandChangeKeys(row){
         var _t = this;
+        console.log(_t.formItem.checked)
         if (_t.formItem.checked) {
           _t.expandChange = [];
           _t.expandChange[0] = row.id;
