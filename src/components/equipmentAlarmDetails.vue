@@ -89,21 +89,23 @@
         <el-checkbox v-if="formItem.status == 3" v-model="formItem.checked" class="closeCheckBox">{{$t('alarmCurrent.alarmCloseIgnore')}}</el-checkbox>
       </el-form-item>
       <el-form-item class="marginTop10" :label="formItem.statusTip + '：'">
-        <el-input id="textContent"
-                  type="textarea"
-                  @input="inputTextContent(formItem.status,formItem.textContent)"
-                  v-model="formItem.textContent"
-                  :autosize="{minRows: 3}" />
+        <el-input
+          id="textContent"
+          type="textarea"
+          :disabled="formItem.isDisabledTextArea"
+          @input="inputTextContent(formItem.status,formItem.textContent)"
+          v-model="formItem.textContent"
+          :autosize="{minRows: 3}" />
         <div class="positionRelative" v-if="formItem.textStatus">
           <span class="isNotNull" style="top: 0;">{{$t('public.isNotNull')}}</span>
         </div>
       </el-form-item>
     </el-form>
     <span slot="footer">
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 1" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 2" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
-        <el-button @click="confirmAlarm(formItem.status)" v-if="formItem.status == 3" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button :disabled="formItem.isDisabledAlarm" @click="confirmAlarm(formItem.status)" v-if="formItem.status == 0" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button :disabled="formItem.isDisabledDescription" @click="confirmAlarm(formItem.status)" v-if="formItem.status == 1" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button :disabled="formItem.isDisabledWarranty" @click="confirmAlarm(formItem.status)" v-if="formItem.status == 2" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
+        <el-button :disabled="formItem.isDisabledClose" @click="confirmAlarm(formItem.status)" v-if="formItem.status == 3" type="primary" class="alertBtn">{{$t('public.confirm')}}</el-button>
         <el-button type="default" class="alertBtn" @click="cancelBtn">{{$t('public.cancel')}}</el-button>
       </span>
   </el-dialog>
@@ -118,53 +120,90 @@
       return {
         // 表单
         formItem:{
-          status:0,
-          checked:false,
-          statusTip:this.$t('alarmCurrent.confirmOpinions'),
+          status:0, // 处理状态 单选按钮组的绑定值
+          checked:false, // 关闭并忽略告警 复选框是否选中
+          statusTip:this.$t('alarmCurrent.confirmOpinions'), // 默认多行输入label
           textContent:'', // 多行文本输入内容
-          textStatus:false,
-          id:''
+          textStatus:false, // 多行输入为空判断状态
+          id:'', // 缓存接口id
+          isDisabledTextArea:false, // 输入框 是否禁用
+          isDisabledAlarm:false, // 确认告警是否禁用
+          isDisabledDescription:false, // 告警评注 是否禁用
+          isDisabledWarranty:false, // 告警保修 是否禁用
+          isDisabledClose:false, // 告警关闭 是否禁用
+          isAlarmHistory:false, // 是否 历史告警
         },
         // 表单集合
         alarmDetailDataAlarm:{
-          deviceName:'',
-          ip:'',
-          servicetag:'',
-          type:'',
-          model:'',
-          alarmLevel:'',
-          alarmTimes:'',
-          frameName:'',
-          roomName: '',
-          framePosition: '',
-          manufacturer:''
+          deviceName:null, // 设备名称
+          ip:null, // ip
+          servicetag:'', // 序列号
+          type:null, // 设备类型
+          model:null, // 型号
+          alarmLevel:null, // 告警级别
+          alarmTimes:null, // 告警次数
+          frameName:null, // 机架
+          roomName: null, // 机房
+          framePosition: null, // 位置
+          manufacturer:null, // 设备厂商
         },
         // 告警评注列表
-        alarmDetailDataComment:[]
+        alarmDetailDataComment:[],
       }
     },
+    // 接收子组件的传值
     props:{
+      // 蒙版的显示隐藏
       dialogVisible:{
         type:Boolean,
         default: false
       },
-      data:{
-        type:String,
-        default:''
-      },
+      // 处理状态字典
       AlarmHandleStatus:{
         type:Object
       },
+      // 设备类型字典
       AssetType:{
         type:Object
       },
+      // 告警状态字典
       AlarmSeverity:{
         type:Object
-      }
+      },
     },
     methods: {
+      // 接收是否历史告警
+      getAlarmIsHistory(val){
+        var _t = this;
+        console.log(val)
+        if (val) {
+          // 历史告警
+          _t.formItem.isAlarmHistory = val;
+          _t.formItem.isDisabledTextArea = val;
+          _t.formItem.isDisabledAlarm = val;
+          _t.formItem.isDisabledDescription = val;
+          _t.formItem.isDisabledWarranty = val;
+          _t.formItem.isDisabledClose = val;
+        } else if (val === false && _t.alarmDetailDataAlarm.status === 1) {
+          // 当前告警 并且 确认告警内容不可提交
+          _t.formItem.isAlarmHistory = val;
+          _t.formItem.isDisabledTextArea = true;
+          _t.formItem.isDisabledAlarm = true;
+          _t.formItem.isDisabledDescription = val;
+          _t.formItem.isDisabledWarranty = val;
+          _t.formItem.isDisabledClose = val;
+        } else {
+          // 当前告警 并且 确认告警内容可提交
+          _t.formItem.isAlarmHistory = val;
+          _t.formItem.isDisabledTextArea = val;
+          _t.formItem.isDisabledAlarm = val;
+          _t.formItem.isDisabledDescription = val;
+          _t.formItem.isDisabledWarranty = val;
+          _t.formItem.isDisabledClose = val;
+        }
+      },
       // 获取设备告警详情弹出层
-      getData(val){
+      getData(val,item){
         var _t = this;
         _t.$api.get('alarm/alarm/' + val,{},function (res) {
           switch (res.status) {
@@ -172,6 +211,7 @@
               if (res.data.alarm !== null) {
                 _t.alarmDetailDataAlarm = res.data.alarm;
               }
+              _t.getAlarmIsHistory(item);
               // 存入告警id
               _t.formItem.id = val;
               // 调用告警评注
@@ -244,8 +284,31 @@
       changeDealWithStatus(val){
         var _t = this;
         if (val === 0) {
+          // 确认告警
+          if (_t.formItem.isAlarmHistory) {
+            // 历史告警
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else if (_t.formItem.isAlarmHistory === false && _t.alarmDetailDataAlarm.status === 1) {
+            // 当前告警 已处理
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledAlarm = true;
+          } else {
+            _t.formItem.isDisabledTextArea = false;
+            _t.formItem.isDisabledAlarm = false;
+          }
           _t.formItem.statusTip = _t.$t('alarmCurrent.confirmOpinions');
         } else if (val === 1) {
+          // 告警评注
+          if (_t.formItem.isAlarmHistory) {
+            // 历史告警
+            _t.formItem.isDisabledTextArea = true;
+            _t.formItem.isDisabledDescription = true;
+          } else {
+            // 当前告警
+            _t.formItem.isDisabledTextArea = false;
+            _t.formItem.isDisabledDescription = false;
+          }
           _t.formItem.statusTip = _t.$t('alarmCurrent.addDescription');
         } else if (val === 2) {
           _t.formItem.statusTip = _t.$t('alarmCurrent.warrantyOpinions');
@@ -261,9 +324,17 @@
       },
       // 点击取消按钮或关闭按钮时 给父组件传值 取消蒙版
       cancelBtn(){
-        this.$emit('dialogVisibleStatus',false);
+        var _t = this;
+        _t.$emit('dialogVisibleStatus',false);
+        _t.formItem.isAlarmHistory = false;
+        _t.formItem.isDisabledTextArea = false;
+        _t.formItem.isDisabledAlarm = false;
+        _t.formItem.isDisabledDescription = false;
+        _t.formItem.isDisabledWarranty = false;
+        _t.formItem.isDisabledClose = false;
+        _t.formItem.status = 0;
       },
-      // 确认按钮
+      // 确认按钮 点击
       confirmAlarm(val){
         var _t = this;
         // 0 确认告警 1 告警评注 2 告警保修 3告警关闭

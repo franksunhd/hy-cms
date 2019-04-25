@@ -375,7 +375,7 @@
           _t.addEdit.id = row.id;
           _t.dialogVisible = true;
           // 父组件调用 子组件 获取数据的方法
-          _t.$refs.alarmDialog.getData(_t.addEdit.id);
+          _t.$refs.alarmDialog.getData(_t.addEdit.id,false);
         }
       },
       // 接受弹出层关闭的参数
@@ -499,7 +499,7 @@
             _t.addEdit.id = row.id;
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(_t.addEdit.id);
+            _t.$refs.alarmDialog.getData(_t.addEdit.id,false);
           }
         }
         // 点击设备名称列 点击最新告警时间列

@@ -16,7 +16,7 @@
       </el-form>
     </div>
     <!--标签页-->
-    <el-tabs v-model="activeName" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
+    <el-tabs v-model="activeNameTabs" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <!--监测详情-->
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
         <div class="clearfix">
@@ -297,6 +297,7 @@
     components: {Box,equipmentAlarmDetail},
     data() {
       return {
+        activeNameTabs:this.activeName, // 用于接收标签页序号 默认从组建接收 切换时进行数据绑定
         equipmentInfoList:{}, // 设备基本信息
         equipmentAllStatus:[], // 设备整体状态
         monitoringDetailsData: [], // 监测管理表格数据
@@ -334,14 +335,14 @@
       }
     },
     props: {
-      // 页面Id 用于接口请求数据
+      // 接收设备Id 用于接口请求数据
       pageDeviceId: {
         type: String
       },
-      // 当前激活标签页序号
+      // 接收标签页激活序号
       activeName:{
         type:String,
-        default:'two'
+        default:'one'
       }
     },
     methods: {
@@ -354,7 +355,7 @@
           if (row.id !== null && row.status != '33' && row.nodeType === 1) {
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id);
+            _t.$refs.alarmDialog.getData(row.id,false);
           }
         }
         // 点击资源名称
@@ -375,7 +376,7 @@
           if (row.id !== null && row.status != '33' && row.nodeType === 1) {
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id);
+            _t.$refs.alarmDialog.getData(row.id,false);
           }
         }
         // 点击资源名称
@@ -461,7 +462,7 @@
         var _t = this;
         _t.dialogVisible = true;
         // 父组件调用 子组件 获取数据的方法
-        _t.$refs.alarmDialog.getData(row.id);
+        _t.$refs.alarmDialog.getData(row.id,_t.alarmEvent.alarmIsHistory);
       },
       // 接受设备信息蒙版层返回的状态
       dialogVisibleStatus(val){

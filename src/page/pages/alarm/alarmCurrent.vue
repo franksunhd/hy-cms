@@ -557,7 +557,7 @@
           _t.addEdit.id = row.id;
           _t.dialogVisible = true;
           // 父组件调用 子组件 获取数据的方法
-          _t.$refs.alarmDialog.getData(_t.addEdit.id);
+          _t.$refs.alarmDialog.getData(_t.addEdit.id,false);
         }
       },
       // 单元格点击
