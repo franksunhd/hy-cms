@@ -211,6 +211,7 @@
               if (res.data.alarm !== null) {
                 _t.alarmDetailDataAlarm = res.data.alarm;
               }
+              console.log(item)
               _t.getAlarmIsHistory(item);
               // 存入告警id
               _t.formItem.id = val;

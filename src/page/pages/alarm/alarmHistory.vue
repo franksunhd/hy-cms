@@ -213,11 +213,6 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column width="100px" fixed="right" :label="$t('public.operation')">
-          <template slot-scope="scope">
-            <el-button type="text" @click="dealWithAlarm(scope.row)">{{$t('alarmHistory.dealWithAlarm')}}</el-button>
-          </template>
-        </el-table-column>
       </el-table>
       <!--分页-->
       <pages
@@ -368,16 +363,6 @@
       }
     },
     methods:{
-      // 处理告警
-      dealWithAlarm(row){
-        var _t = this;
-        if (row.id !== null) {
-          _t.addEdit.id = row.id;
-          _t.dialogVisible = true;
-          // 父组件调用 子组件 获取数据的方法
-          _t.$refs.alarmDialog.getData(_t.addEdit.id,false);
-        }
-      },
       // 接受弹出层关闭的参数
       dialogVisibleStatus(val){
         this.dialogVisible = val;
@@ -499,7 +484,7 @@
             _t.addEdit.id = row.id;
             _t.dialogVisible = true;
             // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(_t.addEdit.id,false);
+            _t.$refs.alarmDialog.getData(_t.addEdit.id,true);
           }
         }
         // 点击设备名称列 点击最新告警时间列
