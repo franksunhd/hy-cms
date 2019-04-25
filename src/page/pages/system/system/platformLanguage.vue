@@ -12,10 +12,10 @@
       <!--表单-->
       <el-form inline :model="formItem">
         <el-form-item :label="$t('platformLanguage.languageCode') + '：'">
-          <el-input class="width200" v-model="formItem.languageCode"/>
+          <el-input class="width200" v-model="formItem.languageCode" clearable/>
         </el-form-item>
         <el-form-item :label="$t('platformLanguage.languageName') + '：'">
-          <el-input class="width200" v-model="formItem.languageName"/>
+          <el-input class="width200" v-model="formItem.languageName" clearable/>
         </el-form-item>
         <el-form-item :label="$t('platformLanguage.status') + '：'">
           <el-select v-model="formItem.status" class="width200" clearable>
@@ -28,6 +28,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -123,16 +124,16 @@
       :close-on-press-escape="false">
       <el-form label-width="150px" inline :model="addEdit" :rules="rules" ref="roleForm">
         <el-form-item class="star" :label="$t('platformLanguage.languageCodes') + '：'" prop="languageCode">
-          <el-input class="width200" v-model="addEdit.languageCode"/>
+          <el-input class="width200" v-model="addEdit.languageCode" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('platformLanguage.languageName') + '：'" prop="languageName">
-          <el-input class="width200" v-model="addEdit.languageName"/>
+          <el-input class="width200" v-model="addEdit.languageName" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('platformLanguage.descriptionAlert') + '：'" prop="description">
-          <el-input class="width200" v-model="addEdit.description"/>
+          <el-input class="width200" v-model="addEdit.description" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">
-          <el-input class="width200" v-model="addEdit.orderIndex"/>
+          <el-input class="width200" v-model="addEdit.orderIndex" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('platformLanguage.isDefault') + '：'" prop="isDefault">
           <el-radio-group class="width200" v-model="addEdit.isDefault">
@@ -228,6 +229,13 @@
       }
     },
     methods: {
+      // 重置筛选表单
+      resetData(){
+        var _t = this;
+        _t.formItem.languageCode = null;
+        _t.formItem.languageName = null;
+        _t.formItem.status = null;
+      },
       // 重置表单
       resetFormData(){
         var _t = this;
@@ -240,6 +248,8 @@
         _t.addEdit.isDefault = 0;
         _t.addEdit.isEnable = 1;
         _t.$refs.table.clearSelection();
+        _t.$refs.roleForm.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.roleForm.clearValidate(); //移除校验结果
       },
       // 新增按钮
       addDataBtn(){
@@ -289,9 +299,9 @@
             _t.$api.put('system/language/', {
               systemLanguage: {
                 id:_t.addEdit.id,
-                languageCode: _t.addEdit.languageCode == null ? null : _t.addEdit.languageCode.trim(),
-                languageName: _t.addEdit.languageName == null ? null : _t.addEdit.languageName.trim(),
-                description: _t.addEdit.description == null ? null : _t.addEdit.description.trim(),
+                languageCode: _t.addEdit.languageCode == null ? null : (_t.addEdit.languageCode.trim() === '' ? null : _t.addEdit.languageCode.trim()),
+                languageName: _t.addEdit.languageName == null ? null : (_t.addEdit.languageName.trim() === '' ? null : _t.addEdit.languageName.trim()),
+                description: _t.addEdit.description == null ? null : (_t.addEdit.description.trim() === '' ? null : _t.addEdit.description.trim()),
                 isDefault: _t.addEdit.isDefault == 1 ? true : false,
                 enable: _t.addEdit.isEnable == 1 ? true : false,
                 orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
