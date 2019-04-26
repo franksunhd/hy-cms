@@ -22,7 +22,7 @@
     <div class="clearfix" style="padding:0 20px;">
       <img class="fl" src="../../../assets/img/default.jpg" height="90" width="90"/>
       <div class="fl">
-        <el-form inline label-width="96px" class="marginBottom10">
+        <el-form inline label-width="96px" label-position="right" class="marginBottom10 monitorThreshold-formBox">
           <el-form-item label="设备名称：">{{equipmentInfoData.deviceName}}</el-form-item>
           <el-form-item label="序列号：">{{equipmentInfoData.servicetag}}</el-form-item>
           <el-form-item label="设备品牌：">{{equipmentInfoData.manufacturer}}</el-form-item>
@@ -66,6 +66,7 @@
         <div class="content">
           <el-tree
             class="monitorThreshold-tree"
+            @node-click="clickNodeTree"
             :data="treeData"
             node-key="nodeId"
             highlight-current
@@ -110,6 +111,23 @@
       }
     },
     methods: {
+      // 点击左侧树形节点
+      clickNodeTree(data){
+        var _t = this;
+        _t.$api.get('monitor/deviceMonitorThreshold/all',{
+          jsonString: JSON.stringify({
+            deviceMonitorThreshold:{
+              monitorId:data.nodeId
+            }
+          })
+        },function (res) {
+          switch (res.status) {
+            case 200:
+              console.log(res.data);
+              break;
+          }
+        });
+      },
       // 获取设备信息详情
       getInfoData(val){
         var _t = this;
@@ -226,7 +244,7 @@
     top: 300px;
     left: 76px;
     right: 20px;
-    bottom: 0;
+    bottom: 20px;
     z-index: 1;
   }
 
