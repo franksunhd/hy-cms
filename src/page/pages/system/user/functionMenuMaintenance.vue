@@ -173,7 +173,7 @@
           </el-upload>
           <el-input v-if="false" v-model="addEdit.menuIcon"/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
+        <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
           <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
@@ -323,10 +323,6 @@
           enable: [
             {validator: isNotNull, trigger: ['blur', 'change']}
           ],
-          menuHref: [
-            {validator: isNotNull, trigger: ['blur']},
-            {validator: isMenuHref, trigger: ['blur']},
-          ],
           jumpType: [
             {validator: isNotNull, trigger: ['blur']}
           ],
@@ -443,18 +439,6 @@
             _t.result().forEach(function (item) {
               selectRoleList.push(item.nodeId);
             });
-            console.log(JSON.stringify({
-              systemMenu: {
-                parentId: _t.addEdit.parentId,
-                menuName: _t.languageList,
-                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
-                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
-                menuLevel: _t.addEdit.menuLevel,
-                enable: _t.addEdit.enable == 1 ? true : false,
-                languageMark: localStorage.getItem('hy-language')
-              },
-              roleId: selectRoleList.join(',')
-            }))
             _t.$api.post('system/menu/', {
               systemMenu: {
                 parentId: _t.addEdit.parentId,
