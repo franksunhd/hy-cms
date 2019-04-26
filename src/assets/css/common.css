@@ -312,7 +312,7 @@ html,body,.Index-box {
 }
 
 .el-table__header {
-  font-size: 14px !important;
+  font-size: 12px !important;
 }
 
 .el-table__body {
@@ -336,6 +336,7 @@ html,body,.Index-box {
 
 .el-dialog__header .el-dialog__title {
   font-size: 14px;
+  font-weight: bold;
 }
 
 .el-dialog__headerbtn {

@@ -28,7 +28,7 @@
 }
 
 .grayBg {
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
 }
 
 .whiteBg {
@@ -195,8 +195,10 @@
   border: 1px solid #eaedf1;
 }
 
+.el-table .el-table__header-wrapper,
 .el-table .el-table__header tr th {
-  background: #f6f8fa;
+  background: #f2f2f2;
+  color: #252a2f;
 }
 
 .el-table .el-table__body tr.el-table__row--striped td {
@@ -469,7 +471,7 @@
 }
 
 .dialogTitle {
-  background-color: #f1f1f1;
+  background-color: #f2f2f2;
 }
 
 #administration-tabs-title li.active {
@@ -669,7 +671,7 @@ span.el-tree-node__label {
 
 /*标签页弹出层中标签页的样式*/
 .monitoringDetails-header.el-tabs--card > .el-tabs__header {
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
 }
 
 .monitoringDetails-header .el-tabs__header .el-tabs__item.is-active {
