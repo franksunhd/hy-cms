@@ -24,7 +24,7 @@
             <el-form-item v-if="AlarmSeverity[item.key] !== undefined" v-for="(item,index) in monitorStatusArr" :key="index">
               <el-tooltip effect="dark" :content="AlarmSeverity[item.key]" placement="top-start">
                 <el-button type="text" style="color: #666;" @click="screenAlarmStatus(item.key)">
-                  <span v-if="item.key == 11" class="iconfont iconfontDisable">&#xe64b;</span>
+                  <span v-if="item.key == 11" class="iconfont iconfontError">&#xe64b;</span>
                   <span v-if="item.key == 22" class="iconfont iconfontDisable">&#xe64f;</span>
                   <span v-if="item.key == 66" class="iconfont iconfontWarn">&#xe649;</span>
                   <span v-if="item.key == 99" class="iconfont iconfontError">&#xe64a;</span>
