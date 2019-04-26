@@ -443,6 +443,18 @@
             _t.result().forEach(function (item) {
               selectRoleList.push(item.nodeId);
             });
+            console.log(JSON.stringify({
+              systemMenu: {
+                parentId: _t.addEdit.parentId,
+                menuName: _t.languageList,
+                menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
+                orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
+                menuLevel: _t.addEdit.menuLevel,
+                enable: _t.addEdit.enable == 1 ? true : false,
+                languageMark: localStorage.getItem('hy-language')
+              },
+              roleId: selectRoleList.join(',')
+            }))
             _t.$api.post('system/menu/', {
               systemMenu: {
                 parentId: _t.addEdit.parentId,

@@ -175,7 +175,6 @@
       // 接收是否历史告警
       getAlarmIsHistory(val){
         var _t = this;
-        console.log(val)
         if (val) {
           // 历史告警
           _t.formItem.isAlarmHistory = val;
@@ -192,6 +191,7 @@
           _t.formItem.isDisabledDescription = val;
           _t.formItem.isDisabledWarranty = val;
           _t.formItem.isDisabledClose = val;
+          _t.formItem.textContent = _t.alarmDetailDataAlarm.confirmComment;
         } else {
           // 当前告警 并且 确认告警内容可提交
           _t.formItem.isAlarmHistory = val;
@@ -200,6 +200,7 @@
           _t.formItem.isDisabledDescription = val;
           _t.formItem.isDisabledWarranty = val;
           _t.formItem.isDisabledClose = val;
+          _t.formItem.textContent = '';
         }
       },
       // 获取设备告警详情弹出层
@@ -211,7 +212,6 @@
               if (res.data.alarm !== null) {
                 _t.alarmDetailDataAlarm = res.data.alarm;
               }
-              console.log(item)
               _t.getAlarmIsHistory(item);
               // 存入告警id
               _t.formItem.id = val;
@@ -284,6 +284,12 @@
       // 处理方式不同时 多行输入label值得切换
       changeDealWithStatus(val){
         var _t = this;
+        // 多行输入样式恢复
+        _t.formItem.textStatus = false;
+        _t.formItem.textContent = '';
+        if (document.getElementById('textContent')) {
+          document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        }
         if (val === 0) {
           // 确认告警
           if (_t.formItem.isAlarmHistory) {
@@ -292,6 +298,7 @@
             _t.formItem.isDisabledAlarm = true;
           } else if (_t.formItem.isAlarmHistory === false && _t.alarmDetailDataAlarm.status === 1) {
             // 当前告警 已处理
+            _t.formItem.textContent = _t.alarmDetailDataAlarm.confirmComment;
             _t.formItem.isDisabledTextArea = true;
             _t.formItem.isDisabledAlarm = true;
           } else {
@@ -341,12 +348,6 @@
             _t.formItem.isDisabledAlarm = false;
           }
           _t.formItem.statusTip = _t.$t('alarmCurrent.closeOpinions');
-        }
-        // 多行输入样式恢复
-        _t.formItem.textStatus = false;
-        _t.formItem.textContent = '';
-        if (document.getElementById('textContent')) {
-          document.getElementById('textContent').style.borderColor = '#DCDFE6';
         }
       },
       // 点击取消按钮或关闭按钮时 给父组件传值 取消蒙版
@@ -467,18 +468,18 @@
       // 多行输入校验
       inputTextContent(status,text){
         var _t = this;
-        if (status === 1 && text.trim() !== '') {
-          // 告警评注输入框 内容不为空
-          _t.formItem.textStatus = false;
-          document.getElementById('textContent').style.borderColor = '#DCDFE6';
-        } else if (status === 1 && text.trim() === '') {
-          // 告警评注输入框 内容为空
-          _t.formItem.textStatus = true;
-          document.getElementById('textContent').style.borderColor = '#fb6041';
-        } else {
-          _t.formItem.textStatus = false;
-          document.getElementById('textContent').style.borderColor = '#DCDFE6';
-        }
+        // if (status === 1 && text.trim() !== '') {
+        //   // 告警评注输入框 内容不为空
+        //   _t.formItem.textStatus = false;
+        //   document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        // } else if (status === 1 && text.trim() === '') {
+        //   // 告警评注输入框 内容为空
+        //   _t.formItem.textStatus = true;
+        //   document.getElementById('textContent').style.borderColor = '#fb6041';
+        // } else {
+        //   _t.formItem.textStatus = false;
+        //   document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        // }
       }
     }
   }
