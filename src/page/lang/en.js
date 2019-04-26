@@ -112,7 +112,10 @@ export default {
     rackTowerServer: 'rackTowerServer',
     alarmManagement: 'alarmManagement',
     alarmCurrent:'alarmCurrent',
-    alarmHistory:'alarmHistory'
+    alarmHistory:'alarmHistory',
+    monitorManage:'monitorManage',
+    equipmentMonitoring:'equipmentMonitoring',
+    monitorThreshold:'monitorThreshold'
   },
   // 许可证信息维护
   license: {
