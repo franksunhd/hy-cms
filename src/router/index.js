@@ -70,6 +70,8 @@ const BeganToSee = () => import ('@/page/pages/asset/discover/BeganToSee');
 const monitoringAndControl = () => import ('@/page/pages/monitor/monitoringAndControl');
 //设备监测
 const EquipmentMonitoring =() => import ('@/page/pages/monitor/EquipmentMonitoring');
+// 监测阈值
+const monitorThresholdValue = () => import ('@/page/pages/monitor/monitorThresholdValue');
 // 告警管理
 const alarmManagement = () => import ('@/page/pages/alarm/alarmManagement');
 // 当前告警
@@ -171,6 +173,7 @@ export default new Router({
         {path: "/YUser/DeviceManualDetection/BeganToSee", name: "BeganToSee", component: BeganToSee},
         {path: "/YUser/monitoringAndControl", name: "monitoringAndControl", component: monitoringAndControl},
         {path: "/YUser/EquipmentMonitoring", name: "EquipmentMonitoring", component: EquipmentMonitoring},
+        {path: "/YUser/monitorThresholdValue", name: "monitorThresholdValue", component: monitorThresholdValue},
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
         {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
         {path: "/YUser/alarmManagement/alarmHistory", name: "alarmHistory", component: alarmHistory},
