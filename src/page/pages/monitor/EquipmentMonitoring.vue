@@ -258,11 +258,14 @@
 								<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter" placement="top-start">
 									<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
 								</el-tooltip>
-
 							</template>
 						</el-table-column>
 						<!--操作-->
-						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left" />
+						<el-table-column prop="operation" :label="$t('EquipmentMonitoring.operation')" header-align="left" align="left">
+							<template slot-scope="scope">
+								<span class="iconfont iconfontError cursorPointer" @click="monitorThreshold(scope.row)">&#xe64a;</span>
+							</template>
+						</el-table-column>
 					</el-table>
 					<!--分页-->
 					<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
@@ -556,6 +559,11 @@
 
 		},
 		methods: {
+			// 修改阈值
+			monitorThreshold(val){
+				var _t = this;
+				_t.$router.replace({name:'monitorThresholdValue'})
+			},
 			// 接受弹出层关闭的参数
 			dialogVisibleStatus(val) {
 				this.dialogVisible = val;
@@ -677,6 +685,8 @@
 				if((column.label == _t.$t('EquipmentMonitoring.AssetInformation')) || (column.label == _t.$t('EquipmentMonitoring.status'))) {
 					_t.addTab(row.deviceName, row.id);
 				}
+				//点击操作列
+				
 			},
 			// 删除页签
 			removeTab(targetName) {
