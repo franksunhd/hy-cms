@@ -11,7 +11,7 @@
     <!--返回上一级-->
     <div class="padding20" style="padding-bottom: 10px;">
       <div class="grayBg clearfix">
-        <div class="fl middle monitor-returnBtn">
+        <div class="fl middle monitor-returnBtn" @click="goBack">
           <span class="iconfont">&#xe65a;</span>
           <span>返回设备监测</span>
         </div>
@@ -299,6 +299,11 @@
       delMainMonitor(index) {
         var _t = this;
         _t.monitorListArr.splice(index,1);
+      },
+      // 返回上一级
+      goBack(){
+        var _t = this;
+        _t.$router.push({name:'EquipmentMonitoring'})
       }
     },
     created() {
@@ -320,6 +325,7 @@
     height: 30px;
     line-height: 30px;
     padding-left: 10px;
+    cursor: pointer;
   }
 
   .monitor-returnBtn span {
