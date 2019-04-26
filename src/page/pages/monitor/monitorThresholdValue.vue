@@ -189,10 +189,10 @@
         });
       },
       // 获取设备信息详情
-      getInfoData(val){
+      getInfoData(){
         var _t = this;
         _t.$store.commit('setLoading',true);
-        _t.$api.get('asset/assetDevice/' + val,{},function (res) {
+        _t.$api.get('asset/assetDevice/' + _t.deviceId,{},function (res) {
           _t.$store.commit('setLoading',false);
           switch(res.status){
             case 200:
