@@ -630,7 +630,7 @@
             // 展开
             _t.expandChange = [];
             _t.expandChange[0] = row.id;
-          } else if (_t.expandChange.length !== 0 && row.id == _t.expandChange[0]) {
+          } else if (_t.expandChange.length !== 0 && row.id === _t.expandChange[0]) {
             // 关闭 当前
             _t.expandChange = [];
           } else {
