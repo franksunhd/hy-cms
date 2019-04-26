@@ -190,6 +190,20 @@
   border-color: #DCDFE6;
 }
 
+.el-button--danger,
+.el-button--danger:focus {
+  border: 1px solid #dce0e6;
+  background-color: #fff;
+  color: #dce0e6;
+}
+
+.el-button--danger:hover,
+.el-button--danger:active {
+  border: 1px solid #fb6041;
+  background-color: #fff;
+  color: #fb6041;
+}
+
 /*表格*/
 .el-table {
   border: 1px solid #eaedf1;
@@ -753,4 +767,13 @@ span.el-tree-node__label {
 
 .monitorThreshold-content > div.content:nth-child(1) {
   border: 1px solid #eaeef2;
+}
+
+.monitor-formItemBox {
+  border: 1px solid #e9edf1;
+  background-color: #f6f9f9;
+}
+
+.monitor-formItemBox:hover {
+  background-color: #eaeef2;
 }

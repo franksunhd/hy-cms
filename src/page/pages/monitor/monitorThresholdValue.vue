@@ -19,9 +19,11 @@
       </div>
     </div>
     <!--设备信息展示-->
-    <div class="clearfix" style="padding:0 20px;">
-      <img class="fl" src="../../../assets/img/default.jpg" height="90" width="90"/>
-      <div class="fl">
+    <el-row style="padding: 0 20px;">
+      <el-col :span="2" style="max-width: 100px;">
+        <img class="fl" src="../../../assets/img/default.jpg" height="90" width="90"/>
+      </el-col>
+      <el-col :span="22">
         <el-form inline label-width="96px" label-position="right" class="marginBottom10 monitorThreshold-formBox">
           <el-form-item label="设备名称：">{{equipmentInfoData.deviceName}}</el-form-item>
           <el-form-item label="序列号：">{{equipmentInfoData.servicetag}}</el-form-item>
@@ -36,8 +38,8 @@
             <span v-if="equipmentInfoData.framePosition !== null">,{{equipmentInfoData.framePosition}}U</span>
           </el-form-item>
         </el-form>
-      </div>
-    </div>
+      </el-col>
+    </el-row>
     <!--监测指标-->
     <div style="padding: 10px 20px;">
       <div class="grayBg monitorThreshold-title clearfix">
@@ -46,7 +48,7 @@
           <span class="title">指标阈值</span>
         </div>
         <div class="fr paddingRight-10">
-          <el-button type="text" class="middle marRight10">
+          <el-button type="text" class="middle marRight10" @click="addMainMonitor">
             <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
             <span class="verticalAlignMiddle">添加主阈值</span>
           </el-button>
@@ -74,7 +76,38 @@
         </div>
         <!--右侧表单区-->
         <div class="content">
-
+          <el-form inline label-width="96px">
+            <!--循环主阀值-->
+            <div class="monitor-formItemBox clearfix" v-for="(main,mainIndex) in monitorListArr" :key="mainIndex">
+              <el-form-item :label="data === 0 ? '主阈值：' :'从阈值：'" v-for="(item,data) in main.threshold" :key="data">
+                <el-select v-model="item.value1" class="width170 marginRight6" clearable>
+                  <el-option v-for="(val,index) in valueList1" :key="index" :label="val.label" :value="val.id" />
+                </el-select>
+                <el-select v-model="item.value2" class="width170 marginRight6" clearable>
+                  <el-option v-for="(val,index) in valueList2" :key="index" :label="val.label" :value="val.id" />
+                </el-select>
+                <el-select v-model="item.value3" class="width170 marginRight6" clearable>
+                  <el-option v-for="(val,index) in valueList3" :key="index" :label="val.label" :value="val.id" />
+                </el-select>
+                <el-input v-model="item.value4" class="width170 marginRight6" clearable />
+                <el-button v-if="data === 0" @click="addFromMonitor(mainIndex)" class="addEditBtn">
+                  <span class="el-icon-plus"></span>
+                </el-button>
+                <el-button v-else @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span class="el-icon-minus"></span></el-button>
+                <span v-if="data === 0">从阈值</span>
+              </el-form-item>
+              <!--告警级别-->
+              <el-form-item label="告警级别：">
+                <el-select v-model="main.select" class="width170 marginRight6" clearable>
+                  <el-option v-for="(val,index) in valueList4" :key="index" :label="val.label" :value="val.id" />
+                </el-select>
+                <el-input v-model="main.input" style="width: 530px;" clearable placeholder="请输入告警的附加内容..." />
+              </el-form-item>
+              <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn" @click="delMainMonitor(mainIndex)">
+                <span class="el-icon-delete"></span>
+              </el-button>
+            </div>
+          </el-form>
         </div>
       </div>
     </div>
@@ -107,11 +140,31 @@
           label:'nodeName',
           children:'children',
           parentId:'parentNodeId'
-        }
+        },
+        // 阀值集合
+        monitorListArr:[
+          {
+            // 主从阀值字段
+            threshold:[
+              {
+                value1:'',
+                value2:'',
+                value3:'',
+                value4:'',
+              }
+            ],
+            select:'',
+            input:''
+          }
+        ],
+        valueList1:[], // 阀值下拉框一
+        valueList2:[], // 阀值下拉框二
+        valueList3:[], // 阀值下拉框三
+        valueList4:[], // 告警级别
       }
     },
     methods: {
-      // 点击左侧树形节点
+      // 点击左侧树形节点 获取阀值目录数据
       clickNodeTree(data){
         var _t = this;
         _t.$api.get('monitor/deviceMonitorThreshold/all',{
@@ -123,7 +176,14 @@
         },function (res) {
           switch (res.status) {
             case 200:
-              console.log(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
               break;
           }
         });
@@ -200,6 +260,45 @@
               break;
           }
         });
+      },
+      // 添加从阀值
+      addFromMonitor(index){
+        var _t = this;
+        let Fromthreshold = {
+          value1:'',
+          value2:'',
+          value3:'',
+          value4:'',
+        };
+        _t.monitorListArr[index].threshold.push(Fromthreshold);
+      },
+      // 添加主阀值
+      addMainMonitor(){
+        var _t = this;
+        let monitorMain = {
+          // 主从阀值字段
+          threshold:[
+            {
+              value1:'',
+              value2:'',
+              value3:'',
+              value4:'',
+            }
+          ],
+          select:'',
+          input:''
+        };
+        _t.monitorListArr.push(monitorMain);
+      },
+      // 删除从阀值
+      delFromMonitor(index,i){
+        var _t = this;
+        _t.monitorListArr[index].threshold.splice(i, 1);
+      },
+      // 删除主阀值
+      delMainMonitor(index) {
+        var _t = this;
+        _t.monitorListArr.splice(index,1);
       }
     },
     created() {
@@ -263,5 +362,30 @@
   .monitorThreshold-content > div.content:nth-child(2) {
     left: 244px;
     right: 0;
+  }
+
+  .monitor-formItemBox {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    position: relative;
+  }
+
+  .monitor-deleteBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: none;
+  }
+
+  .monitor-formItemBox:hover .monitor-deleteBtn {
+    display: inline-block;
+  }
+
+  .addEditBtn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    line-height: 30px;
+    text-align: center;
   }
 </style>

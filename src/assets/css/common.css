@@ -85,6 +85,10 @@ html,body,.Index-box {
   margin-right: 20px;
 }
 
+.marginRight6 {
+  margin-right: 6px;
+}
+
 .marBottom16 {
   margin-bottom: 16px;
 }
@@ -103,6 +107,10 @@ html,body,.Index-box {
 
 .padding20 {
   padding: 20px;
+}
+
+.width170 {
+  width: 170px;
 }
 
 .width200 {
@@ -576,4 +584,8 @@ input::-webkit-input-placeholder {
 
 .monitorThreshold-formBox .el-form-item {
   width: 220px;
+}
+
+.monitor-formItemBox .el-form-item {
+  margin-bottom: 10px;
 }
