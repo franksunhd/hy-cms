@@ -805,7 +805,7 @@
             case 200:
               _t.alarmListData = res.data.list;
               _t.optionsAlarm.total = res.data.page.totalResultSize;
-              _t.optionsAlarm.currentPage = res.data.currentPage;
+              _t.optionsAlarm.currentPage = res.data.page.currentPage;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
