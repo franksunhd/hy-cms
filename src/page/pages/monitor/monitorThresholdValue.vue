@@ -305,7 +305,7 @@
       var _t = this;
       _t.$store.commit('setLoading',true);
       _t.deviceId = _t.$route.params.deviceId ? _t.$route.params.deviceId : localStorage.getItem('hy-deviceId');
-      this.getInfoData('15608f0bc8be409c979a32b7035d4f98');
+      this.getInfoData();
       this.getBaseData();
       this.getThresholdTree();
     },
