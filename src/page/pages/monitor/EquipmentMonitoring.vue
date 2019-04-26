@@ -9,6 +9,11 @@
 					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :visible.sync="dialogGrouping">
 						<div class="padding20" style="padding-top:0;">
 							<label style="padding-right:10px ;">父级节点</label>
+							<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoversss" ref="popover">
+								<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodess" :props="defaultPropsssa" />
+								<el-input v-model="addEditss.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+							</el-popover>
+
 							<el-select v-model="parentNode" placeholder="请选择">
 								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value">
 								</el-option>
@@ -44,19 +49,19 @@
 					</el-dialog>
 
 					<!--编辑设备分组-->
-					<el-button type="text" @click="dialogGroupingBj = true">编辑</el-button>
+					<el-button type="text" @click="EditDevice">编辑</el-button>
 
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
 						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
 							<ul>
 								<li><label for="">父级节点:</label>
 									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoverss" ref="popover">
-										<el-tree :data="computerRoomListFj" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultPropsss" />
+										<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultPropsss" />
 										<el-input v-model="addEdits.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 									</el-popover>
 								</li>
 								<li><label for="">节点名称:</label>
-									<el-input v-model="nameOfTheNode" class="width200"></el-input>
+									<el-input v-model="formItem.catalogName" class="width200"></el-input>
 								</li>
 								<li><label for="">顺序:</label>
 									<el-input v-model="order" class="width200"></el-input>
@@ -153,6 +158,11 @@
 						<!--查询按钮-->
 						<el-form-item>
 							<el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
+							<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
+						</el-form-item>
+						<!--重置按钮-->
+						<el-form-item>
+							<el-button class="queryBtn" type="reset" @click="formReset">重置</el-button>
 							<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
 						</el-form-item>
 					</el-form>
@@ -346,6 +356,10 @@
 					manufacturer: null,
 					/*目录ID 左侧树形控件*/
 					catalogId: null,
+					/*目录节点名称 左侧树形控件*/
+					catalogName: null,
+					/*编辑设备分组父级节点名称*/
+					prentcatalogName: null,
 
 				},
 				/*父级节点*/
@@ -358,6 +372,11 @@
 					id: ''
 				},
 				addEdits: {
+					nodeName: '',
+					parentId: '',
+
+				},
+				addEditss: {
 					nodeName: '',
 					parentId: '',
 
@@ -399,6 +418,7 @@
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowBusinessPopover: false, // 关联业务树形下拉框显示隐藏
 				isShowComputerPopoverss: false, // 控制父级节点下拉框的显示隐藏
+				isShowComputerPopoversss: false, //控制新增设备分组父级节点下拉框的显示隐藏
 				isShowTabBox: false, // 控制标签页内容是否显示
 				isShowTabBox_tab: false, // 控制标签页区域是否显示
 				dialogVisible: false, // 设备详情信息弹出层
@@ -471,8 +491,17 @@
 				},
 				/*左侧数tree*/
 				defaultPropssss: {
-					children: 'children',
-					label: 'label'
+					parentId: 'parentId', // 父级唯一标识
+					value: 'id', // 唯一标识
+					label: 'nodeName', // 标签显示
+					children: 'children', // 子级
+				},
+				/*新增设备分组父级节点树形下拉框*/
+				defaultPropsssa: {
+					parentId: 'parentId', // 父级唯一标识
+					value: 'id', // 唯一标识
+					label: 'nodeName', // 标签显示
+					children: 'children', // 子级
 				},
 				/*关联业务*/
 				defaultPropsBusiness: {
@@ -550,6 +579,7 @@
 			}
 		},
 		mounted() {
+			this.getDataTree();
 			this.getManufacturer();
 			this.getData();
 			this.getFormData();
@@ -560,9 +590,15 @@
 		},
 		methods: {
 			// 修改阈值
-			monitorThreshold(val){
+			monitorThreshold(val) {
 				var _t = this;
-				_t.$router.replace({name:'monitorThresholdValue'})
+				_t.$router.push({
+					name: 'monitorThresholdValue',
+					params: {
+						deviceId: val.id,
+					}
+				});
+				localStorage.setItem('hy-deviceId', val.id);
 			},
 			// 接受弹出层关闭的参数
 			dialogVisibleStatus(val) {
@@ -596,14 +632,48 @@
 				}
 				_t.formItem.rackNameId = '';
 			},
-
-			// 点击父级结点下拉框的节点
+			// 新增设备分组点击父级结点下拉框的节点
+			clickRoomNodess(val) {
+				var _t = this;
+				_t.addEditss.parentId = val.nodeId;
+				_t.addEditss.nodeName = val.nodeName;
+				_t.isShowComputerPopoversss = false;
+			},
+			// 编辑设备分组点击父级结点下拉框的节点
 			clickRoomNodes(val) {
-
 				var _t = this;
 				_t.addEdits.parentId = val.nodeId;
-				_t.addEdits.nodeName = val.label;
+				_t.addEdits.nodeName = val.nodeName;
 				_t.isShowComputerPopoverss = false;
+			},
+			EditDevice() {
+				var _t = this;
+				_t.dialogGroupingBj = true;
+				_t.getBjtree();
+			},
+			getBjtree() {
+				var _t = this;
+				var id = _t.formItem.catalogId;
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('/asset/assetCatalog/' + id, {
+
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							_t.formItem.catalogName = data.nodeName;
+							_t.formItem.prentcatalogName = "无"
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
 			},
 			// 查询表格数据
 			getData() {
@@ -686,7 +756,7 @@
 					_t.addTab(row.deviceName, row.id);
 				}
 				//点击操作列
-				
+
 			},
 			// 删除页签
 			removeTab(targetName) {
@@ -760,11 +830,31 @@
 				document.getElementById('EquipmentMonitoring-navBar-outSet').style.display = 'none';
 				document.getElementById('EquipmentMonitoring_right').style.left = '174px';
 			},
-			// 获取选中的节点
+			//左侧树形数据获取
+			getDataTree() {
+				var _t = this;
+				_t.$api.get('/asset/assetCatalog/all', {}, function(res) {
+					switch(res.status) {
+						case 200:
+							_t.treeData = res.data.children;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+
+				});
+			},
+			// 获取树形控件选中的节点
 			getCurrentNode(data) {
 				var _t = this;
-				_t.formItem.nodeId = data.nodeId;
-				_t.addEdit.level = data.level;
+				_t.formItem.catalogId = data.nodeId;
+				/*_t.formItem.catalogName=data.nodeName;*/
 				_t.getData();
 			},
 			// 点击系统功能菜单节点
@@ -790,7 +880,8 @@
 			}) {
 				this.rowIndex = rowIndex;
 			},
-			/*添加行事件*/
+			handleEdit(a, b) {},
+			/*添加右键行事件*/
 			openDetails(row, column) {
 				var newValue = {
 					amount0: '',
@@ -799,9 +890,7 @@
 					amount3: ''
 				};
 				//添加新的行数
-
 				this.gridData.push(newValue);
-
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -814,7 +903,6 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							console.log(res.data)
 							// 获取表格对应的状态值
 							_t.tableDataBase = res.data;
 							_t.tableData = resData.list;
@@ -965,8 +1053,6 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-
-							//console.log(res.data)
 							var Income1 = [];
 							for(var key in res.data) {
 								Income1.push({
@@ -975,8 +1061,6 @@
 								})
 							}
 							_t.manufacturerList = Income1;
-							console.log(Income1);
-
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -989,6 +1073,35 @@
 							break;
 					}
 				});
+			},
+			//表单重置按钮
+			formReset() {
+				var _t = this;
+				_t.formItem = {
+					/*设备类型*/
+					equipmentType: '全部',
+					equipmentTypeId: null,
+					/*设备名称/资产信息*/
+					equipmentName: null,
+					/*序列号*/
+					serialNumber: null,
+
+					computerRoom: null,
+					/*机房ID*/
+					computerRoomId: null,
+					/*机架ID*/
+					rackNameId: null,
+					/*业务ID*/
+					businessId: null,
+					businessName: null,
+					/*状态*/
+					equipmentStatus: null,
+					/*厂商*/
+					manufacturer: null,
+					/*目录ID 左侧树形控件*/
+					catalogId: null,
+
+				};
 			},
 
 		},

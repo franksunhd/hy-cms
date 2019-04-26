@@ -49,7 +49,7 @@
 								<i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.DiscoveryExport')}}</i>
 							</el-button>
 							<!--表格-->
-							<el-table :data="tableData" :default-sort = "{prop: 'ip', order: 'descending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
+							<el-table :data="tableData" :default-sort = "{prop: 'ip', order: 'ascending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
 								<el-table-column type="selection" width="55" :selectable="selectable" />
 								<!--<el-table-column prop="serialNumber" label="序号" />-->
 								<el-table-column :label="$t('public.index')" header-align="left" width="80" align="left">

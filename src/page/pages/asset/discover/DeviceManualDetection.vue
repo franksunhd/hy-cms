@@ -318,7 +318,6 @@
 						case 200:
 							// 获取对应的状态值
 							_t.tableDataBase = res.data;
-							console.log(_t.tableDataBase.AssetType);
 							var process = [];
 							var index = 0;
 							for(var key in resData) {
@@ -331,8 +330,6 @@
 								})
 							}
 							_t.process = process;
-
-							console.log(_t.process);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
