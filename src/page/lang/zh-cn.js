@@ -113,7 +113,6 @@ export default {
 		alarmManagement: '告警管理',
 		alarmCurrent: '当前告警',
 		alarmHistory: '历史告警',
-
     monitorManage:'监测管理',
     equipmentMonitoring:'设备监测',
     monitorThreshold:'监测阈值'

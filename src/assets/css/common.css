@@ -292,12 +292,24 @@ html,body,.Index-box {
   padding-left: 10px;
 }
 
+.paddingRight-10 {
+  padding-right: 10px;
+}
+
+.marRight10 {
+  margin-right: 10px;
+}
+
 .marginBottom20 {
   margin-bottom: 20px;
 }
 
 .marginLeft40 {
   margin-left: 40px;
+}
+
+.verticalAlignMiddle {
+  vertical-align: middle;
 }
 
 /*文本按钮禁用样式*/
@@ -555,4 +567,9 @@ input::-webkit-input-placeholder {
 .el-date-editor--timerange.el-input,
 .el-date-editor--timerange.el-input__inner {
   width: 280px;
+}
+
+.monitorThreshold-tree .el-tree-node__content {
+  height: 36px;
+  line-height: 36px;
 }

@@ -741,3 +741,21 @@ span.el-tree-node__label {
 .el-date-editor .el-range-separator {
   color: #666;
 }
+
+/*监测阈值*/
+.monitor-returnBtn {
+  color: #3f81d0;
+}
+
+.el-button--text {
+  color: #3f81d0;
+}
+
+.monitorThreshold-content > div.content:nth-child(1) {
+  border: 1px solid #eaeef2;
+  background-color: #f2f2f2;
+}
+
+.monitorThreshold-tree.el-tree {
+  background-color: #f2f2f2;
+}
