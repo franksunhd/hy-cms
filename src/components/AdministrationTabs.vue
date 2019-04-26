@@ -626,8 +626,18 @@
       expandChangeKeys(row){
         var _t = this;
         if (_t.formItem.checked) {
-          _t.expandChange = [];
-          _t.expandChange[0] = row.id;
+          if (_t.expandChange.length === 0) {
+            // 展开
+            _t.expandChange = [];
+            _t.expandChange[0] = row.id;
+          } else if (_t.expandChange.length !== 0 && row.id === _t.expandChange[0]) {
+            // 关闭 当前
+            _t.expandChange = [];
+          } else {
+            // 关闭其他 展开当前
+            _t.expandChange = [];
+            _t.expandChange[0] = row.id;
+          }
         }
       },
       // 单内容展开 改为true 清空展开的
@@ -716,6 +726,7 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
+              console.log(res.data)
               _t.equipmentInfoList = res.data;
               break;
             case 1003: // 无操作权限

@@ -565,18 +565,18 @@
 
 <style>
   .acquisitionNode-dialog .el-dialog {
-    width: 660px;
+    width: 700px;
     height: 356px;
   }
 
-  .acquisitionNode-dialog .el-form-item {
-    width: 49%;
+  .acquisitionNode-dialog .el-form:nth-child(1) .el-form-item {
+    width: 49% !important;
     margin-bottom: 20px;
-    margin-right: 0;
+    margin-right: 0 !important;
   }
 
-  .acquisitionNode-description {
-    width: 505px;
+  .acquisitionNode-description .el-textarea__inner {
+    width: 528px !important;
   }
 
   .acquisitionNode-detail {
