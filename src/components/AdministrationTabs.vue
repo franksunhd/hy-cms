@@ -936,7 +936,7 @@
 
 <style scoped>
   .equipmentDetail-info-box {
-    width: 300px;
+    width: 250px;
   }
 
   .administration-title {
@@ -973,7 +973,7 @@
   .monitoringDetails-header.el-tabs--card > .el-tabs__header {
     position: absolute;
     top: 0;
-    left: 310px;
+    left: 260px;
     right: 0;
     padding-top: 5px;
   }
@@ -982,7 +982,7 @@
     position: absolute;
     top: 50px;
     bottom: 10px;
-    left: 310px;
+    left: 260px;
     right: 0;
     overflow-y: auto;
   }
