@@ -564,7 +564,7 @@
       cellClickColumn(row,column) {
         var _t = this;
         // 点击状态列 点击告警内容列
-        if (column.label === _t.$t('alarmCurrent.status') || column.label === _t.$t('alarmCurrent.alarmContent')) {
+        if (column.label === _t.$t('alarmCurrent.alarmLevelText') || column.label === _t.$t('alarmCurrent.alarmContent')) {
           if (row.id !== null) {
             _t.addEdit.id = row.id;
             _t.dialogVisible = true;

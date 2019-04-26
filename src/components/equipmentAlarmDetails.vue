@@ -3,7 +3,7 @@
     class="alarmCurrentBox-dialog"
     :title="$t('alarmCurrent.addUpdateAlarm')"
     append-to-body
-    :show-close="false"
+    :before-close="cancelBtn"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false">
@@ -196,6 +196,9 @@
       },
     },
     methods: {
+      aaa(){
+        console.log(111)
+      },
       // 接收是否历史告警
       getAlarmIsHistory(val){
         var _t = this;
