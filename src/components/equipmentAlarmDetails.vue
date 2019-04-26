@@ -3,7 +3,7 @@
     class="alarmCurrentBox-dialog"
     :title="$t('alarmCurrent.addUpdateAlarm')"
     append-to-body
-    :show-close="false"
+    :before-close="cancelBtn"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false">
@@ -90,11 +90,30 @@
       </el-form-item>
       <el-form-item class="marginTop10" :label="formItem.statusTip + '：'">
         <el-input
-          id="textContent"
+          v-if="formItem.status == 0"
           type="textarea"
-          :disabled="formItem.isDisabledTextArea"
-          @input="inputTextContent(formItem.status,formItem.textContent)"
-          v-model="formItem.textContent"
+          :disabled="formItem.isDisabledAlarm"
+          v-model="formItem.textContentAlarm"
+          :autosize="{minRows: 3}" />
+        <el-input
+          id="textContent"
+          v-if="formItem.status == 1"
+          type="textarea"
+          @input="inputTextContent(formItem.status,formItem.textContentDescription)"
+          :disabled="formItem.isDisabledDescription"
+          v-model="formItem.textContentDescription"
+          :autosize="{minRows: 3}" />
+        <el-input
+          v-if="formItem.status == 2"
+          type="textarea"
+          :disabled="formItem.isDisabledWarranty"
+          v-model="formItem.textContentWarranty"
+          :autosize="{minRows: 3}" />
+        <el-input
+          v-if="formItem.status == 3"
+          type="textarea"
+          :disabled="formItem.isDisabledClose"
+          v-model="formItem.textContentClose"
           :autosize="{minRows: 3}" />
         <div class="positionRelative" v-if="formItem.textStatus">
           <span class="isNotNull" style="top: 0;">{{$t('public.isNotNull')}}</span>
@@ -123,7 +142,10 @@
           status:0, // 处理状态 单选按钮组的绑定值
           checked:false, // 关闭并忽略告警 复选框是否选中
           statusTip:this.$t('alarmCurrent.confirmOpinions'), // 默认多行输入label
-          textContent:'', // 多行文本输入内容
+          textContentAlarm:'', // 确认告警 多行文本输入内容
+          textContentDescription:'', // 告警评注 多行文本输入内容
+          textContentWarranty:'', // 告警报修 多行文本输入内容
+          textContentClose:'', // 关闭告警 多行文本输入内容
           textStatus:false, // 多行输入为空判断状态
           id:'', // 缓存接口id
           isDisabledTextArea:false, // 输入框 是否禁用
@@ -146,6 +168,8 @@
           roomName: null, // 机房
           framePosition: null, // 位置
           manufacturer:null, // 设备厂商
+          closeComment:null, // 关闭告警内容
+          confirmComment:null, // 确认告警内容
         },
         // 告警评注列表
         alarmDetailDataComment:[],
@@ -172,14 +196,15 @@
       },
     },
     methods: {
+      aaa(){
+        console.log(111)
+      },
       // 接收是否历史告警
       getAlarmIsHistory(val){
         var _t = this;
-        console.log(val)
         if (val) {
-          // 历史告警
+          // 历史告警 禁用多行输入
           _t.formItem.isAlarmHistory = val;
-          _t.formItem.isDisabledTextArea = val;
           _t.formItem.isDisabledAlarm = val;
           _t.formItem.isDisabledDescription = val;
           _t.formItem.isDisabledWarranty = val;
@@ -187,7 +212,6 @@
         } else if (val === false && _t.alarmDetailDataAlarm.status === 1) {
           // 当前告警 并且 确认告警内容不可提交
           _t.formItem.isAlarmHistory = val;
-          _t.formItem.isDisabledTextArea = true;
           _t.formItem.isDisabledAlarm = true;
           _t.formItem.isDisabledDescription = val;
           _t.formItem.isDisabledWarranty = val;
@@ -195,23 +219,34 @@
         } else {
           // 当前告警 并且 确认告警内容可提交
           _t.formItem.isAlarmHistory = val;
-          _t.formItem.isDisabledTextArea = val;
           _t.formItem.isDisabledAlarm = val;
           _t.formItem.isDisabledDescription = val;
           _t.formItem.isDisabledWarranty = val;
           _t.formItem.isDisabledClose = val;
         }
+        // 多行 输入框赋值 确认告警 已确认
+        if (_t.alarmDetailDataAlarm.status === 1) {
+          _t.formItem.textContentAlarm = _t.alarmDetailDataAlarm.confirmComment;
+        } else if (_t.alarmDetailDataAlarm.closeComment !== null) {
+          // 告警关闭字段
+          _t.formItem.textContentClose = _t.alarmDetailDataAlarm.closeComment;
+        }
       },
       // 获取设备告警详情弹出层
       getData(val,item){
         var _t = this;
-        _t.$api.get('alarm/alarm/' + val,{},function (res) {
+        var url = 'alarm/alarm/';
+        if (item) {
+          url = 'alarm/alarmHistory/';
+        } else {
+          url = 'alarm/alarm/';
+        }
+        _t.$api.get(url + val,{},function (res) {
           switch (res.status) {
             case 200:
               if (res.data.alarm !== null) {
                 _t.alarmDetailDataAlarm = res.data.alarm;
               }
-              console.log(item)
               _t.getAlarmIsHistory(item);
               // 存入告警id
               _t.formItem.id = val;
@@ -284,6 +319,12 @@
       // 处理方式不同时 多行输入label值得切换
       changeDealWithStatus(val){
         var _t = this;
+        // 多行输入样式恢复
+        _t.formItem.textStatus = false;
+        _t.formItem.textContent = '';
+        if (document.getElementById('textContent')) {
+          document.getElementById('textContent').style.borderColor = '#DCDFE6';
+        }
         if (val === 0) {
           // 确认告警
           if (_t.formItem.isAlarmHistory) {
@@ -292,6 +333,7 @@
             _t.formItem.isDisabledAlarm = true;
           } else if (_t.formItem.isAlarmHistory === false && _t.alarmDetailDataAlarm.status === 1) {
             // 当前告警 已处理
+            _t.formItem.textContent = _t.alarmDetailDataAlarm.confirmComment;
             _t.formItem.isDisabledTextArea = true;
             _t.formItem.isDisabledAlarm = true;
           } else {
@@ -340,13 +382,11 @@
             _t.formItem.isDisabledTextArea = false;
             _t.formItem.isDisabledAlarm = false;
           }
+          if (_t.alarmDetailDataAlarm.closeComment !== null) {
+            // 告警关闭字段
+            _t.formItem.textContentClose = _t.alarmDetailDataAlarm.closeComment;
+          }
           _t.formItem.statusTip = _t.$t('alarmCurrent.closeOpinions');
-        }
-        // 多行输入样式恢复
-        _t.formItem.textStatus = false;
-        _t.formItem.textContent = '';
-        if (document.getElementById('textContent')) {
-          document.getElementById('textContent').style.borderColor = '#DCDFE6';
         }
       },
       // 点击取消按钮或关闭按钮时 给父组件传值 取消蒙版
@@ -360,6 +400,10 @@
         _t.formItem.isDisabledWarranty = false;
         _t.formItem.isDisabledClose = false;
         _t.formItem.status = 0;
+        _t.formItem.textContentAlarm = '';
+        _t.formItem.textContentDescription = '';
+        _t.formItem.textContentWarranty = '';
+        _t.formItem.textContentClose = '';
       },
       // 确认按钮 点击
       confirmAlarm(val){
@@ -381,14 +425,13 @@
         var alarmIds = new Array();
         alarmIds.push(_t.formItem.id);
         _t.$api.post('alarm/alarm/batchconfirm',{
-          confirmComment:_t.formItem.textContent,
+          confirmComment:_t.formItem.textContentAlarm,
           alarmIds:alarmIds
         },function (res) {
           switch (res.status) {
             case 200:
               _t.alarmDetailDataAlarm.status = res.data.count;
-              // 清空多行输入
-              _t.formItem.textContent = '';
+              _t.formItem.isDisabledAlarm = true;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -404,7 +447,7 @@
       // 告警评注提交
       alarmDescription(){
         var _t = this;
-        if (_t.formItem.textContent.trim() === '') {
+        if (_t.formItem.textContentDescription.trim() === '') {
           _t.formItem.textStatus = true;
           document.getElementById('textContent').style.borderColor = '#fb6041';
         } else {
@@ -412,12 +455,12 @@
             _t.$api.post('alarm/alarmComment/',{
               alarmComment:{
                 alarmId:_t.formItem.id,
-                commContent:_t.formItem.textContent
+                commContent:_t.formItem.textContentDescription
               }
             },function (res) {
               switch (res.status) {
                 case 200:
-                  _t.formItem.textContent = '';
+                  _t.formItem.textContentDescription = '';
                   _t.getAlarmComment(_t.formItem.id);
                   break;
                 case 1003: // 无操作权限
@@ -427,7 +470,7 @@
                   _t.exclude(_t, res.message);
                   break;
                 default:
-                  _t.formItem.textContent = '';
+                  _t.formItem.textContentDescription = '';
                   break;
               }
             });
@@ -437,6 +480,7 @@
       // 告警保修提交
       alarmWarranty(){
         var _t = this;
+        _t.formItem.isDisabledWarranty = true;
       },
       // 告警关闭提交
       alarmClose(){
@@ -445,9 +489,10 @@
         alarmIds.push(_t.formItem.id);
         _t.$api.post('alarm/alarm/batchdelete',{
           alarmIgnore:_t.formItem.checked,
-          confirmComment:_t.formItem.textContent,
+          confirmComment:_t.formItem.textContentClose,
           alarmIds:alarmIds
         },function (res) {
+          _t.formItem.isDisabledClose = true;
           switch (res.status) {
             case 200:
               _t.$emit('dialogVisibleStatus',false);
@@ -459,7 +504,7 @@
               _t.exclude(_t, res.message);
               break;
             default:
-              _t.formItem.textContent = '';
+              _t.formItem.textContentClose = '';
               break;
           }
         });

@@ -24,7 +24,7 @@
             <el-form-item v-if="AlarmSeverity[item.key] !== undefined" v-for="(item,index) in monitorStatusArr" :key="index">
               <el-tooltip effect="dark" :content="AlarmSeverity[item.key]" placement="top-start">
                 <el-button type="text" style="color: #666;" @click="screenAlarmStatus(item.key)">
-                  <span v-if="item.key == 11" class="iconfont iconfontDisable">&#xe64b;</span>
+                  <span v-if="item.key == 11" class="iconfont iconfontError">&#xe64b;</span>
                   <span v-if="item.key == 22" class="iconfont iconfontDisable">&#xe64f;</span>
                   <span v-if="item.key == 66" class="iconfont iconfontWarn">&#xe649;</span>
                   <span v-if="item.key == 99" class="iconfont iconfontError">&#xe64a;</span>
@@ -696,7 +696,13 @@
       },
       // 接受设备信息蒙版层返回的状态
       dialogVisibleStatus(val){
-        this.dialogVisible = val;
+        var _t = this;
+        _t.dialogVisible = val;
+        // 告警关闭 当前告警重新 调取表格数据
+        if (_t.alarmEvent.alarmIsHistory === false) {
+          // 当前告警
+          _t.getAlarmListData();
+        }
       },
       // 控制某些状态下的表格不展开行
       getClassName({row, rowIndex}) {
@@ -805,7 +811,7 @@
             case 200:
               _t.alarmListData = res.data.list;
               _t.optionsAlarm.total = res.data.page.totalResultSize;
-              _t.optionsAlarm.currentPage = res.data.currentPage;
+              _t.optionsAlarm.currentPage = res.data.page.currentPage;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -936,7 +942,7 @@
 
 <style scoped>
   .equipmentDetail-info-box {
-    width: 300px;
+    width: 250px;
   }
 
   .administration-title {
@@ -973,7 +979,7 @@
   .monitoringDetails-header.el-tabs--card > .el-tabs__header {
     position: absolute;
     top: 0;
-    left: 310px;
+    left: 260px;
     right: 0;
     padding-top: 5px;
   }
@@ -982,7 +988,7 @@
     position: absolute;
     top: 50px;
     bottom: 10px;
-    left: 310px;
+    left: 260px;
     right: 0;
     overflow-y: auto;
   }

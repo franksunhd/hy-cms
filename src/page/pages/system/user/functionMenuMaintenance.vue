@@ -173,7 +173,7 @@
           </el-upload>
           <el-input v-if="false" v-model="addEdit.menuIcon"/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('functionMenuMaintenance.menuUrl') + '：'" prop="menuHref">
+        <el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
           <el-input v-model="addEdit.menuHref" class="width200"/>
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
@@ -322,10 +322,6 @@
           ],
           enable: [
             {validator: isNotNull, trigger: ['blur', 'change']}
-          ],
-          menuHref: [
-            {validator: isNotNull, trigger: ['blur']},
-            {validator: isMenuHref, trigger: ['blur']},
           ],
           jumpType: [
             {validator: isNotNull, trigger: ['blur']}
@@ -1073,7 +1069,13 @@
       // 获取组织角色列表
       getOrgRoleList() {
         var _t = this;
-        _t.$api.get('system/organization/getOrgRole', {}, function (res) {
+        _t.$api.get('system/organization/getOrgRole', {
+          jsonString:JSON.stringify({
+            systemMenu:{
+
+            }
+          })
+        }, function (res) {
           switch (res.status) {
             case 200:
               var selectUser = new Array();

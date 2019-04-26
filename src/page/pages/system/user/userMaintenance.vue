@@ -613,7 +613,7 @@
       // 重置密码
       resetPassword() {
         var _t = this;
-        _t.$confirm('请问是否重置当前的记录密码?', _t.$t('public.confirmTip'), {
+        _t.$confirm('请问是否将当前用户密码重置为系统默认密码?', _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
