@@ -137,7 +137,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column width="50px" :label="$t('alarmHistory.status')" header-align="left" align="left">
+        <el-table-column width="70px" :label="$t('alarmHistory.alarmLevelText')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
               <span class="iconfont iconfontSuccess">&#xe648;</span>
@@ -174,7 +174,7 @@
         </el-table-column>
         <el-table-column width="100px" prop="roomName" :label="$t('alarmHistory.computerRoomName')" header-align="left" align="left"/>
         <el-table-column width="100px" prop="frameName" :label="$t('alarmHistory.rackName')" header-align="left" align="left"/>
-        <el-table-column width="120px" prop="framePosition" :label="$t('alarmHistory.location')" header-align="left" align="left">
+        <el-table-column width="110px" prop="framePosition" :label="$t('alarmHistory.location')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.framePosition == null ? '' : (scope.row.framePosition == '' ? '' : scope.row.framePosition + 'U')}}</span>
           </template>

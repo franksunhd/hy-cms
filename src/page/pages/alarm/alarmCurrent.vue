@@ -148,7 +148,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column width="50px" :label="$t('alarmCurrent.status')" header-align="left" align="left">
+        <el-table-column width="70px" :label="$t('alarmCurrent.alarmLevelText')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark" :content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
               <span class="iconfont iconfontSuccess">&#xe648;</span>
