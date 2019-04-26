@@ -232,7 +232,13 @@
       // 获取设备告警详情弹出层
       getData(val,item){
         var _t = this;
-        _t.$api.get('alarm/alarm/' + val,{},function (res) {
+        var url = 'alarm/alarm/';
+        if (item) {
+          url = 'alarm/alarmHistory/';
+        } else {
+          url = 'alarm/alarm/';
+        }
+        _t.$api.get(url + val,{},function (res) {
           switch (res.status) {
             case 200:
               if (res.data.alarm !== null) {
@@ -372,6 +378,10 @@
           } else {
             _t.formItem.isDisabledTextArea = false;
             _t.formItem.isDisabledAlarm = false;
+          }
+          if (_t.alarmDetailDataAlarm.closeComment !== null) {
+            // 告警关闭字段
+            _t.formItem.textContentClose = _t.alarmDetailDataAlarm.closeComment;
           }
           _t.formItem.statusTip = _t.$t('alarmCurrent.closeOpinions');
         }

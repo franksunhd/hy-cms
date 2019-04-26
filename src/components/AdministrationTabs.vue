@@ -696,7 +696,13 @@
       },
       // 接受设备信息蒙版层返回的状态
       dialogVisibleStatus(val){
-        this.dialogVisible = val;
+        var _t = this;
+        _t.dialogVisible = val;
+        // 告警关闭 当前告警重新 调取表格数据
+        if (_t.alarmEvent.alarmIsHistory === false) {
+          // 当前告警
+          _t.getAlarmListData();
+        }
       },
       // 控制某些状态下的表格不展开行
       getClassName({row, rowIndex}) {
