@@ -16,7 +16,7 @@
 						<h3>发现队列中正在执行设备发现的进程</h3>
 						<ul v-for="(item,index) in process" :key="item.sn" @click="handClickprocess(item.sn)">
 							<li>{{item.id}}</li>
-							<li>{{item.date}}</li>
+							<li>{{item.date |dateFilter}}</li>
 							<li>{{item.name}}</li>
 						</ul>
 					</div>
@@ -49,10 +49,10 @@
 								<i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.DiscoveryExport')}}</i>
 							</el-button>
 							<!--表格-->
-							<el-table :data="tableData" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
+							<el-table :data="tableData" :default-sort = "{prop: 'ip', order: 'descending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
 								<el-table-column type="selection" width="55" :selectable="selectable" />
 								<!--<el-table-column prop="serialNumber" label="序号" />-->
-								<el-table-column :label="$t('public.index')" header-align="center" width="120" align="center">
+								<el-table-column :label="$t('public.index')" header-align="left" width="80" align="left">
 									<template slot-scope="scope">
 										<span>
                   {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
@@ -60,7 +60,7 @@
 									</template>
 								</el-table-column>
 								<!--prop="errorText"-->
-								<el-table-column prop="ip" :label="$t('DeviceManualDetection.ipAddress')" width="120" />
+								<el-table-column sortable prop="ip" :label="$t('DeviceManualDetection.ipAddress')" width="120" />
 								<el-table-column prop="manufacturerModel" :label="$t('DeviceManualDetection.BrandModels')" show-overflow-tooltip/>
 								<el-table-column prop="discovery" :label="$t('DeviceManualDetection.FoundThatTheState')" show-overflow-tooltip/>
 								<el-table-column :label="$t('DeviceManualDetection.describe')" show-overflow-tooltip>
@@ -72,7 +72,11 @@
 								</el-table-column>
 							</el-table>
 							<!--分页-->
-							<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" @handleCurrentChangeSub="handleCurrentChange" />
+							<pages :total='options.total' 
+								:currentPage='options.currentPage' 
+								:page-size="options.pageSize"
+								 @handleSizeChangeSub="handleSizeChangeSub"
+								  @handleCurrentChangeSub="handleCurrentChange" />
 						</div>
 					</div>
 				</el-col>
@@ -83,7 +87,7 @@
 
 <script>
 	import Box from '../../../../components/Box';
-	import { dateFilterSeconds } from "../../../../assets/js/filters";
+	import { dateFilterSeconds,dateFilter } from "../../../../assets/js/filters";
 
 	export default {
 		name: 'BeganToSee',
@@ -142,43 +146,73 @@
 				paramStatus: '',
 				/*待发现设备数*/
 				stayDevice: '',
+				// 表格数据字典
+				tableDataBase: {
+					AlarmHandleStatus: {},
+					AlarmSeverity: {},
+					AssetType: {},
+					DeviceMonitorStatus: {}
+				},
 			}
 		},
 		created() {
 			var _t = this;
 			_t.getData();
+			_t.getSnData();
 		},
 
 		methods: {
+			// 查询表格中状态对应的数据值
+      getSnData(resData){
+        var _t = this;
+        _t.$store.commit('setLoading',true);
+        _t.$api.post('system/basedata/map',{
+          dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
+          languageMark:localStorage.getItem("hy-language")
+        },function (res) {
+          _t.$store.commit('setLoading',false);
+          switch (res.status) {
+            case 200:
+              // 获取对应的状态值
+              _t.tableDataBase = res.data;
+              console.log(_t.tableDataBase.AssetType);
+              var process = [];
+              var index=0;
+              for(var key in resData){ 
+              	index++;
+              	process.push({
+									"date": resData[key].time,
+									"name": _t.tableDataBase.AssetType[resData[key].type],
+									"sn": key,
+									"id":index
+								})
+              }
+              _t.process = process;
+              
+              console.log(_t.process);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.tableDataBase = [];
+              _t.tableData = [];
+              _t.options.currentPage = 1;
+              _t.options.total = 0;
+              break;
+          }
+        });
+      },
 			//未完成的发现任务
 			UncompletedDiscoveryTask() {
 				var _t = this;
 				_t.$api.post('/asset/discovery/history', {}, function(res) {
 					switch(res.status) {
 						case 200:
-							var process = [];
-							for(var key in res.data) {
-								if(res.data[key].type === "1") {
-									res.data[key].type = "机架/塔式服务器（中）"
-								} else if(res.data[key].type === "2") {
-									res.data[key].type = "网络设备（中）"
-								}
-								process.push({
-									"dates": res.data[key].time,
-									"names": res.data[key].type,
-									"sns": key
-								})
-							}
-							var processa = [];
-							for(var i = 0; i < process.length; i++) {
-								processa.push({
-									"date": process[i].dates,
-									"name": process[i].names,
-									'sn': process[i].sns
-								})
-							}
-							_t.process = [];
-							_t.process = processa;
+						_t.getSnData(res.data);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -199,11 +233,11 @@
 			},
 			/*定时器*/
 			timer() {
-				var _t=this;
-                return setTimeout(()=>{
-                    _t.getData()
-                },1000)
-            },
+				var _t = this;
+				return setTimeout(() => {
+					_t.getData()
+				}, 1000)
+			},
 			//刷新接口
 			getData() {
 				var _t = this;
@@ -221,8 +255,10 @@
 				}
 				_t.optionsData = optionsData;
 				_t.$api.post('/asset/discovery/result', {
-					"sn": _t.optionsData,
-					"status": _t.paramStatus
+					sn: _t.optionsData,
+					status: _t.paramStatus,
+					currentPage:_t.options.currentPage,
+					pageSize:_t.options.pageSize
 				}, function(res) {
 					switch(res.status) {
 						case 200:
@@ -230,7 +266,7 @@
 							let timers;
 							if(stayDevice !== 0) {
 								_t.timer();
-							} else if(stayDevice===0){
+							} else if(stayDevice === 0) {
 								clearTimeout(_t.timer);
 							}
 							var Income = [];
@@ -272,7 +308,7 @@
 							var Dincome2 = dateFilterSeconds(res.requesttime);
 							_t.Dincome2 = Dincome2;
 							_t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.pageList.length;
+							_t.options.total = res.data.totalResultSize;
 							_t.drawLine();
 							break;
 						case 1003: // 无操作权限
@@ -374,11 +410,16 @@
 					_t.getData();
 				});
 			},
-
 			// 改变当前页码
 			handleCurrentChange(val) {
 				var _t = this;
 				_t.options.currentPage = val;
+				_t.getData();
+			},
+			// 改变每页显示条数
+			handleSizeChangeSub(val) {
+				var _t = this;
+				_t.options.pageSize = val;
 				_t.getData();
 			},
 			//返回设备手动发现
@@ -409,7 +450,7 @@
 							_t.getData();
 							_t.describes = res.data;
 							_t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.length;
+							_t.options.total = res.data.totalResultSize;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期

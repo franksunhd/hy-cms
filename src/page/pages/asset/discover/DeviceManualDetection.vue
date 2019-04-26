@@ -7,7 +7,7 @@
 				<el-breadcrumb-item>{{$t('breadcrumb.DeviceManualDetection')}}</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
-		<el-row >
+		<el-row>
 			<el-col :span="5" style="position: fixed;top: 104px;left: 56px;bottom: 0;max-width: 350px;height: 100%;border-right: 1px solid #ccc;">
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
@@ -252,6 +252,13 @@
 				type: '1',
 				label: '机架/塔式服务器（中）的信息',
 				treeData: [],
+				// 表格数据字典
+				tableDataBase: {
+					AlarmHandleStatus: {},
+					AlarmSeverity: {},
+					AssetType: {},
+					DeviceMonitorStatus: {}
+				},
 
 			}
 		},
@@ -298,14 +305,59 @@
 
 				}
 			},
+			// 查询表格中状态对应的数据值
+			getSnData(resData) {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/map', {
+					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity"],
+					languageMark: localStorage.getItem("hy-language")
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							// 获取对应的状态值
+							_t.tableDataBase = res.data;
+							console.log(_t.tableDataBase.AssetType);
+							var process = [];
+							var index = 0;
+							for(var key in resData) {
+								index++;
+								process.push({
+									"date": resData[key].time,
+									"name": _t.tableDataBase.AssetType[resData[key].type],
+									"sn": key,
+									"id": index
+								})
+							}
+							_t.process = process;
+
+							console.log(_t.process);
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableDataBase = [];
+							_t.tableData = [];
+							_t.options.currentPage = 1;
+							_t.options.total = 0;
+							_t.disableBtn.more = true;
+							break;
+					}
+				});
+			},
 			//未完成的发现任务
 			UncompletedDiscoveryTask() {
 				var _t = this;
 				_t.$api.post('/asset/discovery/history', {}, function(res) {
-
 					switch(res.status) {
 						case 200:
-							var process = [];
+							_t.getSnData(res.data);
+							/*var process = [];
 							for(var key in res.data) {
 								if(res.data[key].type === "1") {
 									res.data[key].type = "机架/塔式服务器（中）"
@@ -328,7 +380,7 @@
 									'sn': process[i].sns
 								})
 							}
-							_t.process = processa;
+							_t.process = processa;*/
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期

@@ -631,7 +631,6 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							console.log(res)
 							_t.getTableDataValue(res.data);
 							break;
 						case 1003: // 无操作权限
