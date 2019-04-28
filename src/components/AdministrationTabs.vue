@@ -3,12 +3,8 @@
     <!--设备信息-->
     <div class="equipmentDetail-info-box">
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentInfo')}}</strong></div>
-      <el-form :model="equipmentInfoList" label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item :label="$t('administrationTabs.equipmentName') + '：'">{{equipmentInfoList.deviceName}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentIp') + '：'">{{equipmentInfoList.ip}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentModel') + '：'">{{equipmentInfoList.model}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentMonitoring') + '：'">{{equipmentInfoList.manufacturer}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.serialNumber') + '：'">{{equipmentInfoList.servicetag}}</el-form-item>
+      <el-form label-width="96px" label-position="right" class="administration-info-box">
+        <el-form-item v-for="(item,index) in equipmentInfoList" :key="index" :label="item.label + '：'">{{item.value}}</el-form-item>
       </el-form>
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentAllStatus')}}</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
@@ -19,7 +15,7 @@
     <el-tabs v-model="activeNameTabs" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <!--监测详情-->
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
-        <div class="clearfix">
+        <div class="clearfix" style="padding-top: 10px;">
           <el-form inline class="fl marginBottom10">
             <el-form-item v-if="AlarmSeverity[item.key] !== undefined" v-for="(item,index) in monitorStatusArr" :key="index">
               <el-tooltip effect="dark" :content="AlarmSeverity[item.key]" placement="top-start">
@@ -178,7 +174,7 @@
       </el-tab-pane>
       <!--告警事件-->
       <el-tab-pane :label="$t('administrationTabs.alarmEvent')" name="two">
-        <el-form :model="alarmEvent" inline>
+        <el-form :model="alarmEvent" inline style="padding-top: 10px;">
           <el-form-item style="margin-right: 40px;">
             <el-radio-group v-model="alarmEvent.alarmIsHistory">
               <el-radio :label="false">当前告警</el-radio>
@@ -726,8 +722,14 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              console.log(res.data)
-              _t.equipmentInfoList = res.data;
+              var result = new Array();
+              for (var key in res.data) {
+                var obj = new Object();
+                obj.label = key;
+                obj.value = res.data[key];
+                result.push(obj);
+              }
+              _t.equipmentInfoList = result;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -954,6 +956,10 @@
 <style scoped>
   .equipmentDetail-info-box {
     width: 250px;
+    position: absolute;
+    top: 0;
+    overflow-y: auto;
+    bottom: 0;
   }
 
   .administration-title {
@@ -993,15 +999,17 @@
     left: 260px;
     right: 0;
     padding-top: 5px;
+    margin-bottom: 0 !important;
   }
 
   .monitoringDetails-header.el-tabs--card > .el-tabs__content {
     position: absolute;
-    top: 50px;
+    top: 40px;
     bottom: 10px;
     left: 260px;
     right: 0;
     overflow-y: auto;
+    padding: 0 10px;
   }
 
   .monitoringDetails-header .el-tabs__header.is-top .el-tabs__nav-scroll {

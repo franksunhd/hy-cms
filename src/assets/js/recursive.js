@@ -344,3 +344,28 @@ export function getObjectById(arr = [], val, id, children) {
     );
   }, []);
 }
+
+// 拿到树形结构中第一条最细一级的集合
+export function getLastNewData(treeData) {
+  var result = {};
+  if (treeData.length !== 0) {
+    // level: 0 目录 1最细一级节点
+    result = getNewListObj(treeData[0],1,'level','children');
+  } else {
+    result = {};
+  }
+  return result;
+}
+
+// 递归拿取树形结构最细一级
+function getNewListObj(arr,val,id,children) {
+  // 最细一级
+  if (arr[id] === val) {
+    return arr;
+  } else {
+    // 目录
+    if (arr[children][0].length !== 0) {
+      return getNewListObj(arr[children][0],val,id,children);
+    }
+  }
+}
