@@ -49,15 +49,15 @@
                 <span>的默认阈值</span>
               </p>
               <el-form :model="showDefault" label-width="70px" class="marginBottom10">
-                <el-form-item label="主阈值：">
+                <el-form-item label="主阈值：" class="textAlignLeft">
                   <el-input :disabled="true" v-model="showDefault.value1" class="width170 marginRight6" />
                   <el-input :disabled="true" v-model="showDefault.value2" class="width170" />
                 </el-form-item>
-                <el-form-item label="">
+                <el-form-item label="" class="textAlignLeft">
                   <el-input :disabled="true" v-model="showDefault.value3" class="width170 marginRight6" />
                   <el-input :disabled="true" v-model="showDefault.value4" class="width170" />
                 </el-form-item>
-                <el-form-item label="告警级别：">
+                <el-form-item label="告警级别：" class="textAlignLeft">
                   <el-input :disabled="true" v-model="showDefault.value5" class="width170" />
                 </el-form-item>
                 <el-form-item label="">
