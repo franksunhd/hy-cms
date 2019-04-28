@@ -15,7 +15,7 @@
     <el-tabs v-model="activeNameTabs" @tab-click="clickTabs" class="monitoringDetails-header" type="card">
       <!--监测详情-->
       <el-tab-pane :label="$t('administrationTabs.monitorDetail')" name="one">
-        <div class="clearfix">
+        <div class="clearfix" style="padding-top: 10px;">
           <el-form inline class="fl marginBottom10">
             <el-form-item v-if="AlarmSeverity[item.key] !== undefined" v-for="(item,index) in monitorStatusArr" :key="index">
               <el-tooltip effect="dark" :content="AlarmSeverity[item.key]" placement="top-start">
@@ -174,7 +174,7 @@
       </el-tab-pane>
       <!--告警事件-->
       <el-tab-pane :label="$t('administrationTabs.alarmEvent')" name="two">
-        <el-form :model="alarmEvent" inline>
+        <el-form :model="alarmEvent" inline style="padding-top: 10px;">
           <el-form-item style="margin-right: 40px;">
             <el-radio-group v-model="alarmEvent.alarmIsHistory">
               <el-radio :label="false">当前告警</el-radio>
@@ -956,6 +956,10 @@
 <style scoped>
   .equipmentDetail-info-box {
     width: 250px;
+    position: absolute;
+    top: 0;
+    overflow-y: auto;
+    bottom: 0;
   }
 
   .administration-title {
@@ -1000,11 +1004,12 @@
 
   .monitoringDetails-header.el-tabs--card > .el-tabs__content {
     position: absolute;
-    top: 50px;
+    top: 40px;
     bottom: 10px;
     left: 260px;
     right: 0;
     overflow-y: auto;
+    padding: 0 10px;
   }
 
   .monitoringDetails-header .el-tabs__header.is-top .el-tabs__nav-scroll {
