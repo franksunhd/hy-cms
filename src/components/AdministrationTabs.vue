@@ -3,12 +3,8 @@
     <!--设备信息-->
     <div class="equipmentDetail-info-box">
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentInfo')}}</strong></div>
-      <el-form :model="equipmentInfoList" label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item :label="$t('administrationTabs.equipmentName') + '：'">{{equipmentInfoList.deviceName}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentIp') + '：'">{{equipmentInfoList.ip}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentModel') + '：'">{{equipmentInfoList.model}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.equipmentMonitoring') + '：'">{{equipmentInfoList.manufacturer}}</el-form-item>
-        <el-form-item :label="$t('administrationTabs.serialNumber') + '：'">{{equipmentInfoList.servicetag}}</el-form-item>
+      <el-form label-width="96px" label-position="right" class="administration-info-box">
+        <el-form-item v-for="(item,index) in equipmentInfoList" :key="index" :label="item.label + '：'">{{item.value}}</el-form-item>
       </el-form>
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentAllStatus')}}</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
@@ -726,8 +722,14 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              console.log(res.data)
-              _t.equipmentInfoList = res.data;
+              var result = new Array();
+              for (var key in res.data) {
+                var obj = new Object();
+                obj.label = key;
+                obj.value = res.data[key];
+                result.push(obj);
+              }
+              _t.equipmentInfoList = result;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -993,6 +995,7 @@
     left: 260px;
     right: 0;
     padding-top: 5px;
+    margin-bottom: 0 !important;
   }
 
   .monitoringDetails-header.el-tabs--card > .el-tabs__content {

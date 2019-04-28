@@ -777,3 +777,21 @@ span.el-tree-node__label {
 .monitor-formItemBox:hover {
   background-color: #eaeef2;
 }
+
+.showDefaultBox {
+  box-shadow: 0 0 7px #c9c9c9;
+  border: 1px solid #eef1f9;
+  background-color: #fff;
+}
+
+.showDefaultBox:after {
+  border-color: #fff #fff transparent transparent;
+  transform: rotate(-45deg);
+  box-shadow: 2px -2px 2px #c9c9c9;
+}
+
+.monitoringDetails-header.el-tabs--card > .el-tabs__header,
+.monitoringDetails-header.el-tabs--card > .el-tabs__content {
+  border-right: 1px solid #eaedf1;
+  border-left: 1px solid #eaedf1;
+}
