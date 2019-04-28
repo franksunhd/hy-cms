@@ -5,7 +5,7 @@
 			<div class="borderRightColorGray">
 				<p class="dataDictionary-title">
 					<a href="javascript:;" @click="clickNode">设备分组</a>
-					<el-button type="text" @click="dialogGrouping = true">新增</el-button>
+					<el-button type="text" @click="appendDevice">新增</el-button>
 					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :visible.sync="dialogGrouping">
 						<div class="padding20" style="padding-top:0;">
 							<label style="padding-right:10px ;">父级节点</label>
@@ -13,44 +13,42 @@
 								<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodess" :props="defaultPropsssa" />
 								<el-input v-model="addEditss.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 							</el-popover>
-
-							<el-select v-model="parentNode" placeholder="请选择">
+							<!--<el-select v-model="parentNode" placeholder="请选择">
 								<el-option v-for="(item,index) in parentNodeList" :key="index" :label="item.label" :value="item.value">
 								</el-option>
-							</el-select>
+							</el-select>-->
 						</div>
-						<el-table :row-class-name="tableRowClassName" type="index" :data="gridData" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
+						<el-table type="index" :data="gridData" @cell-change='selectRow' @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
 							<el-table-column label="第一级" align="center">
 								<template slot-scope="scope">
-									<el-input size="small" v-model="scope.row.amount0" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+									<el-input size="small" v-model="scope.row.amount0" placeholder="请输入内容"></el-input>
 								</template>
 							</el-table-column>
 							<el-table-column label="第二级" align="center">
 								<template slot-scope="scope">
-									<el-input size="small" v-model="scope.row.amount1" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+									<el-input size="small" v-model="scope.row.amount1" placeholder="请输入内容"></el-input>
 								</template>
 							</el-table-column>
 							<el-table-column label="第三级" align="center">
 								<template slot-scope="scope">
-									<el-input size="small" v-model="scope.row.amount2" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+									<el-input size="small" v-model="scope.row.amount2" placeholder="请输入内容"></el-input>
 								</template>
 							</el-table-column>
 							<el-table-column label="第四级" align="center">
 								<template slot-scope="scope">
-									<el-input size="small" v-model="scope.row.amount3" placeholder="请输入内容" @change="handleEdit(scope.$index, scope.row)"></el-input>
+									<el-input size="small" v-model="scope.row.amount3" placeholder="请输入内容"></el-input>
 								</template>
 							</el-table-column>
 						</el-table>
 
 						<div slot="footer" class="dialog-footer">
-							<el-button type="primary" @click="dialogGrouping = false">确 定</el-button>
+							<el-button type="primary" @click="getAddDevice">确 定</el-button>
 							<el-button @click="dialogGrouping = false">取 消</el-button>
 						</div>
 					</el-dialog>
 
 					<!--编辑设备分组-->
 					<el-button type="text" @click="EditDevice">编辑</el-button>
-
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
 						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
 							<ul>
@@ -63,13 +61,13 @@
 								<li><label for="">节点名称:</label>
 									<el-input v-model="formItem.catalogName" class="width200"></el-input>
 								</li>
-								<li><label for="">顺序:</label>
+								<!--<li><label for="">顺序:</label>
 									<el-input v-model="order" class="width200"></el-input>
-								</li>
+								</li>-->
 							</ul>
 						</div>
 						<div slot="footer" class="dialog-footer">
-							<el-button type="primary" @click="dialogGroupingBj = false">确 定</el-button>
+							<el-button type="primary" @click="getEditDevice">确 定</el-button>
 							<el-button @click="dialogGroupingBj = false">取 消</el-button>
 						</div>
 					</el-dialog>
@@ -86,7 +84,53 @@
 					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
-				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current @node-click="getCurrentNode" :props="defaultPropssss" :expand-on-click-node="false" :default-expand-all="false" />
+				<el-tree class="dataDictionary-tree" 
+					:data="treeData" 
+					highlight-current 
+					node-key="idd" 
+					@node-click="getCurrentNode" 
+					:props="defaultPropssss" 
+					:expand-on-click-node="false" 
+					:default-expand-all="false">
+					<span class="custom-tree-node" slot-scope="{ node, data}">
+        <span>{{ node.label }}</span>
+					<span v-if="">
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => appendDevice(data)">
+            <i class="el-icon-edit" title="增加"></i>
+          </el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => EditDevice(node, data)">
+            <i class="el-icon-share" title="修改"></i>
+          </el-button>
+          <el-button
+            type="text"
+            size="mini"
+            @click="() => remove(node, data)">
+            <i class="el-icon-delete" title="删除"></i>
+          </el-button>
+          
+        </span>
+					</span>
+					<!--<div class="custom-tree-node" slot-scope="{ node, data}">
+						<div>
+							<span icon-class="space" class="icon-space" v-if="!data.is_child||data.space_id=='0'" />
+							<span icon-class="file" class="icon-space" v-else/>
+							<span @click.stop="expand(data)">{{ node.label }}</span>
+							<span style="font-size: 11px;color: #3889b1" v-if="data.space_property_name">（{{data.space_property_name}}）</span>
+						</div>
+						<span class="el-ic">
+                            <i class="el-icon-edit" @click.self="EditDevice(data,'edit')" title="修改" v-if="data.space_id!='0'"></i>
+                            <i class="el-icon-delete" @click.stop="() => removeDialogVisible(node, data)" title="删除"
+                            v-if="data.space_id!='0'"></i>
+                        </span>
+                    </div>-->
+				</el-tree>
+
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -301,6 +345,8 @@
 </template>
 
 <script>
+	let idd=1000;
+	import { getObjectById } from "../../../assets/js/recursive";
 	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
 	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
@@ -359,7 +405,7 @@
 					/*目录节点名称 左侧树形控件*/
 					catalogName: null,
 					/*编辑设备分组父级节点名称*/
-					prentcatalogName: null,
+					prentcatalogName: '无',
 
 				},
 				/*父级节点*/
@@ -373,6 +419,7 @@
 				},
 				addEdits: {
 					nodeName: '',
+					nodeId: '',
 					parentId: '',
 
 				},
@@ -491,8 +538,8 @@
 				},
 				/*左侧数tree*/
 				defaultPropssss: {
-					parentId: 'parentId', // 父级唯一标识
-					value: 'id', // 唯一标识
+					parentId: 'parentNodeId', // 父级唯一标识
+					nodeId: 'nodeId', // 唯一标识
 					label: 'nodeName', // 标签显示
 					children: 'children', // 子级
 				},
@@ -510,27 +557,31 @@
 				},
 				//新增设备分组
 				gridData: [{
+					id: '',
 					amount0: '12987121',
 					amount1: '1.1',
 					amount2: '1.1.1',
 					amount3: '1.1.1.1'
 				}, {
+					id: '',
 					amount0: '12987122',
 					amount1: '2.1',
 					amount2: '2.1.1',
 					amount3: '2.1.1.1'
 				}, {
+					id: '',
 					amount0: '12987123',
 					amount1: '3.1',
 					amount2: '3.1.1',
 					amount3: '3.1.1.1'
 				}, {
+					id: '',
 					amount0: '12987124',
 					amount1: '4.1',
 					amount2: '4.1.1',
 					amount3: '4.1.1.1'
 				}],
-				rowIndex: '',
+				selectlistRow: [],
 				/*gridData: [{
 						label: '1',
 						children: [{
@@ -592,6 +643,15 @@
 			// 修改阈值
 			monitorThreshold(val) {
 				var _t = this;
+				/*let newpage = _t.$router.resolve({ 
+                name: 'monitorThresholdValue',
+                query:{
+                objectType:1,
+                deviceId:val.id,
+                    }   
+                }) 
+				localStorage.setItem('hy-deviceId', val.id);
+				window.open(newpage.href, '_blank')*/
 				_t.$router.push({
 					name: 'monitorThresholdValue',
 					params: {
@@ -599,6 +659,8 @@
 					}
 				});
 				localStorage.setItem('hy-deviceId', val.id);
+
+				/*window.open(newpage.href, '_blank')*/
 			},
 			// 接受弹出层关闭的参数
 			dialogVisibleStatus(val) {
@@ -632,12 +694,45 @@
 				}
 				_t.formItem.rackNameId = '';
 			},
+			//点击新增按钮弹出框
+			appendDevice(data){
+				var _t = this;
+				console.log(data)
+				 const newChild = { idd: idd++, nodeName: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+				/*_t.formItem.catalogName = data.nodeName;
+				_t.formItem.catalogId = data.nodeId;
+				_t.addEdits.parentId = data.parentNodeId;*/
+				_t.dialogGrouping = true;
+				//_t.getBjtree();
+			},
 			// 新增设备分组点击父级结点下拉框的节点
 			clickRoomNodess(val) {
 				var _t = this;
+				console.log(val);
 				_t.addEditss.parentId = val.nodeId;
 				_t.addEditss.nodeName = val.nodeName;
 				_t.isShowComputerPopoversss = false;
+			},
+			//新增设备分组弹出框点击确定按钮接口
+			getAddDevice() {
+				var _t = this;
+				_t.dialogGrouping = false;
+				_t.$api.post('/asset/assetCatalog/', {
+					parentId: _t.addEditss.nodeName,
+					catalogList: [{
+							catalogName: ''
+						},
+						{
+							catalogName: ''
+						}
+					]
+				}, function(res) {
+
+				})
 			},
 			// 编辑设备分组点击父级结点下拉框的节点
 			clickRoomNodes(val) {
@@ -646,11 +741,15 @@
 				_t.addEdits.nodeName = val.nodeName;
 				_t.isShowComputerPopoverss = false;
 			},
-			EditDevice() {
+			EditDevice(node,data) {
 				var _t = this;
+				_t.formItem.catalogName = data.nodeName;
+				_t.formItem.catalogId = data.nodeId;
+				_t.addEdits.parentId = data.parentNodeId;
 				_t.dialogGroupingBj = true;
 				_t.getBjtree();
 			},
+			/*点击设备编辑按钮查询接口*/
 			getBjtree() {
 				var _t = this;
 				var id = _t.formItem.catalogId;
@@ -658,11 +757,20 @@
 				_t.$api.get('/asset/assetCatalog/' + id, {
 
 				}, function(res) {
+					console.log(res)
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							_t.formItem.catalogName = data.nodeName;
-							_t.formItem.prentcatalogName = "无"
+							console.log(res)
+							_t.formItem.catalogName = res.data.catalogName;
+							_t.formItem.catalogId = res.data.id;
+							_t.addEdits.parentId = res.data.parentId;
+							console.log(_t.addEdits.parentId)
+							if(_t.addEdits.parentId != null) {
+								this.getBjtreeF();
+							} else if(_t.addEdits.parentId == null) {
+								_t.addEdits.nodeName = "无父级节点"
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -674,6 +782,63 @@
 							break;
 					}
 				})
+			},
+			/*根据parentId查询父级节点*/
+			getBjtreeF() {
+				var _t = this;
+				var id = _t.addEdits.parentId;
+				console.log(res);
+				_t.$store.commit('setLoading', true);
+				_t.$api.get('/asset/assetCatalog/' + id, {
+
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							console.log(res)
+							_t.addEdits.nodeName = res.data.catalogName;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+
+			},
+			/*编辑设备分组点击保存按钮接口*/
+			getEditDevice() {
+				var _t = this;
+				var id = _t.addEdits.parentId;
+				_t.$store.commit('setLoading', true);
+				_t.$api.put('/asset/assetCatalog/', {
+					catalog: {
+						id: _t.formItem.catalogId,
+						catalogName: _t.formItem.catalogName
+					}
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							console.log(res)
+							_t.dialogGroupingBj = false;
+							_t.getDataTree();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+
 			},
 			// 查询表格数据
 			getData() {
@@ -836,6 +1001,7 @@
 				_t.$api.get('/asset/assetCatalog/all', {}, function(res) {
 					switch(res.status) {
 						case 200:
+						console.log(res.data.children)
 							_t.treeData = res.data.children;
 							break;
 						case 1003: // 无操作权限
@@ -850,12 +1016,25 @@
 
 				});
 			},
+			//添加删除树形控件的节点
+
+			/*renderContent(h, { node, data, store }) {
+        return (
+          <span class="custom-tree-node">
+            <span>{node.label}</span>
+            <span>
+              <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
+              <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+            </span>
+          </span>);
+      },*/
 			// 获取树形控件选中的节点
 			getCurrentNode(data) {
 				var _t = this;
 				_t.formItem.catalogId = data.nodeId;
-				/*_t.formItem.catalogName=data.nodeName;*/
+				_t.formItem.catalogName = data.nodeName;
 				_t.getData();
+
 			},
 			// 点击系统功能菜单节点
 			clickNode() {
@@ -873,16 +1052,16 @@
 					})
 					.catch(_ => {});
 			},
-			/*获取行index*/
-			tableRowClassName({
-				row,
-				rowIndex
-			}) {
-				this.rowIndex = rowIndex;
+			selectRow(val) {
+				console.log(val)
+				this.selectlistRow = val
 			},
-			handleEdit(a, b) {},
+
 			/*添加右键行事件*/
-			openDetails(row, column) {
+			openDetails(row, column, event) {
+				event.preventDefault();
+				console.log(row.__ob__.dep.id);
+
 				var newValue = {
 					amount0: '',
 					amount1: '',
@@ -1176,6 +1355,83 @@
 	}
 </style>
 <style>
+	.custom-tree-node {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 14px;
+		padding-right: 8px;
+		color: #4386c6;
+	}
+	
+	.el-ic {
+		display: none;
+		i,
+		span {
+			padding: 0 14px;
+			font-size: 18px;
+			font-weight: 600;
+		}
+		.svg-icon {
+			color: #4386c6;
+		}
+	}
+	
+	.el-tree-node__content {
+		height: 38px;
+	}
+	
+	.el-tree-node__expand-icon {
+		color: #428bca;
+		/*padding: 10px 10px 0px 10px !important;*/
+	}
+	
+	.el-tree-node__content:hover .el-ic {
+		color: #428bca !important;
+		display: inline-block;
+	}
+	
+	.el-tree-node__content:hover {
+		font-weight: bold;
+	}
+	
+	.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content :hover {
+		.el-tree-node__expand-icon.is-leaf {
+			color: transparent;
+			cursor: default;
+		}
+		/*background-color: #3998d9;*/
+		.custom-tree-node {
+			font-weight: bold;
+		}
+		.el-tree-node__expand-icon {
+			font-weight: bold;
+		}
+	}
+	
+	.el-dialog__body {
+		.upload-container .image-preview .image-preview-wrapper img {
+			height: 100px;
+		}
+		.el-dialog .el-collapse-item__wrap {
+			padding-top: 0px;
+		}
+		.spatial_img {
+			.el-collapse-item__wrap {
+				margin-bottom: 0;
+				padding-top: 0px;
+			}
+		}
+		.upload-container .image-preview .image-preview-wrapper {
+			width: 120px;
+		}
+		.upload-container .image-preview .image-preview-action {
+			line-height: 100px;
+			height: 100px;
+		}
+	}
+	
 	#systemSettings-navBar-inSet,
 	#systemSettings-navBar-outSet {
 		background-color: #3f81d0;
