@@ -1,4 +1,4 @@
-<template>
+﻿<template>
 	<Box>
 		<div v-show="isShow" class="systemSettings-navBar">
 			<!--<systemSettingsNavBar/>-->
@@ -18,7 +18,12 @@
 								</el-option>
 							</el-select>-->
 						</div>
-						<el-table type="index" :data="gridData" @cell-change='selectRow' @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
+						<el-table :data="gridData" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
+              <el-table-column label="序号" align="center" width="50">
+                <template slot-scope="scope">
+                  {{scope.$index+1}}
+                </template>
+              </el-table-column>
 							<el-table-column label="第一级" align="center">
 								<template slot-scope="scope">
 									<el-input size="small" v-model="scope.row.amount0" placeholder="请输入内容"></el-input>
@@ -48,7 +53,8 @@
 					</el-dialog>
 
 					<!--编辑设备分组-->
-					<el-button type="text" @click="EditDevice">编辑</el-button>
+	
+				<el-button type="text" @click="EditDevice">编辑</el-button>
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
 						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
 							<ul>
@@ -77,20 +83,20 @@
 					<el-dialog class="EquipmentMonitoringSc" title="确认提示" :visible.sync="dialogGroupingSc" append-to-body :before-close="handleClose" width="30%">
 						<span>请问是否确认删除当前的记录?</span>
 						<span slot="footer" class="dialog-footer">
-    
+
                             <el-button type="primary" @click="dialogGroupingSc = false">确 定</el-button>
                             <el-button @click="dialogGroupingSc = false">取 消</el-button>
                         </span>
 					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
-				<el-tree class="dataDictionary-tree" 
-					:data="treeData" 
-					highlight-current 
-					node-key="idd" 
-					@node-click="getCurrentNode" 
-					:props="defaultPropssss" 
-					:expand-on-click-node="false" 
+				<el-tree class="dataDictionary-tree"
+					:data="treeData"
+					highlight-current
+					node-key="idd"
+					@node-click="getCurrentNode"
+					:props="defaultPropssss"
+					:expand-on-click-node="false"
 					:default-expand-all="false">
 					<span class="custom-tree-node" slot-scope="{ node, data}">
         <span>{{ node.label }}</span>
@@ -113,7 +119,7 @@
             @click="() => remove(node, data)">
             <i class="el-icon-delete" title="删除"></i>
           </el-button>
-          
+
         </span>
 					</span>
 					<!--<div class="custom-tree-node" slot-scope="{ node, data}">
@@ -643,13 +649,13 @@
 			// 修改阈值
 			monitorThreshold(val) {
 				var _t = this;
-				/*let newpage = _t.$router.resolve({ 
+				/*let newpage = _t.$router.resolve({
                 name: 'monitorThresholdValue',
                 query:{
                 objectType:1,
                 deviceId:val.id,
-                    }   
-                }) 
+                    }
+                })
 				localStorage.setItem('hy-deviceId', val.id);
 				window.open(newpage.href, '_blank')*/
 				_t.$router.push({
@@ -1060,7 +1066,6 @@
 			/*添加右键行事件*/
 			openDetails(row, column, event) {
 				event.preventDefault();
-				console.log(row.__ob__.dep.id);
 
 				var newValue = {
 					amount0: '',
@@ -1068,8 +1073,23 @@
 					amount2: '',
 					amount3: ''
 				};
-				//添加新的行数
-				this.gridData.push(newValue);
+
+        var newValue = {
+          amount0: '',
+          amount1: '',
+          amount2: '',
+          amount3: ''
+        };
+
+        //获取右键行的下标
+        var index = this.gridData.indexOf(row);
+        console.log("当前行下标：" + index);
+
+        //根据下标删除当前行
+        //this.gridData.splice(index, 1);
+
+        //在当前行的后面插入行
+        this.gridData.splice((index + 1), 0, newValue);
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -1300,7 +1320,7 @@
 		overflow: hidden;
 		overflow-y: auto;
 	}
-	
+
 	.systemSettings-navBar {
 		width: 174px;
 		position: absolute;
@@ -1308,7 +1328,7 @@
 		left: 0;
 		bottom: 0;
 	}
-	
+
 	#EquipmentMonitoring-navBar-inSet,
 	#EquipmentMonitoring-navBar-outSet {
 		height: 40px;
@@ -1318,37 +1338,37 @@
 		line-height: 40px;
 		position: fixed;
 	}
-	
+
 	#EquipmentMonitoring-navBar-inSet {
 		left: 210px;
 		border-radius: 15px 0 0 15px;
 	}
-	
+
 	#EquipmentMonitoring-navBar-outSet {
 		left: 56px;
 		display: none;
 		z-index: 1001;
 		border-radius: 0 15px 15px 0;
 	}
-	
+
 	.borderRightColorGray {
 		overflow: hidden;
 	}
-	
+
 	.dataDictionary-title {
 		overflow: hidden;
 	}
-	
+
 	.dataDictionary-title a {
 		line-height: 40px;
 		padding-left: 20px;
 		font-weight: 600;
 	}
-	
+
 	.EquipmentMonitoringBj ul li {
 		padding-bottom: 20px;
 	}
-	
+
 	.EquipmentMonitoringBj ul li label {
 		display: inline-block;
 		width: 60px;
@@ -1364,7 +1384,7 @@
 		padding-right: 8px;
 		color: #4386c6;
 	}
-	
+
 	.el-ic {
 		display: none;
 		i,
@@ -1377,25 +1397,25 @@
 			color: #4386c6;
 		}
 	}
-	
+
 	.el-tree-node__content {
 		height: 38px;
 	}
-	
+
 	.el-tree-node__expand-icon {
 		color: #428bca;
 		/*padding: 10px 10px 0px 10px !important;*/
 	}
-	
+
 	.el-tree-node__content:hover .el-ic {
 		color: #428bca !important;
 		display: inline-block;
 	}
-	
+
 	.el-tree-node__content:hover {
 		font-weight: bold;
 	}
-	
+
 	.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content :hover {
 		.el-tree-node__expand-icon.is-leaf {
 			color: transparent;
@@ -1409,7 +1429,7 @@
 			font-weight: bold;
 		}
 	}
-	
+
 	.el-dialog__body {
 		.upload-container .image-preview .image-preview-wrapper img {
 			height: 100px;
@@ -1431,47 +1451,47 @@
 			height: 100px;
 		}
 	}
-	
+
 	#systemSettings-navBar-inSet,
 	#systemSettings-navBar-outSet {
 		background-color: #3f81d0;
 		color: #fff;
 	}
-	
+
 	.EquipmentMonitoringGrid .el-dialog {
 		width: 612px;
 		height: 425px;
 	}
-	
+
 	.EquipmentMonitoringBj .el-dialog {
 		width: 501px;
 		height: 325px;
 	}
-	
+
 	.EquipmentMonitoringSc .el-dialog {
 		width: 200px;
 		height: 180px;
 	}
-	
+
 	.alarmCurrentBox .el-form--inline .el-form-item {
 		margin: 0;
 	}
-	
+
 	.EquipmentMonitoring-btn {
 		position: absolute;
 		top: 10px;
 		right: 10px;
 		z-index: 100;
 	}
-	
+
 	.closeCheckBox {
 		margin-left: 30px;
 	}
-	
+
 	.closeCheckBox .el-checkbox__label {
 		font-size: 12px;
 	}
-	
+
 	#EquipmentMonitoring-tabs {
 		position: fixed;
 		bottom: 0;
@@ -1480,7 +1500,7 @@
 		top: 118px;
 		z-index: 1100;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
 		margin-top: 0;
 		position: absolute;
@@ -1488,12 +1508,12 @@
 		left: -24px;
 		right: -20px;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
 		font-size: 12px;
 		position: relative;
 	}
-	
+
 	#EquipmentMonitoring-tabs>.el-tabs__content {
 		position: absolute;
 		left: 0;
@@ -1501,7 +1521,7 @@
 		bottom: 40px;
 		top: 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
 		content: '';
 		width: 10px;
@@ -1512,7 +1532,7 @@
 		left: -10px;
 		border-radius: 0 10px 0 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
 		content: '';
 		position: absolute;
@@ -1520,7 +1540,7 @@
 		right: 0;
 		height: 20px;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
 		content: '';
 		width: 10px;
@@ -1531,7 +1551,7 @@
 		right: -10px;
 		border-radius: 10px 0 0 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
 		padding: 0 20px;
 	}
