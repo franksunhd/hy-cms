@@ -146,7 +146,7 @@
         <br>
         <el-form-item
           :class="index === 0 ?'star':''"
-          v-for="(item,index) in systemBaseDataLanguageList"
+          v-for="(item,index) in systemBasedataLanguageList"
           :key="index"
           :label="index == 0 ? $t('dataDictionary.dictionaryName') + '：':' '">
           <div class="positionRelative">
@@ -241,7 +241,7 @@
         checkListValue: [], // 表格选中之后数据接收
         checkListIds: [], // 表格选中的数据id集合
         checkRoleIds: [], // 删除数据传参
-        systemBaseDataLanguageList:[], // 字典名称集合
+        systemBasedataLanguageList:[], // 字典名称集合
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
@@ -299,7 +299,7 @@
         _t.$refs.table.clearSelection();
         _t.$refs.roleName.resetFields(); //移除校验结果并重置字段值
         _t.$refs.roleName.clearValidate(); //移除校验结果
-        _t.systemBaseDataLanguageList.forEach((item)=>{
+        _t.systemBasedataLanguageList.forEach((item)=>{
           document.getElementById(item.id).style.borderColor = '#DCDFE6';
         });
       },
@@ -567,7 +567,7 @@
         var _t = this;
         // 字典名称有为空的情况
         var isNullNum = 0;
-        _t.systemBaseDataLanguageList.forEach(function (item) {
+        _t.systemBasedataLanguageList.forEach(function (item) {
           if (item.basedataName.trim() === '') {
             item.flag = true;
             document.getElementById(item.id).style.borderColor = '#fb6041';
@@ -576,7 +576,7 @@
           }
         });
         _t.$refs[formName].validate((valid) => {
-          if (valid && isNullNum === _t.systemBaseDataLanguageList.length) {
+          if (valid && isNullNum === _t.systemBasedataLanguageList.length) {
             _t.$api.post('system/basedata/', {
               systemBasedata: {
                 parentId: _t.addEdit.parentId == null ? null : _t.addEdit.parentId,
@@ -585,7 +585,7 @@
                 orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
                 level: _t.addEdit.level,
                 enable: _t.addEdit.enable == 1 ? true : false,
-                systemBasedataLanguageList: _t.systemBaseDataLanguageList
+                systemBasedataLanguageList: _t.systemBasedataLanguageList
               }
             }, function (res) {
               _t.dialogVisible = false;
@@ -660,15 +660,49 @@
         _t.$api.get('system/basedata/' + val, {}, function (res) {
           switch (res.status) {
             case 200:
-              _t.addEdit.id = res.data.id;
-              _t.addEdit.parentId = res.data.parentId;
-              _t.addEdit.dictionaryCode = res.data.dictionaryCode;
-              _t.addEdit.dictionaryType = res.data.dictionaryType;
-              _t.addEdit.orderMark = res.data.orderMark;
-              _t.addEdit.level = res.data.level;
+              // 获取系统支持的语言
+              _t.getEditLanguageList(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 获取当前系统支持的语言 动态渲染字典名称
+      getEditLanguageList(resData){
+        var _t = this;
+        _t.$api.get('system/language/all', {}, function (res) {
+          switch (res.status) {
+            case 200:
+              var systemBasedataLanguageList = res.data.list;
+              systemBasedataLanguageList.forEach(function (item) {
+                item.basedataName = '';
+                item.languageMark = '';
+                item.flag = false;
+              });
+              systemBasedataLanguageList.forEach((val)=>{
+                resData.systemBasedataLanguageList.forEach((data)=>{
+                  if (val.languageCode === data.languageMark) {
+                    val.basedataName = data.basedataName;
+                    val.languageMark = data.languageCode;
+                  }
+                });
+              });
+              _t.addEdit.id = resData.id;
+              _t.addEdit.parentId = resData.parentId;
+              _t.addEdit.dictionaryCode = resData.dictionaryCode;
+              _t.addEdit.dictionaryType = resData.dictionaryType;
+              _t.addEdit.orderMark = resData.orderMark;
+              _t.addEdit.level = resData.level;
               _t.addEdit.enable == 1 ? true : false;
-              _t.systemBaseDataLanguageList = res.data.systemBasedataLanguageList;
-              _t.addEdit.nodeName = orgBreadcrumb(_t.treeData,res.data.parentId == null ? '0' : res.data.parentId)[0];
+              _t.systemBasedataLanguageList = systemBasedataLanguageList;
+              _t.addEdit.nodeName = orgBreadcrumb(_t.treeData,resData.parentId == null ? '0' : resData.parentId)[0];
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -686,7 +720,7 @@
         var _t = this;
         // 字典名称有为空的情况
         var isNullNum = 0;
-        _t.systemBaseDataLanguageList.forEach(function (item) {
+        _t.systemBasedataLanguageList.forEach(function (item) {
           if (item.basedataName.trim() == '') {
             item.flag = true;
             document.getElementById(item.id).style.borderColor = '#fb6041';
@@ -695,7 +729,7 @@
           }
         });
         _t.$refs[formName].validate((valid) => {
-          if (valid && isNullNum == _t.systemBaseDataLanguageList.length) {
+          if (valid && isNullNum == _t.systemBasedataLanguageList.length) {
             _t.$api.put('system/basedata/', {
               systemBasedata: {
                 id: _t.addEdit.id,
@@ -705,7 +739,7 @@
                 orderMark: _t.addEdit.orderMark,
                 level: _t.addEdit.level,
                 enable: _t.addEdit.enable == 1 ? true : false,
-                systemBasedataLanguageList: _t.systemBaseDataLanguageList
+                systemBasedataLanguageList: _t.systemBasedataLanguageList
               }
             }, function (res) {
               _t.dialogVisible = false;
@@ -744,13 +778,13 @@
         _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
             case 200:
-              var systemBaseDataLanguageList = res.data.list;
-              systemBaseDataLanguageList.forEach(function (item) {
+              var systemBasedataLanguageList = res.data.list;
+              systemBasedataLanguageList.forEach(function (item) {
                 item.basedataName = '';
                 item.languageMark = item.languageCode;
                 item.flag = false;
               });
-              _t.systemBaseDataLanguageList = systemBaseDataLanguageList;
+              _t.systemBasedataLanguageList = systemBasedataLanguageList;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
