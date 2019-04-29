@@ -12,27 +12,28 @@
       <!--表单-->
       <el-form inline label-width="96px" :model="formItem">
         <el-form-item :label="$t('acquisitionNodeManagement.nodeName') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" v-model="formItem.collectorName" />
+          <el-input class="width200" v-model="formItem.collectorName" clearable />
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodeIp') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" v-model="formItem.IP" />
+          <el-input class="width200" v-model="formItem.IP" clearable />
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.nodePort') + '：'" style="margin-bottom: 16px;">
-          <el-input class="width200" v-model="formItem.port" />
+          <el-input class="width200" v-model="formItem.port" clearable />
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
-          <el-select class="width200" v-model="formItem.groupIp">
+          <el-select class="width200" v-model="formItem.groupIp" clearable @change="formItem.groupIp = formItem.groupIp == '' ? '0':formItem.groupIp">
             <el-option label="全部" value="0" />
             <el-option v-for="(item,index) in groupIpList" :key="index" :label="item.groupName" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.status') + '：'">
-          <el-select class="width200" v-model="formItem.status">
+          <el-select class="width200" v-model="formItem.status" clearable>
             <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button class="queryBtn" type="reset" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -229,7 +230,7 @@
             {validator: isIpNumber, trigger: ['blur']}
           ],
           groupId:[
-            {validator: isNotNull, trigger: ['blur','change']}
+            {validator: isNotNull, trigger: ['blur']}
           ],
           port:[
             {validator: isNotNull, trigger: ['blur']},
@@ -239,6 +240,15 @@
       }
     },
     methods: {
+      // 重置查询表单
+      resetData(){
+        var _t = this;
+        _t.formItem.collectorName = null; // 名称
+        _t.formItem.groupIp = '0'; // 节点组id
+        _t.formItem.IP = null;
+        _t.formItem.port = null;
+        _t.formItem.status = null;
+      },
       // 查看带外通讯状态
       clickSeeDetail(data){
         var _t = this;
@@ -280,7 +290,9 @@
         _t.addEdit.groupId ='';
         _t.addEdit.port ='';
         _t.addEdit.description ='';
-        this.$refs.table.clearSelection();
+        _t.$refs.table.clearSelection();
+        _t.$refs.formName.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.formName.clearValidate(); //移除校验结果
       },
       // 当前选中条数
       selectTableNum(data) {

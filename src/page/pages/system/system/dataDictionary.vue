@@ -15,19 +15,20 @@
         </p>
         <el-tree
           class="dataDictionary-tree"
-          :data="treeData"
-          highlight-current
           @node-click="getCurrentNode"
-          :props="defaultProps"
-          :expand-on-click-node="false"
-          :default-expand-all="false"/>
+          :data="treeData"
+          node-key="nodeId"
+          ref="tree"
+          :default-expanded-keys="defaultExpandedKeys"
+          highlight-current
+          :props="defaultProps"/>
       </div>
       <div class="displayFlex-flex">
         <div class="padding20 borderBottom">
           <!--表单-->
           <el-form :model="formItem" inline>
             <el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-              <el-input class="width200" v-model="formItem.businessCode" clearable />
+              <el-input class="width200" v-model="formItem.businessCode" clearable/>
             </el-form-item>
             <el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
               <el-input class="width200" v-model="formItem.dictionaryName" clearable/>
@@ -72,20 +73,26 @@
                 </span>
               </template>
             </el-table-column>
-            <el-table-column min-width="100px" prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')" header-align="left" align="left"/>
-            <el-table-column min-width="140px" :label="$t('dataDictionary.dictionaryName')" header-align="left" align="left" >
+            <el-table-column min-width="100px" prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')"
+                             header-align="left" align="left"/>
+            <el-table-column min-width="140px" :label="$t('dataDictionary.dictionaryName')" header-align="left"
+                             align="left">
               <template slot-scope="scope">
                 <el-tooltip effect="dark" :content="scope.row.basedataName" placement="top-start">
                   <span>{{scope.row.basedataName}}</span>
                 </el-tooltip>
               </template>
             </el-table-column>
-            <el-table-column prop="dictionaryCode" :label="$t('dataDictionary.businessCode')" header-align="left" align="left"/>
-            <el-table-column prop="level" width="100px" :label="$t('dataDictionary.directoryLevel')" header-align="left" align="left"/>
+            <el-table-column prop="dictionaryCode" :label="$t('dataDictionary.businessCode')" header-align="left"
+                             align="left"/>
+            <el-table-column prop="level" width="100px" :label="$t('dataDictionary.directoryLevel')" header-align="left"
+                             align="left"/>
             <el-table-column width="140px" :label="$t('dataDictionary.sort')" header-align="left" align="left">
               <template slot-scope="scope">
                 <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
-                <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
+                <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">
+                  下移
+                </el-button>
               </template>
             </el-table-column>
             <el-table-column width="100px" :label="$t('dataDictionary.status')" header-align="left" align="left">
@@ -94,7 +101,8 @@
                 <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
               </template>
             </el-table-column>
-            <el-table-column min-width="100px" prop="createBy" :label="$t('dataDictionary.createName')" header-align="left" align="left"/>
+            <el-table-column min-width="100px" prop="createBy" :label="$t('dataDictionary.createName')"
+                             header-align="left" align="left"/>
             <el-table-column width="150px" :label="$t('dataDictionary.createTime')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>{{scope.row.createTime | dateFilter}}</span>
@@ -119,7 +127,8 @@
       :visible.sync="dialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form class="dataDictionary-dialog-form" :model="addEdit" inline label-width="150px" :rules="rules" ref="roleName">
+      <el-form class="dataDictionary-dialog-form" :model="addEdit" inline label-width="150px" :rules="rules"
+               ref="roleName">
         <el-form-item :label="$t('dataDictionary.parentDictionary') + '：'">
           <el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover">
             <el-tree
@@ -138,7 +147,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item class="star" :label="$t('dataDictionary.dictionaryType') + '：'" prop="dictionaryType">
-          <el-input v-model="addEdit.dictionaryType" class="width200" clearable />
+          <el-input v-model="addEdit.dictionaryType" class="width200" clearable/>
         </el-form-item>
         <el-form-item class="star" :label="$t('dataDictionary.businessCode') + '：'" prop="dictionaryCode">
           <el-input :disabled="ifAdd === false" v-model="addEdit.dictionaryCode" clearable class="width200"/>
@@ -156,7 +165,7 @@
               v-model="item.basedataName"
               class="width200"
               clearable
-              :placeholder="item.languageName" />
+              :placeholder="item.languageName"/>
             <span
               class="isNotNull"
               v-if="item.flag == true && item.basedataName.trim() == ''">
@@ -166,11 +175,11 @@
         </el-form-item>
         <br>
         <el-form-item class="star" :label="$t('dataDictionary.directoryLevel') + '：'" prop="level">
-          <el-input v-model="addEdit.level" readonly class="width200" clearable />
+          <el-input v-model="addEdit.level" readonly class="width200" clearable/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('dataDictionary.orderIndex') + '：'" prop="orderMark">
-          <el-input v-model="addEdit.orderMark" class="width200" clearable />
-        </el-form-item>
+        <!--<el-form-item class="star" :label="$t('dataDictionary.orderIndex') + '：'" prop="orderMark">-->
+        <!--<el-input v-model="addEdit.orderMark" class="width200" clearable />-->
+        <!--</el-form-item>-->
         <el-form-item class="star" :label="$t('dataDictionary.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable" class="width200">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
@@ -179,7 +188,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer">
-        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('roleName')" >{{$t('public.confirm')}}</el-button>
+        <el-button type="primary" class="alertBtn" v-if="ifAdd == true" @click="addData('roleName')">{{$t('public.confirm')}}</el-button>
         <el-button type="primary" class="alertBtn" v-if="ifAdd == false" @click="editData('roleName')">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
       </span>
@@ -207,16 +216,15 @@
         },
         // 数据默认字段
         defaultProps: {
-          parentId: 'parentId', // 父级唯一标识
-          value: 'id', // 唯一标识
           label: 'nodeName', // 标签显示
           children: 'children', // 子级
         },
         // 新增 编辑表单
         addEdit: {
           parentId: null, //父级Id
+          nodeName: '', // 父级名称
           id: '', //字典项ID
-          level: 0, //目录级别
+          level: 1, //目录级别
           dictionaryCode: '', //字典项编码
           dictionaryType: '', //字典项类型
           orderMark: '', //顺序
@@ -241,26 +249,27 @@
         checkListValue: [], // 表格选中之后数据接收
         checkListIds: [], // 表格选中的数据id集合
         checkRoleIds: [], // 删除数据传参
-        systemBasedataLanguageList:[], // 字典名称集合
+        systemBasedataLanguageList: [], // 字典名称集合
+        defaultExpandedKeys: [], // 默认展开的树节点
         options: {
           total: 0, // 总条数
           currentPage: 1, // 当前页码
           pageSize: 10, // 每页显示条数
         },
-        rules:{
-          dictionaryType:[
+        rules: {
+          dictionaryType: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          dictionaryCode:[
+          dictionaryCode: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          level:[
+          level: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          orderMark:[
-            {validator: isNotNull, trigger: ['blur']}
-          ],
-          enable:[
+          // orderMark:[
+          //   {validator: isNotNull, trigger: ['blur']}
+          // ],
+          enable: [
             {validator: isNotNull, trigger: ['blur']}
           ]
         }
@@ -268,7 +277,7 @@
     },
     methods: {
       // 输入框字典名称校验
-      menuNameInput(data){
+      menuNameInput(data) {
         if (data.basedataName.trim() == '') {
           data.flag = true;
           document.getElementById(data.id).style.borderColor = '#fb6041';
@@ -278,20 +287,21 @@
         }
       },
       // 重置筛选表单
-      resetData(){
+      resetData() {
         var _t = this;
         _t.formItem.businessCode = null;
         _t.formItem.dictionaryName = null;
         _t.formItem.status = null;
       },
       // 重置表单
-      resetFormData(){
+      resetFormData() {
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = false;
         _t.addEdit.parentId = null;
+        _t.addEdit.nodeName = '';
         _t.addEdit.id = '';
-        _t.addEdit.level = 0;
+        _t.addEdit.level = 1;
         _t.addEdit.dictionaryCode = '';
         _t.addEdit.dictionaryType = '';
         _t.addEdit.orderMark = '';
@@ -299,7 +309,7 @@
         _t.$refs.table.clearSelection();
         _t.$refs.roleName.resetFields(); //移除校验结果并重置字段值
         _t.$refs.roleName.clearValidate(); //移除校验结果
-        _t.systemBasedataLanguageList.forEach((item)=>{
+        _t.systemBasedataLanguageList.forEach((item) => {
           document.getElementById(item.id).style.borderColor = '#DCDFE6';
         });
       },
@@ -365,7 +375,7 @@
         _t.getData();
       },
       // 改变每页显示条数
-      handleSizeChangeSub(val){
+      handleSizeChangeSub(val) {
         var _t = this;
         _t.options.pageSize = val;
         _t.getData();
@@ -377,8 +387,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/basedata/', {
@@ -392,10 +402,11 @@
               case 200:
                 _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
+                  _t.getMenuData(false);
+                  _t.getData();
                 });
-                _t.getData();
-                _t.getMenuData();
                 break;
               case 1003: // 无操作权限
               case 1004: // 登录过期
@@ -418,8 +429,8 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.put('system/basedata/', {
@@ -432,10 +443,10 @@
               case 200:
                 _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
+                  _t.getMenuData(false);
                   _t.getData();
-                  _t.getMenuData();
                 });
                 break;
               case 1003: // 无操作权限
@@ -459,24 +470,24 @@
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
-          confirmButtonClass:'alertBtn',
-          cancelButtonClass:'alertBtn'
+          confirmButtonClass: 'alertBtn',
+          cancelButtonClass: 'alertBtn'
         }).then(() => {
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/basedata/', {
             jsonString: JSON.stringify({
               basedataIds: _t.checkListIds
             })
-          },function (res) {
+          }, function (res) {
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
                 _t.$alert('删除成功!', _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
-                }).then(()=>{
+                  confirmButtonClass: 'alertBtn'
+                }).then(() => {
                   _t.getData();
-                  _t.getMenuData();
+                  _t.getMenuData(false);
                 });
                 break;
               case 1003: // 无操作权限
@@ -488,7 +499,7 @@
               case 400: // 删除失败
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass:'alertBtn'
+                  confirmButtonClass: 'alertBtn'
                 });
                 break;
               default:
@@ -503,18 +514,20 @@
       getCurrentNode(data) {
         var _t = this;
         _t.formItem.nodeId = data.nodeId;
-        _t.addEdit.level = data.level;
+        _t.addEdit.level = data.level + 1;
         _t.getData();
       },
       // 点击系统功能菜单节点
       clickNode() {
         var _t = this;
         _t.formItem.nodeId = '0';
-        _t.addEdit.level = 0;
+        _t.addEdit.level = 1;
+        _t.$refs.tree.setCurrentKey(null);
+        _t.defaultExpandedKeys = [];
         _t.getData();
       },
       // 获取左侧树状菜单数据
-      getMenuData() {
+      getMenuData(bool) {
         var _t = this;
         _t.$store.commit('setLoading', true);
         _t.$api.get('system/basedata/all', {
@@ -531,9 +544,19 @@
             case 200:
               // 渲染树节点
               _t.treeData = res.data.treeNode.children;
-              // 渲染虚拟节点
-              _t.formItem.nodeId = res.data.treeNode.nodeId;
-              _t.formItem.menuName = res.data.treeNode.nodeName;
+              if (bool) {
+                // 渲染虚拟节点
+                _t.formItem.nodeId = res.data.treeNode.nodeId;
+                _t.formItem.menuName = res.data.treeNode.nodeName;
+              } else {
+                // 默认选中节点
+                _t.$nextTick(function () {
+                   // 设置当前选中的节点 高亮
+                  _t.$refs.tree.setCurrentKey(_t.formItem.nodeId);
+                  _t.defaultExpandedKeys = [];
+                  _t.defaultExpandedKeys.push(_t.formItem.nodeId);
+                });
+              }
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -551,7 +574,6 @@
         var _t = this;
         _t.addEdit.parentId = val.nodeId;
         _t.addEdit.nodeName = val.nodeName;
-        _t.addEdit.level = val.level + 1;
         _t.isShowEditPopover = false;
       },
       // 新增按钮
@@ -559,8 +581,11 @@
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = true;
-        _t.addEdit.level += 1;
         _t.getLanguageList();
+        if (_t.formItem.nodeId !== '0') {
+          _t.addEdit.parentId = _t.formItem.nodeId;
+          _t.addEdit.nodeName = orgBreadcrumb(_t.treeData, _t.formItem.nodeId)[0];
+        }
       },
       //新增表格数据
       addData(formName) {
@@ -591,7 +616,7 @@
               _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
-                  _t.getMenuData();
+                  _t.getMenuData(false);
                   _t.getData();
                   _t.resetFormData();
                   break;
@@ -611,7 +636,7 @@
       // 获取表格数据
       getData() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
+        _t.$store.commit('setLoading', true);
         _t.$api.get('system/basedata/pagelist', {
           jsonString: JSON.stringify({
             systemBasedata: {
@@ -625,7 +650,7 @@
             pageSize: _t.options.pageSize
           })
         }, function (res) {
-          _t.$store.commit('setLoading',false);
+          _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
               _t.tableData = res.data.list;
@@ -655,7 +680,7 @@
         _t.getEditData(_t.addEdit.id);
       },
       // 根据选中的表格的数据id 查询最新的数据
-      getEditData(val){
+      getEditData(val) {
         var _t = this;
         _t.$api.get('system/basedata/' + val, {}, function (res) {
           switch (res.status) {
@@ -675,7 +700,7 @@
         });
       },
       // 获取当前系统支持的语言 动态渲染字典名称
-      getEditLanguageList(resData){
+      getEditLanguageList(resData) {
         var _t = this;
         _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
@@ -686,11 +711,11 @@
                 item.languageMark = '';
                 item.flag = false;
               });
-              systemBasedataLanguageList.forEach((val)=>{
-                resData.systemBasedataLanguageList.forEach((data)=>{
+              systemBasedataLanguageList.forEach((val) => {
+                resData.systemBasedataLanguageList.forEach((data) => {
                   if (val.languageCode === data.languageMark) {
                     val.basedataName = data.basedataName;
-                    val.languageMark = data.languageCode;
+                    val.languageMark = val.languageCode;
                   }
                 });
               });
@@ -702,7 +727,7 @@
               _t.addEdit.level = resData.level;
               _t.addEdit.enable == 1 ? true : false;
               _t.systemBasedataLanguageList = systemBasedataLanguageList;
-              _t.addEdit.nodeName = orgBreadcrumb(_t.treeData,resData.parentId == null ? '0' : resData.parentId)[0];
+              _t.addEdit.nodeName = orgBreadcrumb(_t.treeData, resData.parentId == null ? '0' : resData.parentId)[0];
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -745,7 +770,7 @@
               _t.dialogVisible = false;
               switch (res.status) {
                 case 200:
-                  _t.getMenuData();
+                  _t.getMenuData(false);
                   _t.getData();
                   _t.resetFormData();
                   break;
@@ -758,10 +783,10 @@
                 case 2006:
                   _t.$alert(res.message, _t.$t('public.resultTip'), {
                     confirmButtonText: _t.$t('public.confirm'),
-                    confirmButtonClass:'alertBtn'
-                  }).then(()=>{
+                    confirmButtonClass: 'alertBtn'
+                  }).then(() => {
                     _t.getData();
-                    _t.getMenuData();
+                    _t.getMenuData(false);
                     _t.resetFormData();
                   });
                   break;
@@ -773,7 +798,7 @@
         });
       },
       // 获取当前系统支持的语言 动态渲染字典名称
-      getLanguageList(){
+      getLanguageList() {
         var _t = this;
         _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
@@ -798,13 +823,75 @@
         });
       },
       // 上移
-      moveUp() {},
+      moveUp(data) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item, index) {
+          if (item.id === data.id) {
+            dataIdArr.push(_t.tableData[index - 1].id)
+          }
+        });
+        _t.$api.put('system/basedata/', {
+          systemLanguage: {
+            id: dataIdArr.join(',')
+          }
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.getMenuData(false);
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
       // 下移
-      moveDown() {},
+      moveDown(data) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item, index) {
+          if (item.id === data.id) {
+            dataIdArr.push(_t.tableData[index + 1].id)
+          }
+        });
+        _t.$api.put('system/basedata/', {
+          systemLanguage: {
+            id: dataIdArr.join(',')
+          }
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.getMenuData(false);
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
     },
     created() {
       this.$store.commit('setLoading', true);
-      this.getMenuData();
+      this.getMenuData(true);
       this.getData();
     }
   }</script>
@@ -829,6 +916,7 @@
     width: 600px;
     height: 446px;
   }
+
   .dataDictionary-dialog-form .el-form-item {
     margin-bottom: 20px;
     margin-right: 0;

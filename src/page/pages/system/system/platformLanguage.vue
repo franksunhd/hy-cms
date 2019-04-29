@@ -80,7 +80,7 @@
         </el-table-column>
         <el-table-column prop="languageCode" :label="$t('platformLanguage.languageCodes')" header-align="left" align="left"/>
         <el-table-column prop="languageName" :label="$t('platformLanguage.languageName')" header-align="left" align="left"/>
-        <el-table-column :label="$t('platformLanguage.description')" header-align="left" align="left" />
+        <el-table-column prop="description" :label="$t('platformLanguage.description')" header-align="left" align="left" />
         <el-table-column :label="$t('platformLanguage.sort')" header-align="left" align="left">
           <template slot-scope="scope">
             <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
@@ -132,9 +132,9 @@
         <el-form-item :label="$t('platformLanguage.descriptionAlert') + '：'">
           <el-input class="width200" v-model="addEdit.description" clearable/>
         </el-form-item>
-        <el-form-item class="star" :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">
-          <el-input class="width200" v-model="addEdit.orderIndex" clearable/>
-        </el-form-item>
+        <!--<el-form-item class="star" :label="$t('platformLanguage.Order') + '：'" prop="orderIndex">-->
+          <!--<el-input class="width200" v-model="addEdit.orderIndex" clearable/>-->
+        <!--</el-form-item>-->
         <el-form-item class="star" :label="$t('platformLanguage.isDefault') + '：'" prop="isDefault">
           <el-radio-group class="width200" v-model="addEdit.isDefault">
             <el-radio :label="1">{{$t('public.YES')}}</el-radio>
@@ -213,9 +213,9 @@
           languageName: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          orderIndex: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
+          // orderIndex: [
+          //   {validator: isNotNull, trigger: ['blur']}
+          // ],
           isDefault: [
             {validator: isNotNull, trigger: ['blur','change']}
           ],
@@ -241,7 +241,7 @@
         _t.addEdit.languageCode = '';
         _t.addEdit.languageName = '';
         _t.addEdit.description = '';
-        _t.addEdit.orderIndex = '';
+        // _t.addEdit.orderIndex = '';
         _t.addEdit.isDefault = 0;
         _t.addEdit.isEnable = 1;
         _t.$refs.table.clearSelection();
@@ -270,7 +270,7 @@
             case 200:
               _t.addEdit.languageCode = res.data.languageCode;
               _t.addEdit.languageName = res.data.languageName;
-              _t.addEdit.orderIndex = res.data.orderMark;
+              // _t.addEdit.orderIndex = res.data.orderMark;
               _t.addEdit.description = res.data.description;
               _t.addEdit.isDefault = res.data.isDefault == true ? 1 : 0;
               _t.addEdit.isEnable == res.data.isEnable == true ? 1 : 0;
@@ -301,7 +301,7 @@
                 description: _t.addEdit.description == null ? null : (_t.addEdit.description.trim() === '' ? null : _t.addEdit.description.trim()),
                 isDefault: _t.addEdit.isDefault == 1 ? true : false,
                 enable: _t.addEdit.isEnable == 1 ? true : false,
-                orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
+                // orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
                 languageIcon:''
               }
             }, function (res) {
@@ -345,7 +345,7 @@
                 description: _t.addEdit.description == null ? null : _t.addEdit.description.trim(),
                 isDefault: _t.addEdit.isDefault == 1 ? true : false,
                 enable: _t.addEdit.isEnable == 1 ? true : false,
-                orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
+                // orderMark: Number(_t.addEdit.orderIndex.toString().trim()),
                 languageIcon:''
               }
             }, function (res) {
@@ -729,9 +729,69 @@
         });
       },
       // 上移
-      moveUp(data) {},
+      moveUp(data) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id === data.id) {
+            dataIdArr.push(_t.tableData[index - 1].id)
+          }
+        });
+        _t.$api.put('system/language/',{
+          systemLanguage:{
+            id:dataIdArr.join(',')
+          }
+        },function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
       // 下移
-      moveDown(data) {}
+      moveDown(data) {
+        var _t = this;
+        _t.$store.commit('setLoading', true);
+        var dataIdArr = new Array();
+        dataIdArr.push(data.id);
+        _t.tableData.forEach(function (item,index) {
+          if (item.id === data.id) {
+            dataIdArr.push(_t.tableData[index + 1].id)
+          }
+        });
+        _t.$api.put('system/language/',{
+          systemLanguage:{
+            id:dataIdArr.join(',')
+          }
+        },function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
+            case 200:
+              _t.getData();
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      }
     },
     created() {
       this.$store.commit('setLoading', true);

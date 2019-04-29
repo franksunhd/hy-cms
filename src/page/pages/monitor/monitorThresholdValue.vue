@@ -326,7 +326,8 @@
         _t.$api.get('monitor/deviceMonitor/all', {
           jsonString: JSON.stringify({
             deviceMonitor: {
-              nodeClass: 'tree'
+              nodeClass: 'tree',
+              deviceId:_t.deviceId,
             }
           })
         }, function (res) {

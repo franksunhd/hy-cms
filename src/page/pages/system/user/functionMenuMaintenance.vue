@@ -353,12 +353,13 @@
         _t.addEdit.jumpType = '';
         _t.addEdit.enable = 1;
         _t.addEdit.orderMark = 1;
+        _t.selectUserIsNull = false;
         _t.$refs.table.clearSelection();
         _t.$refs.roleName.resetFields(); //移除校验结果并重置字段值
         _t.$refs.roleName.clearValidate(); //移除校验结果
         // 重置表单的时候取消 菜单名称非空的 红色边框
         _t.languageList.forEach(function (item) {
-          if (item.languageName !== '') {
+          if (item.menuName === '') {
             document.getElementById(item.id).style.borderColor = '#DCDFE6';
           }
         });
@@ -493,21 +494,49 @@
         _t.$api.get('system/menu/' + data, {}, function (res) {
           switch (res.status) {
             case 200:
-              var languageList = res.data.systemMenuLanguageList;
+              console.log(11)
+              _t.getEditLanguageData(res.data);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              break;
+          }
+        });
+      },
+      // 根据系统支持的语言 组装菜单名称
+      getEditLanguageData(resData){
+        var _t = this;
+        _t.$api.get('system/language/all', {}, function (res) {
+          switch (res.status) {
+            case 200:
+              var languageList = res.data.list;
               languageList.forEach(function (item) {
-                item.languageName = item.createBy;
+                item.menuName = '';
+                item.flag = false;
+              });
+              languageList.forEach(function (item) {
+                resData.systemMenuLanguageList.forEach((val)=>{
+                  if (item.languageCode === val.languageMark) {
+                    item.menuName = val.menuName;
+                  }
+                })
               });
               _t.languageList = languageList;
-              _t.addEdit.parentId = res.data.parentId;
+              _t.addEdit.parentId = resData.parentId;
+              _t.addEdit.menuHref = resData.menuHref;
+              _t.addEdit.menuLevel = Number(resData.menuLevel);
+              _t.addEdit.menuIcon = resData.menuIcon;
+              _t.addEdit.orderMark = resData.orderMark;
+              _t.addEdit.enable = resData.enable == true ? 1 : 0;
               if (_t.addEdit.parentId !== null) {
                 var menuNameMap = returnObjectById(_t.treeData,_t.addEdit.parentId);
                 _t.addEdit.parentName = menuNameMap.menuName;
               }
-              _t.addEdit.menuHref = res.data.menuHref;
-              _t.addEdit.menuLevel = Number(res.data.menuLevel);
-              _t.addEdit.menuIcon = res.data.menuIcon;
-              _t.addEdit.orderMark = res.data.orderMark;
-              _t.addEdit.enable = res.data.enable == true ? 1 : 0;
               _t.dialogVisible = true;
               break;
             case 1003: // 无操作权限
@@ -517,6 +546,7 @@
               _t.exclude(_t, res.message);
               break;
             default:
+              _t.languageList = [];
               break;
           }
         });

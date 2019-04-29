@@ -484,12 +484,6 @@ input::-webkit-input-placeholder {
   line-height: 36px;
 }
 
-.dataDictionary-tree.el-tree,
-.organizeMaintenance-tree.el-tree,
-.functionMenuMaintenance-tree.el-tree {
-  /*padding-left: 12px;*/
-}
-
 .el-tree-node__label {
   font-size: 12px;
 }

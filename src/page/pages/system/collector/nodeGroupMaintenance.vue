@@ -16,6 +16,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button type="reset" class="queryBtn" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -184,6 +185,11 @@
       }
     },
     methods: {
+      // 重置查询表单
+      resetData(){
+        var _t = this;
+        _t.formItem.groupName = null;
+      },
       // 重置表单
       resetFormData(){
         var _t = this;
@@ -196,6 +202,13 @@
           {startIp:'', endIp:'',gatewayIp:'',startIpFlag:false,endIpFlag:false,gatewayIpFlag:false}
         ];
         _t.$refs.table.clearSelection();
+        _t.$refs.formName.resetFields(); //移除校验结果并重置字段值
+        _t.$refs.formName.clearValidate(); //移除校验结果
+        _t.IPListArr.forEach((item,index)=>{
+          document.getElementById('IpListStart' + index).style.borderColor = '#DCDFE6';
+          document.getElementById('IpListEnd' + index).style.borderColor = '#DCDFE6';
+          document.getElementById('IpListGatewayIp' + index).style.borderColor = '#DCDFE6';
+        });
       },
       // 当前选中条数
       selectTableNum(data){
