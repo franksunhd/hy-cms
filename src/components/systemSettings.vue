@@ -3,11 +3,11 @@
     <div v-show="isShow" class="systemSettings-navBar">
       <systemSettingsNavBar/>
       <a href="javascript:;" @click="clickInset" id="systemSettings-navBar-inSet">
-        <span class="iconfont">&#xe613;</span>
+        <span class="iconfont">&#xe68b;</span>
       </a>
     </div>
     <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">
-      <span class="iconfont">&#xe614;</span>
+      <span class="iconfont">&#xe69d;</span>
     </a>
     <div id="systemSettings-routerView" class="systemSettings-routerView">
       <router-view/>

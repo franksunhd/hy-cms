@@ -210,9 +210,9 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">
-          <el-input v-model="addEdit.orderMark" class="width200" readonly/>
-        </el-form-item>
+        <!--<el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">-->
+          <!--<el-input v-model="addEdit.orderMark" class="width200" readonly/>-->
+        <!--</el-form-item>-->
         <el-form-item class="star" :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
             <el-radio :label="1">{{$t('public.enable')}}</el-radio>
@@ -317,9 +317,9 @@
           menuLevel: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          orderMark: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
+          // orderMark: [
+          //   {validator: isNotNull, trigger: ['blur']}
+          // ],
           enable: [
             {validator: isNotNull, trigger: ['blur', 'change']}
           ],

@@ -261,9 +261,9 @@
         :label="item.title">
         <div class="alarmCurrent-btn">
           <!--收起-->
-          <span @click="packUp" class="iconfont cursorPointer">&#xe64a;</span>
+          <span @click="packUp" class="iconfont cursorPointer" title="收起">&#xe686;</span>
           <!--关闭弹出层-->
-          <span @click="closeTab" class="iconfont cursorPointer">&#xe64e;</span>
+          <span @click="closeTab" class="iconfont cursorPointer" title="关闭">&#xe687;</span>
         </div>
         <AdministrationTags v-if="isShowTabBox" :page-device-id="item.content"/>
       </el-tab-pane>

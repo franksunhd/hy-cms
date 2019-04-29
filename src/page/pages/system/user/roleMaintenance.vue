@@ -134,7 +134,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item class="star" :label="$t('roleMaintenance.roleName') +'：'" prop="roleName">
-          <el-input v-model="addEdit.roleName" class="width200" />
+          <el-input v-model="addEdit.roleName" class="width200" clearable />
         </el-form-item>
         <el-form-item class="star" :label="$t('roleMaintenance.isEnable') +'：'" prop="status">
           <el-radio-group v-model="addEdit.status" class="width200">
@@ -338,7 +338,7 @@
         dialogVisibleData: false,
         // 所属组织下拉框
         isShowEditPopover: false,
-        // 是否编辑
+        // 是否新增
         ifAdd: true,
         // 是否提交用户授权
         tagsLength: false,
@@ -524,14 +524,15 @@
       // 重置表单
       resetFormData(){
         var _t = this;
+        _t.ifAdd = true;
         _t.addEdit.id =  '';
         _t.addEdit.organization = '';
         _t.addEdit.roleName = '';
         _t.addEdit.organizationId = '';
         _t.addEdit.status = 1;
         _t.addEdit.description = '';
-        _t.$refs.table.clearSelection();
         _t.dialogVisible = false;
+        _t.$refs.table.clearSelection();
         _t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
         _t.$refs.ruleForm.clearValidate(); //移除校验结果
       },
@@ -938,8 +939,9 @@
       },
       // 新增角色按钮
       addRoleDataBtn() {
-        this.ifAdd = true;
-        this.dialogVisible = true;
+        var _t = this;
+        _t.ifAdd = true;
+        _t.dialogVisible = true;
       },
       // 新增角色
       addRoleData(formName) {

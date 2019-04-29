@@ -833,10 +833,8 @@
             dataIdArr.push(_t.tableData[index - 1].id)
           }
         });
-        _t.$api.put('system/basedata/', {
-          systemLanguage: {
-            id: dataIdArr.join(',')
-          }
+        _t.$api.put('system/basedata/order', {
+          ids: dataIdArr.join(',')
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
@@ -866,10 +864,8 @@
             dataIdArr.push(_t.tableData[index + 1].id)
           }
         });
-        _t.$api.put('system/basedata/', {
-          systemLanguage: {
-            id: dataIdArr.join(',')
-          }
+        _t.$api.put('system/basedata/order', {
+          ids: dataIdArr.join(',')
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
