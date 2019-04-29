@@ -691,4 +691,26 @@ export default {
   	describe:'描述',
   	ipAddress:'IP地址'
   },
+  // 监测阀值
+  monitorThreshold: {
+    equipmentName: '设备名称',
+    serialNumber: '序列号',
+    equipmentMonitoring: '设备品牌',
+    equipmentModel: '设备型号',
+    equipmentType: '设备类型',
+    ip: '带外IP',
+    roomName: '所在机房',
+    frameName: '机架位置',
+    monitorIndex: '监测指标',
+    IndexThreshold: '指标阈值',
+    Index: '指标',
+    defaultThreshold: '的默认阈值',
+    mainThreshold: '主阈值',
+    formThreshold: '从阈值',
+    alarmLevel: '告警级别',
+    alarmPlaceholder: '告警的附加内容...',
+    showDefault: '查看默认值',
+    returnDefault: '恢复默认值',
+    addMainMonitor:'添加主阀值'
+  }
 }

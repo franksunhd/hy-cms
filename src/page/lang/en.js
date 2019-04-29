@@ -691,4 +691,26 @@ export default {
   	describe:'describe',
   	ipAddress:'ipAddress'
   },
+  // 监测阀值
+  monitorThreshold: {
+    equipmentName: 'equipmentName',
+    serialNumber: 'serialNumber',
+    equipmentMonitoring: 'Monitoring',
+    equipmentModel: 'Model',
+    equipmentType: 'Type',
+    ip: 'ip',
+    roomName: 'roomName',
+    frameName: 'frameName',
+    monitorIndex: 'monitorIndex',
+    IndexThreshold: 'IndexThreshold',
+    Index: 'Index',
+    defaultThreshold: 'defaultThreshold',
+    mainThreshold: 'mainThreshold',
+    formThreshold: 'formThreshold',
+    alarmLevel: 'alarmLevel',
+    alarmPlaceholder: 'enter text...',
+    showDefault: 'showDefault',
+    returnDefault: 'returnDefault',
+    addMainMonitor:'addMainMonitor'
+  }
 }

@@ -15,15 +15,15 @@
       </el-col>
       <el-col :span="22">
         <el-form inline label-width="96px" label-position="right" class="marginBottom10 monitorThreshold-formBox">
-          <el-form-item label="设备名称：">{{equipmentInfoData.deviceName}}</el-form-item>
-          <el-form-item label="序列号：">{{equipmentInfoData.servicetag}}</el-form-item>
-          <el-form-item label="设备品牌：">{{equipmentInfoData.manufacturer}}</el-form-item>
-          <el-form-item label="设备型号：">{{equipmentInfoData.model}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentName') + '：'">{{equipmentInfoData.deviceName}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.serialNumber') + '：'">{{equipmentInfoData.servicetag}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentMonitoring') + '：'">{{equipmentInfoData.manufacturer}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentModel') + '：'">{{equipmentInfoData.model}}</el-form-item>
           <br>
-          <el-form-item label="设备类型：">{{AssetType[equipmentInfoData.type]}}</el-form-item>
-          <el-form-item label="带外IP：">{{equipmentInfoData.ip}}</el-form-item>
-          <el-form-item label="所在机房：">{{equipmentInfoData.roomName}}</el-form-item>
-          <el-form-item label="机架位置：">
+          <el-form-item :label="$t('monitorThreshold.equipmentType') + '：'">{{AssetType[equipmentInfoData.type]}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.ip') + '：'">{{equipmentInfoData.ip}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.roomName') + '：'">{{equipmentInfoData.roomName}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.frameName') + '：'">
             <span>{{equipmentInfoData.frameName}}</span>
             <span v-if="equipmentInfoData.framePosition !== null">,{{equipmentInfoData.framePosition}}U</span>
           </el-form-item>
@@ -34,22 +34,22 @@
     <div style="padding: 10px 20px;">
       <div class="grayBg monitorThreshold-title clearfix">
         <div class="fl">
-          <span class="title">监测指标</span>
-          <span class="title">指标阈值</span>
+          <span class="title">{{$t('monitorThreshold.monitorIndex')}}</span>
+          <span class="title">{{$t('monitorThreshold.IndexThreshold')}}</span>
         </div>
         <div class="fr paddingRight-10">
           <el-button type="text" class="middle marRight10 positionRelative">
             <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-            <span class="verticalAlignMiddle" @mouseenter="isShowDefaultBox = true" @mouseleave="isShowDefaultBox = false">查看默认值</span>
+            <span class="verticalAlignMiddle" @mouseenter="isShowDefaultBox = true" @mouseleave="isShowDefaultBox = false">{{$t('monitorThreshold.showDefault')}}</span>
             <!--查看默认值区域-->
             <div class="showDefaultBox" v-if="isShowDefaultBox">
               <p style="text-align: left;">
-                <span>指标</span>
-                <span class="el-button--text">【Ping 192.168.9.27】</span>
-                <span>的默认阈值</span>
+                <span>{{$t('monitorThreshold.Index')}}</span>
+                <span class="el-button--text">【{{showDefault.monitorClass}}】</span>
+                <span>{{$t('monitorThreshold.defaultThreshold')}}</span>
               </p>
               <el-form :model="showDefault" label-width="70px" class="marginBottom10">
-                <el-form-item label="主阈值：" class="textAlignLeft">
+                <el-form-item :label="$t('monitorThreshold.mainThreshold') + '：'" class="textAlignLeft">
                   <el-select :disabled="isShowDefault" v-model="showDefault.monitorClass" class="width170 marginRight6" clearable>
                     <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
                   </el-select>
@@ -63,20 +63,20 @@
                   </el-select>
                   <el-input :disabled="isShowDefault" v-model="showDefault.threshold" class="width170 marginRight6" clearable />
                 </el-form-item>
-                <el-form-item label="告警级别：" class="textAlignLeft">
+                <el-form-item :label="$t('monitorThreshold.alarmLevel') + '：'" class="textAlignLeft">
                   <el-select :disabled="isShowDefault" v-model="showDefault.alarmLevel" class="width170 marginRight6" clearable>
                     <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
                   </el-select>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-input :disabled="isShowDefault" v-model="showDefault.alarmText" placeholder="告警的附加内容..." />
+                  <el-input :disabled="isShowDefault" v-model="showDefault.alarmText" :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
                 </el-form-item>
               </el-form>
             </div>
           </el-button>
           <el-button type="text" class="middle">
             <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-            <span class="verticalAlignMiddle">恢复默认值</span>
+            <span class="verticalAlignMiddle">{{$t('monitorThreshold.returnDefault')}}</span>
           </el-button>
         </div>
       </div>
@@ -99,7 +99,7 @@
           <el-form inline label-width="96px">
             <!--循环主阀值-->
             <div class="monitor-formItemBox clearfix" v-for="(main,mainIndex) in monitorListArr" :key="mainIndex">
-              <el-form-item label="主阈值：">
+              <el-form-item :label="$t('monitorThreshold.mainThreshold') + '：'">
                 <el-select :disabled="true" v-model="main.monitorClass" class="width170 marginRight6" clearable>
                   <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
                 </el-select>
@@ -113,9 +113,9 @@
                 <el-button @click="addFromMonitor(mainIndex)" class="addEditBtn">
                   <span class="el-icon-plus"></span>
                 </el-button>
-                <span>从阈值</span>
+                <span>{{$t('monitorThreshold.formThreshold')}}</span>
               </el-form-item>
-              <el-form-item label="从阀值：" v-for="(item,data) in main.deviceMonitorThresholdList" :key="data">
+              <el-form-item :label="$t('monitorThreshold.formThreshold') + '：'" v-for="(item,data) in main.deviceMonitorThresholdList" :key="data">
                 <el-select v-model="item.monitorClass" class="width170 marginRight6" clearable @change="changeMonitorSelect(item,item.monitorClass,true)">
                   <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name" :value="value.nodeClass" />
                 </el-select>
@@ -129,11 +129,11 @@
                 <el-button @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span class="el-icon-minus"></span></el-button>
               </el-form-item>
               <!--告警级别-->
-              <el-form-item label="告警级别：">
+              <el-form-item :label="$t('monitorThreshold.alarmLevel') + '：'">
                 <el-select v-model="main.alarmLevel" class="width170 marginRight6" clearable>
                   <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
                 </el-select>
-                <el-input v-model="main.alarmText" style="width: 530px;" clearable placeholder="请输入告警的附加内容..." />
+                <el-input v-model="main.alarmText" style="width: 530px;" clearable :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
               </el-form-item>
               <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn" @click="delMainMonitor(mainIndex)">
                 <span class="el-icon-delete"></span>
@@ -143,7 +143,7 @@
           <div class="textAlignCenter marginTop20">
             <el-button class="middle marRight10" @click="addMainMonitor">
               <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-              <span class="verticalAlignMiddle">添加主阈值</span>
+              <span class="verticalAlignMiddle">{{$t('monitorThreshold.addMainMonitor')}}</span>
             </el-button>
             <el-button class="queryBtn" type="primary" @click="addMonitor">{{$t('public.save')}}</el-button>
           </div>
@@ -307,7 +307,11 @@
                     _t.changeMonitorSelect(data,data.monitorId,false);
                   });
                 }
+                // 加入判断是否为空的状态判断
+
+
               });
+              console.log(monitorListArr)
               // 给监测指标动态表单赋值
               _t.monitorListArr = monitorListArr;
               // 设备查看默认值
@@ -524,6 +528,8 @@
       // 保存阀值
       addMonitor(){
         var _t = this;
+
+
         _t.$store.commit('setLoading',true);
         _t.$api.post('monitor/deviceMonitorThreshold/',{
           monitorId:_t.monitorThisId,
@@ -532,7 +538,16 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              _t.getResultData(_t.monitorThisId);
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
+                customClass:'messageBoxSuccess',
+                duration:2000,
+                onClose:function () {
+                  // 关闭前回调
+                  _t.getResultData(_t.monitorThisId);
+                }
+              });
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -541,6 +556,16 @@
               _t.exclude(_t, res.message);
               break;
             default:
+              _t.$message({
+                dangerouslyUseHTMLString: true,
+                message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
+                customClass:'messageBoxError',
+                duration:2000,
+                onClose:function () {
+                  // 关闭前回调
+                  _t.getResultData(_t.monitorThisId);
+                }
+              });
               break;
           }
         });
