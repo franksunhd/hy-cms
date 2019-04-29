@@ -40,9 +40,9 @@
         <div class="fr paddingRight-10">
           <el-button type="text" class="middle marRight10 positionRelative">
             <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-            <span class="verticalAlignMiddle" @mouseenter="isShowDefault = true" @mouseleave="isShowDefault = false">查看默认值</span>
+            <span class="verticalAlignMiddle" @mouseenter="isShowDefaultBox = true" @mouseleave="isShowDefaultBox = false">查看默认值</span>
             <!--查看默认值区域-->
-            <div class="showDefaultBox" v-if="isShowDefault">
+            <div class="showDefaultBox" v-if="isShowDefaultBox">
               <p style="text-align: left;">
                 <span>指标</span>
                 <span class="el-button--text">【Ping 192.168.9.27】</span>
@@ -50,18 +50,26 @@
               </p>
               <el-form :model="showDefault" label-width="70px" class="marginBottom10">
                 <el-form-item label="主阈值：" class="textAlignLeft">
-                  <el-input :disabled="true" v-model="showDefault.value1" class="width170 marginRight6" />
-                  <el-input :disabled="true" v-model="showDefault.value2" class="width170" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.monitorClass" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
+                  </el-select>
+                  <el-select :disabled="isShowDefault" v-model="showDefault.perf" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value" />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="" class="textAlignLeft">
-                  <el-input :disabled="true" v-model="showDefault.value3" class="width170 marginRight6" />
-                  <el-input :disabled="true" v-model="showDefault.value4" class="width170" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.op" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                  </el-select>
+                  <el-input :disabled="isShowDefault" v-model="showDefault.threshold" class="width170 marginRight6" clearable />
                 </el-form-item>
                 <el-form-item label="告警级别：" class="textAlignLeft">
-                  <el-input :disabled="true" v-model="showDefault.value5" class="width170" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.alarmLevel" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-input :disabled="true" v-model="showDefault.value6" type="textarea" />
+                  <el-input :disabled="isShowDefault" v-model="showDefault.alarmText" placeholder="告警的附加内容..." />
                 </el-form-item>
               </el-form>
             </div>
@@ -82,6 +90,7 @@
             :data="treeData"
             node-key="nodeId"
             ref="tree"
+            :default-expanded-keys="defaultExpandedKeys"
             highlight-current
             :props="defaultProps"/>
         </div>
@@ -167,7 +176,9 @@
         deviceId:null, // 设备id
         AssetType:{}, // 设备类型字典集合
         treeData:[], // 左侧树形控件
-        isShowDefault:false,
+        defaultExpandedKeys:[], // 左侧树默认展开的key
+        isShowDefaultBox:false,
+        isShowDefault:true, // 是否禁用 查看默认值的文本框
         defaultProps:{
           label:'nodeName',
           children:'children',
@@ -182,56 +193,57 @@
         baseDataThresholdOp:[], // 操作下拉框
         AlarmSeverity:[], // 告警级别
         showDefault:{ // 查看默认值
-          value1:'',
-          value2:'',
-          value3:'',
-          value4:'',
-          value5:'',
-          value6:''
+          monitorClass:'',
+          perf:'',
+          op:'',
+          threshold:'',
+          alarmLevel:'',
+          alarmText:''
         }
       }
     },
     methods: {
-      // 改变从阀值下拉框时 重新获取对应的 指标下拉框数据
-      changeMonitorSelect(item,val,bool){
+      // 获取监测阈值目录
+      getThresholdTree(){
         var _t = this;
-        if (val !== '') {
-          _t.$api.get('monitor/deviceMonitor/' + val,{},function (res) {
-            switch (res.status) {
-              case 200:
-                var result = JSON.parse(res.data.result);
-                var resultArrList = new Array();
-                for (var key in result) {
-                  var obj = new Object();
-                  obj.value = key;
-                  obj.label = result[key];
-                  resultArrList.push(obj);
-                }
-                var perfNumber = 0;
-                resultArrList.forEach((val)=>{
-                  if (val.value !== item.perf) {
-                    perfNumber += 1;
-                  }
-                });
-                if (bool === true && perfNumber !== 0) {
-                  item.perf = '';
-                }
-                item.resultArrList = resultArrList;
-                break;
-              case 1003: // 无操作权限
-              case 1004: // 登录过期
-              case 1005: // token过期
-              case 1006: // token不通过
-                _t.exclude(_t, res.message);
-                break;
-              default:
-                break;
+        _t.$store.commit('setLoading',true);
+        _t.$api.get('monitor/deviceMonitor/all',{
+          jsonString:JSON.stringify({
+            deviceMonitor:{
+              nodeClass:'tree'
             }
-          });
-        } else {
-          item.perf = '';
-          item.resultArrList = [];
-        }
+          })
+        },function (res) {
+          _t.$store.commit('setLoading',false);
+          switch(res.status) {
+            case 200:
+              _t.treeData = res.data.children;
+              // 拿到树之后 取出第一个节点最细一级的元素节点
+              _t.getDefaultTreeFirstData(_t.treeData);
+              break;
+            case 1003: // 无操作权限
+            case 1004: // 登录过期
+            case 1005: // token过期
+            case 1006: // token不通过
+              _t.exclude(_t, res.message);
+              break;
+            default:
+              _t.treeData = [];
+              break;
+          }
+        });
+      },
+      // 根据左侧的树判断拿到第一个节点的最细一级的数据作为右边的显示值
+      getDefaultTreeFirstData(treeData){
+        var _t = this;
+        var firstNode = getLastNewData(treeData);
+        // 高亮当前节点
+        _t.$nextTick(function () {
+          _t.$refs.tree.setCurrentKey(firstNode.nodeId);
+          _t.defaultExpandedKeys = [];
+          _t.defaultExpandedKeys.push(firstNode.nodeId);
+        });
+        _t.clickNodeTree(firstNode);
       },
       // 点击左侧树形节点 获取阀值目录数据
       clickNodeTree(data){
@@ -241,34 +253,6 @@
         // 监测器主阀值
         _t.monitorThisThred = data.nodeCode;
         _t.getResultData(data.nodeId);
-      },
-      // 获取主阀值 下拉框数据
-      getMonitorSelectData(){
-        var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('monitor/deviceMonitor/all',{
-          jsonString:JSON.stringify({
-            deviceMonitor:{
-              nodeType:1
-            }
-          })
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status) {
-            case 200:
-              _t.monitorMainList = res.data;
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.monitorMainList = [];
-              break;
-          }
-        });
       },
       // 获取指标下拉框数据
       getResultData(val){
@@ -320,11 +304,26 @@
                 if (item.deviceMonitorThresholdList.length !== 0) {
                   item.deviceMonitorThresholdList.forEach((data)=>{
                     data.resultArrList = [];
-                    _t.changeMonitorSelect(data,data.monitorClass,false);
+                    _t.changeMonitorSelect(data,data.monitorId,false);
                   });
                 }
               });
+              // 给监测指标动态表单赋值
               _t.monitorListArr = monitorListArr;
+              // 设备查看默认值
+              var showDefault = monitorListArr[0];
+              if (showDefault) {
+                _t.showDefault = showDefault;
+              } else {
+                _t.showDefault = {
+                  monitorClass:'',
+                  perf:'',
+                  op:'',
+                  threshold:'',
+                  alarmLevel:'',
+                  alarmText:''
+                }
+              }
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -336,6 +335,47 @@
               break;
           }
         });
+      },
+      // 改变从阀值下拉框时 重新获取对应的 指标下拉框数据
+      changeMonitorSelect(item,val,bool){
+        var _t = this;
+        if (val !== '') {
+          _t.$api.get('monitor/deviceMonitor/' + val,{},function (res) {
+            switch (res.status) {
+              case 200:
+                var result = JSON.parse(res.data.result);
+                var resultArrList = new Array();
+                for (var key in result) {
+                  var obj = new Object();
+                  obj.value = key;
+                  obj.label = result[key];
+                  resultArrList.push(obj);
+                }
+                var perfNumber = 0;
+                resultArrList.forEach((val)=>{
+                  if (val.value !== item.perf) {
+                    perfNumber += 1;
+                  }
+                });
+                if (bool === true && perfNumber !== 0) {
+                  item.perf = '';
+                }
+                item.resultArrList = resultArrList;
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                break;
+            }
+          });
+        } else {
+          item.perf = '';
+          item.resultArrList = [];
+        }
       },
       // 获取设备信息详情
       getInfoData(){
@@ -415,22 +455,21 @@
           }
         });
       },
-      // 获取监测阈值目录
-      getThresholdTree(){
+      // 获取阀值 下拉框数据
+      getMonitorSelectData(){
         var _t = this;
         _t.$store.commit('setLoading',true);
         _t.$api.get('monitor/deviceMonitor/all',{
           jsonString:JSON.stringify({
             deviceMonitor:{
-              nodeClass:'tree'
+              nodeType:1
             }
           })
         },function (res) {
           _t.$store.commit('setLoading',false);
           switch(res.status) {
             case 200:
-              _t.treeData = res.data.children;
-              _t.getDefaultTreeFirstData(_t.treeData);
+              _t.monitorMainList = res.data;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -439,20 +478,10 @@
               _t.exclude(_t, res.message);
               break;
             default:
-              _t.treeData = [];
+              _t.monitorMainList = [];
               break;
           }
         });
-      },
-      // 根据左侧的树判断拿到第一个节点的最细一级的数据作为右边的显示值
-      getDefaultTreeFirstData(treeData){
-        var _t = this;
-        var firstNode = getLastNewData(treeData);
-        // 高亮当前节点
-        _t.$nextTick(function () {
-          _t.$refs.tree.setCurrentKey(firstNode.nodeId);
-        });
-        _t.clickNodeTree(firstNode);
       },
       // 添加从阀值
       addFromMonitor(index){
@@ -503,7 +532,7 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              _t.getThresholdTree();
+              _t.getResultData(_t.monitorThisId);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
