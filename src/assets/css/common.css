@@ -593,7 +593,3 @@ input::-webkit-input-placeholder {
 .monitorThreshold-formBox .el-form-item {
   width: 220px;
 }
-
-.monitor-formItemBox .el-form-item {
-  margin-bottom: 10px;
-}

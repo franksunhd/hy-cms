@@ -100,40 +100,88 @@
             <!--循环主阀值-->
             <div class="monitor-formItemBox clearfix" v-for="(main,mainIndex) in monitorListArr" :key="mainIndex">
               <el-form-item :label="$t('monitorThreshold.mainThreshold') + '：'">
-                <el-select :disabled="true" v-model="main.monitorClass" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
-                </el-select>
-                <el-select v-model="main.perf" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value" />
-                </el-select>
-                <el-select v-model="main.op" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
-                </el-select>
-                <el-input v-model="main.threshold" class="width170 marginRight6" clearable />
+                <div class="positionRelative displayInlineBlock">
+                  <el-select
+                    :id="main.domId + '_monitorClass'"
+                    :disabled="true"
+                    v-model="main.monitorClass"
+                    class="width170 marginRight6"
+                    @change="changeThresholdSelect(main,'main')"
+                    clearable>
+                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
+                  </el-select>
+                  <span v-if="main.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-select
+                    :id="main.domId + '_perf'"
+                    v-model="main.perf"
+                    class="width170 marginRight6"
+                    @change="changeIndexSelect(main)"
+                    clearable>
+                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value" />
+                  </el-select>
+                  <span v-if="main.perfStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-select :id="main.domId + '_op'" v-model="main.op" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                  </el-select>
+                  <span v-if="main.opStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-input :id="main.domId + '_threshold'" v-model="main.threshold" class="width170 marginRight6" clearable />
+                  <span v-if="main.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
                 <el-button @click="addFromMonitor(mainIndex)" class="addEditBtn">
                   <span class="el-icon-plus"></span>
                 </el-button>
                 <span>{{$t('monitorThreshold.formThreshold')}}</span>
               </el-form-item>
               <el-form-item :label="$t('monitorThreshold.formThreshold') + '：'" v-for="(item,data) in main.deviceMonitorThresholdList" :key="data">
-                <el-select v-model="item.monitorClass" class="width170 marginRight6" clearable @change="changeMonitorSelect(item,item.monitorClass,true)">
-                  <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name" :value="value.nodeClass" />
-                </el-select>
-                <el-select v-model="item.perf" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in item.resultArrList" :key="index" :label="val.label" :value="val.value" />
-                </el-select>
-                <el-select v-model="item.op" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
-                </el-select>
-                <el-input v-model="item.threshold" class="width170 marginRight6" clearable />
+                <div class="positionRelative displayInlineBlock">
+                  <el-select
+                    :id="item.domId + '_monitorClass'"
+                    v-model="item.monitorClass"
+                    class="width170 marginRight6"
+                    clearable
+                    @change="changeMonitorSelect(item,item.monitorClass,true)">
+                    <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name" :value="value.nodeClass" />
+                  </el-select>
+                  <span v-if="item.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-select
+                    :id="item.domId + '_perf'"
+                    v-model="item.perf"
+                    class="width170 marginRight6"
+                    @change="changeIndexSelect(item)"
+                    clearable>
+                    <el-option v-for="(val,index) in item.resultArrList" :key="index" :label="val.label" :value="val.value" />
+                  </el-select>
+                  <span v-if="item.perfStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-select :id="item.domId + '_op'" v-model="item.op" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                  </el-select>
+                  <span v-if="item.opStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <div class="positionRelative displayInlineBlock">
+                  <el-input :id="item.domId + '_threshold'" v-model="item.threshold" class="width170 marginRight6" clearable />
+                  <span v-if="item.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
                 <el-button @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span class="el-icon-minus"></span></el-button>
               </el-form-item>
               <!--告警级别-->
               <el-form-item :label="$t('monitorThreshold.alarmLevel') + '：'">
-                <el-select v-model="main.alarmLevel" class="width170 marginRight6" clearable>
-                  <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
-                </el-select>
-                <el-input v-model="main.alarmText" style="width: 530px;" clearable :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
+                <div class="positionRelative displayInlineBlock">
+                  <el-select :id="main.domId + '_alarmLevel'" v-model="main.alarmLevel" class="width170 marginRight6" clearable>
+                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
+                  </el-select>
+                  <span v-if="main.alarmLevelStatus === true" class="isNotNull">必填项不能为空</span>
+                </div>
+                <el-input :id="main.domId + '_alarmText'" v-model="main.alarmText" style="width: 530px;" clearable :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
               </el-form-item>
               <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn" @click="delMainMonitor(mainIndex)">
                 <span class="el-icon-delete"></span>
@@ -203,6 +251,26 @@
       }
     },
     methods: {
+      // 阀值下拉框数据改变的时候
+      changeThresholdSelect(data) {
+        if (data.monitorClass === '') {
+          data.monitorClassStatus = true;
+          document.getElementById(data.domId + '_monitorClass').style.borderColor = '#fb6041';
+        } else {
+          data.monitorClassStatus = false;
+          document.getElementById(data.domId + '_monitorClass').style.borderColor = '#DCDFE6';
+        }
+      },
+      // 指标下拉框校验
+      changeIndexSelect(data){
+        if (data.perf === '') {
+          data.perfStatus = true;
+          document.getElementById(data.domId + '_perf').style.borderColor = '#fb6041';
+        } else {
+          data.perfStatus = false;
+          document.getElementById(data.domId + '_perf').style.borderColor = '#DCDFE6';
+        }
+      },
       // 获取监测阈值目录
       getThresholdTree(){
         var _t = this;
@@ -304,14 +372,30 @@
                 if (item.deviceMonitorThresholdList.length !== 0) {
                   item.deviceMonitorThresholdList.forEach((data)=>{
                     data.resultArrList = [];
+                    // 加入判断是否为空的字段
+                    data.monitorClassStatus = false;
+                    data.perfStatus = false;
+                    data.opStatus = false;
+                    data.thresholdStatus = false;
+                    data.alarmLevelStatus = false;
+                    data.alarmTextStatus = false;
                     _t.changeMonitorSelect(data,data.monitorId,false);
+                    if (data.id && data.id !== null) {
+                      data.domId = data.id;
+                    }
                   });
                 }
-                // 加入判断是否为空的状态判断
-
-
+                // 加入判断是否为空的字段
+                item.monitorClassStatus = false;
+                item.perfStatus = false;
+                item.opStatus = false;
+                item.thresholdStatus = false;
+                item.alarmLevelStatus = false;
+                item.alarmTextStatus = false;
+                if (item.id && item.id !== null) {
+                  item.domId = item.id;
+                }
               });
-              console.log(monitorListArr)
               // 给监测指标动态表单赋值
               _t.monitorListArr = monitorListArr;
               // 设备查看默认值
@@ -491,6 +575,7 @@
       addFromMonitor(index){
         var _t = this;
         let monitorClass = {
+          domId:new Date().getTime(),
           monitorClass:'', // 从阀值字段
           perf:'', // 从阀值指标名称
           op:'', // 阀值比较符
@@ -503,6 +588,7 @@
       addMainMonitor(){
         var _t = this;
         let monitorMain = {
+          domId:new Date().getTime(),
           monitorId:_t.monitorThisId, // 监测器id
           monitorClass:_t.monitorThisThred,// 主从阀值字段
           perf:'', // 阀值指标名称
@@ -588,17 +674,6 @@
 </script>
 
 <style scoped>
-  .monitor-returnBtn {
-    height: 30px;
-    line-height: 30px;
-    padding-left: 10px;
-    cursor: pointer;
-  }
-
-  .monitor-returnBtn span {
-    vertical-align: middle;
-  }
-
   .monitorThreshold-title {
     height: 30px;
     line-height: 30px;
