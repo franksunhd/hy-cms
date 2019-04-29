@@ -15,12 +15,16 @@
       </el-col>
       <el-col :span="22">
         <el-form inline label-width="96px" label-position="right" class="marginBottom10 monitorThreshold-formBox">
-          <el-form-item :label="$t('monitorThreshold.equipmentName') + '：'">{{equipmentInfoData.deviceName}}</el-form-item>
-          <el-form-item :label="$t('monitorThreshold.serialNumber') + '：'">{{equipmentInfoData.servicetag}}</el-form-item>
-          <el-form-item :label="$t('monitorThreshold.equipmentMonitoring') + '：'">{{equipmentInfoData.manufacturer}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentName') + '：'">{{equipmentInfoData.deviceName}}
+          </el-form-item>
+          <el-form-item :label="$t('monitorThreshold.serialNumber') + '：'">{{equipmentInfoData.servicetag}}
+          </el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentMonitoring') + '：'">{{equipmentInfoData.manufacturer}}
+          </el-form-item>
           <el-form-item :label="$t('monitorThreshold.equipmentModel') + '：'">{{equipmentInfoData.model}}</el-form-item>
           <br>
-          <el-form-item :label="$t('monitorThreshold.equipmentType') + '：'">{{AssetType[equipmentInfoData.type]}}</el-form-item>
+          <el-form-item :label="$t('monitorThreshold.equipmentType') + '：'">{{AssetType[equipmentInfoData.type]}}
+          </el-form-item>
           <el-form-item :label="$t('monitorThreshold.ip') + '：'">{{equipmentInfoData.ip}}</el-form-item>
           <el-form-item :label="$t('monitorThreshold.roomName') + '：'">{{equipmentInfoData.roomName}}</el-form-item>
           <el-form-item :label="$t('monitorThreshold.frameName') + '：'">
@@ -40,7 +44,8 @@
         <div class="fr paddingRight-10">
           <el-button type="text" class="middle marRight10 positionRelative">
             <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-            <span class="verticalAlignMiddle" @mouseenter="isShowDefaultBox = true" @mouseleave="isShowDefaultBox = false">{{$t('monitorThreshold.showDefault')}}</span>
+            <span class="verticalAlignMiddle" @mouseenter="isShowDefaultBox = true"
+                  @mouseleave="isShowDefaultBox = false">{{$t('monitorThreshold.showDefault')}}</span>
             <!--查看默认值区域-->
             <div class="showDefaultBox" v-if="isShowDefaultBox">
               <p style="text-align: left;">
@@ -50,26 +55,33 @@
               </p>
               <el-form :model="showDefault" label-width="70px" class="marginBottom10">
                 <el-form-item :label="$t('monitorThreshold.mainThreshold') + '：'" class="textAlignLeft">
-                  <el-select :disabled="isShowDefault" v-model="showDefault.monitorClass" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.monitorClass" class="width170 marginRight6"
+                             clearable>
+                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name"
+                               :value="val.nodeClass"/>
                   </el-select>
-                  <el-select :disabled="isShowDefault" v-model="showDefault.perf" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.perf" class="width170 marginRight6"
+                             clearable>
+                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value"/>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="" class="textAlignLeft">
                   <el-select :disabled="isShowDefault" v-model="showDefault.op" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name"
+                               :value="val.type"/>
                   </el-select>
-                  <el-input :disabled="isShowDefault" v-model="showDefault.threshold" class="width170 marginRight6" clearable />
+                  <el-input :disabled="isShowDefault" v-model="showDefault.threshold" class="width170 marginRight6"
+                            clearable/>
                 </el-form-item>
                 <el-form-item :label="$t('monitorThreshold.alarmLevel') + '：'" class="textAlignLeft">
-                  <el-select :disabled="isShowDefault" v-model="showDefault.alarmLevel" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
+                  <el-select :disabled="isShowDefault" v-model="showDefault.alarmLevel" class="width170 marginRight6"
+                             clearable>
+                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type"/>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="">
-                  <el-input :disabled="isShowDefault" v-model="showDefault.alarmText" :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
+                  <el-input :disabled="isShowDefault" v-model="showDefault.alarmText"
+                            :placeholder="$t('monitorThreshold.alarmPlaceholder')"/>
                 </el-form-item>
               </el-form>
             </div>
@@ -106,9 +118,10 @@
                     :disabled="true"
                     v-model="main.monitorClass"
                     class="width170 marginRight6"
-                    @change="changeThresholdSelect(main,'main')"
+                    @change="changeSelect(main,'monitorClass')"
                     clearable>
-                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name" :value="val.nodeClass" />
+                    <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name"
+                               :value="val.nodeClass"/>
                   </el-select>
                   <span v-if="main.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
@@ -117,20 +130,31 @@
                     :id="main.domId + '_perf'"
                     v-model="main.perf"
                     class="width170 marginRight6"
-                    @change="changeIndexSelect(main)"
+                    @change="changeSelect(main,'perf')"
                     clearable>
-                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value" />
+                    <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value"/>
                   </el-select>
                   <span v-if="main.perfStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
-                  <el-select :id="main.domId + '_op'" v-model="main.op" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                  <el-select
+                    :id="main.domId + '_op'"
+                    v-model="main.op"
+                    class="width170 marginRight6"
+                    @change="changeSelect(main,'op')"
+                    clearable>
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name"
+                               :value="val.type"/>
                   </el-select>
                   <span v-if="main.opStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
-                  <el-input :id="main.domId + '_threshold'" v-model="main.threshold" class="width170 marginRight6" clearable />
+                  <el-input
+                    :id="main.domId + '_threshold'"
+                    v-model="main.threshold"
+                    class="width170 marginRight6"
+                    @input="changeSelect(main,'threshold')"
+                    clearable/>
                   <span v-if="main.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
                 <el-button @click="addFromMonitor(mainIndex)" class="addEditBtn">
@@ -138,15 +162,17 @@
                 </el-button>
                 <span>{{$t('monitorThreshold.formThreshold')}}</span>
               </el-form-item>
-              <el-form-item :label="$t('monitorThreshold.formThreshold') + '：'" v-for="(item,data) in main.deviceMonitorThresholdList" :key="data">
+              <el-form-item :label="$t('monitorThreshold.formThreshold') + '：'"
+                            v-for="(item,data) in main.deviceMonitorThresholdList" :key="data">
                 <div class="positionRelative displayInlineBlock">
                   <el-select
                     :id="item.domId + '_monitorClass'"
                     v-model="item.monitorClass"
                     class="width170 marginRight6"
                     clearable
-                    @change="changeMonitorSelect(item,item.monitorClass,true)">
-                    <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name" :value="value.nodeClass" />
+                    @change="changeMonitorSelect(item,item.monitorClass,true,'bool')">
+                    <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name"
+                               :value="value.nodeClass"/>
                   </el-select>
                   <span v-if="item.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
@@ -155,35 +181,55 @@
                     :id="item.domId + '_perf'"
                     v-model="item.perf"
                     class="width170 marginRight6"
-                    @change="changeIndexSelect(item)"
+                    @change="changeSelect(item,'perf')"
                     clearable>
-                    <el-option v-for="(val,index) in item.resultArrList" :key="index" :label="val.label" :value="val.value" />
+                    <el-option v-for="(val,index) in item.resultArrList" :key="index" :label="val.label"
+                               :value="val.value"/>
                   </el-select>
                   <span v-if="item.perfStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
-                  <el-select :id="item.domId + '_op'" v-model="item.op" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name" :value="val.type" />
+                  <el-select
+                    :id="item.domId + '_op'"
+                    v-model="item.op"
+                    class="width170 marginRight6"
+                    @change="changeSelect(item,'op')"
+                    clearable>
+                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name"
+                               :value="val.type"/>
                   </el-select>
                   <span v-if="item.opStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
-                  <el-input :id="item.domId + '_threshold'" v-model="item.threshold" class="width170 marginRight6" clearable />
+                  <el-input
+                    :id="item.domId + '_threshold'"
+                    v-model="item.threshold"
+                    class="width170 marginRight6"
+                    @input="changeSelect(item,'threshold')"
+                    clearable/>
                   <span v-if="item.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
-                <el-button @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span class="el-icon-minus"></span></el-button>
+                <el-button @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span
+                  class="el-icon-minus"></span></el-button>
               </el-form-item>
               <!--告警级别-->
               <el-form-item :label="$t('monitorThreshold.alarmLevel') + '：'">
                 <div class="positionRelative displayInlineBlock">
-                  <el-select :id="main.domId + '_alarmLevel'" v-model="main.alarmLevel" class="width170 marginRight6" clearable>
-                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type" />
+                  <el-select
+                    :id="main.domId + '_alarmLevel'"
+                    v-model="main.alarmLevel"
+                    class="width170 marginRight6"
+                    @change="changeSelect(main,'alarmLevel')"
+                    clearable>
+                    <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type"/>
                   </el-select>
                   <span v-if="main.alarmLevelStatus === true" class="isNotNull">必填项不能为空</span>
                 </div>
-                <el-input :id="main.domId + '_alarmText'" v-model="main.alarmText" style="width: 530px;" clearable :placeholder="$t('monitorThreshold.alarmPlaceholder')" />
+                <el-input :id="main.domId + '_alarmText'" v-model="main.alarmText" style="width: 530px;" clearable
+                          :placeholder="$t('monitorThreshold.alarmPlaceholder')"/>
               </el-form-item>
-              <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn" @click="delMainMonitor(mainIndex)">
+              <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn"
+                         @click="delMainMonitor(mainIndex)">
                 <span class="el-icon-delete"></span>
               </el-button>
             </div>
@@ -204,86 +250,88 @@
 <script>
   import Box from '../../../components/Box';
   import {getLastNewData} from "../../../assets/js/recursive";
+
   export default {
     name: "monitorThresholdValue",
-    components:{Box},
+    components: {Box},
     data() {
       return {
         // 设备基本信息
-        equipmentInfoData:{
-          deviceName:null,
-          servicetag:null,
-          manufacturer:null,
-          model:null,
-          type:null,
-          roomName:null,
-          ip:null,
-          frameName:null,
-          framePosition:null
+        equipmentInfoData: {
+          deviceName: null,
+          servicetag: null,
+          manufacturer: null,
+          model: null,
+          type: null,
+          roomName: null,
+          ip: null,
+          frameName: null,
+          framePosition: null
         },
-        deviceId:null, // 设备id
-        AssetType:{}, // 设备类型字典集合
-        treeData:[], // 左侧树形控件
-        defaultExpandedKeys:[], // 左侧树默认展开的key
-        isShowDefaultBox:false,
-        isShowDefault:true, // 是否禁用 查看默认值的文本框
-        defaultProps:{
-          label:'nodeName',
-          children:'children',
-          parentId:'parentNodeId'
+        deviceId: null, // 设备id
+        AssetType: {}, // 设备类型字典集合
+        treeData: [], // 左侧树形控件
+        defaultExpandedKeys: [], // 左侧树默认展开的key
+        isShowDefaultBox: false,
+        isShowDefault: true, // 是否禁用 查看默认值的文本框
+        defaultProps: {
+          label: 'nodeName',
+          children: 'children',
+          parentId: 'parentNodeId'
         },
-        monitorThisId:'', // 当前监测器id
-        monitorThisThred:'', // 当前监测器主阀值
+        monitorThisId: '', // 当前监测器id
+        monitorThisThred: '', // 当前监测器主阀值
         // 阀值集合
-        monitorListArr:[],
-        monitorMainList:[], // 主阀值下拉框
-        resultArrList:[], // 结果下拉框
-        baseDataThresholdOp:[], // 操作下拉框
-        AlarmSeverity:[], // 告警级别
-        showDefault:{ // 查看默认值
-          monitorClass:'',
-          perf:'',
-          op:'',
-          threshold:'',
-          alarmLevel:'',
-          alarmText:''
+        monitorListArr: [],
+        monitorMainList: [], // 主阀值下拉框
+        resultArrList: [], // 结果下拉框
+        baseDataThresholdOp: [], // 操作下拉框
+        AlarmSeverity: [], // 告警级别
+        showDefault: { // 查看默认值
+          monitorClass: '',
+          perf: '',
+          op: '',
+          threshold: '',
+          alarmLevel: '',
+          alarmText: ''
         }
       }
     },
     methods: {
-      // 阀值下拉框数据改变的时候
-      changeThresholdSelect(data) {
-        if (data.monitorClass === '') {
-          data.monitorClassStatus = true;
-          document.getElementById(data.domId + '_monitorClass').style.borderColor = '#fb6041';
+      // 下拉框数据改变的时候
+      changeSelect(data, val) {
+        if (val !== 'alarmLevel') {
+          if (data[val] === '') {
+            data[val + 'Status'] = true;
+            document.getElementById(data.domId + '_' + val).style.borderColor = '#fb6041';
+          } else {
+            data[val + 'Status'] = false;
+            document.getElementById(data.domId + '_' + val).style.borderColor = '#DCDFE6';
+          }
         } else {
-          data.monitorClassStatus = false;
-          document.getElementById(data.domId + '_monitorClass').style.borderColor = '#DCDFE6';
-        }
-      },
-      // 指标下拉框校验
-      changeIndexSelect(data){
-        if (data.perf === '') {
-          data.perfStatus = true;
-          document.getElementById(data.domId + '_perf').style.borderColor = '#fb6041';
-        } else {
-          data.perfStatus = false;
-          document.getElementById(data.domId + '_perf').style.borderColor = '#DCDFE6';
+          data[val] = data[val] === '' ? null : data[val];
+          if (data[val] === null) {
+            data[val + 'Status'] = true;
+            document.getElementById(data.domId + '_' + val).style.borderColor = '#fb6041';
+          } else {
+            data[val + 'Status'] = false;
+            document.getElementById(data.domId + '_' + val).style.borderColor = '#DCDFE6';
+          }
         }
       },
       // 获取监测阈值目录
-      getThresholdTree(){
+      getThresholdTree() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('monitor/deviceMonitor/all',{
-          jsonString:JSON.stringify({
-            deviceMonitor:{
-              nodeClass:'tree'
+        _t.$store.commit('setLoading', true);
+        _t.$api.get('monitor/deviceMonitor/all', {
+          jsonString: JSON.stringify({
+            deviceMonitor: {
+              nodeClass: 'tree'
             }
           })
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status) {
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
             case 200:
               _t.treeData = res.data.children;
               // 拿到树之后 取出第一个节点最细一级的元素节点
@@ -302,7 +350,7 @@
         });
       },
       // 根据左侧的树判断拿到第一个节点的最细一级的数据作为右边的显示值
-      getDefaultTreeFirstData(treeData){
+      getDefaultTreeFirstData(treeData) {
         var _t = this;
         var firstNode = getLastNewData(treeData);
         // 高亮当前节点
@@ -314,7 +362,7 @@
         _t.clickNodeTree(firstNode);
       },
       // 点击左侧树形节点 获取阀值目录数据
-      clickNodeTree(data){
+      clickNodeTree(data) {
         var _t = this;
         // 监测器id
         _t.monitorThisId = data.nodeId;
@@ -323,9 +371,9 @@
         _t.getResultData(data.nodeId);
       },
       // 获取指标下拉框数据
-      getResultData(val){
+      getResultData(val) {
         var _t = this;
-        _t.$api.get('monitor/deviceMonitor/' + val,{},function (res) {
+        _t.$api.get('monitor/deviceMonitor/' + val, {}, function (res) {
           switch (res.status) {
             case 200:
               var result = JSON.parse(res.data.result);
@@ -351,26 +399,26 @@
         });
       },
       // 获取编辑的阀值数据
-      getMonitorData(data){
+      getMonitorData(data) {
         var _t = this;
-        _t.$api.get('monitor/deviceMonitorThreshold/all',{
+        _t.$api.get('monitor/deviceMonitorThreshold/all', {
           jsonString: JSON.stringify({
-            deviceMonitorThreshold:{
-              monitorId:data,
-              isAssocRule:false
+            deviceMonitorThreshold: {
+              monitorId: data,
+              isAssocRule: false
             }
           })
-        },function (res) {
+        }, function (res) {
           switch (res.status) {
             case 200:
               var monitorListArr = res.data;
-              monitorListArr.forEach((item)=>{
+              monitorListArr.forEach((item) => {
                 // 转换 告警级别字段 类型
                 if (item.alarmLevel !== null) {
                   item.alarmLevel = String(item.alarmLevel);
                 }
                 if (item.deviceMonitorThresholdList.length !== 0) {
-                  item.deviceMonitorThresholdList.forEach((data)=>{
+                  item.deviceMonitorThresholdList.forEach((data) => {
                     data.resultArrList = [];
                     // 加入判断是否为空的字段
                     data.monitorClassStatus = false;
@@ -379,10 +427,10 @@
                     data.thresholdStatus = false;
                     data.alarmLevelStatus = false;
                     data.alarmTextStatus = false;
-                    _t.changeMonitorSelect(data,data.monitorId,false);
                     if (data.id && data.id !== null) {
                       data.domId = data.id;
                     }
+                    _t.changeMonitorSelect(data, data.monitorId, false);
                   });
                 }
                 // 加入判断是否为空的字段
@@ -404,12 +452,12 @@
                 _t.showDefault = showDefault;
               } else {
                 _t.showDefault = {
-                  monitorClass:'',
-                  perf:'',
-                  op:'',
-                  threshold:'',
-                  alarmLevel:'',
-                  alarmText:''
+                  monitorClass: '',
+                  perf: '',
+                  op: '',
+                  threshold: '',
+                  alarmLevel: '',
+                  alarmText: ''
                 }
               }
               break;
@@ -425,10 +473,14 @@
         });
       },
       // 改变从阀值下拉框时 重新获取对应的 指标下拉框数据
-      changeMonitorSelect(item,val,bool){
+      changeMonitorSelect(item, val, bool, boolString) {
         var _t = this;
         if (val !== '') {
-          _t.$api.get('monitor/deviceMonitor/' + val,{},function (res) {
+          if (boolString) {
+            item.monitorClassStatus = false;
+            document.getElementById(item.domId + '_monitorClass').style.borderColor = '#DCDFE6';
+          }
+          _t.$api.get('monitor/deviceMonitor/' + val, {}, function (res) {
             switch (res.status) {
               case 200:
                 var result = JSON.parse(res.data.result);
@@ -440,7 +492,7 @@
                   resultArrList.push(obj);
                 }
                 var perfNumber = 0;
-                resultArrList.forEach((val)=>{
+                resultArrList.forEach((val) => {
                   if (val.value !== item.perf) {
                     perfNumber += 1;
                   }
@@ -463,15 +515,23 @@
         } else {
           item.perf = '';
           item.resultArrList = [];
+          if (item.monitorClass === '') {
+            item.monitorClassStatus = true;
+            document.getElementById(item.domId + '_monitorClass').style.borderColor = '#fb6041';
+          } else {
+            item.monitorClassStatus = false;
+            document.getElementById(item.domId + '_monitorClass').style.borderColor = '#DCDFE6';
+          }
+          _t.changeSelect(item,'perf');
         }
       },
       // 获取设备信息详情
-      getInfoData(){
+      getInfoData() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('asset/assetDevice/' + _t.deviceId,{},function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status){
+        _t.$store.commit('setLoading', true);
+        _t.$api.get('asset/assetDevice/' + _t.deviceId, {}, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
             case 200:
               _t.equipmentInfoData = res.data;
               break;
@@ -487,15 +547,15 @@
         });
       },
       // 获取数据字典
-      getBaseData(){
+      getBaseData() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.post('system/basedata/map',{
-          languageMark:localStorage.getItem('hy-language'),
-          dictionaryTypes:['AssetType']
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status) {
+        _t.$store.commit('setLoading', true);
+        _t.$api.post('system/basedata/map', {
+          languageMark: localStorage.getItem('hy-language'),
+          dictionaryTypes: ['AssetType']
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
             case 200:
               _t.AssetType = res.data.AssetType;
               break;
@@ -511,24 +571,24 @@
         });
       },
       // 获取list数据字典
-      getBaseDataList(){
+      getBaseDataList() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.post('system/basedata/maplist',{
-          languageMark:localStorage.getItem('hy-language'),
-          dictionaryTypes:['ThresholdOp','AlarmSeverity']
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status) {
+        _t.$store.commit('setLoading', true);
+        _t.$api.post('system/basedata/maplist', {
+          languageMark: localStorage.getItem('hy-language'),
+          dictionaryTypes: ['ThresholdOp', 'AlarmSeverity']
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
             case 200:
               _t.baseDataThresholdOp = res.data.ThresholdOp;
               var AlarmSeverity = new Array();
-              res.data.AlarmSeverity.forEach((item)=>{
+              res.data.AlarmSeverity.forEach((item) => {
                 if (item.type == 66 || item.type == 99) {
                   AlarmSeverity.push(item);
                 }
               });
-              AlarmSeverity.unshift({name:'-请选择告警级别-',type:null});
+              AlarmSeverity.unshift({name: '-请选择告警级别-', type: null});
               _t.AlarmSeverity = AlarmSeverity;
               break;
             case 1003: // 无操作权限
@@ -544,18 +604,18 @@
         });
       },
       // 获取阀值 下拉框数据
-      getMonitorSelectData(){
+      getMonitorSelectData() {
         var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.get('monitor/deviceMonitor/all',{
-          jsonString:JSON.stringify({
-            deviceMonitor:{
-              nodeType:1
+        _t.$store.commit('setLoading', true);
+        _t.$api.get('monitor/deviceMonitor/all', {
+          jsonString: JSON.stringify({
+            deviceMonitor: {
+              nodeType: 1
             }
           })
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch(res.status) {
+        }, function (res) {
+          _t.$store.commit('setLoading', false);
+          switch (res.status) {
             case 200:
               _t.monitorMainList = res.data;
               break;
@@ -572,94 +632,189 @@
         });
       },
       // 添加从阀值
-      addFromMonitor(index){
+      addFromMonitor(index) {
         var _t = this;
         let monitorClass = {
-          domId:new Date().getTime(),
-          monitorClass:'', // 从阀值字段
-          perf:'', // 从阀值指标名称
-          op:'', // 阀值比较符
-          threshold:'', // 从阀值
-          resultArrList:[], // 从阀值下拉框集合
+          domId: new Date().getTime(),
+          monitorClass: '', // 从阀值字段
+          perf: '', // 从阀值指标名称
+          op: '', // 阀值比较符
+          threshold: '', // 从阀值
+          resultArrList: [], // 从阀值下拉框集合
+          monitorClassStatus:false,
+          opStatus:false,
+          perfStatus:false,
+          thresholdStatus:false,
         };
         _t.monitorListArr[index].deviceMonitorThresholdList.push(monitorClass);
       },
       // 添加主阀值
-      addMainMonitor(){
+      addMainMonitor() {
         var _t = this;
         let monitorMain = {
-          domId:new Date().getTime(),
-          monitorId:_t.monitorThisId, // 监测器id
-          monitorClass:_t.monitorThisThred,// 主从阀值字段
-          perf:'', // 阀值指标名称
-          op:'', // 阀值比较符
-          threshold:'', // 阀值
-          alarmLevel:null, // 告警级别
-          alarmText:'', // 附加告警内容
+          domId: new Date().getTime(),
+          monitorId: _t.monitorThisId, // 监测器id
+          monitorClass: _t.monitorThisThred,// 主从阀值字段
+          perf: '', // 阀值指标名称
+          op: '', // 阀值比较符
+          threshold: '', // 阀值
+          alarmLevel: null, // 告警级别
+          alarmText: '', // 附加告警内容
           // 从阀值集合
-          deviceMonitorThresholdList:[]
+          deviceMonitorThresholdList: [],
+          monitorClassStatus:false,
+          opStatus:false,
+          perfStatus:false,
+          thresholdStatus:false,
+          alarmLevelStatus:false
         };
         _t.monitorListArr.push(monitorMain);
       },
       // 删除从阀值
-      delFromMonitor(index,i){
+      delFromMonitor(index, i) {
         var _t = this;
         _t.monitorListArr[index].deviceMonitorThresholdList.splice(i, 1);
       },
       // 删除主阀值
       delMainMonitor(index) {
         var _t = this;
-        _t.monitorListArr.splice(index,1);
+        _t.monitorListArr.splice(index, 1);
       },
       // 保存阀值
-      addMonitor(){
+      addMonitor() {
         var _t = this;
-
-
-        _t.$store.commit('setLoading',true);
-        _t.$api.post('monitor/deviceMonitorThreshold/',{
-          monitorId:_t.monitorThisId,
-          thresholdList: _t.monitorListArr
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch (res.status) {
-            case 200:
-              _t.$message({
-                dangerouslyUseHTMLString: true,
-                message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
-                customClass:'messageBoxSuccess',
-                duration:2000,
-                onClose:function () {
-                  // 关闭前回调
-                  _t.getResultData(_t.monitorThisId);
-                }
-              });
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.$message({
-                dangerouslyUseHTMLString: true,
-                message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
-                customClass:'messageBoxError',
-                duration:2000,
-                onClose:function () {
-                  // 关闭前回调
-                  _t.getResultData(_t.monitorThisId);
-                }
-              });
-              break;
+        // _t.$store.commit('setLoading', true);
+        var isErrorNum = 0;
+        _t.monitorListArr.forEach((item)=>{
+          // 主阀值字段
+          if (item.monitorClass === '') {
+            isErrorNum += 1;
+            item.monitorClassStatus = true;
+            document.getElementById(item.domId + '_monitorClass').style.borderColor = '#fb6041';
+          } else {
+            item.monitorClassStatus = false;
+            document.getElementById(item.domId + '_monitorClass').style.borderColor = '#DCDFE6';
           }
+          // 主阀值perf字段
+          if (item.perf === '') {
+            isErrorNum += 1;
+            item.perfStatus = true;
+            document.getElementById(item.domId + '_perf').style.borderColor = '#fb6041';
+          } else {
+            item.perfStatus = false;
+            document.getElementById(item.domId + '_perf').style.borderColor = '#DCDFE6';
+          }
+          // 主阀值 op字段
+          if (item.op === '') {
+            isErrorNum += 1;
+            item.opStatus = true;
+            document.getElementById(item.domId + '_op').style.borderColor = '#fb6041';
+          } else {
+            item.opStatus = false;
+            document.getElementById(item.domId + '_op').style.borderColor = '#DCDFE6';
+          }
+          // 主阀值 threshold字段
+          if (item.threshold === '') {
+            isErrorNum += 1;
+            item.thresholdStatus = true;
+            document.getElementById(item.domId + '_threshold').style.borderColor = '#fb6041';
+          } else {
+            item.thresholdStatus = false;
+            document.getElementById(item.domId + '_threshold').style.borderColor = '#DCDFE6';
+          }
+          // 主阀值 alarmLevel字段
+          if (item.alarmLevel === null) {
+            isErrorNum += 1;
+            item.alarmLevelStatus = true;
+            document.getElementById(item.domId + '_alarmLevel').style.borderColor = '#fb6041';
+          } else {
+            item.alarmLevelStatus = false;
+            document.getElementById(item.domId + '_alarmLevel').style.borderColor = '#DCDFE6';
+          }
+          item.deviceMonitorThresholdList.forEach((val)=>{
+            // 从阀值
+            if (val.monitorClass === '') {
+              isErrorNum += 1;
+              val.monitorClassStatus = true;
+              document.getElementById(val.domId + '_monitorClass').style.borderColor = '#fb6041';
+            } else {
+              val.monitorClassStatus = false;
+              document.getElementById(val.domId + '_monitorClass').style.borderColor = '#DCDFE6';
+            }
+            // 从阀值perf字段
+            if (val.perf === '') {
+              isErrorNum += 1;
+              val.perfStatus = true;
+              document.getElementById(val.domId + '_perf').style.borderColor = '#fb6041';
+            } else {
+              val.perfStatus = false;
+              document.getElementById(val.domId + '_perf').style.borderColor = '#DCDFE6';
+            }
+            // 从阀值 op字段
+            if (val.op === '') {
+              isErrorNum += 1;
+              val.opStatus = true;
+              document.getElementById(val.domId + '_op').style.borderColor = '#fb6041';
+            } else {
+              val.opStatus = false;
+              document.getElementById(val.domId + '_op').style.borderColor = '#DCDFE6';
+            }
+            // 从阀值 threshold字段
+            if (val.threshold === '') {
+              isErrorNum += 1;
+              val.thresholdStatus = true;
+              document.getElementById(val.domId + '_threshold').style.borderColor = '#fb6041';
+            } else {
+              val.thresholdStatus = false;
+              document.getElementById(val.domId + '_threshold').style.borderColor = '#DCDFE6';
+            }
+          });
         });
+        if (isErrorNum === 0) {
+          _t.$api.post('monitor/deviceMonitorThreshold/', {
+            monitorId: _t.monitorThisId,
+            thresholdList: _t.monitorListArr
+          }, function (res) {
+            _t.$store.commit('setLoading', false);
+            switch (res.status) {
+              case 200:
+                _t.$message({
+                  dangerouslyUseHTMLString: true,
+                  message: "<span class='iconfont iconfontSuccess'>&#xe648;</span> 提交成功",
+                  customClass: 'messageBoxSuccess',
+                  duration: 2000,
+                  onClose: function () {
+                    // 关闭前回调
+                    _t.getResultData(_t.monitorThisId);
+                  }
+                });
+                break;
+              case 1003: // 无操作权限
+              case 1004: // 登录过期
+              case 1005: // token过期
+              case 1006: // token不通过
+                _t.exclude(_t, res.message);
+                break;
+              default:
+                _t.$message({
+                  dangerouslyUseHTMLString: true,
+                  message: "<span class='iconfont iconfontError'>&#xe64e;</span> 提交失败",
+                  customClass: 'messageBoxError',
+                  duration: 2000,
+                  onClose: function () {
+                    // 关闭前回调
+                    _t.getResultData(_t.monitorThisId);
+                  }
+                });
+                break;
+            }
+          });
+        }
       }
     },
     created() {
       var _t = this;
-      _t.$store.commit('setLoading',true);
+      _t.$store.commit('setLoading', true);
       _t.deviceId = _t.$route.params.deviceId ? _t.$route.params.deviceId : localStorage.getItem('hy-deviceId');
       this.getInfoData();
       this.getBaseData();
