@@ -202,7 +202,6 @@
   import Box from '../../../../components/Box';
   import {isNotNull} from "../../../../assets/js/validator";
   import {orgBreadcrumb} from "../../../../assets/js/recursive";
-
   export default {
     name: "dataDictionary",
     components: {Box},

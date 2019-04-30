@@ -114,10 +114,10 @@
       var _t = this;
       var menuId = this.$route.query.id || localStorage.getItem('hy-menu-id');
       switch (menuId) {
-        case 'menu_01_01':
+        case 'menu_001_001':
           _t.titleName = _t.$t('system.systemSetting');
           break;
-        case 'menu_01_02':
+        case 'menu_001_002':
           _t.titleName = _t.$t('system.systemMonitoring');
           break;
         default:

@@ -115,16 +115,16 @@
                         </el-button>-->
                         <!--</context-menu>-->
                     </span>
-                    <div v-show="menuVisible">
-                    <ul id="menu" class="menu">
-                        <li class="menu__item" @click="appendDevice(node, data)">增加</li>
-                        <li class="menu__item" @click="EditDevice(node, data)">编辑</li>
-                        <li class="menu__item" @click="remove(node, data)">删除</li>
-                    </ul>
-                </div>
+                    
 					</span>
 				</el-tree>
-
+				<div v-show="menuVisible">
+                    <ul id="menu" class="menu">
+                        <li class="menu__item cursorPointer" @click="appendDevice"><i class="el-icon-share"> 增加</i></li>
+                        <li class="menu__item cursorPointer" @click="EditDevice"><i class="el-icon-edit"> 编辑</i></li>
+                        <li class="menu__item cursorPointer" @click="remove" v-if="showVisible"><i class="el-icon-delete"> 删除</i></li>
+                    </ul>
+                </div>
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -466,6 +466,7 @@
 					equipmentOwner: '张三'
 				}, ],
 				// 处理状态
+				showVisible:false,//控制tree弹出层删除按钮隐藏
 				menuVisible:false,//控制tree右键弹出框
 				dialogGroupingNei: false, //控制增加设备分组内层弹出层
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
@@ -688,11 +689,8 @@
 				_t.formItem.rackNameId = '';
 			},
 			//点击删除按钮
-			remove(node, data) {
-				// console.log(node);
-				// console.log(data);
+			remove() {
 				var _t = this;
-				_t.deleteId = data.nodeId;
 				_t.dialogGroupingSc = true;
 			},
 			//确定删除按钮
@@ -702,12 +700,10 @@
 				_t.$api.delete('/asset/assetCatalog/' + catalogId, {
 
 				}, function(res) {
-					// console.log(res)
 					switch(res.status) {
 						case 200:
 							_t.dialogGroupingSc = false;
 							_t.getDataTree();
-							// console.log(res)
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -721,17 +717,13 @@
 				})
 			},
 			//点击新增按钮弹出框
-			appendDevice(data) {
-				var _t = this;
-				// console.log(data)
-				_t.addEditss.nodeId = data.nodeId;
-				_t.addEditss.nodeName = data.nodeName;
+			appendDevice() {
+				var _t = this	
 				_t.dialogGrouping = true;
 			},
 			// 新增设备分组点击父级结点下拉框的节点
 			clickRoomNodess(val) {
 				var _t = this;
-				// console.log(val);
 				_t.addEditss.nodeId = val.nodeId;
 				_t.addEditss.nodeName = val.nodeName;
 				_t.isShowComputerPopoversss = false;
@@ -868,12 +860,8 @@
 				_t.addEdits.nodeName = val.nodeName;
 				_t.isShowComputerPopoverss = false;
 			},
-			EditDevice(node, data) {
+			EditDevice() {
 				var _t = this;
-				// console.log(node);
-				_t.formItem.catalogName = data.nodeName;
-				_t.formItem.catalogId = data.nodeId;
-				_t.addEdits.parentId = data.parentNodeId;
 				_t.dialogGroupingBj = true;
 				_t.getBjtree();
 			},
@@ -885,15 +873,12 @@
 				_t.$api.get('/asset/assetCatalog/' + id, {
 
 				}, function(res) {
-					// console.log(res)
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							// console.log(res)
 							_t.formItem.catalogName = res.data.catalogName;
 							_t.formItem.catalogId = res.data.id;
 							_t.addEdits.parentId = res.data.parentId;
-							// console.log(_t.addEdits.parentId)
 							if(_t.addEdits.parentId != null) {
 								this.getBjtreeF();
 							} else if(_t.addEdits.parentId == null) {
@@ -915,7 +900,6 @@
 			getBjtreeF() {
 				var _t = this;
 				var id = _t.addEdits.parentId;
-				// console.log(res);
 				_t.$store.commit('setLoading', true);
 				_t.$api.get('/asset/assetCatalog/' + id, {
 
@@ -923,7 +907,6 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							// console.log(res)
 							_t.addEdits.nodeName = res.data.catalogName;
 							break;
 						case 1003: // 无操作权限
@@ -953,7 +936,6 @@
 							_t.$store.commit('setLoading', false);
 							switch(res.status) {
 								case 200:
-									// console.log(res)
 									_t.dialogGroupingBj = false;
 									_t.getDataTree();
 									break;
@@ -1131,7 +1113,6 @@
 				_t.$api.get('/asset/assetCatalog/all', {}, function(res) {
 					switch(res.status) {
 						case 200:
-							// console.log(res.data.children)
 							_t.treeData = res.data.children;
 							break;
 						case 1003: // 无操作权限
@@ -1169,11 +1150,9 @@
 			},
 			//内层框确认行数
 			getClick(val) {
-				// console.log(val)
 				var _t = this;
 				_t.dialogGroupingNei = false;
 				//在当前行的后面插入行
-				// console.log(_t.indexs);
 				for(var i = 0; i < _t.indexs; i++) {
 					var newValue = {
 						amount0: '',
@@ -1197,7 +1176,6 @@
 				//获取右键行的下标
 				var index = _t.catalogList.indexOf(row);
 				_t.Index = index;
-				// console.log("当前行下标：" + _t.Index);
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -1412,12 +1390,23 @@
 			},
 
 			rightClick(MouseEvent, object, Node, element) { // 鼠标右击触发事件
+				this.deleteId = object.nodeId;
+				this.addEditss.nodeId = object.nodeId;
+				this.addEditss.nodeName = object.nodeName;
+				this.formItem.catalogId = object.nodeId;
+				this.formItem.catalogName = object.nodeName;
+//				console.log(object);
+				if(object.children.length==0){
+					this.showVisible=true;
+				}else{
+					this.showVisible=false;
+				}
         this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
         this.menuVisible = true  // 显示模态窗口，跳出自定义菜单栏
         var menu = document.querySelector('#menu')
         menu.style.left = MouseEvent.clientX - 80 + 'px'
         document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
-        menu.style.top = MouseEvent.clientY - 100 + 'px'
+        menu.style.top = MouseEvent.clientY - 70 + 'px'
         // // console.log('右键被点击的event:', MouseEvent)
         // console.log('右键被点击的object:', object)
         // console.log('右键被点击的value:', Node)
@@ -1440,12 +1429,17 @@
     display: block;
     color:#252A2F;
     font-size: 12px;
-    line-height: 20px;
+    line-height: 25px;
+    border-bottom: 1px solid #ccc;
     text-align: center;
-    margin-top: 5px;
+    /*margin-top: 5px;
+    margin-bottom: 5px;*/
+  }
+  .menu__item:last-child{
+  	border-bottom: none;
   }
     .menu {
-    height: 80px;
+    overflow: hidden;
     width: 60px;
     position: absolute;
     border-radius: 6px;
@@ -1499,6 +1493,7 @@
 
 	.borderRightColorGray {
 		overflow: hidden;
+		height: 100%;
 	}
 
 	.dataDictionary-title {

@@ -380,7 +380,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',true);
           }
         } else if (status == 22) { // 忽略
           _t.monitorChecked.ignoreBtn = !_t.monitorChecked.ignoreBtn;
@@ -393,7 +393,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',true);
           }
         } else if (status == 66) { // 警告
           _t.monitorChecked.warnBtn = !_t.monitorChecked.warnBtn;
@@ -406,7 +406,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',true);
           }
         } else if (status == 99) { // 紧急
           _t.monitorChecked.emergencyBtn = !_t.monitorChecked.emergencyBtn;
@@ -419,7 +419,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'status',status);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',true);
           }
         } else if (status == 38) { // 页面不显示
           _t.monitorChecked.notShowBtn = !_t.monitorChecked.notShowBtn;
@@ -432,7 +432,7 @@
             _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',false);
           } else {
             // 取消选中 加载全部数据
-            _t.monitoringDetailsData = _t.monitoringDetailsCacheData;
+            _t.monitoringDetailsData = _t.filterMonitorTableData(_t.monitoringDetailsDataCache,'isAlone',true);
           }
         }
       },
@@ -576,14 +576,14 @@
       cellClickColumnTable(row,column){
         var _t = this;
         // 点击状态
-        if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
-          // 第一层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
-          if (row.id !== null && row.status != '33' && row.nodeType === 1) {
-            _t.dialogVisible = true;
-            // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id,false);
-          }
-        }
+        // if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
+        //   // 第一层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
+        //   if (row.id !== null && row.status != '33' && row.nodeType === 1) {
+        //     _t.dialogVisible = true;
+        //     // 父组件调用 子组件 获取数据的方法
+        //     _t.$refs.alarmDialog.getData(row.id,false);
+        //   }
+        // }
         // 点击资源名称
         if (column.label === _t.$t('administrationTabs.resourceName')) {
           // 最细一级 nodeType 不能展开
@@ -597,14 +597,14 @@
       cellClickColumn(row,column){
         var _t = this;
         // 点击状态 或 最新状态
-        if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
-          // 第二层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
-          if (row.id !== null && row.status != '33' && row.nodeType === 1) {
-            _t.dialogVisible = true;
-            // 父组件调用 子组件 获取数据的方法
-            _t.$refs.alarmDialog.getData(row.id,false);
-          }
-        }
+        // if (column.label === _t.$t('administrationTabs.status') || column.label === _t.$t('administrationTabs.latestState')) {
+        //   // 第二层 id不为空 非正常状态 !33 nodeType:1 非目录不可展开
+        //   if (row.id !== null && row.status != '33' && row.nodeType === 1) {
+        //     _t.dialogVisible = true;
+        //     // 父组件调用 子组件 获取数据的方法
+        //     _t.$refs.alarmDialog.getData(row.id,false);
+        //   }
+        // }
         // 点击资源名称
         if (column.label === _t.$t('administrationTabs.resourceName')) {
           // 最细一级 nodeType 不能展开
