@@ -93,13 +93,13 @@
 					<!--{{formItem.menuName}}-->
 				</p>
 				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current node-key="idd" @node-click="getCurrentNode" @node-contextmenu="rightClick" :props="defaultPropssss" :expand-on-click-node="true" :default-expand-all="false">
-					
+
 					<span class="custom-tree-node" slot-scope="{ node, data}">
                     <span>{{ node.label }}</span>
 					<span>
-						<!--<context-menu class="right-menu" 
-                            :target="contextMenuTarget" 
-                            :show="contextMenuVisible" 
+						<!--<context-menu class="right-menu"
+                            :target="contextMenuTarget"
+                            :show="contextMenuVisible"
                             @update:show="(show) => contextMenuVisible = show">
                             <a href="javascript:;" @click="appendDevice(data)">增加</a>
                             <a href="javascript:;" @click="EditDevice(node, data)">编辑</a>
@@ -124,7 +124,7 @@
                 </div>
 					</span>
 				</el-tree>
-				
+
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -689,8 +689,8 @@
 			},
 			//点击删除按钮
 			remove(node, data) {
-				console.log(node);
-				console.log(data);
+				// console.log(node);
+				// console.log(data);
 				var _t = this;
 				_t.deleteId = data.nodeId;
 				_t.dialogGroupingSc = true;
@@ -702,12 +702,12 @@
 				_t.$api.delete('/asset/assetCatalog/' + catalogId, {
 
 				}, function(res) {
-					console.log(res)
+					// console.log(res)
 					switch(res.status) {
 						case 200:
 							_t.dialogGroupingSc = false;
 							_t.getDataTree();
-							console.log(res)
+							// console.log(res)
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -723,7 +723,7 @@
 			//点击新增按钮弹出框
 			appendDevice(data) {
 				var _t = this;
-				console.log(data)
+				// console.log(data)
 				_t.addEditss.nodeId = data.nodeId;
 				_t.addEditss.nodeName = data.nodeName;
 				_t.dialogGrouping = true;
@@ -731,7 +731,7 @@
 			// 新增设备分组点击父级结点下拉框的节点
 			clickRoomNodess(val) {
 				var _t = this;
-				console.log(val);
+				// console.log(val);
 				_t.addEditss.nodeId = val.nodeId;
 				_t.addEditss.nodeName = val.nodeName;
 				_t.isShowComputerPopoversss = false;
@@ -743,19 +743,19 @@
 				var two = [];
 				var three = [];
 				var four = [];
-				console.log(_t.catalogList);
-				console.log(_t.catalogList.length);
+				// console.log(_t.catalogList);
+				// console.log(_t.catalogList.length);
 				for(var i = 0; i < _t.catalogList.length; i++) {
 					var ones = _t.catalogList[i].amount0.trim();
-					console.log(ones != '');
-					console.log(ones.length > 0);
+					// console.log(ones != '');
+					// console.log(ones.length > 0);
 					//第一级
 					if(ones != '') {
 						var obj = new Object();
 						obj.name = _t.catalogList[i].amount0;
 						obj.children = [];
 						all.push(obj);
-						console.log(all.length > 0);
+						// console.log(all.length > 0);
 						if(all.length > 0) {
 							var one = new Object();
 							one.children = [];
@@ -800,7 +800,7 @@
 						tree.push(obj);*/
 						//第一级else
 					} else {
-						console.log('one');
+						// console.log('one');
 						if(all.length > 0) {
 							if(_t.catalogList[i].amount1 != '') {
 								var obj = new Object();
@@ -848,17 +848,17 @@
 			};*/
 
 				};
-				console.log('1', all);
-				console.log('2', two);
-				console.log('3', three);
-				console.log('4', four);
+				// console.log('1', all);
+				// console.log('2', two);
+				// console.log('3', three);
+				// console.log('4', four);
 				//				_t.dialogGrouping = false;
 				//				_t.$api.post('/asset/assetCatalog/', {
 				//					parentId: _t.addEditss.nodeId,
 				//					catalogList: [
 				//					]
 				//				}, function(res) {
-				//					console.log(res);
+				//					// console.log(res);
 				//				})
 			},
 			// 编辑设备分组点击父级结点下拉框的节点
@@ -870,7 +870,7 @@
 			},
 			EditDevice(node, data) {
 				var _t = this;
-				console.log(node);
+				// console.log(node);
 				_t.formItem.catalogName = data.nodeName;
 				_t.formItem.catalogId = data.nodeId;
 				_t.addEdits.parentId = data.parentNodeId;
@@ -885,15 +885,15 @@
 				_t.$api.get('/asset/assetCatalog/' + id, {
 
 				}, function(res) {
-					console.log(res)
+					// console.log(res)
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							console.log(res)
+							// console.log(res)
 							_t.formItem.catalogName = res.data.catalogName;
 							_t.formItem.catalogId = res.data.id;
 							_t.addEdits.parentId = res.data.parentId;
-							console.log(_t.addEdits.parentId)
+							// console.log(_t.addEdits.parentId)
 							if(_t.addEdits.parentId != null) {
 								this.getBjtreeF();
 							} else if(_t.addEdits.parentId == null) {
@@ -915,7 +915,7 @@
 			getBjtreeF() {
 				var _t = this;
 				var id = _t.addEdits.parentId;
-				console.log(res);
+				// console.log(res);
 				_t.$store.commit('setLoading', true);
 				_t.$api.get('/asset/assetCatalog/' + id, {
 
@@ -923,7 +923,7 @@
 					_t.$store.commit('setLoading', false);
 					switch(res.status) {
 						case 200:
-							console.log(res)
+							// console.log(res)
 							_t.addEdits.nodeName = res.data.catalogName;
 							break;
 						case 1003: // 无操作权限
@@ -953,7 +953,7 @@
 							_t.$store.commit('setLoading', false);
 							switch(res.status) {
 								case 200:
-									console.log(res)
+									// console.log(res)
 									_t.dialogGroupingBj = false;
 									_t.getDataTree();
 									break;
@@ -1131,7 +1131,7 @@
 				_t.$api.get('/asset/assetCatalog/all', {}, function(res) {
 					switch(res.status) {
 						case 200:
-							console.log(res.data.children)
+							// console.log(res.data.children)
 							_t.treeData = res.data.children;
 							break;
 						case 1003: // 无操作权限
@@ -1169,11 +1169,11 @@
 			},
 			//内层框确认行数
 			getClick(val) {
-				console.log(val)
+				// console.log(val)
 				var _t = this;
 				_t.dialogGroupingNei = false;
 				//在当前行的后面插入行
-				console.log(_t.indexs);
+				// console.log(_t.indexs);
 				for(var i = 0; i < _t.indexs; i++) {
 					var newValue = {
 						amount0: '',
@@ -1197,7 +1197,7 @@
 				//获取右键行的下标
 				var index = _t.catalogList.indexOf(row);
 				_t.Index = index;
-				console.log("当前行下标：" + _t.Index);
+				// console.log("当前行下标：" + _t.Index);
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -1410,19 +1410,19 @@
 
 				};
 			},
-			
+
 			rightClick(MouseEvent, object, Node, element) { // 鼠标右击触发事件
         this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
         this.menuVisible = true  // 显示模态窗口，跳出自定义菜单栏
-        var menu = document.querySelector('#menu') 
+        var menu = document.querySelector('#menu')
         menu.style.left = MouseEvent.clientX - 80 + 'px'
         document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
         menu.style.top = MouseEvent.clientY - 100 + 'px'
-        console.log('右键被点击的event:', MouseEvent)
-        console.log('右键被点击的object:', object)
-        console.log('右键被点击的value:', Node)
-        console.log('右键被点击的element:', element)
-        console.log('鼠标点击了树形结构图')
+        // // console.log('右键被点击的event:', MouseEvent)
+        // console.log('右键被点击的object:', object)
+        // console.log('右键被点击的value:', Node)
+        // console.log('右键被点击的element:', element)
+        // console.log('鼠标点击了树形结构图')
       },
      foo() { // 取消鼠标监听事件 菜单栏
         this.menuVisible = false
@@ -1466,7 +1466,7 @@
 		overflow: hidden;
 		overflow-y: auto;
 	}
-	
+
 	.systemSettings-navBar {
 		width: 174px;
 		position: absolute;
@@ -1474,7 +1474,7 @@
 		left: 0;
 		bottom: 0;
 	}
-	
+
 	#EquipmentMonitoring-navBar-inSet,
 	#EquipmentMonitoring-navBar-outSet {
 		height: 40px;
@@ -1484,37 +1484,37 @@
 		line-height: 40px;
 		position: fixed;
 	}
-	
+
 	#EquipmentMonitoring-navBar-inSet {
 		left: 210px;
 		border-radius: 15px 0 0 15px;
 	}
-	
+
 	#EquipmentMonitoring-navBar-outSet {
 		left: 56px;
 		display: none;
 		z-index: 1001;
 		border-radius: 0 15px 15px 0;
 	}
-	
+
 	.borderRightColorGray {
 		overflow: hidden;
 	}
-	
+
 	.dataDictionary-title {
 		overflow: hidden;
 	}
-	
+
 	.dataDictionary-title a {
 		line-height: 40px;
 		padding-left: 20px;
 		font-weight: 600;
 	}
-	
+
 	.EquipmentMonitoringBj ul li {
 		padding-bottom: 20px;
 	}
-	
+
 	.EquipmentMonitoringBj ul li label {
 		display: inline-block;
 		width: 60px;
@@ -1530,7 +1530,7 @@
 		padding-right: 8px;
 		color: #4386c6;
 	}
-	
+
 	.el-ic {
 		display: none;
 		i,
@@ -1543,25 +1543,25 @@
 			color: #4386c6;
 		}
 	}
-	
+
 	.el-tree-node__content {
 		height: 38px;
 	}
-	
+
 	.el-tree-node__expand-icon {
 		color: #428bca;
 		/*padding: 10px 10px 0px 10px !important;*/
 	}
-	
+
 	.el-tree-node__content:hover .el-ic {
 		color: #428bca !important;
 		display: inline-block;
 	}
-	
+
 	.el-tree-node__content:hover {
 		font-weight: bold;
 	}
-	
+
 	.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content :hover {
 		.el-tree-node__expand-icon.is-leaf {
 			color: transparent;
@@ -1575,7 +1575,7 @@
 			font-weight: bold;
 		}
 	}
-	
+
 	.el-dialog__body {
 		.upload-container .image-preview .image-preview-wrapper img {
 			height: 100px;
@@ -1597,47 +1597,47 @@
 			height: 100px;
 		}
 	}
-	
+
 	#systemSettings-navBar-inSet,
 	#systemSettings-navBar-outSet {
 		background-color: #3f81d0;
 		color: #fff;
 	}
-	
+
 	.EquipmentMonitoringGrid .el-dialog {
 		width: 612px;
 		height: 425px;
 	}
-	
+
 	.EquipmentMonitoringBj .el-dialog {
 		width: 501px;
 		height: 325px;
 	}
-	
+
 	.EquipmentMonitoringSc .el-dialog {
 		width: 200px;
 		height: 180px;
 	}
-	
+
 	.alarmCurrentBox .el-form--inline .el-form-item {
 		margin: 0;
 	}
-	
+
 	.EquipmentMonitoring-btn {
 		position: absolute;
 		top: 10px;
 		right: 10px;
 		z-index: 100;
 	}
-	
+
 	.closeCheckBox {
 		margin-left: 30px;
 	}
-	
+
 	.closeCheckBox .el-checkbox__label {
 		font-size: 12px;
 	}
-	
+
 	#EquipmentMonitoring-tabs {
 		position: fixed;
 		bottom: 0;
@@ -1646,7 +1646,7 @@
 		top: 118px;
 		z-index: 1100;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
 		margin-top: 0;
 		position: absolute;
@@ -1654,12 +1654,12 @@
 		left: -24px;
 		right: -20px;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
 		font-size: 12px;
 		position: relative;
 	}
-	
+
 	#EquipmentMonitoring-tabs>.el-tabs__content {
 		position: absolute;
 		left: 0;
@@ -1667,7 +1667,7 @@
 		bottom: 40px;
 		top: 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
 		content: '';
 		width: 10px;
@@ -1678,7 +1678,7 @@
 		left: -10px;
 		border-radius: 0 10px 0 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
 		content: '';
 		position: absolute;
@@ -1686,7 +1686,7 @@
 		right: 0;
 		height: 20px;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
 		content: '';
 		width: 10px;
@@ -1697,17 +1697,17 @@
 		right: -10px;
 		border-radius: 10px 0 0 0;
 	}
-	
+
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
 		padding: 0 20px;
 	}
-	
+
 	.massdia .el-dialog {
 		width: 50px;
 		height: 200px;
 	}
-	
-	
+
+
 	.right-menu {
       border: 1px solid #eee;
       box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
@@ -1733,7 +1733,7 @@
         text-align: center;
         display: block;
         color: #1a1a1a;
-        
+
       }
       user agent stylesheet
       a:-webkit-any-link {

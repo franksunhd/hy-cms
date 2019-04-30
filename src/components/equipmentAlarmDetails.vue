@@ -196,9 +196,6 @@
       },
     },
     methods: {
-      aaa(){
-        console.log(111)
-      },
       // 接收是否历史告警
       getAlarmIsHistory(val){
         var _t = this;
