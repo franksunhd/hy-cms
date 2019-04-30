@@ -31,14 +31,15 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('alarmHistory.equipmentName') + '：'">
-          <el-input v-model="formItem.equipmentName" class="width200" />
+          <el-input v-model="formItem.equipmentName" class="width200" clearable />
         </el-form-item>
         <el-form-item :label="$t('alarmHistory.equipmentIp') + '：'">
-          <el-input v-model="formItem.equipmentIp" class="width200" />
+          <el-input v-model="formItem.equipmentIp" class="width200" clearable />
         </el-form-item>
         <el-form-item :label="$t('alarmHistory.computerRoomName') + '：'">
           <el-select
             v-model="formItem.computerRoomId"
+            clearable
             @change="changeRoom(formItem.computerRoomId)"
             class="width200">
             <el-option
@@ -102,22 +103,18 @@
         </el-form-item>
         <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button class="queryBtn" type="reset" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="padding20 clearfix">
       <div class="fr">
-        <el-button @click="downloadData" :disabled="disableBtn.more">
-          <span class="iconfont">&#xe64a;</span>
-          {{$t('alarmHistory.exportExcel')}}
-        </el-button>
-      </div>
-      <div class="fl">
-        <el-form inline :model="formItem">
-          <el-form-item label="筛选：">
-            <el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">
-              <el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />
-            </el-select>
+        <el-form inline>
+          <el-form-item style="margin-right: 0">
+            <el-button @click="downloadData" :disabled="disableBtn.more">
+              <span class="iconfont">&#xe64a;</span>
+              {{$t('alarmHistory.exportExcel')}}
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -250,9 +247,9 @@
         :label="item.title">
         <div class="alarmHistory-btn">
           <!--收起-->
-          <span @click="packUp" class="iconfont cursorPointer">&#xe64a;</span>
+          <span @click="packUp" class="iconfont cursorPointer" title="收起">&#xe686;</span>
           <!--关闭弹出层-->
-          <span @click="closeTab" class="iconfont cursorPointer">&#xe64e;</span>
+          <span @click="closeTab" class="iconfont cursorPointer" title="关闭">&#xe687;</span>
         </div>
         <AdministrationTags v-if="isShowTabBox" :page-device-id="item.content"/>
       </el-tab-pane>
@@ -363,6 +360,25 @@
       }
     },
     methods:{
+      // 重置筛选表单数据
+      resetData(){
+        var _t = this;
+        _t.formItem.equipmentType = _t.$t('public.all');
+        _t.formItem.equipmentTypeId = null;
+        _t.formItem.computerRoomId = null;
+        _t.formItem.rackNameId = null;
+        _t.formItem.equipmentIp = null;
+        _t.formItem.equipmentName = null;
+        _t.formItem.businessId = null;
+        _t.formItem.businessName = null;
+        _t.formItem.equipmentStatus = null;
+        _t.formItem.dealWithStatus = null;
+        _t.formItem.dateTime = null;
+        _t.formItem.status = 0;
+        _t.formItem.checked = false;
+        _t.formItem.operation = null;
+        _t.formItem.statusTip = _t.$t('alarmCurrent.confirmOpinions')
+      },
       // 接受弹出层关闭的参数
       dialogVisibleStatus(val){
         this.dialogVisible = val;

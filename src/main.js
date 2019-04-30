@@ -16,6 +16,8 @@ import tagsview from './assets/js/tagsview';
 import getters from './assets/js/getters';
 import vueBus from 'vue-bus';
 
+import VueContextMenu from '@xunlei/vue-context-menu'
+
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
 import './assets/css/common.css';
@@ -23,7 +25,7 @@ import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
 import './assets/css/fontStyle.css';
 
-
+Vue.use(VueContextMenu);
 Vue.use(Vuex);
 Vue.use(VueDND);
 Vue.use(vueBus);

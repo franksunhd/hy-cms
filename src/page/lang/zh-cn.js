@@ -60,7 +60,10 @@ export default {
     endTime:'结束日期',
     happenTime:'发生日期',
     all:'全部',
-    to:'至'
+    to:'至',
+    moveUp:'上移',
+    moveDown:'下移',
+    allChecked:'全选'
 	},
 	// 系统设置模块 导航
 	system: {

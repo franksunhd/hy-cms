@@ -560,7 +560,7 @@
         }).then(()=>{
           _t.$api.delete('system/language/', {
             jsonString: JSON.stringify({
-              id: _t.checkListIds.join(',')
+              ids: _t.checkListIds.join(',')
             })
           }, function (res) {
             switch (res.status) {

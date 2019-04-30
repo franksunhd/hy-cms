@@ -13,6 +13,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@xunlei/vue-context-menu": "^1.0.2",
     "awe-dnd": "^0.3.4",
     "axios": "^0.18.0",
     "echarts": "^4.1.0",

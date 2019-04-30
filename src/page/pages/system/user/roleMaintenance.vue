@@ -53,15 +53,15 @@
           {{$t('public.delete')}}
         </el-button>
         <el-button :disabled="disableBtn.edit" @click="authorizationData">
-          <i class="el-icon-delete"></i>
+          <span class="iconfont">&#xe652;</span>
           {{$t('roleMaintenance.userAuthorization')}}
         </el-button>
         <el-button :disabled="disableBtn.edit" @click="functionData">
-          <i class="el-icon-delete"></i>
+          <span class="iconfont">&#xe658;</span>
           {{$t('roleMaintenance.functionLimit')}}
         </el-button>
         <el-button :disabled="disableBtn.edit" @click="infoData">
-          <i class="el-icon-delete"></i>
+          <span class="iconfont">&#xe654;</span>
           {{$t('roleMaintenance.dataLimit')}}
         </el-button>
       </div>
@@ -244,10 +244,13 @@
             :props="menuProps"/>
         </el-form-item>
       </el-form>
-      <span slot="footer">
+      <div slot="footer" class="clearfix">
+        <div class="fl">
+          <el-checkbox @change="changeMenuTree(allCheckedMenu)" class="allCheckedMenu" v-model="allCheckedMenu">{{$t('public.allChecked')}}</el-checkbox>
+        </div>
         <el-button class="alertBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="dialogVisibleFunction = false;">{{$t('public.cancel')}}</el-button>
-      </span>
+      </div>
     </el-dialog>
     <!--数据权限-->
     <el-dialog
@@ -344,6 +347,8 @@
         tagsLength: false,
         // 是否提交功能权限
         selectMenuMark: false,
+        // 功能菜单权限全选
+        allCheckedMenu:false,
         // 表格数据
         tableData: [],
         // 内层表格数据
@@ -403,6 +408,17 @@
       }
     },
     methods: {
+      // 功能菜单权限全选功能
+      changeMenuTree(val) {
+        var _t = this;
+        if (val) {
+          // 全选
+          _t.$refs.tree.setCheckedNodes(_t.selectArr);
+        } else {
+          // 取消全选
+          _t.$refs.tree.setCheckedKeys([]);
+        }
+      },
       // 重置筛选表单
       resetData(){
         var _t = this;
@@ -458,6 +474,24 @@
           switch (res.status) {
             case 200:
               _t.$refs.tree.setCheckedKeys(res.data);
+              // 判断是否全选
+              var firstArr = new Array();
+              _t.selectArr.forEach((item)=>{
+                firstArr.push(item.id);
+              });
+              var number = 0;
+              firstArr.forEach((val)=>{
+                res.data.forEach((name)=>{
+                  if (val === name) {
+                    number += 1;
+                  }
+                });
+              });
+              if (number === _t.selectArr.length) {
+                _t.allCheckedMenu = true;
+              } else {
+                _t.allCheckedMenu = false;
+              }
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -1193,5 +1227,9 @@
 
   .role-input-search .el-input__inner {
     height: 32px;
+  }
+
+  .allCheckedMenu .el-checkbox__label {
+    font-size: 12px;
   }
 </style>

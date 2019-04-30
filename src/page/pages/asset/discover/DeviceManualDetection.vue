@@ -167,10 +167,10 @@
 						"startIp": '192.168.0.2',
 						"endIp": '192.168.0.5'
 					}],
-					"username": "asd",
-					password: "asdasd",
-					port: "80",
-					snmpPort: '161',
+					"username": "",
+					password: "",
+					port: "",
+					snmpPort: '',
 					snmpCommunity: '',
 					//版本
 					snmpVersion: 'V1',

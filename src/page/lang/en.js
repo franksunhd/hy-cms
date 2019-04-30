@@ -60,7 +60,10 @@ export default {
     endTime:'endTime',
     happenTime:'happenTime',
     all:'all',
-    to:'-'
+    to:'-',
+    moveUp:'Up',
+    moveDown:'Down',
+    allChecked:'allChecked'
   },
   // 系统设置模块
   system: {

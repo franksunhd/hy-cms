@@ -2,9 +2,13 @@
   <div class="systemSettingsMonitoring-box">
     <div v-show="isShow" class="systemSettingsMonitoring-navBar">
       <systemSettingsNavBar/>
-      <a href="javascript:;" @click="clickInset" id="systemSettingsMonitoring-inSet">内</a>
+      <a href="javascript:;" @click="clickInset" id="systemSettingsMonitoring-inSet">
+        <span class="iconfont" style="font-size: 14px;">&#xe68b;</span>
+      </a>
     </div>
-    <a href="javascript:;" @click="clickOutset" id="systemSettingsMonitoring-outSet">外</a>
+    <a href="javascript:;" @click="clickOutset" id="systemSettingsMonitoring-outSet">
+      <span class="iconfont">&#xe69d;</span>
+    </a>
     <div id="systemSettingsMonitoring-routerView" class="systemSettingsMonitoring-routerView">
       <router-view/>
     </div>
@@ -28,16 +32,14 @@
       clickInset() {
         this.isShow = false;
         document.getElementById('systemSettingsMonitoring-outSet').style.display = 'inline-block';
-        document.getElementById('systemSettingsMonitoring-outSet').style.left = '60px';
-        document.getElementById('systemSettingsMonitoring-routerView').style.paddingLeft = '0px';
+        document.getElementById('systemSettingsMonitoring-routerView').style.left = '0';
       },
       // 展开
       clickOutset() {
         this.isShow = true;
         document.getElementById('systemSettingsMonitoring-outSet').style.display = 'none';
-        document.getElementById('systemSettingsMonitoring-outSet').style.left = '235px';
-        document.getElementById('systemSettingsMonitoring-routerView').style.paddingLeft = '174px';
-      }
+        document.getElementById('systemSettingsMonitoring-routerView').style.left = '174px';
+      },
     },
     computed: {
       // 监听 url 详情页面的导航
@@ -102,17 +104,25 @@
     bottom: 0;
   }
 
-  #systemSettingsMonitoring-inSet {
-    position: fixed;
+  #systemSettingsMonitoring-inSet,
+  #systemSettingsMonitoring-outSet {
+    height: 40px;
+    width: 14px;
     top: 50%;
-    left: 210px;
+    text-align: center;
+    line-height: 40px;
+    position: fixed;
+  }
+
+  #systemSettingsMonitoring-inSet {
+    left: 216px;
+    border-radius: 15px 0 0 15px;
   }
 
   #systemSettingsMonitoring-outSet {
-    position: fixed;
-    top: 50%;
-    left: 60px;
+    left: 56px;
     display: none;
     z-index: 1001;
+    border-radius: 0 15px 15px 0;
   }
 </style>

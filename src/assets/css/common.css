@@ -19,6 +19,22 @@ html,body,.Index-box {
   border-radius: 5px;
 }
 
+
+/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+.el-table__body-wrapper::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+/*定义滚动条的轨道，内阴影及圆角*/
+.el-table__body-wrapper::-webkit-scrollbar-track{
+  border-radius: 0;
+}
+/*定义滑块，内阴影及圆角*/
+.el-table__body-wrapper::-webkit-scrollbar-thumb{
+  height: 20px;
+  border-radius: 0;
+}
+
 /*头部导航*/
 .el-header {
   padding: 0;
@@ -363,7 +379,7 @@ html,body,.Index-box {
 }
 
 .el-dialog__header .el-dialog__title {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 

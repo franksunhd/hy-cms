@@ -11,16 +11,16 @@
           </template>
           <template v-else>
             <template slot="title">
-              <span :title="item.menuName">
+              <span style="display: flex;" :title="item.menuName">
                 <i class="el-icon-plus"></i>
-                {{item.menuName}}
+                <span style="flex: 1" class="systemSettings-oddRouter">{{item.menuName}}</span>
               </span>
             </template>
             <el-menu-item v-for="(i,index2) in item.systemMenuAndLanguageRelationChildList" :key="index2"
                           :index="i.menuHref">
-              <span class="treeBorder" :title="i.menuName">
+              <span style="display: flex;" class="treeBorder" :title="i.menuName">
                 <span class="treeBorderLine">--- &nbsp;</span>
-                 {{i.menuName}}
+                <span style="flex: 1;" class="systemSettings-oddRouter">{{i.menuName}}</span>
               </span>
             </el-menu-item>
           </template>
@@ -164,10 +164,15 @@
   .systemSettings-navBarContent .el-submenu i {
     font-size: 12px !important;
     color: #252a2f;
+    line-height: 36px;
   }
 
   .systemSettings-oddRouter {
     display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 140px;
   }
 
   .systemSettings-navBarBox .el-submenu .el-menu-item,

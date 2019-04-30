@@ -4,11 +4,11 @@
     <div class="equipmentDetail-info-box">
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentInfo')}}</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item v-for="(item,index) in equipmentInfoList" :key="index" :label="item.label + '：'">{{item.value}}</el-form-item>
+        <el-form-item v-for="(item,index) in equipmentInfoList" :key="index" :label="item.label + '：'" :title="item.value">{{item.value}}</el-form-item>
       </el-form>
       <div class="grayBg administration-title"><strong>{{$t('administrationTabs.equipmentAllStatus')}}</strong></div>
       <el-form label-width="96px" label-position="right" class="administration-info-box">
-        <el-form-item v-for="(item,index) in equipmentAllStatus" :key="index" :label="item.name + '：'">{{item.status}}</el-form-item>
+        <el-form-item v-for="(item,index) in equipmentAllStatus" :key="index" :label="item.name + '：'" :title="item.status">{{item.status}}</el-form-item>
       </el-form>
     </div>
     <!--标签页-->
@@ -1050,5 +1050,11 @@
   .alarmAdministrationTabs-dialog .el-dialog {
     width: 700px;
     height: 500px;
+  }
+
+  .administration-info-box .el-form-item .el-form-item__content {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 </style>

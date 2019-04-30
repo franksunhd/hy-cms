@@ -3,7 +3,7 @@
     <div v-show="isShow" class="systemSettings-navBar">
       <systemSettingsNavBar/>
       <a href="javascript:;" @click="clickInset" id="systemSettings-navBar-inSet">
-        <span class="iconfont">&#xe68b;</span>
+        <span class="iconfont" style="font-size: 14px;">&#xe68b;</span>
       </a>
     </div>
     <a href="javascript:;" @click="clickOutset" id="systemSettings-navBar-outSet">
@@ -71,7 +71,7 @@
   #systemSettings-navBar-inSet,
   #systemSettings-navBar-outSet {
     height: 40px;
-    width: 20px;
+    width: 14px;
     top: 50%;
     text-align: center;
     line-height: 40px;
@@ -79,7 +79,7 @@
   }
 
   #systemSettings-navBar-inSet {
-    left: 210px;
+    left: 216px;
     border-radius: 15px 0 0 15px;
   }
 

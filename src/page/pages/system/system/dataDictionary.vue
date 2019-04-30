@@ -89,9 +89,11 @@
                              align="left"/>
             <el-table-column width="140px" :label="$t('dataDictionary.sort')" header-align="left" align="left">
               <template slot-scope="scope">
-                <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
+                <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">
+                  {{$t('public.moveUp')}}
+                </el-button>
                 <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">
-                  下移
+                  {{$t('public.moveDown')}}
                 </el-button>
               </template>
             </el-table-column>
@@ -173,10 +175,10 @@
             </span>
           </div>
         </el-form-item>
-        <br>
-        <el-form-item class="star" :label="$t('dataDictionary.directoryLevel') + '：'" prop="level">
-          <el-input v-model="addEdit.level" readonly class="width200" clearable/>
-        </el-form-item>
+        <!--<br>-->
+        <!--<el-form-item class="star" :label="$t('dataDictionary.directoryLevel') + '：'" prop="level">-->
+          <!--<el-input v-model="addEdit.level" readonly class="width200" clearable/>-->
+        <!--</el-form-item>-->
         <!--<el-form-item class="star" :label="$t('dataDictionary.orderIndex') + '：'" prop="orderMark">-->
         <!--<el-input v-model="addEdit.orderMark" class="width200" clearable />-->
         <!--</el-form-item>-->
@@ -263,9 +265,9 @@
           dictionaryCode: [
             {validator: isNotNull, trigger: ['blur']}
           ],
-          level: [
-            {validator: isNotNull, trigger: ['blur']}
-          ],
+          // level: [
+          //   {validator: isNotNull, trigger: ['blur']}
+          // ],
           // orderMark:[
           //   {validator: isNotNull, trigger: ['blur']}
           // ],
@@ -278,7 +280,7 @@
     methods: {
       // 输入框字典名称校验
       menuNameInput(data) {
-        if (data.basedataName.trim() == '') {
+        if (data.basedataName.trim() === '') {
           data.flag = true;
           document.getElementById(data.id).style.borderColor = '#fb6041';
         } else {
@@ -298,7 +300,7 @@
         var _t = this;
         _t.ifAdd = true;
         _t.dialogVisible = false;
-        _t.addEdit.parentId = null;
+        _t.addEdit.parentId = '';
         _t.addEdit.nodeName = '';
         _t.addEdit.id = '';
         _t.addEdit.level = 1;
@@ -476,7 +478,7 @@
           _t.$store.commit('setLoading', true);
           _t.$api.delete('system/basedata/', {
             jsonString: JSON.stringify({
-              basedataIds: _t.checkListIds
+              basedataIds: _t.checkListIds.join(',')
             })
           }, function (res) {
             _t.$store.commit('setLoading', false);
@@ -574,6 +576,7 @@
         var _t = this;
         _t.addEdit.parentId = val.nodeId;
         _t.addEdit.nodeName = val.nodeName;
+        _t.addEdit.level = val.level + 1;
         _t.isShowEditPopover = false;
       },
       // 新增按钮
@@ -585,11 +588,15 @@
         if (_t.formItem.nodeId !== '0') {
           _t.addEdit.parentId = _t.formItem.nodeId;
           _t.addEdit.nodeName = orgBreadcrumb(_t.treeData, _t.formItem.nodeId)[0];
+        } else {
+          _t.addEdit.level = 1;
         }
       },
       //新增表格数据
       addData(formName) {
         var _t = this;
+        console.log(_t.addEdit.parentId);
+        console.log(_t.addEdit.nodeName)
         // 字典名称有为空的情况
         var isNullNum = 0;
         _t.systemBasedataLanguageList.forEach(function (item) {

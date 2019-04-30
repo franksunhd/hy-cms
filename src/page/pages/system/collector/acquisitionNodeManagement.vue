@@ -578,7 +578,7 @@
 <style>
   .acquisitionNode-dialog .el-dialog {
     width: 660px;
-    height: 356px;
+    height: 456px;
   }
 
   .acquisitionNode-dialog .el-form-item {

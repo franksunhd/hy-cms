@@ -6,16 +6,10 @@
 				<p class="dataDictionary-title">
 					<a href="javascript:;" @click="clickNode">设备分组</a>
 					<el-button type="text" @click="appendDevice">新增</el-button>
-					<el-dialog class="EquipmentMonitoringGrid" 
-						append-to-body title="新增设备分组" 
-						:visible.sync="dialogGrouping">
+					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :visible.sync="dialogGrouping">
 						<div class="padding20" style="padding-top:0;">
 							<label style="padding-right:10px ;">父级节点</label>
-							<el-popover 
-								trigger="click" 
-								placement="bottom-start" 
-								v-model="isShowComputerPopoversss" 
-								ref="popover">
+							<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoversss" ref="popover">
 								<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodess" :props="defaultPropsssa" />
 								<el-input v-model="addEditss.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 							</el-popover>
@@ -24,11 +18,7 @@
 								</el-option>
 							</el-select>-->
 						</div>
-						<el-table :data="catalogList" 
-							@row-contextmenu="openDetails"  
-							border align="center" 
-							indent 
-							style="width: 100%">
+						<el-table :data="catalogList" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
 							<el-table-column label="序号" align="center" width="50">
 								<template slot-scope="scope">
 									{{scope.$index+1}}
@@ -55,14 +45,15 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<el-dialog class="massdia"
-							width="20%"
-							:visible.sync="dialogGroupingNei" 
-							append-to-body>
+						<el-dialog class="massdia" width="20%" :visible.sync="dialogGroupingNei" append-to-body>
 							<div style="border-bottom:1px solid #ccc; line-height: 40px;">
-								<span>下方插入</span><el-input v-model="indexs" style="width:50px" /><span> 行 </span><el-button @click="getClick"> 确认</el-button>
+								<span>下方插入</span>
+								<el-input v-model="indexs" style="width:50px" /><span> 行 </span>
+								<el-button @click="getClick"> 确认</el-button>
 							</div>
-							<div> <el-button  @click="delClick" class="cursorPointer">删除本行</el-button></div>
+							<div>
+								<el-button @click="delClick" class="cursorPointer">删除本行</el-button>
+							</div>
 						</el-dialog>
 						<div slot="footer" class="dialog-footer">
 							<el-button type="primary" @click="getAddDevice">确 定</el-button>
@@ -70,31 +61,26 @@
 						</div>
 					</el-dialog>
 					<!--编辑设备分组-->
-					<el-button type="text" @click="EditDevice">编辑</el-button>
+					<!--<el-button type="text" @click="EditDevice">编辑</el-button>-->
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
-						<div class="padding20 " style="padding-top:0;margin-left: 80px;">
-							<ul>
-								<li><label for="">父级节点:</label>
-									<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoverss" ref="popover">
-										<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultPropsss" />
-										<el-input v-model="addEdits.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
-									</el-popover>
-								</li>
-								<li><label for="">节点名称:</label>
-									<el-input v-model="formItem.catalogName" class="width200"></el-input>
-								</li>
-								<!--<li><label for="">顺序:</label>
-									<el-input v-model="order" class="width200"></el-input>
-								</li>-->
-							</ul>
-						</div>
+						<el-form :model="formItem" inline label-width="150px" :rules="rules" ref="roleName">
+							<el-form-item label="父级节点:">
+								<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoverss" ref="popover">
+									<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodes" :props="defaultPropsss" />
+									<el-input v-model="addEdits.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+								</el-popover>
+							</el-form-item>
+							<el-form-item class="star" label="节点名称:" prop="catalogName">
+								<el-input v-model="formItem.catalogName" class="width200" clearable></el-input>
+							</el-form-item>
+						</el-form>
 						<div slot="footer" class="dialog-footer">
-							<el-button type="primary" @click="getEditDevice">确 定</el-button>
+							<el-button type="primary" @click="getEditDevice('roleName')">确 定</el-button>
 							<el-button @click="dialogGroupingBj = false">取 消</el-button>
 						</div>
 					</el-dialog>
 					<!--删除设备分组-->
-					<el-button type="text" @click="remove">删除</el-button>
+					<!--<el-button type="text" @click="remove">删除</el-button>-->
 
 					<el-dialog class="EquipmentMonitoringSc" title="确认提示" :visible.sync="dialogGroupingSc" append-to-body :before-close="handleClose" width="30%">
 						<span>请问是否确认删除当前的记录?</span>
@@ -106,34 +92,39 @@
 					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
-				<el-tree class="dataDictionary-tree" 
-					:data="treeData" 
-					highlight-current node-key="idd" @node-click="getCurrentNode" :props="defaultPropssss" :expand-on-click-node="false" :default-expand-all="false">
+				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current node-key="idd" @node-click="getCurrentNode" @node-contextmenu="rightClick" :props="defaultPropssss" :expand-on-click-node="true" :default-expand-all="false">
+					
 					<span class="custom-tree-node" slot-scope="{ node, data}">
-        <span>{{ node.label }}</span>
-					<span v-if="">
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => appendDevice(data)">
-            <i class="el-icon-edit" title="增加"></i>
-          </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => EditDevice(node, data)">
-            <i class="el-icon-share" title="修改"></i>
-          </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            @click="() => remove(node, data)">
-            <i class="el-icon-delete" title="删除"></i>
-          </el-button>
-        </span>
+                    <span>{{ node.label }}</span>
+					<span>
+						<!--<context-menu class="right-menu" 
+                            :target="contextMenuTarget" 
+                            :show="contextMenuVisible" 
+                            @update:show="(show) => contextMenuVisible = show">
+                            <a href="javascript:;" @click="appendDevice(data)">增加</a>
+                            <a href="javascript:;" @click="EditDevice(node, data)">编辑</a>
+                            <a href="javascript:;" @click="remove(node, data)">删除</a>-->
+                        <!--<el-button type="text" size="mini" @click="() => appendDevice(data)">
+                        <i class="el-icon-edit" title="增加"></i>
+                        </el-button>
+                        <el-button type="text" size="mini" @click="() => EditDevice(node, data)">
+                        <i class="el-icon-share" title="编辑"></i>
+                        </el-button>
+                        <el-button type="text" size="mini" @click="() => remove(node, data)">
+                        <i class="el-icon-delete" title="删除"></i>
+                        </el-button>-->
+                        <!--</context-menu>-->
+                    </span>
+                    <div v-show="menuVisible">
+                    <ul id="menu" class="menu">
+                        <li class="menu__item" @click="appendDevice(node, data)">增加</li>
+                        <li class="menu__item" @click="EditDevice(node, data)">编辑</li>
+                        <li class="menu__item" @click="remove(node, data)">删除</li>
+                    </ul>
+                </div>
 					</span>
 				</el-tree>
-
+				
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -349,6 +340,7 @@
 
 <script>
 	let idd = 1000;
+	import { isNotNull } from "../../../assets/js/validator";
 	import { getObjectById } from "../../../assets/js/recursive";
 	import { dateFilter } from "../../../assets/js/filters";
 	import Box from '../../../components/Box';
@@ -364,11 +356,11 @@
 		data() {
 			return {
 				/*点击删除按钮得到当前的ID*/
-				deleteId:'',
+				deleteId: '',
 				/*插入行数*/
-				indexs:'',
+				indexs: '',
 				/*右键下标*/
-				Index:'',
+				Index: '',
 				/*节点名称*/
 				nameOfTheNode: '',
 				/*顺序*/
@@ -396,7 +388,6 @@
 					equipmentName: null,
 					/*序列号*/
 					serialNumber: null,
-
 					computerRoom: null,
 					/*机房ID*/
 					computerRoomId: null,
@@ -415,22 +406,26 @@
 					catalogName: null,
 					/*编辑设备分组父级节点名称*/
 					prentcatalogName: '无',
-
 				},
+
 				/*父级节点*/
 				forItems: {
 					computerRooms: '',
 				},
-
 				// 设备告警详情提交字段
 				addEdit: {
 					id: ''
+				},
+				rules: {
+					catalogName: [{
+						validator: isNotNull,
+						trigger: ['blur']
+					}],
 				},
 				addEdits: {
 					nodeName: '',
 					nodeId: '',
 					parentId: '',
-
 				},
 				addEditss: {
 					nodeName: '',
@@ -471,7 +466,8 @@
 					equipmentOwner: '张三'
 				}, ],
 				// 处理状态
-				dialogGroupingNei:false,//控制增加设备分组内层弹出层
+				menuVisible:false,//控制tree右键弹出框
+				dialogGroupingNei: false, //控制增加设备分组内层弹出层
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowBusinessPopover: false, // 关联业务树形下拉框显示隐藏
 				isShowComputerPopoverss: false, // 控制父级节点下拉框的显示隐藏
@@ -565,14 +561,14 @@
 					label: 'nodeName',
 					children: 'children'
 				},
-				
+
 				//新增设备分组
 				catalogList: [{
 					amount0: '',
 					amount1: '',
 					amount2: '',
 					amount3: ''
-				},{
+				}, {
 					amount0: '',
 					amount1: '',
 					amount2: '',
@@ -692,25 +688,25 @@
 				_t.formItem.rackNameId = '';
 			},
 			//点击删除按钮
-			remove(node, data){
+			remove(node, data) {
 				console.log(node);
 				console.log(data);
-				var _t=this;
-				_t.deleteId=data.nodeId;
-				_t.dialogGroupingSc=true;
+				var _t = this;
+				_t.deleteId = data.nodeId;
+				_t.dialogGroupingSc = true;
 			},
 			//确定删除按钮
-			getRemove(){
-				var _t=this;
-				var catalogId=_t.deleteId;
-				_t.$api.delete('/asset/assetCatalog/'+catalogId,{
-				
-				},function(res){
+			getRemove() {
+				var _t = this;
+				var catalogId = _t.deleteId;
+				_t.$api.delete('/asset/assetCatalog/' + catalogId, {
+
+				}, function(res) {
 					console.log(res)
 					switch(res.status) {
 						case 200:
-						_t.dialogGroupingSc=false;
-						_t.getDataTree();
+							_t.dialogGroupingSc = false;
+							_t.getDataTree();
 							console.log(res)
 							break;
 						case 1003: // 无操作权限
@@ -723,7 +719,6 @@
 							break;
 					}
 				})
-				
 			},
 			//点击新增按钮弹出框
 			appendDevice(data) {
@@ -741,52 +736,130 @@
 				_t.addEditss.nodeName = val.nodeName;
 				_t.isShowComputerPopoversss = false;
 			},
-		/*	//数组转递归
-			filterArray(data, parent) {
-                let _t = this;
-                var tree = [];
-                var temp;
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i].parent == parent) {
-                        var obj = data[i];
-                        temp = filterArray(data, data[i].id);
-                        if (temp.length > 0) {
-                            obj.subs = temp;
-                        }
-                        tree.push(obj);
-                    }
-                }
-                return tree;
-           },
-*/			//新增设备分组弹出框点击确定按钮接口
+			//新增设备分组弹出框点击确定按钮接口
 			getAddDevice() {
 				var _t = this;
-				var tree=[];
+				var all = [];
+				var two = [];
+				var three = [];
+				var four = [];
 				console.log(_t.catalogList);
-				for(var i=0;i<_t.catalogList.length;i++){
-					if(_t.catalogList[i].amount0!=""){
-						var obj=new Object();
+				console.log(_t.catalogList.length);
+				for(var i = 0; i < _t.catalogList.length; i++) {
+					var ones = _t.catalogList[i].amount0.trim();
+					console.log(ones != '');
+					console.log(ones.length > 0);
+					//第一级
+					if(ones != '') {
+						var obj = new Object();
 						obj.name = _t.catalogList[i].amount0;
 						obj.children = [];
-						tree.push(obj)
-					}
-					/*for(var k=0;k<)*/
-					if(_t.catalogList[i].amount1!=""){
-						var obj=new Object();
-						obj.name = _t.catalogList[i].amount1;
+						all.push(obj);
+						console.log(all.length > 0);
+						if(all.length > 0) {
+							var one = new Object();
+							one.children = [];
+							all[i].children.push(one)
+						}
+
+						//第二级
+						if(_t.catalogList[i].amount1 != '') {
+							var obj = new Object();
+							obj.name = _t.catalogList[i].amount1;
+							two.push(obj);
+							if(two.length > 0) {
+								var twoes = new Object();
+								twoes.children = [];
+								one.children.push(twoes)
+							}
+							//第三级
+							if(_t.catalogList[i].amount2 != '') {
+								var obj = new Object();
+								obj.name = _t.catalogList[i].amount2;
+								three.push(obj);
+								//第四级
+								if(_t.catalogList[i].amount3 != '') {
+									var obj = new Object();
+									obj.name = _t.catalogList[i].amount3;
+									four.push(obj);
+									//第四级else
+								} else {
+
+								}
+								//第三级else
+							} else {
+
+							}
+							//第二级else
+						} else {
+
+						}
+						/*var obj=new Object();
+						obj.name = _t.catalogList[i].amount0;
 						obj.children = [];
-						tree.push(obj)
+						tree.push(obj);*/
+						//第一级else
+					} else {
+						console.log('one');
+						if(all.length > 0) {
+							if(_t.catalogList[i].amount1 != '') {
+								var obj = new Object();
+								obj.name = _t.catalogList[i].amount1;
+								obj.children = [];
+								two.push(obj)
+							}
+							if(_t.catalogList[i].amount2 != '') {
+								var obj = new Object();
+								obj.name = _t.catalogList[i].amount2;
+								obj.children = [];
+								three.push(obj)
+							}
+							if(_t.catalogList[i].amount3 != '') {
+								var obj = new Object();
+								obj.name = _t.catalogList[i].amount3;
+								obj.children = [];
+								four.push(obj)
+							}
+						}
 					}
+					/*for(var k=0;k<_t.catalogList.length;k++){
+				if(_t.catalogList[k].amount1 !="" && _t.catalogList[k].amount0 !=""){
+					var obj=new Object();
+					obj.name = _t.catalogList[k].amount1;
+					obj.children = [];
+					tree[i].children.push(obj);
 				}
-				console.log(tree);
-//				_t.dialogGrouping = false;
-//				_t.$api.post('/asset/assetCatalog/', {
-//					parentId: _t.addEditss.nodeId,
-//					catalogList: [
-//					]
-//				}, function(res) {
-//					console.log(res);
-//				})
+				for(var p=0;p<_t.catalogList.length;p++){
+				if(_t.catalogList[p].amount2 !=""){
+					var obj=new Object();
+					obj.name = _t.catalogList[p].amount2;
+					obj.children = [];
+					tree[i].children[k].children.push(obj);
+				}
+				for(var j=0;j<_t.catalogList.length;j++){
+				if(_t.catalogList[j].amount3 !=""){
+					var obj=new Object();
+					obj.name = _t.catalogList[j].amount3;
+					obj.children = [];
+					tree[i].children[k].children[p].children.push(obj);
+				}
+			};
+			};
+			};*/
+
+				};
+				console.log('1', all);
+				console.log('2', two);
+				console.log('3', three);
+				console.log('4', four);
+				//				_t.dialogGrouping = false;
+				//				_t.$api.post('/asset/assetCatalog/', {
+				//					parentId: _t.addEditss.nodeId,
+				//					catalogList: [
+				//					]
+				//				}, function(res) {
+				//					console.log(res);
+				//				})
 			},
 			// 编辑设备分组点击父级结点下拉框的节点
 			clickRoomNodes(val) {
@@ -797,6 +870,7 @@
 			},
 			EditDevice(node, data) {
 				var _t = this;
+				console.log(node);
 				_t.formItem.catalogName = data.nodeName;
 				_t.formItem.catalogId = data.nodeId;
 				_t.addEdits.parentId = data.parentNodeId;
@@ -862,37 +936,39 @@
 							break;
 					}
 				})
-
 			},
 			/*编辑设备分组点击保存按钮接口*/
-			getEditDevice() {
+			getEditDevice(formName) {
 				var _t = this;
-				var id = _t.addEdits.parentId;
-				_t.$store.commit('setLoading', true);
-				_t.$api.put('/asset/assetCatalog/', {
-					catalog: {
-						id: _t.formItem.catalogId,
-						catalogName: _t.formItem.catalogName
+				_t.$refs[formName].validate((valid) => {
+					if(valid) {
+						var id = _t.addEdits.parentId;
+						_t.$store.commit('setLoading', true);
+						_t.$api.put('/asset/assetCatalog/', {
+							catalog: {
+								id: _t.formItem.catalogId,
+								catalogName: _t.formItem.catalogName
+							}
+						}, function(res) {
+							_t.$store.commit('setLoading', false);
+							switch(res.status) {
+								case 200:
+									console.log(res)
+									_t.dialogGroupingBj = false;
+									_t.getDataTree();
+									break;
+								case 1003: // 无操作权限
+								case 1004: // 登录过期
+								case 1005: // token过期
+								case 1006: // token不通过
+									_t.exclude(_t, res.message);
+									break;
+								default:
+									break;
+							}
+						})
 					}
-				}, function(res) {
-					_t.$store.commit('setLoading', false);
-					switch(res.status) {
-						case 200:
-							console.log(res)
-							_t.dialogGroupingBj = false;
-							_t.getDataTree();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
-
+				});
 			},
 			// 查询表格数据
 			getData() {
@@ -1069,17 +1145,6 @@
 					}
 				});
 			},
-			//添加删除树形控件的节点
-			/*renderContent(h, { node, data, store }) {
-        return (
-          <span class="custom-tree-node">
-            <span>{node.label}</span>
-            <span>
-              <el-button size="mini" type="text" on-click={ () => this.append(data) }>Append</el-button>
-              <el-button size="mini" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
-            </span>
-          </span>);
-      },*/
 			// 获取树形控件选中的节点
 			getCurrentNode(data) {
 				var _t = this;
@@ -1103,35 +1168,35 @@
 					.catch(_ => {});
 			},
 			//内层框确认行数
-			getClick(val){
+			getClick(val) {
 				console.log(val)
-				var _t=this;
-				_t.dialogGroupingNei=false;
+				var _t = this;
+				_t.dialogGroupingNei = false;
 				//在当前行的后面插入行
 				console.log(_t.indexs);
-				for(var i=0; i<_t.indexs;i++){
+				for(var i = 0; i < _t.indexs; i++) {
 					var newValue = {
-					amount0: '',
-					amount1: '',
-					amount2: '',
-					amount3: ''
-				};
+						amount0: '',
+						amount1: '',
+						amount2: '',
+						amount3: ''
+					};
 					_t.catalogList.splice((_t.Index + 1), 0, newValue);
 				}
 			},
 			//根据下标删除当前行
-			delClick(){
-				var _t=this;
+			delClick() {
+				var _t = this;
 				_t.catalogList.splice(_t.Index, 1);
 			},
 			/*添加右键行事件*/
 			openDetails(row, column, event) {
-				var _t=this;
+				var _t = this;
 				event.preventDefault();
-				_t.dialogGroupingNei=true;
+				_t.dialogGroupingNei = true;
 				//获取右键行的下标
 				var index = _t.catalogList.indexOf(row);
-				_t.Index=index;
+				_t.Index = index;
 				console.log("当前行下标：" + _t.Index);
 			},
 			// 查询表格中状态对应的数据值
@@ -1345,6 +1410,24 @@
 
 				};
 			},
+			
+			rightClick(MouseEvent, object, Node, element) { // 鼠标右击触发事件
+        this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
+        this.menuVisible = true  // 显示模态窗口，跳出自定义菜单栏
+        var menu = document.querySelector('#menu') 
+        menu.style.left = MouseEvent.clientX - 80 + 'px'
+        document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+        menu.style.top = MouseEvent.clientY - 100 + 'px'
+        console.log('右键被点击的event:', MouseEvent)
+        console.log('右键被点击的object:', object)
+        console.log('右键被点击的value:', Node)
+        console.log('右键被点击的element:', element)
+        console.log('鼠标点击了树形结构图')
+      },
+     foo() { // 取消鼠标监听事件 菜单栏
+        this.menuVisible = false
+        document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
+     },
 
 		},
 
@@ -1353,6 +1436,26 @@
 </script>
 
 <style scoped>
+    .menu__item {
+    display: block;
+    color:#252A2F;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    margin-top: 5px;
+  }
+    .menu {
+    height: 80px;
+    width: 60px;
+    position: absolute;
+    border-radius: 6px;
+    border: 1px solid #999999;
+    background-color: #f4f4f4;
+  }
+   li:hover {
+    background-color: #1790ff;
+    color: white;
+  }
 	.systemSettings-routerView {
 		width: auto;
 		position: absolute;
@@ -1599,9 +1702,49 @@
 		padding: 0 20px;
 	}
 	
-	.massdia .el-dialog{
-		
-		width:50px;
+	.massdia .el-dialog {
+		width: 50px;
 		height: 200px;
 	}
+	
+	
+	.right-menu {
+      border: 1px solid #eee;
+      box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
+      border-radius: 1px;
+      display: block;
+      font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      color: #2c3e50;
+      position: fixed;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.2);
+      border-radius: 3px;
+      z-index: 999;
+      display: none;
+      a {
+        padding: 2px 15px;
+
+        // width: 120px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        display: block;
+        color: #1a1a1a;
+        
+      }
+      user agent stylesheet
+      a:-webkit-any-link {
+        color: -webkit-link;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      a:hover {
+        // background: #42b983;
+        background: $color-primary;
+        color: #fff;
+      }
+  }
 </style>

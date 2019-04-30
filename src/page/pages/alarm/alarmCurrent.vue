@@ -31,14 +31,15 @@
           </el-popover>
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">
-          <el-input v-model="formItem.equipmentName" class="width200" />
+          <el-input v-model="formItem.equipmentName" class="width200" clearable />
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">
-          <el-input v-model="formItem.equipmentIp" class="width200" />
+          <el-input v-model="formItem.equipmentIp" class="width200" clearable />
         </el-form-item>
         <el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
           <el-select
             v-model="formItem.computerRoomId"
+            clearable
             @change="changeRoom(formItem.computerRoomId)"
             class="width200">
             <el-option
@@ -102,15 +103,11 @@
         </el-form-item>
         <el-form-item>
           <el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
+          <el-button class="queryBtn" type="reset" @click="resetData">{{$t('public.reset')}}</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="padding20 clearfix">
-      <!--<el-form-item label="筛选：">-->
-        <!--<el-select v-model="formItem.operation" clearable @change="changeOperation(formItem.operation)">-->
-          <!--<el-option v-for="(item,index) in optionsList" :key="index" :label="item.label" :value="item.id" />-->
-        <!--</el-select>-->
-      <!--</el-form-item>-->
       <el-form inline class="fr" :model="formItem">
         <el-form-item>
           <el-button @click="downloadData" :disabled="disableBtn.more">
@@ -130,7 +127,6 @@
             {{$t('alarmCurrent.batchCloseAlarm')}}
           </el-button>
         </el-form-item>
-
       </el-form>
       <!--表格-->
       <el-table
@@ -217,7 +213,7 @@
             <span>{{tableDataBase.AlarmHandleStatus[scope.row.status]}}</span>
           </template>
         </el-table-column>
-        <el-table-column width="150px" fixed="right" :label="$t('public.operation')">
+        <el-table-column width="120px" fixed="right" :label="$t('public.operation')">
           <template slot-scope="scope">
             <el-button type="text">{{$t('alarmCurrent.turnWarranty')}}</el-button>
             <el-button type="text" @click="dealWithAlarm(scope.row)">{{$t('alarmCurrent.dealWithAlarm')}}</el-button>
@@ -380,6 +376,25 @@
       }
     },
     methods: {
+      // 重置筛选表单数据
+      resetData(){
+        var _t = this;
+        _t.formItem.equipmentType = _t.$t('public.all');
+        _t.formItem.equipmentTypeId = null;
+        _t.formItem.computerRoomId = null;
+        _t.formItem.rackNameId = null;
+        _t.formItem.equipmentIp = null;
+        _t.formItem.equipmentName = null;
+        _t.formItem.businessId = null;
+        _t.formItem.businessName = null;
+        _t.formItem.equipmentStatus = null;
+        _t.formItem.dealWithStatus = null;
+        _t.formItem.dateTime = null;
+        _t.formItem.status = 0;
+        _t.formItem.checked = false;
+        _t.formItem.operation = null;
+        _t.formItem.statusTip = _t.$t('alarmCurrent.confirmOpinions')
+      },
       // 表格选中的值
       selectTableNum(data){
         var _t = this;

@@ -21,31 +21,37 @@
         </div>
         <el-form>
           <el-form-item style="margin-bottom: 10px;">
-            <el-input class="login_input"
-                      placeholder="账号"
-                      v-model="username"
-                      @input="inputUser"/>
+            <el-input
+              class="login_input"
+              placeholder="账号"
+              v-model="username"
+              hy_name="username"
+              @input="inputUser"/>
           </el-form-item>
           <el-form-item style="margin-bottom: 10px;">
-            <el-input class="login_input" type="password"
-                      autocomplete="new-password"
-                      placeholder="密码"
-                      @input="inputUser"
-                      maxlength="20"
-                      v-model="password"
-                      @keyup.enter.native="login($event)"/>
+            <el-input
+              class="login_input" type="password"
+              autocomplete="new-password"
+              placeholder="密码"
+              hy_name="password"
+              @input="inputUser"
+              maxlength="20"
+              v-model="password"
+              @keyup.enter.native="login($event)"/>
           </el-form-item>
           <el-form-item style="position: relative;margin-bottom: 30px;">
-            <el-input class="login_input"
-                      v-model="code"
-                      maxlength="4"
-                      placeholder="验证码"
-                      @keyup.enter.native="login($event)"/>
+            <el-input
+              class="login_input"
+              v-model="code"
+              maxlength="4"
+              placeholder="验证码"
+              hy_name="code"
+              @keyup.enter.native="login($event)"/>
             <img id="comments-canvas" @click="getCode" :src="codeImg">
             <!--<canvas  @click="draw" width="120" height="30"></canvas>-->
           </el-form-item>
           <el-form-item style="margin-bottom: 0;">
-            <el-button type="primary" class="login_btn" @click="login">登录</el-button>
+            <el-button hy_name="submit" type="primary" class="login_btn" @click="login">登录</el-button>
           </el-form-item>
           <div class="login-foot-box">
             <!-- 这里没有功能实现，先注释掉

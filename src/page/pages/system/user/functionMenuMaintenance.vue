@@ -15,10 +15,11 @@
       <el-tree
         class="functionMenuMaintenance-tree"
         :data="treeData"
+        ref="treeMenu"
+        node-key="id"
         :props="defaultProps"
         highlight-current
         @node-click="getCurrentNode"
-        :expand-on-click-node="false"
         :default-expand-all="false"/>
     </div>
     <div class="functionMenu-FormBox">
@@ -46,7 +47,7 @@
       <div class="padding20">
         <!--全局操作-->
         <div class="marBottom16">
-          <el-button type="warning" class="queryBtn" @click="addDataBtn">
+          <el-button :disabled="addEdit.menuLevel == 5" type="warning" class="queryBtn" @click="addDataBtn">
             <i class="el-icon-circle-plus-outline"></i>
             {{$t('public.add')}}
           </el-button>
@@ -178,11 +179,11 @@
         </el-form-item>
         <el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
           <el-radio-group v-model="addEdit.jumpType">
-            <el-radio :label="0">framename</el-radio>
-            <el-radio :label="1">_blank</el-radio>
-            <el-radio :label="2">_self</el-radio>
-            <el-radio :label="3">_parent</el-radio>
-            <el-radio :label="4">_top</el-radio>
+            <el-radio label="framename">framename</el-radio>
+            <el-radio label="_blank">_blank</el-radio>
+            <el-radio label="_self">_self</el-radio>
+            <el-radio label="_parent">_parent</el-radio>
+            <el-radio label="_top">_top</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item class="star" :label="$t('functionMenuMaintenance.roleMenu') + '：'">
@@ -210,8 +211,8 @@
           </div>
           <p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
         </el-form-item>
-        <!--<el-form-item class="star" :label="$t('functionMenuMaintenance.orderIndex') + '：'" prop="orderMark">-->
-          <!--<el-input v-model="addEdit.orderMark" class="width200" readonly/>-->
+        <!--<el-form-item class="star" :label="$t('functionMenuMaintenance.modelLevel') + '：'" prop="menuLevel">-->
+          <!--<el-input v-model="addEdit.menuLevel" class="width200" readonly/>-->
         <!--</el-form-item>-->
         <el-form-item class="star" :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
           <el-radio-group v-model="addEdit.enable">
@@ -494,7 +495,6 @@
         _t.$api.get('system/menu/' + data, {}, function (res) {
           switch (res.status) {
             case 200:
-              console.log(11)
               _t.getEditLanguageData(res.data);
               break;
             case 1003: // 无操作权限
@@ -518,6 +518,7 @@
               languageList.forEach(function (item) {
                 item.menuName = '';
                 item.flag = false;
+                item.languageMark = item.languageCode;
               });
               languageList.forEach(function (item) {
                 resData.systemMenuLanguageList.forEach((val)=>{
@@ -529,7 +530,7 @@
               _t.languageList = languageList;
               _t.addEdit.parentId = resData.parentId;
               _t.addEdit.menuHref = resData.menuHref;
-              _t.addEdit.menuLevel = Number(resData.menuLevel);
+              // _t.addEdit.menuLevel = Number(resData.menuLevel);
               _t.addEdit.menuIcon = resData.menuIcon;
               _t.addEdit.orderMark = resData.orderMark;
               _t.addEdit.enable = resData.enable == true ? 1 : 0;
@@ -954,6 +955,12 @@
           switch (res.status) {
             case 200: // 查询成功
               _t.treeData = res.data.rootMenu;
+              if (_t.formItem.nodeId !== '0') {
+                _t.$nextTick(function () {
+                  _t.$refs.treeMenu.setCurrentKey(_t.formItem.nodeId)
+                });
+              }
+              console.log(_t.formItem)
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -967,12 +974,22 @@
           }
         });
       },
+      // 点击系统功能菜单
+      clickNode() {
+        var _t = this;
+        _t.formItem.nodeId = '0';
+        _t.addEdit.parentId = null;
+        _t.addEdit.parentName = '';
+        _t.addEdit.menuLevel = 1;
+        _t.getData();
+      },
       // 获取选中树形菜单
       getCurrentNode(data) {
         var _t = this;
         _t.formItem.nodeId = data.id;
         _t.addEdit.parentId = data.id;
-        _t.addEdit.menuLevel = data.menuLevel;
+        _t.addEdit.parentName = data.menuName;
+        _t.addEdit.menuLevel = data.menuLevel + 1;
         _t.getData();
       },
       // 根据选中菜单id 重新获取子菜单
@@ -1123,14 +1140,6 @@
               break;
           }
         });
-      },
-      // 点击系统功能菜单
-      clickNode() {
-        var _t = this;
-        _t.formItem.nodeId = '0';
-        _t.addEdit.parentId = null;
-        _t.addEdit.menuLevel = 0;
-        _t.getData();
       }
     },
     created() {
@@ -1161,19 +1170,19 @@
     top: 50px;
     left: 0;
     bottom:0;
-    width: 176px;
+    width: 196px;
     overflow: auto;
   }
 
   .functionMenuMaintenance-tree {
-    min-width: 176px;
+    min-width: 196px;
     display: inline-block;
   }
 
   .functionMenu-FormBox {
     position: absolute;
     top: 50px;
-    left: 176px;
+    left: 196px;
     right: 0;
     bottom: 0;
     overflow: auto;
@@ -1182,7 +1191,7 @@
 <style>
   .functionMenuMaintenance-dialog .el-dialog {
     width: 700px;
-    height: 600px;
+    height: 550px;
   }
 
   .functionMenuMaintenance-dialog-selectUser .el-dialog {

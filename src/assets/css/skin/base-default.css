@@ -62,6 +62,22 @@
   background-color: #555;
 }
 
+.el-table__body-wrapper::-webkit-scrollbar {
+  background-color: #f5f5f5;
+}
+
+.el-table__body-wrapper::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px #eee;
+  box-shadow: inset 0 0 6px #eee;
+  background-color: #f5f5f5;
+}
+
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+  -webkit-box-shadow: inset 0 0 6px #eee;
+  box-shadow: inset 0 0 6px #eee;
+  background-color: #dadada;
+}
+
 /*拼命加载*/
 .el-loading-spinner .el-loading-text {
   color: #555;
@@ -524,7 +540,9 @@
 }
 
 #systemSettings-navBar-inSet,
-#systemSettings-navBar-outSet {
+#systemSettings-navBar-outSet,
+#systemSettingsMonitoring-inSet,
+#systemSettingsMonitoring-outSet {
   background-color: #3f81d0;
   color: #fff;
 }
@@ -635,6 +653,7 @@ span.el-tree-node__label {
 #monitoringAndControl-tabs,
 #EquipmentMonitoring-tabs {
   border: 1px solid #f1f1f1;
+  box-shadow: 0 0 16px rgba(69,79,108,0.4);
 }
 
 #alarmCurrent-tabs .el-tabs__header.is-bottom,
