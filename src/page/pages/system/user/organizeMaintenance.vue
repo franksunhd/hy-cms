@@ -20,9 +20,7 @@
         :props="defaultProps"
         highlight-current
         node-key="nodeId"
-        ref="tree"
-        :expand-on-click-node="false"
-        :default-expand-all="true"/>
+        ref="tree"/>
     </div>
     <!--内容区-->
     <div class="organizationMenu-formBox">
