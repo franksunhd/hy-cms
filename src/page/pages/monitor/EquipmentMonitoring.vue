@@ -52,55 +52,31 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						
-						
-						<div v-show="dialogGroupingNei" >
+
+						<div v-show="dialogGroupingNei">
 							<ul id="menu1" class="menu1">
-								<li class="menu__item  cursorPointer" >
+								<li class="menu1__item  cursorPointer">
 									<span>上方插入</span>
-								<el-input v-model="aboveAddNum" style="width:50px" /><span> 行 </span>
-								<el-button @click="getClick('above')"> 确认</el-button>
+									<el-input v-model="aboveAddNum" style="width:50px" /><span> 行 </span>
+									<el-button @click="getClick('above')"> 确认</el-button>
 								</li>
-								<li class="menu__item  cursorPointer" >
+								<li class="menu1__item  cursorPointer">
 									<span>下方插入</span>
-								<el-input v-model="belowAddNum" style="width:50px" /><span> 行 </span>
-								<el-button @click="getClick('below')"> 确认</el-button>
+									<el-input v-model="belowAddNum" style="width:50px" /><span> 行 </span>
+									<el-button @click="getClick('below')"> 确认</el-button>
 								</li>
-								 <li class="menu__item  cursorPointer">
-					        	<el-button @click="delClick" class="cursorPointer">删除本行</el-button>
-					        </li>
+								<li class="menu1__item  cursorPointer">
+									<!--<el-button >删除本行</el-button>-->
+									<span @click="delClick">删除本行</span>
+								</li>
 							</ul>
-					       
-				        </div>
-						
-						
-						
-						
-						
-						
-						
-						
-						<!--<el-dialog class="massdia" width="20%" :visible.sync="dialogGroupingNei" append-to-body>
-							<div style="border-bottom:1px solid #ccc; line-height: 40px;">
-								<span>上方插入</span>
-								<el-input v-model="aboveAddNum" style="width:50px" /><span> 行 </span>
-								<el-button @click="getClick('above')"> 确认</el-button>
-							</div>
-							<div style="border-bottom:1px solid #ccc; line-height: 40px;">
-								<span>下方插入</span>
-								<el-input v-model="belowAddNum" style="width:50px" /><span> 行 </span>
-								<el-button @click="getClick('below')"> 确认</el-button>
-							</div>
-							<div>
-								<el-button @click="delClick" class="cursorPointer">删除本行</el-button>
-							</div>
-						</el-dialog>-->
+						</div>
 						<div slot="footer" class="dialog-footer">
 							<el-button type="primary" @click="getAddAssetGroup">确 定</el-button>
 							<el-button @click="getAddAssetGroupQx">取 消</el-button>
 						</div>
 					</el-dialog>
-					
+
 					<!--编辑设备分组-->
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
 						<el-form :model="formItem" inline label-width="150px" :rules="rules" ref="roleName">
@@ -240,9 +216,9 @@
 					</el-form>
 					<!--按钮-->
 					<div style="padding-bottom:10px;">
-						<el-button>转移分组</el-button>、
+						<el-button><span class="iconfont">&#xe65b;</span>转移分组</el-button>
 						<!--添加设备监测-->
-						<el-button type="text" @click="AddDeviceMonitoring">添加设备监测</el-button>
+						<el-button @click="AddDeviceMonitoring"><i class="el-icon-circle-plus-outline"> 添加设备监测</i></el-button>
 						<el-dialog class="AddEquipmentMonitoring" append-to-body title="添加设备监测" :visible.sync="AddDeviceMonitoringBg">
 							<div class="AddEquipmentMonitoring_box">
 								<div class="AddEquipmentMonitoring_left">
@@ -256,24 +232,106 @@
 												<el-input v-model="formItem.equipmentType" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 											</el-popover>
 										</el-form-item>
+										<el-form-item>
+											<el-input class="width200"></el-input>
+										</el-form-item>
+										<el-form-item>
+											<el-button class="queryBtn" type="primary" @click="getDataTwe">{{$t('public.query')}}</el-button>
+										</el-form-item>
 									</el-form>
+									<!--添加设备监测表格-->
+									<el-table>
+										<el-table-column type="selection" label="$t('EquipmentMonitoring.FutureGenerations')" width="55">
+										</el-table-column>
+										<!--序号-->
+										<el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
+											<template slot-scope="scope">
+												<span>
+                                                    {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+                                                </span>
+											</template>
+										</el-table-column>
+										<!--设备名称-->
+										<el-table-column prop="" label="设备名称" header-align="left" align="left">
+											<template slot-scope="scope">
+												<span>{{}}</span>
+											</template>
+										</el-table-column>
+										<!--设备类型-->
+										<el-table-column prop="" label="设备类型" header-align="left" align="left">
+
+										</el-table-column>
+										<!--序列号-->
+										<el-table-column prop="" label="序列号" header-align="left" align="left">
+
+										</el-table-column>
+
+										<!--厂商型号-->
+										<el-table-column prop="" label="厂商型号" header-align="left" align="left">
+
+										</el-table-column>
+										<!--设备责任人-->
+										<el-table-column prop="" label="设备责任人" header-align="left" align="left">
+
+										</el-table-column>
+									</el-table>
 								</div>
 							</div>
 							</el-form>
 							<div slot="footer" class="dialog-footer">
-								<el-button type="primary" @click="getAddDevicemonitoring">确 定</el-button>
+								<el-button type="primary" @click="getAddDevicemonitoring">下一步</el-button>
 								<el-button @click="AddDeviceMonitoringBg = false">取 消</el-button>
 							</div>
 						</el-dialog>
-						<el-button>启动监测</el-button>
-						<el-button>暂停监测</el-button>
-						<el-button>删除监测</el-button>
-						<el-button>忽略告警</el-button>
-						<el-button>取消忽略</el-button>
+						<!--启动监测-->
+						<el-button @click="StartMonitoring"><span class="iconfont">&#xe68d; </span>启动监测</el-button>
+						<el-dialog class="StartTheMonitoring" append-to-body title="确认提示" :visible.sync="StartTheMonitoringBg">
+							<span>请问是否确认要启动监测?</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getStartTheMonitoring">确 定</el-button>
+                                <el-button @click="StartTheMonitoringBg = false">取 消</el-button>
+                            </span>
+						</el-dialog>
+						<!--暂停监测-->
+						<el-button @click="SuspendMonitoring"><span class="iconfont">&#xe64b; </span>暂停监测</el-button>
+						<el-dialog class="StartTheMonitoring" append-to-body title="确认提示" :visible.sync="SuspendMonitoringBg">
+							<span>请问是否确认要暂停监测?</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getSuspendMonitoring">确 定</el-button>
+                                <el-button @click="SuspendMonitoringBg = false">取 消</el-button>
+                            </span>
+						</el-dialog>
+						<!--删除监测-->
+						<el-button @click="DeleteTheMonitoring"><span class="iconfont">&#xe650; </span>删除监测</el-button>
+						<el-dialog class="StartTheMonitoring" append-to-body title="确认提示" :visible.sync="DeleteTheMonitoringBg">
+							<span>请问是否确认要删除监测?</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getDeleteTheMonitoring">确 定</el-button>
+                                <el-button @click="DeleteTheMonitoringBg = false">取 消</el-button>
+                            </span>
+						</el-dialog>
+						<!--忽略告警-->
+						<el-button @click="IgnoreTheAlarm"><span class="iconfont">&#xe68e; </span>忽略告警</el-button>
+						<el-dialog class="StartTheMonitoring" append-to-body title="确认提示" :visible.sync="IgnoreTheAlarmBg">
+							<span>请问是否确认要忽略告警监测?</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getIgnoreTheAlarm">确 定</el-button>
+                                <el-button @click="IgnoreTheAlarmBg = false">取 消</el-button>
+                            </span>
+						</el-dialog>
+						<!--取消忽略-->
+						<el-button @click="CancelToIgnore"><span class="iconfont">&#xe64e; </span>取消忽略</el-button>
+						<el-dialog class="StartTheMonitoring" append-to-body title="确认提示" :visible.sync="CancelToIgnoreBg">
+							<span>请问是否确认要取消忽略?</span>
+							<span slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getCancelToIgnore">确 定</el-button>
+                                <el-button @click="CancelToIgnoreBg = false">取 消</el-button>
+                            </span>
+						</el-dialog>
 						<el-button>离线设备</el-button>
 					</div>
 					<!--表格-->
-					<el-table min-width='1080px' :data="tableData" stripe @cell-click="cellClickColumn">
+					<el-table min-width='1080px' :data="tableData" stripe @cell-click="cellClickColumn"  @selection-change="handleSelectionChange">
 						<el-table-column type="selection" label="$t('EquipmentMonitoring.FutureGenerations')" width="55">
 						</el-table-column>
 						<!--序号-->
@@ -285,22 +343,30 @@
 							</template>
 						</el-table-column>
 						<!--监测状态-->
-						<el-table-column width="100px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
+						<el-table-column width="200px" :label="$t('EquipmentMonitoring.workStatus')" prop="workStatus" header-align="left" align="left">
 							<template slot-scope="scope">
+								<div class="displayNone" @mouseover="displayInlineBlock(scope.row)" @mouseout="displayNone(scope.row)">
 								<el-tooltip effect="dark" :content="tableDataBase.DeviceMonitorStatus[scope.row.workStatus]" placement="top-start">
-									<span>{{tableDataBase.DeviceMonitorStatus[scope.row.workStatus]}}</span>
+									<span >{{tableDataBase.DeviceMonitorStatus[scope.row.workStatus]}}</span>
 								</el-tooltip>
-
-								<!--<el-tooltip v-if="scope.row.workStatus == 11" effect="dark" content="禁止" placement="top-start">
-									<span class="iconfont iconfontError">&#xe609;</span>
+								<div v-show="scope.row.InlineBlock" class="displayInlineBlock">
+								<el-tooltip v-if="scope.row.workStatus ==11" effect="dark" content="启动监测" placement="top-start">
+									<span @click="StartMonitoring(scope.row.id)" class="iconfont StartMonitoringTb">&#xe68d;</span><!--iconfontDisable-->
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.workStatus == 22" effect="dark" content="暂时忽略" placement="top-start">
-									<span class="iconfont iconfontWarn">&#xe608;</span>
+								<el-tooltip v-if="scope.row.workStatus == 33||scope.row.workStatus == 23" effect="dark" content="暂停监测" placement="top-start">
+									<span @click="SuspendMonitoring(scope.row.id)" class="iconfont StartMonitoringTb">&#xe64b;</span><!--iconfontDisable-->
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.workStatus == 33" effect="dark" content="启用监测" placement="top-start">
-									<span class="iconfont iconfontDisable">&#xe60a;</span>
-								</el-tooltip>-->
-
+								<el-tooltip v-if="scope.row.workStatus == 11||scope.row.workStatus == 22||scope.row.workStatus == 23||scope.row.workStatus == 33" effect="dark" content="删除监测" placement="top-start">
+									<span @click="DeleteTheMonitoring(scope.row.id)" class="iconfont StartMonitoringTb">&#xe650;</span><!--iconfontError-->
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.workStatus == 23||scope.row.workStatus == 33" effect="dark" content="忽略告警" placement="top-start">
+									<span @click="IgnoreTheAlarm(scope.row.id)" class="iconfont StartMonitoringTb">&#xe68e;</span><!--iconfontDisable-->
+								</el-tooltip>
+								<el-tooltip v-if="scope.row.workStatus == 22" effect="dark" content="取消忽略" placement="top-start">
+									<span @click="CancelToIgnore(scope.row.id)" class="iconfont StartMonitoringTb">&#xe64e;</span><!--iconfontWarn-->
+								</el-tooltip>
+                               </div>
+                               </div>
 							</template>
 						</el-table-column>
 						<!--设备状态-->
@@ -370,6 +436,7 @@
 							<template slot-scope="scope">
 								<span class="iconfont iconfontError cursorPointer" @click="monitorThreshold(scope.row)">&#xe64a;</span>
 							</template>
+							
 						</el-table-column>
 					</el-table>
 					<!--分页-->
@@ -522,7 +589,8 @@
 					equipmentName: '惠普1',
 					alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
 					lastModifiedTime: '2019-02-10 12:22:11',
-					equipmentOwner: '张三'
+					equipmentOwner: '张三',
+					InlineBlock:false
 				}, ],
 				// 处理状态
 				showVisible: false, //控制tree弹出层删除按钮隐藏
@@ -538,6 +606,11 @@
 				dialogGrouping: false, //新增设备分组弹出层
 				dialogGroupingBj: false, //编辑设备分组弹出层
 				AddDeviceMonitoringBg: false, //添加设备监测弹出层
+				StartTheMonitoringBg:false,//启动设备监测弹出层
+				SuspendMonitoringBg:false,//暂停设备监测弹出层
+				DeleteTheMonitoringBg:false,//删除设备监测弹出层
+				IgnoreTheAlarmBg:false,//忽略告警弹出层
+				CancelToIgnoreBg:false,//取消忽略弹出层
 				isShowAddDeviceMonitoringtree: false, //控制添加设备监测弹出层右侧树形下拉框显示隐藏
 				dialogGroupingSc: false, //删除设备分组弹出层
 				dialogVisibleOwnerInfo: false, // 业务责任人信息弹出层
@@ -691,7 +764,24 @@
 						label: '22'
 					}
 				],
-
+				/*表格选中后的集合*/
+				multipleSelection :[],
+				/*点击启动监测按钮传值 true/false*/
+				StartThe:'',
+				StartTheIds:[],
+				/*点击暂停监测按钮传值 true/false*/
+				suspended:'',
+				suspendedIds:[],
+				/*点击删除监测按钮传值 true/false*/
+				DeleteThe:'',
+				DeleteTheIds:[],
+				/*点击忽略告警按钮传值 true/false*/
+				IgnoreThe:'',
+				IgnoreTheIds:[],
+				/*点击取消忽略告警按钮传值 true/false*/
+				CancelTo:'',
+				CancelToIds:[],
+				
 			}
 		},
 		mounted() {
@@ -800,17 +890,17 @@
 				_t.isShowComputerPopoversss = false;
 			},
 			//新增设备分组弹出框点击叉号按钮
-			handleDialogClose(){
-				var _t=this;
-				_t.addEditss.nodeId='';
-				_t.addEditss.nodeName='-无父级节点-';
+			handleDialogClose() {
+				var _t = this;
+				_t.addEditss.nodeId = '';
+				_t.addEditss.nodeName = '-无父级节点-';
 				_t.dialogGrouping = false;
 			},
 			//新增设备分组弹出框点击取消按钮
-			getAddAssetGroupQx(){
-				var _t=this;
-				_t.addEditss.nodeId='';
-				_t.addEditss.nodeName='-无父级节点-';
+			getAddAssetGroupQx() {
+				var _t = this;
+				_t.addEditss.nodeId = '';
+				_t.addEditss.nodeName = '-无父级节点-';
 				_t.dialogGrouping = false;
 			},
 			//新增设备分组弹出框点击确定按钮接口
@@ -834,7 +924,7 @@
 				if(undefined != _t.assetCatalogList && null != _t.assetCatalogList && _t.assetCatalogList.length > 0) {
 					for(var i = 0; i < _t.assetCatalogList.length; i++) {
 						var _one = _t.assetCatalogList[i].amount0.trim();
-						console.log(_one);
+						/*console.log(_one);*/
 						var _two = _t.assetCatalogList[i].amount1.trim();
 						var _three = _t.assetCatalogList[i].amount2.trim();
 						var _four = _t.assetCatalogList[i].amount3.trim();
@@ -939,8 +1029,8 @@
 					//记录校验不通过
 					isPass = false;
 				}
-				console.log(_t.assetCatalogList);
-				console.log(JSON.stringify(_t.packagingGroupData.all));
+				/*console.log(_t.assetCatalogList);
+				console.log(JSON.stringify(_t.packagingGroupData.all));*/
 
 				if(isPass) {
 					alert("全部数据校验通过，可以进行表单提交！");
@@ -948,11 +1038,11 @@
 						parentId: _t.addEditss.nodeId,
 						assetCatalogList: _t.packagingGroupData.all
 					}, function(res) {
-						console.log(res);
+						/*console.log(res);*/
 						_t.getDataTree();
-						_t.addEditss.nodeId='';
-				        _t.addEditss.nodeName='-无父级节点-';
-				        _t.dialogGrouping = false;
+						_t.addEditss.nodeId = '';
+						_t.addEditss.nodeName = '-无父级节点-';
+						_t.dialogGrouping = false;
 					})
 				} else {
 					alert("数据校验未通过，请完善数据！");
@@ -963,7 +1053,7 @@
 				var _t = this.packagingGroupData;
 				if(level <= 3 && undefined != _t.thirdObj.catalogName && '' != _t.thirdObj.catalogName) {
 					if(_t.fourthGroup.length > 0) {
-						_t.thirdObj.assetCatalogList= _t.fourthGroup;
+						_t.thirdObj.assetCatalogList = _t.fourthGroup;
 						_t.fourthGroup = [];
 					}
 					_t.thirdGroup.push(_t.thirdObj);
@@ -1310,34 +1400,34 @@
 			//根据下标删除当前行
 			delClick() {
 				var _t = this;
-				if(_t.assetCatalogList.length<2){
+				if(_t.assetCatalogList.length < 2) {
 					_t.dialogGroupingNei = false;
 					alert("仅剩最后一行不能删除");
-				}else{
+				} else {
 					_t.assetCatalogList.splice(_t.currentRowIndex, 1);
-				//删掉一行后要关闭，以防一直用该下标进行删除导致数组越界
-				_t.dialogGroupingNei = false;
+					//删掉一行后要关闭，以防一直用该下标进行删除导致数组越界
+					_t.dialogGroupingNei = false;
 				}
-				
+
 			},
 			/*添加右键行事件*/
 			openDetails(row, object, MouseEvent) { // 鼠标右击触发事件
 				MouseEvent.preventDefault();
 				this.dialogGroupingNei = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
-				this.dialogGroupingNei = true ;// 显示模态窗口，跳出自定义菜单栏
+				this.dialogGroupingNei = true; // 显示模态窗口，跳出自定义菜单栏
 				var menu = document.querySelector('#menu1');
-				if(MouseEvent.clientX>360&&MouseEvent.clientX<978){
-				menu.style.left = MouseEvent.clientX - 350 + 'px';
+				if(MouseEvent.clientX > 360 && MouseEvent.clientX < 978) {
+					menu.style.left = MouseEvent.clientX - 350 + 'px';
 				}
-				document.addEventListener('click', this.foo1);// 给整个document添加监听鼠标事件，点击任何位置执行foo方法
-					menu.style.top = MouseEvent.clientY - 90 + 'px';
+				document.addEventListener('click', this.foo1); // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+				menu.style.top = MouseEvent.clientY - 90 + 'px';
 				//获取右键行的下标
-				console.log(this.assetCatalogList.indexOf(row))
+				/*console.log(this.assetCatalogList.indexOf(row))*/
 				var index = this.assetCatalogList.indexOf(row);
 				this.currentRowIndex = index;
-				 console.log('右键被点击的MouseEventXmin371+max978:', MouseEvent.clientX);
-				 console.log('右键被点击的MouseEventY218:',  MouseEvent.clientY);
-				 console.log('鼠标点击了树形结构图');
+				/*console.log('右键被点击的MouseEventXmin371+max978:', MouseEvent.clientX);
+				console.log('右键被点击的MouseEventY218:', MouseEvent.clientY);
+				console.log('鼠标点击了树形结构图');*/
 			},
 			foo1() { // 取消鼠标监听事件 菜单栏
 				/*this.dialogGroupingNei = false;*/
@@ -1355,8 +1445,12 @@
 					switch(res.status) {
 						case 200:
 							// 获取表格对应的状态值
+							var tableData= resData.list;;
 							_t.tableDataBase = res.data;
-							_t.tableData = resData.list;
+							tableData.forEach((item)=>{
+								item.InlineBlock = false;
+							});
+							_t.tableData=tableData;
 							_t.options.currentPage = resData.currentPage;
 							_t.options.total = resData.count;
 							break;
@@ -1582,7 +1676,7 @@
 				this.menuVisible = false
 				document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
 			},
-			
+
 			//点击添加设备监测按钮弹出层
 			AddDeviceMonitoring() {
 				var _t = this;
@@ -1605,7 +1699,207 @@
 				_t.formItem.equipmentTypeId = val.nodeCode;*/
 				_t.isShowAddDeviceMonitoringtree = false;
 			},
+			//点击添加设备监测弹出层里的查询按钮
+			getDataTwe() {
 
+			},
+			//点击启动监测按钮弹出层
+			StartMonitoring(ids){
+				var _t=this;
+				var StartTheIds=[];
+				StartTheIds.push(ids);
+				_t.StartTheMonitoringBg=true;
+				if(_t.multipleSelection.length==0){
+					_t.multipleSelection=StartTheIds
+				}
+				
+			},
+			//启动监测弹出层里点击确定按钮
+			getStartTheMonitoring(){
+				var _t=this;
+				_t.$api.post('/monitor/deviceMonitorAttr/execute',{
+					option:33,
+                    isDevice:true,
+                    ids:_t.multipleSelection,
+				},function(res){
+					switch(res.status) {
+						case 200:
+					        _t.StartTheMonitoringBg=false;
+					        _t.multipleSelection=[];
+					        _t.getData();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+
+							break;
+					}
+					
+				})
+				
+			},
+			//点击暂停监测按钮弹出层
+			SuspendMonitoring(ids){
+				var _t=this;
+				var suspendedIds=[];
+				suspendedIds.push(ids);
+				if(_t.multipleSelection.length==0){
+					_t.multipleSelection=suspendedIds
+				}
+				_t.SuspendMonitoringBg=true;
+			},
+			//暂停监测弹出层里点击确定按钮
+			getSuspendMonitoring(){
+				var _t=this;
+				_t.$api.post('/monitor/deviceMonitorAttr/execute',{
+					option:11,
+                    isDevice:true,
+                    ids:_t.multipleSelection
+				},function(res){
+					switch(res.status) {
+						case 200:
+					        _t.SuspendMonitoringBg=false;
+					        _t.multipleSelection=[];
+					        _t.getData();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+			},
+			//点击删除监测按钮弹出层
+			DeleteTheMonitoring(ids){
+				var _t=this;
+				var DeleteTheIds=[];
+				DeleteTheIds.push(ids);
+				if(_t.multipleSelection.length==0){
+					_t.multipleSelection=DeleteTheIds
+				}
+				_t.DeleteTheMonitoringBg=true;
+			},
+			//删除监测弹出层里点击确定按钮
+			getDeleteTheMonitoring(){
+				var _t=this;
+				_t.$api.post('/monitor/deviceMonitorAttr/execute',{
+					option:37,
+                    isDevice:true,
+                    ids:_t.multipleSelection
+				},function(res){
+					switch(res.status) {
+						case 200:
+					        _t.DeleteTheMonitoringBg=false;
+					        _t.multipleSelection=[];
+					        _t.getData();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+			},
+			//点击忽略告警按钮弹出层
+			IgnoreTheAlarm(ids){
+				var _t=this;
+				var IgnoreTheIds=[];
+				IgnoreTheIds.push(ids);
+				if(_t.multipleSelection.length==0){
+					_t.multipleSelection=IgnoreTheIds
+				}
+				_t.IgnoreTheAlarmBg=true;
+			},
+			//忽略告警弹出层里点击确定按钮
+			getIgnoreTheAlarm(){
+				var _t=this;
+				_t.$api.post('/monitor/deviceMonitorAttr/execute',{
+					option:22,
+                    isDevice:true,
+                   ids:_t.multipleSelection
+				},function(res){
+					switch(res.status) {
+						case 200:
+					        _t.IgnoreTheAlarmBg=false;
+					        _t.multipleSelection=[];
+					        _t.getData();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+			},
+			//点击取消忽略按钮弹出层
+			CancelToIgnore(ids){
+				var _t=this;
+				var CancelToIds=[];
+				CancelToIds.push(ids);
+				if(_t.multipleSelection.length==0){
+					_t.multipleSelection=CancelToIds
+				}
+				_t.CancelToIgnoreBg=true;
+			},
+			//取消忽略弹出层里点击确定按钮
+			getCancelToIgnore(){
+				var _t=this;
+				_t.$api.post('/monitor/deviceMonitorAttr/execute',{
+					option:23,
+                    isDevice:true,
+                    ids:_t.multipleSelection
+				},function(res){
+					switch(res.status) {
+						case 200:
+					        _t.CancelToIgnoreBg=false;
+					        _t.multipleSelection=[];
+					        _t.getData();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				})
+			},
+			handleSelectionChange(val){
+				var _t=this;
+				var multipleSelection=[]
+				for(var i=0;i<val.length;i++){
+					multipleSelection.push(val[i].id)
+				}
+				_t.multipleSelection=multipleSelection;
+			},
+			//鼠标移入出现监测状态的图标
+			displayInlineBlock(val){
+				var _t=this;
+				val.InlineBlock=true;
+			},
+			//鼠标移出隐藏监测状态图标
+			displayNone(val){
+				var _t=this;
+				val.InlineBlock=false;
+			}
 		},
 
 		created() {}
@@ -1613,17 +1907,9 @@
 </script>
 
 <style scoped>
-	.menu1__item {
-		display: block;
-		color: #252A2F;
-		font-size: 12px;
-		line-height: 25px;
-		border-bottom: 1px solid #ccc;
-		text-align: center;
-		/*margin-top: 5px;
-    margin-bottom: 5px;*/
+	.displayNone{
+		overflow: hidden;
 	}
-	
 	.menu1 {
 		overflow: hidden;
 		width: 180px;
@@ -1638,6 +1924,18 @@
 		color: white;
 	}
 	
+	.menu1 .menu1__item {
+		display: block;
+		color: #252A2F;
+		font-size: 12px;
+		line-height: 25px;
+		border-bottom: 1px solid #ccc;
+		text-align: center;
+	}
+	/*.menu1 .menu1__item:last-child{
+		text-align: left;
+		
+	}*/
 	
 	.menu__item {
 		display: block;
@@ -1732,23 +2030,29 @@
 		display: inline-block;
 		width: 60px;
 	}
-	.AddEquipmentMonitoring_box{
+	
+	.AddEquipmentMonitoring_box {
 		display: flex;
 	}
-	.AddEquipmentMonitoring_left{
-		
-		border:1px solid #ccc;
+	
+	.AddEquipmentMonitoring_left {
+		border: 1px solid #ccc;
 		/*margin-left:10px ;*/
 		width: 254px;
 		height: 455px;
 	}
-	.AddEquipmentMonitoring_right{
+	
+	.AddEquipmentMonitoring_right {
 		flex: 1;
 		height: 455px;
 		padding-left: 20px;
 	}
+	.StartMonitoringTb{
+		cursor: pointer;
+	}
 </style>
 <style>
+	
 	.custom-tree-node {
 		flex: 1;
 		display: flex;
@@ -1965,14 +2269,22 @@
 			text-decoration: underline;
 		}
 		a:hover {
-			 background: #42b983;
+			background: #42b983;
 			background: $color-primary;
 			color: #fff;
 		}
 	}
-	.AddEquipmentMonitoring .el-dialog{
+	
+	.AddEquipmentMonitoring .el-dialog {
 		width: 944px;
 		height: 588px;
 	}
 	
+	.StartTheMonitoring .el-dialog {
+		width: 350px;
+		height: 180px;
+	}
+	/*.StartTheMonitoring .el-dialog .el-dialog__body{
+		height: 150px;
+	}*/
 </style>
