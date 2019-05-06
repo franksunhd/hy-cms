@@ -17,6 +17,10 @@
   border-right: 1px solid #eaedf1;
 }
 
+.systemBlue {
+	color: #3F81D0;
+}
+
 .systemSettings-navBar,
 .el-menu {
   background-color: #f6f9f9;
@@ -313,8 +317,6 @@
   left: 3px;
 }
 
-
-
 /*登录页*/
 .login-logoText,
 .login-footer,
@@ -542,7 +544,9 @@
 #systemSettings-navBar-inSet,
 #systemSettings-navBar-outSet,
 #systemSettingsMonitoring-inSet,
-#systemSettingsMonitoring-outSet {
+#systemSettingsMonitoring-outSet,
+#alarmSettings-navBar-inSet,
+#alarmSettings-navBar-outSet {
   background-color: #3f81d0;
   color: #fff;
 }

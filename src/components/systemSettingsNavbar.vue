@@ -120,6 +120,8 @@
         case 'menu_001_002':
           _t.titleName = _t.$t('system.systemMonitoring');
           break;
+        case 'menu_005_004':
+        	_t.titleName = _t.$t('system.alarmSettings');
         default:
           break;
       }

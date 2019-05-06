@@ -24,6 +24,7 @@ import './assets/css/common.css';
 import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
 import './assets/css/fontStyle.css';
+import './assets/font/iconfont.css';
 
 Vue.use(VueContextMenu);
 Vue.use(Vuex);

@@ -3,6 +3,9 @@ import axios from 'axios';
 var root = "http://127.0.0.1/web";   //正式环境
 // var root = "http://192.168.0.9/webapi";   //测试环境内网
 
+// 监测阀值 设备logo地址
+var deviceLogo = "http://192.168.0.9/webapi";
+
 // 校验手机号的正则
 var mobileRegular = /^(0|86|17951)?(1[3-9][0-9])[0-9]{8}$/;
 // 校验邮箱正则
@@ -73,5 +76,9 @@ export default {
   // 菜单路径
   menuHref: function () {
     return menuHref;
-  }
+  },
+  // 监测阀值设备logo地址
+  deviceLogo: function(){
+  	return deviceLogo;
+  },
 }

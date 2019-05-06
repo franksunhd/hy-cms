@@ -32,6 +32,7 @@ const roleMaintenance = () => import ('@/page/pages/system/user/roleMaintenance'
 const organizeMaintenance = () => import ('@/page/pages/system/user/organizeMaintenance');
 // 功能菜单维护
 const functionMenuMaintenance = () => import ('@/page/pages/system/user/functionMenuMaintenance');
+const functionMenuDetail = () => import ('@/page/pages/system/user/functionMenuDetail');
 // 数据库备份
 const dataBaseBackUp = () => import ('@/page/pages/system/database/dataBaseBackUp');
 // 备份定时器
@@ -78,6 +79,11 @@ const alarmManagement = () => import ('@/page/pages/alarm/alarmManagement');
 const alarmCurrent = () => import ('@/page/pages/alarm/alarmCurrent');
 // 历史告警
 const alarmHistory = () => import ('@/page/pages/alarm/alarmHistory');
+
+// 告警设置
+const alarmSettings = () => import ('@/components/alarmSettings');
+// 告警组设置
+const alarmGroupSettings = () => import ('@/page/pages/alarm/alarmGroupSettings');
 
 Vue.use(Router);
 export default new Router({
@@ -129,6 +135,11 @@ export default new Router({
               component: functionMenuMaintenance
             },
             {
+              path: "/YUser/systemSettings/functionMenuMaintenance/functionMenuDetail",
+              name: 'functionMenuDetail',
+              component: functionMenuDetail
+            },
+            {
               path: "/YUser/systemSettings/acquisitionNodeManagement",
               name: 'acquisitionNodeManagement',
               component: acquisitionNodeManagement
@@ -177,6 +188,10 @@ export default new Router({
         {path: "/YUser/alarmManagement", name: "alarmManagement", component: alarmManagement},
         {path: "/YUser/alarmManagement/alarmCurrent", name: "alarmCurrent", component: alarmCurrent},
         {path: "/YUser/alarmManagement/alarmHistory", name: "alarmHistory", component: alarmHistory},
+        {path: "/YUser/alarmSettings", redirect: "/YUser/alarmSettings/alarmGroupSettings", name: "alarmSettings", component: alarmSettings,children:[
+        	{path: "/YUser/alarmSettings/alarmGroupSettings", name: "alarmGroupSettings", component: alarmGroupSettings}
+        ]},
+        
         //树形穿梭
         {path:'/YUser/selectTree',name:'selectTree',component:selectTree},
       ]

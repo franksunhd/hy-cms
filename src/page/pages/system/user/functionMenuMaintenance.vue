@@ -81,30 +81,37 @@
           <el-table-column min-width="60px" :label="$t('functionMenuMaintenance.menuName')" header-align="left"
                            align="left">
             <template slot-scope="scope">
-              <el-tooltip effect="dark" :content="scope.row.menuName" placement="top-start">
+              <el-tooltip effect="dark" :content="scope.row.menuName" placement="left-start">
                 <span>{{scope.row.menuName}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column width="60px" prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left"
-                           align="left"/>
-          <el-table-column min-width="100px" :label="$t('functionMenuMaintenance.link')" header-align="left"
-                           align="left">
+          <el-table-column width="60px" prop="menuIcon" :label="$t('functionMenuMaintenance.icon')" header-align="left" align="left">
+          	<template slot-scope="scope">
+          		<img v-if="scope.row.menuIcon !== null" :src="scope.row.menuIcon" style="width: 30px;height: 30px;" />
+          		<span v-else :class="'iconfont ' + scope.row.menuClass"></span>
+          	</template>
+          </el-table-column>
+          <el-table-column min-width="100px" :label="$t('functionMenuMaintenance.link')" header-align="left"align="left">
             <template slot-scope="scope">
-              <el-tooltip effect="dark" :content="scope.row.menuHref" placement="top-start">
+              <el-tooltip effect="dark" :content="scope.row.menuHref" placement="left-start">
                 <span>{{scope.row.menuHref}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column width="90px" :label="$t('functionMenuMaintenance.jumpType')" header-align="left"
-                           align="left"/>
+          <el-table-column width="90px" :label="$t('functionMenuMaintenance.jumpType')" header-align="left" align="left">
+          	<template slot-scope="scope">
+              <el-tooltip effect="dark" :content="scope.row.menuTarget" placement="left-start">
+                <span>{{scope.row.menuTarget}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>	
           <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left"
                            align="left"/>
           <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
             <template slot-scope="scope">
-              <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
-              <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移
-              </el-button>
+              <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">{{$t('public.moveUp')}}</el-button>
+              <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">{{$t('public.moveDown')}}</el-button>
             </template>
           </el-table-column>
           <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="left" align="left">
@@ -113,8 +120,13 @@
               <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
             </template>
           </el-table-column>
-          <el-table-column prop="createBy" :label="$t('functionMenuMaintenance.createName')" header-align="left"
-                           align="left"/>
+          <el-table-column :label="$t('functionMenuMaintenance.createName')" header-align="left" align="left">
+          	<template slot-scope="scope">
+              <el-tooltip effect="dark" :content="scope.row.createBy" placement="left-start">
+                <span>{{scope.row.createBy}}</span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
           <el-table-column width="160px" :label="$t('functionMenuMaintenance.createTime')" header-align="left"
                            align="left">
             <template slot-scope="scope">
@@ -157,6 +169,7 @@
               style="width: 200px;"
               suffix-icon="el-icon-arrow-down"
               readonly
+              :disabled="ifAdd == false"
               slot="reference"/>
           </el-popover>
         </el-form-item>
@@ -409,13 +422,6 @@
           }
         });
       },
-      // 新增按钮
-      addDataBtn() {
-        var _t = this;
-        _t.ifAdd = true;
-        _t.dialogVisible = true;
-        _t.getLanguage();
-      },
       // 新增提交
       addData(formName) {
         var _t = this;
@@ -480,14 +486,46 @@
           }
         });
       },
+      // 新增按钮
+      addDataBtn() {
+        var _t = this;
+        /*
+         * 弹出层形式
+         	_t.ifAdd = true;
+        	_t.dialogVisible = true;
+        	_t.getLanguage(); 
+         */
+        _t.$router.push({name:'functionMenuDetail',params:{
+        		functionIsAdd:true,
+        		functionParentId:_t.addEdit.parentId,
+        		functionMenuLevel:_t.addEdit.menuLevel
+        	}
+       	});
+       	localStorage.setItem('functionIsAdd',true);
+       	localStorage.setItem('functionParentId',_t.addEdit.parentId);
+       	localStorage.setItem('functionMenuLevel',_t.addEdit.menuLevel);
+      },
       // 编辑按钮
       editDataBtn() {
         var _t = this;
-        // 新增编辑判断
-        _t.ifAdd = false;
-        _t.addEdit.id = _t.checkValueList.id;
-        _t.getEditData(_t.addEdit.id);
-        _t.getEditRoleData(_t.addEdit.id);
+        /*
+         * 新增编辑判断
+         * _t.ifAdd = false;
+        	_t.addEdit.id = _t.checkValueList.id;
+        	_t.getEditData(_t.addEdit.id);
+        	_t.getEditRoleData(_t.addEdit.id);
+         */ 
+        _t.$router.push({name:'functionMenuDetail',params:{
+        		functionIsAdd:false,
+        		functionMenuId:_t.checkValueList.id,
+        		functionParentId:_t.addEdit.parentId,
+        		functionMenuLevel:_t.addEdit.menuLevel
+        	}
+       	});
+       	localStorage.setItem('functionIsAdd',false);
+       	localStorage.setItem('functionMenuId',_t.checkValueList.id);
+       	localStorage.setItem('functionParentId',_t.addEdit.parentId);
+       	localStorage.setItem('functionMenuLevel',_t.addEdit.menuLevel);
       },
       // 根据菜单id查询需要编辑的数据
       getEditData(data) {
@@ -960,7 +998,6 @@
                   _t.$refs.treeMenu.setCurrentKey(_t.formItem.nodeId)
                 });
               }
-              console.log(_t.formItem)
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

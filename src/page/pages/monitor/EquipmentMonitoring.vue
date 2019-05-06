@@ -6,11 +6,11 @@
 				<p class="dataDictionary-title">
 					<a href="javascript:;" @click="clickNode">设备分组</a>
 					<el-button type="text" @click="appendDevice">新增</el-button>
-					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :visible.sync="dialogGrouping">
+					<el-dialog class="EquipmentMonitoringGrid" append-to-body title="新增设备分组" :before-close="handleDialogClose" :visible.sync="dialogGrouping">
 						<div class="padding20" style="padding-top:0;">
 							<label style="padding-right:10px ;">父级节点</label>
 							<el-popover trigger="click" placement="bottom-start" v-model="isShowComputerPopoversss" ref="popover">
-								<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickRoomNodess" :props="defaultPropsssa" />
+								<el-tree :data="treeData" highlight-current :expand-on-click-node="true" @node-click="clickRoomNodess" :props="defaultPropsssa" />
 								<el-input v-model="addEditss.nodeName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
 							</el-popover>
 							<!--<el-select v-model="parentNode" placeholder="请选择">
@@ -18,13 +18,20 @@
 								</el-option>
 							</el-select>-->
 						</div>
-						<el-table :data="catalogList" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
-							<el-table-column label="序号" align="center" width="50">
+						<el-table :data="assetCatalogList" @row-contextmenu="openDetails" border align="center" indent style="width: 100%">
+							<el-table-column label="行号" align="center" width="50">
 								<template slot-scope="scope">
 									{{scope.$index+1}}
 								</template>
 							</el-table-column>
-							<el-table-column label="第一级" align="center">
+							<el-table-column label="校验" align="center" width="50">
+								<template slot-scope="scope">
+									<el-tooltip effect="dark" :content="scope.row.verifyMsg" placement="top-start">
+										<span>{{scope.row.verify}}</span>
+									</el-tooltip>
+								</template>
+							</el-table-column>
+							<el-table-column label="父级下的第一级子级" align="center">
 								<template slot-scope="scope">
 									<el-input size="small" v-model="scope.row.amount0" placeholder="请输入内容"></el-input>
 								</template>
@@ -45,23 +52,56 @@
 								</template>
 							</el-table-column>
 						</el-table>
-						<el-dialog class="massdia" width="20%" :visible.sync="dialogGroupingNei" append-to-body>
+						
+						
+						<div v-show="dialogGroupingNei" >
+							<ul id="menu1" class="menu1">
+								<li class="menu__item  cursorPointer" >
+									<span>上方插入</span>
+								<el-input v-model="aboveAddNum" style="width:50px" /><span> 行 </span>
+								<el-button @click="getClick('above')"> 确认</el-button>
+								</li>
+								<li class="menu__item  cursorPointer" >
+									<span>下方插入</span>
+								<el-input v-model="belowAddNum" style="width:50px" /><span> 行 </span>
+								<el-button @click="getClick('below')"> 确认</el-button>
+								</li>
+								 <li class="menu__item  cursorPointer">
+					        	<el-button @click="delClick" class="cursorPointer">删除本行</el-button>
+					        </li>
+							</ul>
+					       
+				        </div>
+						
+						
+						
+						
+						
+						
+						
+						
+						<!--<el-dialog class="massdia" width="20%" :visible.sync="dialogGroupingNei" append-to-body>
+							<div style="border-bottom:1px solid #ccc; line-height: 40px;">
+								<span>上方插入</span>
+								<el-input v-model="aboveAddNum" style="width:50px" /><span> 行 </span>
+								<el-button @click="getClick('above')"> 确认</el-button>
+							</div>
 							<div style="border-bottom:1px solid #ccc; line-height: 40px;">
 								<span>下方插入</span>
-								<el-input v-model="indexs" style="width:50px" /><span> 行 </span>
-								<el-button @click="getClick"> 确认</el-button>
+								<el-input v-model="belowAddNum" style="width:50px" /><span> 行 </span>
+								<el-button @click="getClick('below')"> 确认</el-button>
 							</div>
 							<div>
 								<el-button @click="delClick" class="cursorPointer">删除本行</el-button>
 							</div>
-						</el-dialog>
+						</el-dialog>-->
 						<div slot="footer" class="dialog-footer">
-							<el-button type="primary" @click="getAddDevice">确 定</el-button>
-							<el-button @click="dialogGrouping = false">取 消</el-button>
+							<el-button type="primary" @click="getAddAssetGroup">确 定</el-button>
+							<el-button @click="getAddAssetGroupQx">取 消</el-button>
 						</div>
 					</el-dialog>
+					
 					<!--编辑设备分组-->
-					<!--<el-button type="text" @click="EditDevice">编辑</el-button>-->
 					<el-dialog class="EquipmentMonitoringBj" append-to-body title="编辑设备分组" :visible.sync="dialogGroupingBj">
 						<el-form :model="formItem" inline label-width="150px" :rules="rules" ref="roleName">
 							<el-form-item label="父级节点:">
@@ -79,23 +119,18 @@
 							<el-button @click="dialogGroupingBj = false">取 消</el-button>
 						</div>
 					</el-dialog>
-					<!--删除设备分组-->
-					<!--<el-button type="text" @click="remove">删除</el-button>-->
-
 					<el-dialog class="EquipmentMonitoringSc" title="确认提示" :visible.sync="dialogGroupingSc" append-to-body :before-close="handleClose" width="30%">
 						<span>请问是否确认删除当前的记录?</span>
 						<span slot="footer" class="dialog-footer">
-
-                            <el-button type="primary" @click="getRemove">确 定</el-button>
-                            <el-button @click="dialogGroupingSc = false">取 消</el-button>
-                        </span>
+							<el-button type="primary" @click="getRemove">确 定</el-button>
+							<el-button @click="dialogGroupingSc = false">取 消</el-button>
+						</span>
 					</el-dialog>
 					<!--{{formItem.menuName}}-->
 				</p>
 				<el-tree class="dataDictionary-tree" :data="treeData" highlight-current node-key="idd" @node-click="getCurrentNode" @node-contextmenu="rightClick" :props="defaultPropssss" :expand-on-click-node="true" :default-expand-all="false">
-
 					<span class="custom-tree-node" slot-scope="{ node, data}">
-                    <span>{{ node.label }}</span>
+						<span>{{ node.label }}</span>
 					<span>
 						<!--<context-menu class="right-menu"
                             :target="contextMenuTarget"
@@ -114,17 +149,16 @@
                         <i class="el-icon-delete" title="删除"></i>
                         </el-button>-->
                         <!--</context-menu>-->
-                    </span>
-                    
+                    	</span>
 					</span>
 				</el-tree>
 				<div v-show="menuVisible">
-                    <ul id="menu" class="menu">
-                        <li class="menu__item cursorPointer" @click="appendDevice"><i class="el-icon-share"> 增加</i></li>
-                        <li class="menu__item cursorPointer" @click="EditDevice"><i class="el-icon-edit"> 编辑</i></li>
-                        <li class="menu__item cursorPointer" @click="remove" v-if="showVisible"><i class="el-icon-delete"> 删除</i></li>
-                    </ul>
-                </div>
+					<ul id="menu" class="menu">
+						<li class="menu__item cursorPointer" @click="appendDevice"><i class="el-icon-share"> 增加</i></li>
+						<li class="menu__item cursorPointer" @click="EditDevice"><i class="el-icon-edit"> 编辑</i></li>
+						<li class="menu__item cursorPointer" @click="remove" v-if="showVisible"><i class="el-icon-delete"> 删除</i></li>
+					</ul>
+				</div>
 			</div>
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe613;</span>
@@ -206,8 +240,31 @@
 					</el-form>
 					<!--按钮-->
 					<div style="padding-bottom:10px;">
-						<el-button>转移分组</el-button>
-						<el-button>添加监测</el-button>
+						<el-button>转移分组</el-button>、
+						<!--添加设备监测-->
+						<el-button type="text" @click="AddDeviceMonitoring">添加设备监测</el-button>
+						<el-dialog class="AddEquipmentMonitoring" append-to-body title="添加设备监测" :visible.sync="AddDeviceMonitoringBg">
+							<div class="AddEquipmentMonitoring_box">
+								<div class="AddEquipmentMonitoring_left">
+									<el-tree :data="treeData" highlight-current :expand-on-click-node="true" @node-click="ClickAddDeviceMonitor" :props="AddDeviceMonitor" />
+								</div>
+								<div class="AddEquipmentMonitoring_right">
+									<el-form inline>
+										<el-form-item>
+											<el-popover trigger="click" placement="bottom-start" v-model="isShowAddDeviceMonitoringtree" ref="popover">
+												<el-tree :data="equipmentTypeList" highlight-current :expand-on-click-node="false" @node-click="clickAddDeviceTypeNode" :props="AddDeviceTypeNode" />
+												<el-input v-model="formItem.equipmentType" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+											</el-popover>
+										</el-form-item>
+									</el-form>
+								</div>
+							</div>
+							</el-form>
+							<div slot="footer" class="dialog-footer">
+								<el-button type="primary" @click="getAddDevicemonitoring">确 定</el-button>
+								<el-button @click="AddDeviceMonitoringBg = false">取 消</el-button>
+							</div>
+						</el-dialog>
 						<el-button>启动监测</el-button>
 						<el-button>暂停监测</el-button>
 						<el-button>删除监测</el-button>
@@ -357,10 +414,12 @@
 			return {
 				/*点击删除按钮得到当前的ID*/
 				deleteId: '',
-				/*插入行数*/
-				indexs: '',
-				/*右键下标*/
-				Index: '',
+				/*上方插入行数*/
+				aboveAddNum: '1',
+				/*下方插入行数*/
+				belowAddNum: '1',
+				/*右键行的下标*/
+				currentRowIndex: '',
 				/*节点名称*/
 				nameOfTheNode: '',
 				/*顺序*/
@@ -466,8 +525,8 @@
 					equipmentOwner: '张三'
 				}, ],
 				// 处理状态
-				showVisible:false,//控制tree弹出层删除按钮隐藏
-				menuVisible:false,//控制tree右键弹出框
+				showVisible: false, //控制tree弹出层删除按钮隐藏
+				menuVisible: false, //控制tree右键弹出框
 				dialogGroupingNei: false, //控制增加设备分组内层弹出层
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowBusinessPopover: false, // 关联业务树形下拉框显示隐藏
@@ -478,6 +537,8 @@
 				dialogVisible: false, // 设备详情信息弹出层
 				dialogGrouping: false, //新增设备分组弹出层
 				dialogGroupingBj: false, //编辑设备分组弹出层
+				AddDeviceMonitoringBg: false, //添加设备监测弹出层
+				isShowAddDeviceMonitoringtree: false, //控制添加设备监测弹出层右侧树形下拉框显示隐藏
 				dialogGroupingSc: false, //删除设备分组弹出层
 				dialogVisibleOwnerInfo: false, // 业务责任人信息弹出层
 				/*defaultProps: {},*/
@@ -543,6 +604,20 @@
 					children: 'children',
 					label: 'nodeName'
 				},
+				/*添加设备监测左侧tree*/
+				AddDeviceMonitor: {
+					parentId: 'parentNodeId', // 父级唯一标识
+					nodeId: 'nodeId', // 唯一标识
+					label: 'nodeName', // 标签显示
+					children: 'children', // 子级
+				},
+				/*添加设备监测右侧下拉框tree*/
+				AddDeviceTypeNode: {
+					parentId: 'parentNodeId', // 父级唯一标识
+					nodeId: 'nodeId', // 唯一标识
+					label: 'nodeName', // 标签显示
+					children: 'children', // 子级
+				},
 				/*左侧数tree*/
 				defaultPropssss: {
 					parentId: 'parentNodeId', // 父级唯一标识
@@ -564,51 +639,47 @@
 				},
 
 				//新增设备分组
-				catalogList: [{
+				assetCatalogList: [{
+					verify: '',
+					verifyMsg: '',
 					amount0: '',
 					amount1: '',
 					amount2: '',
 					amount3: ''
 				}, {
+					verify: '',
+					verifyMsg: '',
+					amount0: '',
+					amount1: '',
+					amount2: '',
+					amount3: ''
+				}, {
+					verify: '',
+					verifyMsg: '',
+					amount0: '',
+					amount1: '',
+					amount2: '',
+					amount3: ''
+				}, {
+					verify: '',
+					verifyMsg: '',
 					amount0: '',
 					amount1: '',
 					amount2: '',
 					amount3: ''
 				}],
+
+				//批量创建分组的数据封装
+				packagingGroupData: {
+					all: [],
+					firstObj: {},
+					secondGroup: [],
+					secondObj: {},
+					thirdGroup: [],
+					thirdObj: {},
+					fourthGroup: []
+				},
 				selectlistRow: [],
-				/*catalogList: [{
-						label: '1',
-						children: [{
-							label: '1.1',
-							children: [{
-								label: '1.1.1',
-								children: [{
-									label: '1.1.1.1'
-								}]
-							}]
-						}, {
-							label: '1.2',
-							children: [{
-								label: '1.2.1',
-								children: [{
-									label: '1.2.1.1'
-								}]
-							}]
-						}]
-					},
-					{
-						label: '2',
-						children: [{
-							label: '2.1',
-							children: [{
-								label: '2.1.1',
-								children: [{
-									label: '2.1.1.1'
-								}]
-							}]
-						}]
-					}
-				],*/
 				parentNode: '',
 				/*gridDatas: '',*/
 				parentNodeList: [{
@@ -718,7 +789,7 @@
 			},
 			//点击新增按钮弹出框
 			appendDevice() {
-				var _t = this	
+				var _t = this
 				_t.dialogGrouping = true;
 			},
 			// 新增设备分组点击父级结点下拉框的节点
@@ -728,130 +799,192 @@
 				_t.addEditss.nodeName = val.nodeName;
 				_t.isShowComputerPopoversss = false;
 			},
+			//新增设备分组弹出框点击叉号按钮
+			handleDialogClose(){
+				var _t=this;
+				_t.addEditss.nodeId='';
+				_t.addEditss.nodeName='-无父级节点-';
+				_t.dialogGrouping = false;
+			},
+			//新增设备分组弹出框点击取消按钮
+			getAddAssetGroupQx(){
+				var _t=this;
+				_t.addEditss.nodeId='';
+				_t.addEditss.nodeName='-无父级节点-';
+				_t.dialogGrouping = false;
+			},
 			//新增设备分组弹出框点击确定按钮接口
-			getAddDevice() {
+			getAddAssetGroup() {
 				var _t = this;
-				var all = [];
-				var two = [];
-				var three = [];
-				var four = [];
-				// console.log(_t.catalogList);
-				// console.log(_t.catalogList.length);
-				for(var i = 0; i < _t.catalogList.length; i++) {
-					var ones = _t.catalogList[i].amount0.trim();
-					// console.log(ones != '');
-					// console.log(ones.length > 0);
-					//第一级
-					if(ones != '') {
-						var obj = new Object();
-						obj.name = _t.catalogList[i].amount0;
-						obj.children = [];
-						all.push(obj);
-						// console.log(all.length > 0);
-						if(all.length > 0) {
-							var one = new Object();
-							one.children = [];
-							all[i].children.push(one)
+				//方法一开始就重新定义每个级别的数组、对象
+				_t.packagingGroupData = {
+					all: [],
+					firstObj: {},
+					secondGroup: [],
+					secondObj: {},
+					thirdGroup: [],
+					thirdObj: {},
+					fourthGroup: []
+				};
+
+				//记录是否全部校验通过
+				var isPass = true;
+
+				//当输入的table记录存在且行数大于0时才执行
+				if(undefined != _t.assetCatalogList && null != _t.assetCatalogList && _t.assetCatalogList.length > 0) {
+					for(var i = 0; i < _t.assetCatalogList.length; i++) {
+						var _one = _t.assetCatalogList[i].amount0.trim();
+						console.log(_one);
+						var _two = _t.assetCatalogList[i].amount1.trim();
+						var _three = _t.assetCatalogList[i].amount2.trim();
+						var _four = _t.assetCatalogList[i].amount3.trim();
+						if(_one.length == 0 && _two.length == 0 && _three.length == 0 && _four.length == 0) {
+							_t.assetCatalogList[i].verify = "error";
+							_t.assetCatalogList[i].verifyMsg = "该行所有单元格均未录入数据，请删除！";
+
+							//记录校验不通过
+							isPass = false;
+
+							//直接进行下一行校验
+							continue;
 						}
+						if(_one.length > 0) {
+							//一级不为空，则说明上一个一级结束，先封装上一个一级的内容到all中
+							_t.packagingGroupDataFun(1);
 
-						//第二级
-						if(_t.catalogList[i].amount1 != '') {
-							var obj = new Object();
-							obj.name = _t.catalogList[i].amount1;
-							two.push(obj);
-							if(two.length > 0) {
-								var twoes = new Object();
-								twoes.children = [];
-								one.children.push(twoes)
-							}
-							//第三级
-							if(_t.catalogList[i].amount2 != '') {
-								var obj = new Object();
-								obj.name = _t.catalogList[i].amount2;
-								three.push(obj);
-								//第四级
-								if(_t.catalogList[i].amount3 != '') {
-									var obj = new Object();
-									obj.name = _t.catalogList[i].amount3;
-									four.push(obj);
-									//第四级else
-								} else {
+							_t.assetCatalogList[i].verify = "pass";
+							_t.assetCatalogList[i].verifyMsg = "校验通过！";
 
+							//开始记录新一个一级
+							_t.packagingGroupData.firstObj = {
+								catalogName: _one
+							};
+						}
+						if(_two.length > 0) {
+							//二级不为空，则说明上一个二级结束，先封装上一个二级的内容到secondGroup中
+							_t.packagingGroupDataFun(2);
+
+							//检查是否存在可挂靠的父级
+							var firstObj = _t.packagingGroupData.firstObj;
+							if(undefined == firstObj.catalogName || '' == firstObj.catalogName) {
+								_t.assetCatalogList[i].verify = "error";
+								if(undefined != _t.assetCatalogList[i].verifyMsg && '' != _t.assetCatalogList[i].verifyMsg) {
+									_t.assetCatalogList[i].verifyMsg += "<br/>";
 								}
-								//第三级else
+								_t.assetCatalogList[i].verifyMsg += "该行的第二级未找到任何可挂靠的第一级记录，请检查！";
+
+								//记录校验不通过
+								isPass = false;
 							} else {
+								_t.assetCatalogList[i].verify = "pass";
+								_t.assetCatalogList[i].verifyMsg = "校验通过！";
 
+								//开始记录新一个二级
+								_t.packagingGroupData.secondObj = {
+									catalogName: _two
+								};
 							}
-							//第二级else
-						} else {
-
 						}
-						/*var obj=new Object();
-						obj.name = _t.catalogList[i].amount0;
-						obj.children = [];
-						tree.push(obj);*/
-						//第一级else
-					} else {
-						// console.log('one');
-						if(all.length > 0) {
-							if(_t.catalogList[i].amount1 != '') {
-								var obj = new Object();
-								obj.name = _t.catalogList[i].amount1;
-								obj.children = [];
-								two.push(obj)
+						if(_three.length > 0) {
+							//三级不为空，则说明上一个三级结束，先封装上一个三级的内容到thirdGroup中
+							_t.packagingGroupDataFun(3);
+
+							//检查是否存在可挂靠的父级
+							var secondObj = _t.packagingGroupData.secondObj;
+							if(undefined == secondObj.catalogName || '' == secondObj.catalogName) {
+								_t.assetCatalogList[i].verify = "error";
+								if(undefined != _t.assetCatalogList[i].verifyMsg && '' != _t.assetCatalogList[i].verifyMsg) {
+									_t.assetCatalogList[i].verifyMsg += "<br/>";
+								}
+								_t.assetCatalogList[i].verifyMsg += "该行的第三级未找到任何可挂靠的第二级记录，请检查！";
+
+								//记录校验不通过
+								isPass = false;
+							} else {
+								_t.assetCatalogList[i].verify = "pass";
+								_t.assetCatalogList[i].verifyMsg = "校验通过！";
+
+								//开始记录新一个三级
+								_t.packagingGroupData.thirdObj = {
+									catalogName: _three
+								};
 							}
-							if(_t.catalogList[i].amount2 != '') {
-								var obj = new Object();
-								obj.name = _t.catalogList[i].amount2;
-								obj.children = [];
-								three.push(obj)
-							}
-							if(_t.catalogList[i].amount3 != '') {
-								var obj = new Object();
-								obj.name = _t.catalogList[i].amount3;
-								obj.children = [];
-								four.push(obj)
+						}
+						if(_four.length > 0) {
+							//检查是否存在可挂靠的父级
+							var thirdObj = _t.packagingGroupData.thirdObj;
+							if(undefined == thirdObj.catalogName || '' == thirdObj.catalogName) {
+								_t.assetCatalogList[i].verify = "error";
+								if(undefined != _t.assetCatalogList[i].verifyMsg && '' != _t.assetCatalogList[i].verifyMsg) {
+									_t.assetCatalogList[i].verifyMsg += "<br/>";
+								}
+								_t.assetCatalogList[i].verifyMsg += "该行的第四级未找到任何可挂靠的第三级记录，请检查！";
+
+								//记录校验不通过
+								isPass = false;
+							} else {
+								_t.assetCatalogList[i].verify = "pass";
+								_t.assetCatalogList[i].verifyMsg = "校验通过！";
+
+								//将四级的内容封装到fourthGroup中
+								_t.packagingGroupData.fourthGroup.push({
+									catalogName: _four
+								});
 							}
 						}
 					}
-					/*for(var k=0;k<_t.catalogList.length;k++){
-				if(_t.catalogList[k].amount1 !="" && _t.catalogList[k].amount0 !=""){
-					var obj=new Object();
-					obj.name = _t.catalogList[k].amount1;
-					obj.children = [];
-					tree[i].children.push(obj);
+					//将最后一个一级的内容到all中
+					_t.packagingGroupDataFun(1);
+				} else {
+					//记录校验不通过
+					isPass = false;
 				}
-				for(var p=0;p<_t.catalogList.length;p++){
-				if(_t.catalogList[p].amount2 !=""){
-					var obj=new Object();
-					obj.name = _t.catalogList[p].amount2;
-					obj.children = [];
-					tree[i].children[k].children.push(obj);
-				}
-				for(var j=0;j<_t.catalogList.length;j++){
-				if(_t.catalogList[j].amount3 !=""){
-					var obj=new Object();
-					obj.name = _t.catalogList[j].amount3;
-					obj.children = [];
-					tree[i].children[k].children[p].children.push(obj);
-				}
-			};
-			};
-			};*/
+				console.log(_t.assetCatalogList);
+				console.log(JSON.stringify(_t.packagingGroupData.all));
 
-				};
-				// console.log('1', all);
-				// console.log('2', two);
-				// console.log('3', three);
-				// console.log('4', four);
-				//				_t.dialogGrouping = false;
-				//				_t.$api.post('/asset/assetCatalog/', {
-				//					parentId: _t.addEditss.nodeId,
-				//					catalogList: [
-				//					]
-				//				}, function(res) {
-				//					// console.log(res);
-				//				})
+				if(isPass) {
+					alert("全部数据校验通过，可以进行表单提交！");
+					_t.$api.post('/asset/assetCatalog/', {
+						parentId: _t.addEditss.nodeId,
+						assetCatalogList: _t.packagingGroupData.all
+					}, function(res) {
+						console.log(res);
+						_t.getDataTree();
+						_t.addEditss.nodeId='';
+				        _t.addEditss.nodeName='-无父级节点-';
+				        _t.dialogGrouping = false;
+					})
+				} else {
+					alert("数据校验未通过，请完善数据！");
+				}
+			},
+			//封装批量新增的设备分组的集合
+			packagingGroupDataFun(level) {
+				var _t = this.packagingGroupData;
+				if(level <= 3 && undefined != _t.thirdObj.catalogName && '' != _t.thirdObj.catalogName) {
+					if(_t.fourthGroup.length > 0) {
+						_t.thirdObj.assetCatalogList= _t.fourthGroup;
+						_t.fourthGroup = [];
+					}
+					_t.thirdGroup.push(_t.thirdObj);
+					_t.thirdObj = {};
+				}
+				if(level <= 2 && undefined != _t.secondObj.catalogName && '' != _t.secondObj.catalogName) {
+					if(_t.thirdGroup.length > 0) {
+						_t.secondObj.assetCatalogList = _t.thirdGroup;
+						_t.thirdGroup = [];
+					}
+					_t.secondGroup.push(_t.secondObj);
+					_t.secondObj = {};
+				}
+				if(level <= 1 && undefined != _t.firstObj.catalogName && '' != _t.firstObj.catalogName) {
+					if(_t.secondGroup.length > 0) {
+						_t.firstObj.assetCatalogList = _t.secondGroup;
+						_t.secondGroup = [];
+					}
+					_t.all.push(_t.firstObj);
+					_t.firstObj = {};
+				}
 			},
 			// 编辑设备分组点击父级结点下拉框的节点
 			clickRoomNodes(val) {
@@ -1152,30 +1285,63 @@
 			getClick(val) {
 				var _t = this;
 				_t.dialogGroupingNei = false;
+				var addNum = 1; //增加的行数
+				var addToIndex; //加到哪个下标后边
+				if('above' == val) {
+					addNum = _t.aboveAddNum;
+					addToIndex = _t.currentRowIndex;
+				} else {
+					addNum = _t.belowAddNum;
+					addToIndex = _t.currentRowIndex + 1;
+				}
 				//在当前行的后面插入行
-				for(var i = 0; i < _t.indexs; i++) {
+				for(var i = 0; i < addNum; i++) {
 					var newValue = {
+						verify: '',
+						verifyMsg: '',
 						amount0: '',
 						amount1: '',
 						amount2: '',
 						amount3: ''
 					};
-					_t.catalogList.splice((_t.Index + 1), 0, newValue);
+					_t.assetCatalogList.splice(addToIndex, 0, newValue);
 				}
 			},
 			//根据下标删除当前行
 			delClick() {
 				var _t = this;
-				_t.catalogList.splice(_t.Index, 1);
+				if(_t.assetCatalogList.length<2){
+					_t.dialogGroupingNei = false;
+					alert("仅剩最后一行不能删除");
+				}else{
+					_t.assetCatalogList.splice(_t.currentRowIndex, 1);
+				//删掉一行后要关闭，以防一直用该下标进行删除导致数组越界
+				_t.dialogGroupingNei = false;
+				}
+				
 			},
 			/*添加右键行事件*/
-			openDetails(row, column, event) {
-				var _t = this;
-				event.preventDefault();
-				_t.dialogGroupingNei = true;
+			openDetails(row, object, MouseEvent) { // 鼠标右击触发事件
+				MouseEvent.preventDefault();
+				this.dialogGroupingNei = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
+				this.dialogGroupingNei = true ;// 显示模态窗口，跳出自定义菜单栏
+				var menu = document.querySelector('#menu1');
+				if(MouseEvent.clientX>360&&MouseEvent.clientX<978){
+				menu.style.left = MouseEvent.clientX - 350 + 'px';
+				}
+				document.addEventListener('click', this.foo1);// 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+					menu.style.top = MouseEvent.clientY - 90 + 'px';
 				//获取右键行的下标
-				var index = _t.catalogList.indexOf(row);
-				_t.Index = index;
+				console.log(this.assetCatalogList.indexOf(row))
+				var index = this.assetCatalogList.indexOf(row);
+				this.currentRowIndex = index;
+				 console.log('右键被点击的MouseEventXmin371+max978:', MouseEvent.clientX);
+				 console.log('右键被点击的MouseEventY218:',  MouseEvent.clientY);
+				 console.log('鼠标点击了树形结构图');
+			},
+			foo1() { // 取消鼠标监听事件 菜单栏
+				/*this.dialogGroupingNei = false;*/
+				document.removeEventListener('click', this.foo1) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
 			},
 			// 查询表格中状态对应的数据值
 			getTableDataValue(resData) {
@@ -1395,28 +1561,50 @@
 				this.addEditss.nodeName = object.nodeName;
 				this.formItem.catalogId = object.nodeId;
 				this.formItem.catalogName = object.nodeName;
-//				console.log(object);
-				if(object.children.length==0){
-					this.showVisible=true;
-				}else{
-					this.showVisible=false;
+				if(object.children.length == 0) {
+					this.showVisible = true;
+				} else {
+					this.showVisible = false;
 				}
-        this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
-        this.menuVisible = true  // 显示模态窗口，跳出自定义菜单栏
-        var menu = document.querySelector('#menu')
-        menu.style.left = MouseEvent.clientX - 80 + 'px'
-        document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
-        menu.style.top = MouseEvent.clientY - 70 + 'px'
-        // // console.log('右键被点击的event:', MouseEvent)
-        // console.log('右键被点击的object:', object)
-        // console.log('右键被点击的value:', Node)
-        // console.log('右键被点击的element:', element)
-        // console.log('鼠标点击了树形结构图')
-      },
-     foo() { // 取消鼠标监听事件 菜单栏
-        this.menuVisible = false
-        document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
-     },
+				this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
+				this.menuVisible = true // 显示模态窗口，跳出自定义菜单栏
+				var menu = document.querySelector('#menu')
+				menu.style.left = MouseEvent.clientX - 80 + 'px'
+				document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+				menu.style.top = MouseEvent.clientY - 70 + 'px'
+				// // console.log('右键被点击的event:', MouseEvent)
+				// console.log('右键被点击的object:', object)
+				// console.log('右键被点击的value:', Node)
+				// console.log('右键被点击的element:', element)
+				// console.log('鼠标点击了树形结构图')
+			},
+			foo() { // 取消鼠标监听事件 菜单栏
+				this.menuVisible = false
+				document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
+			},
+			
+			//点击添加设备监测按钮弹出层
+			AddDeviceMonitoring() {
+				var _t = this;
+				_t.AddDeviceMonitoringBg = true;
+			},
+			// 添加设备监测树节点获取
+			ClickAddDeviceMonitor(val) {
+				var _t = this;
+				/*_t.addEdits.parentId = val.nodeId;
+				_t.addEdits.nodeName = val.nodeName;*/
+			},
+			//点击添加设备监测弹出层里的确定按钮
+			getAddDevicemonitoring() {
+				_t.AddDeviceMonitoringBg = false;
+			},
+			// 点击所有未监测的设备的下拉框节点
+			clickAddDeviceTypeNode(val) {
+				var _t = this;
+				/*_t.formItem.equipmentType = val.nodeName;
+				_t.formItem.equipmentTypeId = val.nodeCode;*/
+				_t.isShowAddDeviceMonitoringtree = false;
+			},
 
 		},
 
@@ -1425,31 +1613,61 @@
 </script>
 
 <style scoped>
-    .menu__item {
-    display: block;
-    color:#252A2F;
-    font-size: 12px;
-    line-height: 25px;
-    border-bottom: 1px solid #ccc;
-    text-align: center;
-    /*margin-top: 5px;
+	.menu1__item {
+		display: block;
+		color: #252A2F;
+		font-size: 12px;
+		line-height: 25px;
+		border-bottom: 1px solid #ccc;
+		text-align: center;
+		/*margin-top: 5px;
     margin-bottom: 5px;*/
-  }
-  .menu__item:last-child{
-  	border-bottom: none;
-  }
-    .menu {
-    overflow: hidden;
-    width: 60px;
-    position: absolute;
-    border-radius: 6px;
-    border: 1px solid #999999;
-    background-color: #f4f4f4;
-  }
-   li:hover {
-    background-color: #1790ff;
-    color: white;
-  }
+	}
+	
+	.menu1 {
+		overflow: hidden;
+		width: 180px;
+		position: absolute;
+		border-radius: 6px;
+		border: 1px solid #999999;
+		background-color: #f4f4f4;
+	}
+	
+	.menu1 li:hover {
+		background-color: #1790ff;
+		color: white;
+	}
+	
+	
+	.menu__item {
+		display: block;
+		color: #252A2F;
+		font-size: 12px;
+		line-height: 25px;
+		border-bottom: 1px solid #ccc;
+		text-align: center;
+		/*margin-top: 5px;
+    margin-bottom: 5px;*/
+	}
+	
+	.menu__item:last-child {
+		border-bottom: none;
+	}
+	
+	.menu {
+		overflow: hidden;
+		width: 60px;
+		position: absolute;
+		border-radius: 6px;
+		border: 1px solid #999999;
+		background-color: #f4f4f4;
+	}
+	
+	.menu li:hover {
+		background-color: #1790ff;
+		color: white;
+	}
+	
 	.systemSettings-routerView {
 		width: auto;
 		position: absolute;
@@ -1460,7 +1678,7 @@
 		overflow: hidden;
 		overflow-y: auto;
 	}
-
+	
 	.systemSettings-navBar {
 		width: 174px;
 		position: absolute;
@@ -1468,7 +1686,7 @@
 		left: 0;
 		bottom: 0;
 	}
-
+	
 	#EquipmentMonitoring-navBar-inSet,
 	#EquipmentMonitoring-navBar-outSet {
 		height: 40px;
@@ -1478,41 +1696,56 @@
 		line-height: 40px;
 		position: fixed;
 	}
-
+	
 	#EquipmentMonitoring-navBar-inSet {
 		left: 210px;
 		border-radius: 15px 0 0 15px;
 	}
-
+	
 	#EquipmentMonitoring-navBar-outSet {
 		left: 56px;
 		display: none;
 		z-index: 1001;
 		border-radius: 0 15px 15px 0;
 	}
-
+	
 	.borderRightColorGray {
 		overflow: hidden;
 		height: 100%;
 	}
-
+	
 	.dataDictionary-title {
 		overflow: hidden;
 	}
-
+	
 	.dataDictionary-title a {
 		line-height: 40px;
 		padding-left: 20px;
 		font-weight: 600;
 	}
-
+	
 	.EquipmentMonitoringBj ul li {
 		padding-bottom: 20px;
 	}
-
+	
 	.EquipmentMonitoringBj ul li label {
 		display: inline-block;
 		width: 60px;
+	}
+	.AddEquipmentMonitoring_box{
+		display: flex;
+	}
+	.AddEquipmentMonitoring_left{
+		
+		border:1px solid #ccc;
+		/*margin-left:10px ;*/
+		width: 254px;
+		height: 455px;
+	}
+	.AddEquipmentMonitoring_right{
+		flex: 1;
+		height: 455px;
+		padding-left: 20px;
 	}
 </style>
 <style>
@@ -1525,7 +1758,7 @@
 		padding-right: 8px;
 		color: #4386c6;
 	}
-
+	
 	.el-ic {
 		display: none;
 		i,
@@ -1538,25 +1771,25 @@
 			color: #4386c6;
 		}
 	}
-
+	
 	.el-tree-node__content {
 		height: 38px;
 	}
-
+	
 	.el-tree-node__expand-icon {
 		color: #428bca;
 		/*padding: 10px 10px 0px 10px !important;*/
 	}
-
+	
 	.el-tree-node__content:hover .el-ic {
 		color: #428bca !important;
 		display: inline-block;
 	}
-
+	
 	.el-tree-node__content:hover {
 		font-weight: bold;
 	}
-
+	
 	.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content :hover {
 		.el-tree-node__expand-icon.is-leaf {
 			color: transparent;
@@ -1570,7 +1803,7 @@
 			font-weight: bold;
 		}
 	}
-
+	
 	.el-dialog__body {
 		.upload-container .image-preview .image-preview-wrapper img {
 			height: 100px;
@@ -1592,47 +1825,47 @@
 			height: 100px;
 		}
 	}
-
+	
 	#systemSettings-navBar-inSet,
 	#systemSettings-navBar-outSet {
 		background-color: #3f81d0;
 		color: #fff;
 	}
-
+	
 	.EquipmentMonitoringGrid .el-dialog {
-		width: 612px;
-		height: 425px;
+		width: 812px;
+		height: 525px;
 	}
-
+	
 	.EquipmentMonitoringBj .el-dialog {
 		width: 501px;
 		height: 325px;
 	}
-
+	
 	.EquipmentMonitoringSc .el-dialog {
 		width: 200px;
 		height: 180px;
 	}
-
+	
 	.alarmCurrentBox .el-form--inline .el-form-item {
 		margin: 0;
 	}
-
+	
 	.EquipmentMonitoring-btn {
 		position: absolute;
 		top: 10px;
 		right: 10px;
 		z-index: 100;
 	}
-
+	
 	.closeCheckBox {
 		margin-left: 30px;
 	}
-
+	
 	.closeCheckBox .el-checkbox__label {
 		font-size: 12px;
 	}
-
+	
 	#EquipmentMonitoring-tabs {
 		position: fixed;
 		bottom: 0;
@@ -1641,7 +1874,7 @@
 		top: 118px;
 		z-index: 1100;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom {
 		margin-top: 0;
 		position: absolute;
@@ -1649,12 +1882,12 @@
 		left: -24px;
 		right: -20px;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item {
 		font-size: 12px;
 		position: relative;
 	}
-
+	
 	#EquipmentMonitoring-tabs>.el-tabs__content {
 		position: absolute;
 		left: 0;
@@ -1662,7 +1895,7 @@
 		bottom: 40px;
 		top: 0;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:before {
 		content: '';
 		width: 10px;
@@ -1673,7 +1906,7 @@
 		left: -10px;
 		border-radius: 0 10px 0 0;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item:after {
 		content: '';
 		position: absolute;
@@ -1681,7 +1914,7 @@
 		right: 0;
 		height: 20px;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active:after {
 		content: '';
 		width: 10px;
@@ -1692,54 +1925,54 @@
 		right: -10px;
 		border-radius: 10px 0 0 0;
 	}
-
+	
 	#EquipmentMonitoring-tabs .el-tabs__header.is-bottom .el-tabs__nav-scroll {
 		padding: 0 20px;
 	}
-
+	
 	.massdia .el-dialog {
-		width: 50px;
-		height: 200px;
+		height: 230px;
 	}
-
-
+	
 	.right-menu {
-      border: 1px solid #eee;
-      box-shadow: 0 0.5em 1em 0 rgba(0,0,0,.1);
-      border-radius: 1px;
-      display: block;
-      font-family: Microsoft Yahei,Avenir,Helvetica,Arial,sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-align: center;
-      color: #2c3e50;
-      position: fixed;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.2);
-      border-radius: 3px;
-      z-index: 999;
-      display: none;
-      a {
-        padding: 2px 15px;
-
-        // width: 120px;
-        height: 28px;
-        line-height: 28px;
-        text-align: center;
-        display: block;
-        color: #1a1a1a;
-
-      }
-      user agent stylesheet
-      a:-webkit-any-link {
-        color: -webkit-link;
-        cursor: pointer;
-        text-decoration: underline;
-      }
-      a:hover {
-        // background: #42b983;
-        background: $color-primary;
-        color: #fff;
-      }
-  }
+		border: 1px solid #eee;
+		box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, .1);
+		border-radius: 1px;
+		display: block;
+		font-family: Microsoft Yahei, Avenir, Helvetica, Arial, sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-align: center;
+		color: #2c3e50;
+		position: fixed;
+		background: #fff;
+		border: 1px solid rgba(0, 0, 0, .2);
+		border-radius: 3px;
+		z-index: 999;
+		display: none;
+		a {
+			padding: 2px 15px;
+			// width: 120px;
+			height: 28px;
+			line-height: 28px;
+			text-align: center;
+			display: block;
+			color: #1a1a1a;
+		}
+		user agent stylesheet a:-webkit-any-link {
+			color: -webkit-link;
+			cursor: pointer;
+			text-decoration: underline;
+		}
+		a:hover {
+			 background: #42b983;
+			background: $color-primary;
+			color: #fff;
+		}
+	}
+	.AddEquipmentMonitoring .el-dialog{
+		width: 944px;
+		height: 588px;
+	}
+	
 </style>

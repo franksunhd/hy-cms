@@ -11,7 +11,9 @@
     <!--设备信息展示-->
     <el-row style="padding: 10px 20px 0;">
       <el-col :span="2" style="max-width: 100px;">
-        <img class="fl" src="../../../assets/img/default.jpg" height="90" width="90"/>
+      	<div class="displayInlineBlock logoBox">
+      	  <img v-if="equipmentInfoData.manufacturerIcon !== null" class="logo-img" :src="deviceLogo + '/static/asset/logo/' + equipmentInfoData.manufacturerIcon + '.png'"/>      		
+      	</div>
       </el-col>
       <el-col :span="22">
         <el-form inline label-width="96px" label-position="right" class="marginBottom10 monitorThreshold-formBox">
@@ -256,11 +258,13 @@
     components: {Box},
     data() {
       return {
+      	deviceLogo:this.$api.deviceLogo(),
         // 设备基本信息
         equipmentInfoData: {
           deviceName: null,
           servicetag: null,
           manufacturer: null,
+          manufacturerIcon: null,
           model: null,
           type: null,
           roomName: null,
@@ -535,6 +539,7 @@
           switch (res.status) {
             case 200:
               _t.equipmentInfoData = res.data;
+              _t.equipmentInfoData.manufacturerIcon = res.data.manufacturer.toLowerCase();
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -830,6 +835,17 @@
 </script>
 
 <style scoped>
+	.logoBox {
+		width: 90px;
+		height: 90px;
+		border: 1px solid #e1e1e1;
+	}
+	
+	.logoBox .logo-img {
+		width: 100%;
+		height: 100%;
+	}
+	
   .monitorThreshold-title {
     height: 30px;
     line-height: 30px;

@@ -3,16 +3,15 @@
 		<!--面包屑区域-->
 		<div class="Breadcrumb">
 			<el-breadcrumb>
-				<el-breadcrumb-item>{{$t('breadcrumb.systemSetting')}}</el-breadcrumb-item>
-				<el-breadcrumb-item>{{$t('breadcrumb.logManagement')}}</el-breadcrumb-item>
-				<el-breadcrumb-item>{{$t('breadcrumb.jobLog')}}</el-breadcrumb-item>
+				<el-breadcrumb-item>{{$t('breadcrumb.DeviceDiscovery')}}</el-breadcrumb-item>
+				<el-breadcrumb-item>{{$t('breadcrumb.DeviceManualDetection')}}</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
 		<div class="BeganToSee-col clearfix">
 			<div class="BeganToSee-return" @click="BeganToSeeReturn"><i class="el-icon-back">&nbsp;&nbsp;{{$t('DeviceManualDetection.ReturnToDeviceManualDiscovery')}}</i></div>
 			<div class="BeganToSee-IncompleteDiscovery" @click="UncompletedDiscoveryTask">
-				<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
-					<div class="ListOfUncompletedDiscoveries-process">
+				<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa" >
+					<div class="ListOfUncompletedDiscoveries-process" >
 						<h3>发现队列中正在执行设备发现的进程</h3>
 						<ul v-for="(item,index) in process" :key="item.sn" @click="handClickprocess(item.sn)">
 							<li>{{item.id}}</li>
@@ -48,8 +47,9 @@
 							<el-button class="BeganToSee-exportEquipment " @click="DiscoveryExport">
 								<i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.DiscoveryExport')}}</i>
 							</el-button>
+							<el-button @click="gbym"> 改变页码</el-button>
 							<!--表格-->
-							<el-table :data="tableData" :default-sort = "{prop: 'ip', order: 'ascending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
+							<el-table :data="tableData" :default-sort="{prop: 'ip', order: 'ascending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
 								<el-table-column type="selection" width="55" :selectable="selectable" />
 								<!--<el-table-column prop="serialNumber" label="序号" />-->
 								<el-table-column :label="$t('public.index')" header-align="left" width="80" align="left">
@@ -72,11 +72,7 @@
 								</el-table-column>
 							</el-table>
 							<!--分页-->
-							<pages :total='options.total' 
-								:currentPage='options.currentPage' 
-								:page-size="options.pageSize"
-								 @handleSizeChangeSub="handleSizeChangeSub"
-								  @handleCurrentChangeSub="handleCurrentChange" />
+							<pages :total='options.total' :currentPage='options.currentPage' :page-size="options.pageSize" ref="pages" @handleSizeChangeSub="handleSizeChangeSub" @handleCurrentChangeSub="handleCurrentChange" />
 						</div>
 					</div>
 				</el-col>
@@ -87,7 +83,7 @@
 
 <script>
 	import Box from '../../../../components/Box';
-	import { dateFilterSeconds,dateFilter } from "../../../../assets/js/filters";
+	import { dateFilterSeconds, dateFilter } from "../../../../assets/js/filters";
 
 	export default {
 		name: 'BeganToSee',
@@ -137,6 +133,7 @@
 				ips: [],
 				Dincome: [],
 				Dincome2: '',
+				//未完成任务列表弹出层
 				visible2: false,
 				process: [],
 				val: '',
@@ -163,56 +160,53 @@
 
 		methods: {
 			// 查询表格中状态对应的数据值
-      getSnData(resData){
-        var _t = this;
-        _t.$store.commit('setLoading',true);
-        _t.$api.post('system/basedata/map',{
-          dictionaryTypes:["AlarmHandleStatus","AssetType","AlarmSeverity"],
-          languageMark:localStorage.getItem("hy-language")
-        },function (res) {
-          _t.$store.commit('setLoading',false);
-          switch (res.status) {
-            case 200:
-              // 获取对应的状态值
-              _t.tableDataBase = res.data;
-              console.log(_t.tableDataBase.AssetType);
-              var process = [];
-              var index=0;
-              for(var key in resData){ 
-              	index++;
-              	process.push({
+			getSnData(resData) {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/map', {
+					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity"],
+					languageMark: localStorage.getItem("hy-language")
+				}, function(res) {
+					_t.$store.commit('setLoading', false);
+					switch(res.status) {
+						case 200:
+							// 获取对应的状态值
+							_t.tableDataBase = res.data;
+							var process = [];
+							var index = 0;
+							for(var key in resData) {
+								index++;
+								process.push({
 									"date": resData[key].time,
 									"name": _t.tableDataBase.AssetType[resData[key].type],
 									"sn": key,
-									"id":index
+									"id": index
 								})
-              }
-              _t.process = process;
-              
-              console.log(_t.process);
-              break;
-            case 1003: // 无操作权限
-            case 1004: // 登录过期
-            case 1005: // token过期
-            case 1006: // token不通过
-              _t.exclude(_t, res.message);
-              break;
-            default:
-              _t.tableDataBase = [];
-              _t.tableData = [];
-              _t.options.currentPage = 1;
-              _t.options.total = 0;
-              break;
-          }
-        });
-      },
+							}
+							_t.process = process;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableDataBase = [];
+							_t.tableData = [];
+							_t.options.currentPage = 1;
+							_t.options.total = 0;
+							break;
+					}
+				});
+			},
 			//未完成的发现任务
 			UncompletedDiscoveryTask() {
 				var _t = this;
 				_t.$api.post('/asset/discovery/history', {}, function(res) {
 					switch(res.status) {
 						case 200:
-						_t.getSnData(res.data);
+							_t.getSnData(res.data);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -228,6 +222,7 @@
 			},
 			handClickprocess(val) {
 				this.val = val;
+				this.visible2=false;
 				this.getData();
 
 			},
@@ -257,11 +252,12 @@
 				_t.$api.post('/asset/discovery/result', {
 					sn: _t.optionsData,
 					status: _t.paramStatus,
-					currentPage:_t.options.currentPage,
-					pageSize:_t.options.pageSize
+					currentPage: _t.options.currentPage,
+					pageSize: _t.options.pageSize
 				}, function(res) {
 					switch(res.status) {
 						case 200:
+						console.log(res);
 							var stayDevice = res.data.stayDevice;
 							let timers;
 							if(stayDevice !== 0) {
@@ -308,6 +304,7 @@
 							var Dincome2 = dateFilterSeconds(res.requesttime);
 							_t.Dincome2 = Dincome2;
 							_t.options.currentPage = res.data.currentPage;
+							console.log(res.data.currentPage)
 							_t.options.total = res.data.totalResultSize;
 							_t.drawLine();
 							break;
@@ -406,8 +403,10 @@
 				myChart.setOption(option);
 				myChart.off('click');
 				myChart.on('click', function(param) {
+					console.log(111)
 					_t.paramStatus = param.dataIndex - 1;
-					_t.getData();
+					_t.$refs.pages.handleCurrentChange(1);
+					_t.$refs.pages.handleCurrentChange(1);
 				});
 			},
 			// 改变当前页码
@@ -419,6 +418,7 @@
 			// 改变每页显示条数
 			handleSizeChangeSub(val) {
 				var _t = this;
+				console.log(val);
 				_t.options.pageSize = val;
 				_t.getData();
 			},
@@ -493,6 +493,10 @@
 							break;
 					}
 				});
+			},
+			gbym(){
+				var _t=this;
+				_t.options.currentPage = 1;
 			}
 		},
 		/*beforeDestroy() {
