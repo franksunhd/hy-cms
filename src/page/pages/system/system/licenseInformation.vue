@@ -42,7 +42,7 @@
     </el-dialog>
     <!--查看证书历史-->
     <div class="padding20">
-      <el-table :data="tableData" v-if="isShow" stripe class="indexTableBox">
+      <el-table :data="tableData" v-if="isShow" border stripe class="indexTableBox">
         <el-table-column width="90px" :label="$t('license.indexNumber')" type="index" header-align="left" align="left" />
         <el-table-column prop="1" min-width="170px" :label="$t('license.customerName')" header-align="left" align="left" />
         <el-table-column prop="2" min-width="120px" :label="$t('license.allNumber')" header-align="left" align="left" />

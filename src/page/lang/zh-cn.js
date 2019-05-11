@@ -69,62 +69,81 @@ export default {
 	system: {
 		systemSetting: '系统设置',
 		systemMonitoring: '系统监测',
-		alarmSettings:'告警设置'
+		alarmSettings: '告警设置'
 	},
 	// 面包屑
 	breadcrumb: {
+		//Home
+		ComputerRoomEquipment: '机房设备监测情况',
+		//系统管理-->系统设置
 		systemSetting: '系统设置',
 		license: '许可证信息维护',
+		//系统管理-->系统设置-->系统管理
 		systemManagement: '系统管理',
 		informationPlatform: '平台信息设置',
+		platformLanguage: '平台语言设置',
+		dataDictionary: '数据字典管理',
 		licenseNotice: 'License到期通知',
 		interfaceTest: '接口访问测试',
+		//系统管理-->系统设置-->用户管理
 		userManagement: '用户管理',
 		userMaintenance: '用户维护',
 		roleMaintenance: '角色维护',
 		organizeMaintenance: '组织维护',
-		platformLanguage: '平台语言设置',
-		dataDictionary: '数据字典管理',
+		functionMenuMaintenance: '功能菜单维护',
+		//系统管理-->系统设置-->数据库管理
 		dataBaseManagement: '数据库管理',
 		dataBaseBackUp: '数据库备份',
 		backUpTimer: '备份定时器',
 		dataBaseRestore: '数据库还原',
+		//系统管理-->系统设置-->设备采集设置
 		deviceAcquisitionSettings: '设备采集设置',
 		nodeGroupMaintenance: '节点组维护',
-		functionMenuMaintenance: '功能菜单维护',
 		acquisitionNodeManagement: '采集节点管理',
 		collectionTaskAssignment: '采集任务分配',
 		acquisitionNodeState: '采集节点状态',
+		//系统管理-->系统设置-->日志管理
 		logManagement: '日志管理',
 		loginLog: '登录日志',
 		operationLog: '操作日志',
 		jobLog: '任务日志',
 		notificationLog: '通知日志',
-		testLog: '检测日志',
+		monitorLog: '监测日志',
+		//系统管理-->系统监测
 		SystemMonitoring: '系统监测',
 		WebApplication: ' WEB应用',
 		DatabaseApplication: '数据库应用',
 		CollectorApplication: '采集器应用',
-		ComputerRoomEquipment: '机房设备监测情况',
+		//设备发现
 		DeviceDiscovery: '设备发现',
 		DeviceTypeManagement: "设备类型管理",
 		DeviceInformationSetting: "设备信息设置",
 		DeviceDiscoverySettings: '设备发现设置',
 		AutomaticDeviceDiscovery: '设备自动发现',
-		DeviceManualDetection: '设备手动发现',
+		DeviceManualDetection: '设备自动发现',
+		//设备发现-->设备自动发现（DeviceManualDetection）
 		DeviceType: '设备类型',
 		rackTowerServer: '【机架/塔式服务器】',
-		alarmManagement: '告警管理',
-		alarmCurrent: '当前告警',
-		alarmHistory: '历史告警',
+		//监测管理
 		monitorManage: '监测管理',
 		equipmentMonitoring: '设备监测',
 		monitorThreshold: '监测阈值',
-		alarmSettings:'告警设置',
-		basicSettings:'基础设置',
-		alarmGroupSettings:'告警组设置',
+		monitorStatusSearch: '监测状态搜索',
+		//告警管理
+		alarmManagement: '告警管理',
+		alarmCurrent: '当前告警',
+		alarmHistory: '历史告警',
+		//告警管理-->告警设置
+		alarmSettings: '告警设置',
+		//告警管理-->告警设置-->基础设置
+		basicSettings: '基础设置',
+		alarmGroupSettings: '告警组设置',
+		alarmRuleSettings:'告警规则设置',
+		//资产管理
+		assetManage: '资产管理',
+		assetDevice: '设备资产'
 	},
-	// 许可证信息维护
+	// 系统管理-系统设置-许可证信息维护
 	license: {
 		version: '版本',
 		customerName: '客户名称',
@@ -140,7 +159,7 @@ export default {
 		authorizationModule: '授权模块',
 		authorizationUpdateTime: '授权更新时间'
 	},
-	// 平台信息设置
+	// 系统管理-系统设置-系统管理-平台信息设置
 	informationPlatform: {
 		loginTitle: '登录页标题',
 		loginLogo: '登录页Logo',
@@ -149,20 +168,56 @@ export default {
 		homeTitle: '后台页面头部标题',
 		homeLogo: '后台页面头部Logo'
 	},
-	// License到期通知
+	// 系统管理-系统设置-系统管理-平台语言设置
+	platformLanguage: {
+		setDefault: '设为默认',
+		importFunction: '功能菜单语言导入模板',
+		importData: '数据字典语言导入模板',
+		languageCode: '语言编码',
+		languageCodes: '语言简码',
+		languageName: '语言名称',
+		status: '状态',
+		description: '说明/描述',
+		sort: '排序',
+		isDefault: '是否默认',
+		createName: '创建人',
+		createTime: '创建时间',
+		createUpdateLanguage: '新增/编辑平台语言',
+		translationName: '名称的译文',
+		descriptionAlert: '描述',
+		Order: '顺序',
+		isEnable: '是否启用'
+	},
+	// 系统管理-系统设置-系统管理-数据字典管理
+	dataDictionary: {
+		systemDataDictionary: '系统数据字典',
+		businessCode: '业务编码',
+		dictionaryName: '字典名称',
+		status: '状态',
+		createUpdateDictionary: '新增/修改字典信息',
+		parentDictionary: '父级字典',
+		dictionaryType: '字典类型',
+		directoryLevel: '目录级别',
+		orderIndex: '显示顺序',
+		statusAlert: '启用状态',
+		sort: '排序',
+		createName: '创建人',
+		createTime: '创建时间'
+	},
+	// 系统管理-系统设置-系统管理-License到期通知
 	licenseNotice: {
 		selectUser: '选择用户',
 		licenseTime: 'License到期提醒时间',
 		licenseUser: '通知的相关用户',
 		licenseWay: '通知的形式'
 	},
-	// 接口访问测试
+	// 系统管理-系统设置-系统管理-接口访问测试
 	interfaceTest: {
 		interfaceMode: '接口访问方式',
 		apiAddress: 'API 地址',
 		accessParameters: '访问参数'
 	},
-	// 用户维护
+	// 系统管理-系统设置-用户管理-用户维护
 	userMaintenance: {
 		account: '账号/用户名',
 		organization: '所属组织',
@@ -180,10 +235,10 @@ export default {
 		emails: '电子邮箱',
 		statusAlert: '启用状态',
 		assignRole: '分配角色',
-		placeSelectOrg:'请选择所属组织',
-		isNotRoleOnOrg:'该组织下没有对应的角色'
+		placeSelectOrg: '请选择所属组织',
+		isNotRoleOnOrg: '该组织下没有对应的角色'
 	},
-	// 角色维护
+	// 系统管理-系统设置-用户管理-角色维护
 	roleMaintenance: {
 		roleName: '角色名称',
 		roleDate: '创建/更新日期',
@@ -211,11 +266,15 @@ export default {
 		setRoleLimit: '设置角色权限',
 		roleLimit: '功能菜单权限',
 		setDateLimit: '设置数据权限',
-		resourceView:'资源视图',
-		businessView:'业务视图',
-		roomView:'机房视图'
+		resourceView: '资源视图',
+		businessView: '业务视图',
+		roomView: '机房视图',
+		username: '姓名',
+		selectedDevice: '已选设备',
+		stand: '台',
+		tip: '输入名称 过滤结果'
 	},
-	// 组织维护
+	// 系统管理-系统设置-用户管理-组织维护
 	organizeMaintenance: {
 		organizationName: '组织名称',
 		createUpdateDate: '创建/更新日期',
@@ -233,43 +292,31 @@ export default {
 		organizationDes: '组织描述',
 		sort: '排序'
 	},
-	// 平台语言设置
-	platformLanguage: {
-		setDefault: '设为默认',
-		importFunction: '功能菜单语言导入模板',
-		importData: '数据字典语言导入模板',
-		languageCode: '语言编码',
-		languageCodes: '语言简码',
-		languageName: '语言名称',
+	// 系统管理-系统设置-用户管理-功能菜单维护
+	functionMenuMaintenance: {
+		systemDataDictionary: '系统功能菜单',
+		businessCode: '业务编码',
+		dictionaryName: '菜单名称',
 		status: '状态',
-		description: '说明/描述',
+		menuName: '菜单名称',
+		icon: '图标',
+		link: '链接',
+		jumpType: '跳转方式',
+		modelLevel: '目录级别',
 		sort: '排序',
-		isDefault: '是否默认',
 		createName: '创建人',
 		createTime: '创建时间',
-		createUpdateLanguage: '新增/编辑平台语言',
-		translationName: '名称的译文',
-		descriptionAlert: '描述',
-		Order: '顺序',
-		isEnable: '是否启用'
-	},
-	// 数据字典管理
-	dataDictionary: {
-		systemDataDictionary: '系统数据字典',
-		businessCode: '业务编码',
-		dictionaryName: '字典名称',
-		status: '状态',
-		createUpdateDictionary: '新增/修改字典信息',
-		parentDictionary: '父级字典',
-		dictionaryType: '字典类型',
+		createUpdateDictionary: '新增/编辑菜单信息',
+		menuIcon: '菜单图标',
+		menuUrl: '菜单路径',
+		roleMenu: '角色授权',
 		directoryLevel: '目录级别',
 		orderIndex: '显示顺序',
 		statusAlert: '启用状态',
-		sort: '排序',
-		createName: '创建人',
-		createTime: '创建时间'
+		selectUser: '选择角色',
+		parentName: '父级菜单',
 	},
-	// 数据库备份
+	// 系统管理-系统设置-数据库管理-数据库备份
 	dataBaseBackUp: {
 		backUpAllTable: '备份以下选中的表',
 		backUpThisDataBase: '备份当前选中的数据库',
@@ -279,7 +326,7 @@ export default {
 		tableName: '表名',
 		tableDes: '表描述'
 	},
-	// 备份定时器
+	// 系统管理-系统设置-数据库管理-备份定时器
 	backUpTimer: {
 		createTime: '创建时间',
 		backUpType: '备份方式',
@@ -299,7 +346,7 @@ export default {
 		note: '备注',
 		backUpTimerTitle: '新增/编辑备份定时器'
 	},
-	// 数据库还原
+	// 系统管理-系统设置-数据库管理-数据库还原
 	dataBaseRestore: {
 		backUpObject: '备份对象',
 		backUpTime: '备份时间',
@@ -319,7 +366,7 @@ export default {
 		timeRule: '时间规则',
 		ruleDes: '规则说明'
 	},
-	// 节点组维护
+	// 系统管理-系统设置-设备采集设置-节点组维护
 	nodeGroupMaintenance: {
 		groupName: '组名称',
 		nodeGroupName: '节点组名称',
@@ -332,7 +379,7 @@ export default {
 		IPList: '管辖IP段',
 		note: '备注'
 	},
-	// 采集节点管理
+	// 系统管理-系统设置-设备采集设置-采集节点管理
 	acquisitionNodeManagement: {
 		nodeName: '节点名称',
 		nodeIp: '节点IP',
@@ -360,7 +407,7 @@ export default {
 		gatewayIp: '网关IP',
 		testPort: '测试端口'
 	},
-	// 采集任务分配
+	// 系统管理-系统设置-设备采集设置-采集任务分配
 	collectionTaskAssignment: {
 		nodeName: '节点名称',
 		nodeIp: '节点IP',
@@ -383,7 +430,7 @@ export default {
 		statusAlert: '启用状态',
 		monitoringTask: '设备监测任务分配',
 	},
-	// 采集节点状态
+	// 系统管理-系统设置-设备采集设置-采集节点状态
 	acquisitionNodeState: {
 		nodeName: '节点名称',
 		nodeIp: '节点IP',
@@ -405,7 +452,7 @@ export default {
 		cancelIgnore: '取消忽略',
 		offLine: '离线'
 	},
-	// 登录日志
+	// 系统管理-系统设置-日志管理-登录日志
 	loginLog: {
 		userName: '登录人姓名/账号/手机/邮箱',
 		loginDate: '登录日期',
@@ -417,7 +464,7 @@ export default {
 		logOutTime: '登出时间',
 		timeLength: '时长'
 	},
-	// 操作日志
+	// 系统管理-系统设置-日志管理-操作日志
 	operationLog: {
 		userName: '登录人姓名/账号/手机/邮箱',
 		loginDate: '登录日期',
@@ -426,31 +473,162 @@ export default {
 		operationStaff: '操作人员',
 		operationTime: '操作时间',
 	},
-	// 功能菜单维护
-	functionMenuMaintenance: {
-		systemDataDictionary: '系统功能菜单',
-		businessCode: '业务编码',
-		dictionaryName: '字典名称',
-		status: '状态',
-		menuName: '菜单名称',
-		icon: '图标',
-		link: '链接',
-		jumpType: '跳转方式',
-		modelLevel: '目录级别',
-		sort: '排序',
-		createName: '创建人',
-		createTime: '创建时间',
-		createUpdateDictionary: '新增/编辑菜单信息',
-		menuIcon: '菜单图标',
-		menuUrl: '菜单路径',
-		roleMenu: '角色授权',
-		directoryLevel: '目录级别',
-		orderIndex: '显示顺序',
-		statusAlert: '启用状态',
-		selectUser: '选择角色',
-		parentName: '父级菜单',
+	// 系统管理-系统监测-WEB应用
+	// 系统管理-系统监测-数据库应用
+	// 系统管理-系统监测-采集器应用
+	// 设备发现-设备手动发现
+	DeviceManualDetection: {
+		ipAddresses: 'Ip地址段',
+		username: '带外用户名',
+		password: '带外用户密码',
+		port: '端口',
+		snmpVersion: 'SNMP版本',
+		snmpPort: 'SNMP端口',
+		snmpCommunity: 'SNMP团体名',
+		snmpUsername: 'SNMP用户名',
+		snmpSecurityLevel: 'SNMP安全级别',
+		snmpAuthAlgorithm: 'SNMP验证算法',
+		snmpAuthPassword: 'SNMP验证密码',
+		snmpPrivacyAlgorithm: 'SNMP私有验证算法',
+		snmpPrivacyPassword: 'SNMP私有密码',
+		snmpContextName: 'SNMP文本名称',
+		increaseRetrieve: '增加检索范围',
+		BeganToSee: '开始发现',
+		UncompletedDiscoveryTask: '未完成的发现任务',
+		ReturnToDeviceManualDiscovery: '返回设备手动发现',
+		ListOfDevicesFound: '已发现的设备列表',
+		AddTheSelectedDevice: '添加已选设备',
+		DiscoveryExport: '发现结果导出',
+		BrandModels: '品牌型号',
+		FoundThatTheState: '发现状态',
+		describe: '描述',
+		ipAddress: 'IP地址'
 	},
-	// 告警管理
+	// 监测管理-设备监测
+	EquipmentMonitoring: {
+		FutureGenerations: '全选',
+		index: '序号',
+		workStatus: '监测状态',
+		status: '设备状态',
+		AssetInformation: '资产信息',
+		servicetag: '序列号',
+		manufacturer: '厂商',
+		ManufacturersModel: '厂商型号',
+		type: '设备类型',
+		lastMonitorTime: '更新时间 ',
+		operation: '操作',
+		MonitoringOfTheInterval: '监测间隔',
+		TransferOfGrouping: '转移分组',
+		AddTheMonitor: '添加监测',
+		StartTheMonitoring: '启动监测',
+		SuspendMonitoring: '暂停监测',
+		DeleteTheMonitoring: '删除监测',
+		IgnoreTheAlarm: '忽略告警',
+		CancelToIgnore: '取消忽略',
+		OfflineEquipment: '离线设备',
+		AddDeviceMonitoring: '添加设备监测',
+		DeviceName: '设备名称',
+		DeviceType: '设备类型',
+		EquipmentOwner: '设备责任人',
+		TheNextStep: '下一步',
+		cancel: '取消',
+		determine: '确定',
+		EquipmentGroup: '设备分组',
+		news: '新增',
+		TheParentNode: '父级节点',
+		TheLineNumbers: '行号',
+		check: '校验',
+		TheFirst: '父级下的第一级子级',
+		TheSecond: '第二级',
+		TheThird: '第三级',
+		TheFourth: '第四级',
+		InsertAbove: '上方插入',
+		BelowTheInsert: '下方插入',
+		DeleteTheBank: '删除本行',
+		line: '行',
+		EditDeviceGrouping: '编辑设备分组',
+		confirmation: '确认提示',
+		Model: '型号',
+		brand: '品牌',
+		ThePreviousPage:'上一步',
+		state:'状态',
+		ip:'ip',
+	},
+	// 监测管理-设备监测-监测阀值
+	monitorThreshold: {
+		equipmentName: '设备名称',
+		serialNumber: '序列号',
+		equipmentMonitoring: '设备品牌',
+		equipmentModel: '设备型号',
+		equipmentType: '设备类型',
+		ip: '带外IP',
+		roomName: '所在机房',
+		frameName: '机架位置',
+		monitorIndex: '监测指标',
+		IndexThreshold: '指标阈值',
+		Index: '指标',
+		defaultThreshold: '的默认阈值',
+		mainThreshold: '主阈值',
+		formThreshold: '从阈值',
+		alarmLevel: '告警级别',
+		alarmPlaceholder: '告警的附加内容...',
+		showDefault: '查看默认值',
+		returnDefault: '恢复默认值',
+		addMainMonitor: '添加主阀值'
+	},
+	// 监测 告警弹出的标签页
+	administrationTabs: {
+		equipmentInfo: '设备基本信息',
+		equipmentAllStatus: '设备整体状态',
+		equipmentName: '设备名称',
+		equipmentIp: '设备IP',
+		equipmentModel: '型号',
+		serialNumber: '序列号',
+		equipmentMonitoring: '设备厂商',
+		status: '状态',
+		monitorDetail: '监测详情',
+		alarmEvent: '告警事件',
+		resourceName: '资源名称',
+		latestState: '最新状态',
+		updateTime: '更新时间',
+		level: '级别',
+		alarmStatus: '告警状态',
+		happenTime: '发生时间',
+		alarmObject: '告警对象',
+		hardware: '硬件配置',
+		network: '网络配置',
+		manageInformation: '管理信息',
+		locationInformation: '位置信息',
+		maintenanceInformation: '维保信息',
+		changeInformation: '变更信息',
+		threshold: '阈值'
+	},
+	// 监测管理-业务监测
+	// 监测管理-机房监测
+	// 监测管理-状态搜索
+	monitorStatusSearch: {
+		formType: '类型',
+		formName: '名称',
+		formStatus: '最新状态',
+		formIP: 'IP',
+		formStatusType: '状态类型',
+		formMonitorRate: '取值间隔',
+		formMonitorFun: '取值方式',
+		columnStatus: '状态',
+		columnIp: 'IP',
+		columnType: '类型',
+		columnName: '名称',
+		columnStatusText: '最新状态字段',
+		columnMonitorFunText: '取值方式',
+		columnMonitorRate: '取值间隔',
+		columnLastModifyTime: '更新时间',
+		columnOp: '操作',
+		dialogBatchOperationTip:'请问是否确认要进行如下批量操作?',
+		dialogToSelectedLineTip:'请先勾选需要操作的表格记录！',
+		dialogSuccessTip:'恭喜您操作成功！',
+		dialogFailedTip:'抱歉，操作失败，请稍后再次尝试！'
+	},
+	// 告警管理-告警汇总
 	alarmManagement: {
 		status: '状态',
 		equipmentName: '设备名称',
@@ -488,7 +666,7 @@ export default {
 		linkSpeed: '链路速度',
 		currentStatus: '当前状态'
 	},
-	// 当前告警
+	// 告警管理-当前告警
 	alarmCurrent: {
 		status: '状态',
 		equipmentName: '设备名称',
@@ -560,7 +738,7 @@ export default {
 		alarmLevelText: '告警级别',
 		alarmThisTime: '告警发生时间'
 	},
-	// 历史告警
+	// 告警管理-历史告警
 	alarmHistory: {
 		status: '状态',
 		equipmentName: '设备名称',
@@ -634,95 +812,28 @@ export default {
 		closeBy: '关闭人',
 		closeTime: '关闭时间'
 	},
-	//设备监测
-	EquipmentMonitoring: {
-		FutureGenerations: '全选',
-		index: '序号',
-		workStatus: '监测状态',
-		status: '设备状态',
-		AssetInformation: '资产信息',
-		servicetag: '序列号',
-		manufacturer: '厂商',
-		ManufacturersModel: '厂商型号',
-		type: '设备类型',
-		lastMonitorTime: '更新时间 ',
-		operation: '操作'
-	},
-	// 监测 告警弹出的标签页
-	administrationTabs: {
-		equipmentInfo: '设备基本信息',
-		equipmentAllStatus: '设备整体状态',
-		equipmentName: '设备名称',
-		equipmentIp: '设备IP',
-		equipmentModel: '型号',
-		serialNumber: '序列号',
-		equipmentMonitoring: '设备厂商',
-		status: '状态',
-		monitorDetail: '监测详情',
-		alarmEvent: '告警事件',
-		resourceName: '资源名称',
-		latestState: '最新状态',
+	// 告警管理-告警组设置
+	alarmGroupSettings: {
+		groupName: '告警组名称',
+		ipName: '设备IP/名称',
+		deviceNum: '设备总量',
+		createBy: '创建人',
+		createTime: '创建时间',
+		updateName: '更新人',
 		updateTime: '更新时间',
-		level: '级别',
-		alarmStatus: '告警状态',
-		happenTime: '发生时间',
-		alarmObject: '告警对象',
-		hardware: '硬件配置',
-		network: '网络配置',
-		manageInformation: '管理信息',
-		locationInformation: '位置信息',
-		maintenanceInformation: '维保信息',
-		changeInformation: '变更信息',
-		threshold: '阈值'
+		addEditTitle: '新增/编辑告警组',
+		deviceView: '设备视图',
+		resourceView: '资源视图',
+		businessView: '业务视图',
+		roomView: '机房视图',
+		importRole: '从角色中导入',
+		selectedDevice: '已选设备',
+		stand: '台',
+		tip: '输入名称 过滤结果'
 	},
-	//设备手动发现
-	DeviceManualDetection: {
-		ipAddresses: 'Ip地址段',
-		username: '带外用户名',
-		password: '带外用户密码',
-		port: '端口',
-		snmpVersion: 'SNMP版本',
-		snmpPort: 'SNMP端口',
-		snmpCommunity: 'SNMP团体名',
-		snmpUsername: 'SNMP用户名',
-		snmpSecurityLevel: 'SNMP安全级别',
-		snmpAuthAlgorithm: 'SNMP验证算法',
-		snmpAuthPassword: 'SNMP验证密码',
-		snmpPrivacyAlgorithm: 'SNMP私有验证算法',
-		snmpPrivacyPassword: 'SNMP私有密码',
-		snmpContextName: 'SNMP文本名称',
-		increaseRetrieve: '增加检索范围',
-		BeganToSee: '开始发现',
-		UncompletedDiscoveryTask: '未完成的发现任务',
-		ReturnToDeviceManualDiscovery: '返回设备手动发现',
-		ListOfDevicesFound: '已发现的设备列表',
-		AddTheSelectedDevice: '添加已选设备',
-		DiscoveryExport: '发现结果导出',
-		BrandModels: '品牌型号',
-		FoundThatTheState: '发现状态',
-		describe: '描述',
-		ipAddress: 'IP地址'
-	},
-	// 监测阀值
-	monitorThreshold: {
-		equipmentName: '设备名称',
-		serialNumber: '序列号',
-		equipmentMonitoring: '设备品牌',
-		equipmentModel: '设备型号',
-		equipmentType: '设备类型',
-		ip: '带外IP',
-		roomName: '所在机房',
-		frameName: '机架位置',
-		monitorIndex: '监测指标',
-		IndexThreshold: '指标阈值',
-		Index: '指标',
-		defaultThreshold: '的默认阈值',
-		mainThreshold: '主阈值',
-		formThreshold: '从阈值',
-		alarmLevel: '告警级别',
-		alarmPlaceholder: '告警的附加内容...',
-		showDefault: '查看默认值',
-		returnDefault: '恢复默认值',
-		addMainMonitor: '添加主阀值'
+	// 告警管理-告警规则设置
+	alarmRuleSettings:{
+		formGroupName:'告警组名称',
+		formIpName:'设备IP/名称'
 	}
 }

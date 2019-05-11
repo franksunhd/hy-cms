@@ -34,7 +34,7 @@
     </div>
     <div class="padding20">
       <!--表格-->
-      <el-table :data="tableData" stripe>
+      <el-table :data="tableData" stripe border>
         <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>

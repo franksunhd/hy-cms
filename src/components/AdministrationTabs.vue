@@ -57,12 +57,13 @@
           ref="table"
           @cell-click="cellClickColumnTable"
           stripe
+					border
           :row-class-name="getClassName"
           @selection-change="monitoringChange">
           <el-table-column type="expand" header-align="left" align="left">
             <!--展开行-->
             <template slot-scope="scope">
-              <el-table :data="scope.row.deviceMonitorListArr" stripe class="monitoringDetails-innerTable" @cell-click="cellClickColumn">
+              <el-table :data="scope.row.deviceMonitorListArr" border stripe class="monitoringDetails-innerTable" @cell-click="cellClickColumn">
                 <el-table-column width="100px" :label="$t('administrationTabs.status')" header-align="left" align="left">
                   <template slot-scope="scopeInset">
                     <el-tooltip v-if="scopeInset.row.status == 11" effect="dark"
@@ -164,12 +165,12 @@
               <span>{{scope.row.monitorTime | dateFilter}}</span>
             </template>
           </el-table-column>
-          <el-table-column width="60px" :label="$t('public.operation')" fixed="right" header-align="left" align="left">
+          <el-table-column width="60px" :label="$t('public.operation')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-button type="text">{{$t('administrationTabs.threshold')}}</el-button>
             </template>
           </el-table-column>
-          <el-table-column type="selection" fixed="right" header-align="left" align="left"/>
+          <el-table-column type="selection" header-align="left" align="left"/>
         </el-table>
       </el-tab-pane>
       <!--告警事件-->
@@ -199,7 +200,7 @@
             <el-button type="primary" class="queryBtn" @click="getAlarmListData">{{$t('public.query')}}</el-button>
           </el-form-item>
         </el-form>
-        <el-table :data="alarmListData" stripe class="indexTableBox" @row-click="alarmEventTableRow">
+        <el-table :data="alarmListData" border stripe class="indexTableBox" @row-click="alarmEventTableRow">
           <el-table-column width="90px" :label="$t('administrationTabs.level')" header-align="left" align="left">
             <template slot-scope="scope">
               <el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark" :content="AlarmSeverity[scope.row.alarmLevel]"
@@ -285,7 +286,7 @@
       :visible.sync="dialogVisible_info"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-table :data="informationInfoList" stripe :show-header="false">
+      <el-table :data="informationInfoList" border stripe :show-header="false">
         <el-table-column prop="key" />
         <el-table-column prop="value" />
       </el-table>
@@ -646,7 +647,8 @@
       // 监测详情批量操作提交
       changeOperation(val){
         var _t = this;
-        if (val !== null) {
+        // 选中非 批量操作的 项
+        if (val !== null && _t.monitoringDetailsCheckList.length !== 0) {
           _t.$api.post('monitor/deviceMonitorAttr/execute',{
             option:val,
             isDevice:false,
@@ -680,7 +682,12 @@
                 break;
             }
           });
-        }
+        } else {
+					_t.$alert('请勾选需要操作的行!', _t.$t('public.confirmTip'), {
+						confirmButtonText: _t.$t('public.confirm'),
+						confirmButtonClass: 'alertBtn'
+					});
+				}
       },
       // 获取监测详情表格选中的数据
       monitoringChange(data){

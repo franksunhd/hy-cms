@@ -124,6 +124,7 @@
         ref="table"
         class="indexTableBox"
         stripe
+				border
         @cell-click="cellClickColumn"
         @cell-mouse-enter="cellMouseEnter"
         @cell-mouse-leave="cellMouseLeave">

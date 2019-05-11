@@ -48,21 +48,26 @@ Object.keys(custom).forEach(key => {
 
 // 用户过期
 Vue.prototype.exclude = (name, message) => {
-  name.$alert(message, name.$t('public.confirmTip'), {
-    confirmButtonText: name.$t('public.confirm'),
-    confirmButtonClass:'alarmBtn',
-    type: 'warning',
-    callback: action => {
-      name.$store.commit("setLoading", false);
-      name.$router.push({name: 'Login'});
-      localStorage.removeItem('hy-language');
-      localStorage.removeItem('hy-menu-id');
-      localStorage.removeItem('hy-organization-id');
-      localStorage.removeItem('hy-token');
-      localStorage.removeItem('hy-user-id');
-      localStorage.removeItem('hy-user-name');
-    }
-  });
+	var isReturn = document.body.getAttribute('data-return');
+	if (isReturn == 'false' || isReturn === null) {
+		document.body.setAttribute('data-return',true);
+		name.$alert(message, name.$t('public.confirmTip'), {
+			confirmButtonText: name.$t('public.confirm'),
+			confirmButtonClass:'alertBtn',
+			type: 'warning',
+			callback: action => {
+				name.$store.commit("setLoading", false);
+				name.$router.push({name: 'Login'});
+				localStorage.removeItem('hy-language');
+				localStorage.removeItem('hy-menu-id');
+				localStorage.removeItem('hy-organization-id');
+				localStorage.removeItem('hy-token');
+				localStorage.removeItem('hy-user-id');
+				localStorage.removeItem('hy-user-name');
+			}
+		});
+	}
+
 };
 
 const store = new Vuex.Store({

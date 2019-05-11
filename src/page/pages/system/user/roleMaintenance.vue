@@ -12,10 +12,16 @@
 			<!--表单-->
 			<el-form inline v-model="formItem">
 				<el-form-item :label="$t('roleMaintenance.roleName') + '：'">
-					<el-input v-model="formItem.roleName" class="width200" clearable />
+					<el-input v-model="formItem.roleName" class="width200" clearable/>
 				</el-form-item>
 				<el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
-					<el-date-picker v-model="formItem.dateTime" type="daterange" :range-separator="$t('public.to')" :start-placeholder="$t('public.startTime')" :end-placeholder="$t('public.endTime')" :placeholder="$t('public.selectDate')" />
+					<el-date-picker
+						v-model="formItem.dateTime"
+						type="daterange"
+						:range-separator="$t('public.to')"
+						:start-placeholder="$t('public.startTime')"
+						:end-placeholder="$t('public.endTime')"
+						:placeholder="$t('public.selectDate')"/>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" class="queryBtn" @click="getData">{{$t('public.query')}}</el-button>
@@ -52,9 +58,9 @@
 				</el-button>
 			</div>
 			<!--表格-->
-			<el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
-				<el-table-column type="selection" fixed header-align="left" align="left" />
-				<el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="left" align="left" />
+			<el-table :data="tableData" ref="table" border stripe @selection-change="selectTableNum">
+				<el-table-column type="selection" fixed header-align="left" align="left"/>
+				<el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.organization')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" :content="scope.row.organizationName" placement="left-start">
@@ -62,20 +68,21 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="left" align="left" />
+				<el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.status')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
 						<span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="left" align="left" />
+				<el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.createTime')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.createTime | dateFilter}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="left" align="left" />
+				<el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="left"
+												 align="left"/>
 				<el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.lastModifyTime | dateFilter}}</span>
@@ -83,19 +90,27 @@
 				</el-table-column>
 			</el-table>
 			<!--分页-->
-			<pages :total='options.total' :currentPage='options.currentPage' :pageSize='options.pageSize' @handleSizeChangeSub="handleSizeChangeSub" @handleCurrentChangeSub="handleCurrentChange" />
+			<pages
+				:total='options.total'
+				:currentPage='options.currentPage'
+				:pageSize='options.pageSize'
+				@handleSizeChangeSub="handleSizeChangeSub"
+				@handleCurrentChangeSub="handleCurrentChange"/>
 		</div>
 		<!--新增/编辑-->
-		<el-dialog class="roleMaintenance-dialog" :title="$t('roleMaintenance.addUpdateRole')" append-to-body :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog class="roleMaintenance-dialog" :title="$t('roleMaintenance.addUpdateRole')" append-to-body
+							 :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
 			<el-form :model="addEdit" label-width="96px" :rules="rules" ref="ruleForm">
 				<el-form-item class="star" :label="$t('roleMaintenance.organization') +'：'" prop="organization">
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover">
-						<el-tree :data="organizationList" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
-						<el-input v-model="addEdit.organization" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly slot="reference" />
+						<el-tree :data="organizationList" highlight-current :expand-on-click-node="false"
+										 @node-click="clickNodeAlert" :props="defaultProps"/>
+						<el-input v-model="addEdit.organization" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly
+											slot="reference"/>
 					</el-popover>
 				</el-form-item>
 				<el-form-item class="star" :label="$t('roleMaintenance.roleName') +'：'" prop="roleName">
-					<el-input v-model="addEdit.roleName" class="width200" clearable />
+					<el-input v-model="addEdit.roleName" class="width200" clearable/>
 				</el-form-item>
 				<el-form-item class="star" :label="$t('roleMaintenance.isEnable') +'：'" prop="status">
 					<el-radio-group v-model="addEdit.status" class="width200">
@@ -104,7 +119,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item :label="$t('roleMaintenance.organizationDes') +'：'">
-					<el-input style="width: 400px" type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description" />
+					<el-input style="width: 400px" type="textarea" :autosize="{ minRows: 3 }" v-model="addEdit.description"/>
 				</el-form-item>
 			</el-form>
 			<span slot="footer">
@@ -114,7 +129,13 @@
       </span>
 		</el-dialog>
 		<!--用户授权-->
-		<el-dialog class="role-setUserName-dialog" append-to-body :title="$t('roleMaintenance.setUserName')" :visible.sync="outerVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog
+			class="role-setUserName-dialog"
+			append-to-body
+			:title="$t('roleMaintenance.setUserName')"
+			:visible.sync="outerVisible"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
 			<el-form label-width="150px">
 				<el-form-item :label="$t('roleMaintenance.roleOrganization') + '：'">
 					<template v-for="(item,index) in organizationName">
@@ -123,25 +144,32 @@
 					</template>
 				</el-form-item>
 				<el-form-item :label="$t('roleMaintenance.pleaseSelectUser') + '：'">
-					<el-tag v-for="(tag,index) in tags" :key="index" closable :disable-transitions="true" style="margin-right: 10px;margin-bottom: 10px;" @close="handleClose(tag)">
+					<el-tag
+						v-for="(tag,index) in tags"
+						:key="index"
+						closable
+						:disable-transitions="true"
+						style="margin-right: 10px;margin-bottom: 10px;"
+						@close="handleClose(tag)">
 						{{tag.displayName}}
 					</el-tag>
 				</el-form-item>
 			</el-form>
 			<div style="height: 15px;border-top: 1px solid #e0e0e0;"></div>
 			<el-form inline>
-				<el-form-item label="姓名：">
-					<el-input v-model="formItem.username" />
+				<el-form-item :label="$t('roleMaintenance.username') +'：'">
+					<el-input v-model="formItem.username"/>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" class="queryBtn" @click="selectRole">{{$t('public.query')}}</el-button>
 				</el-form-item>
 			</el-form>
-			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" stripe @select="selectHandle" @select-all="selectHandleAll">
-				<el-table-column :reserve-selection="true" type="selection" fixed header-align="left" align="left" />
-				<el-table-column prop="displayName" :label="$t('public.name')" header-align="left" align="left" />
-				<el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="left" align="left" />
-				<el-table-column :label="$t('public.sex')" header-align="left" align="left" />
+			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" border stripe @select="selectHandle"
+								@select-all="selectHandleAll">
+				<el-table-column :reserve-selection="true" type="selection" fixed header-align="left" align="left"/>
+				<el-table-column prop="displayName" :label="$t('public.name')" header-align="left" align="left"/>
+				<el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="left" align="left"/>
+				<el-table-column :label="$t('public.sex')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.registerDate')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.createTime | dateFilter}}</span>
@@ -149,69 +177,115 @@
 				</el-table-column>
 			</el-table>
 			<!--分页-->
-			<pages :total='innerOptions.total' :currentPage='innerOptions.currentPage' :pageSize='innerOptions.pageSize' @handleSizeChangeSub="innerOptionsHandleSizeChange" @handleCurrentChangeSub="innerOptionsHandleCurrentChange" />
+			<pages
+				:total='innerOptions.total'
+				:currentPage='innerOptions.currentPage'
+				:pageSize='innerOptions.pageSize'
+				@handleSizeChangeSub="innerOptionsHandleSizeChange"
+				@handleCurrentChangeSub="innerOptionsHandleCurrentChange"/>
 			<div slot="footer">
 				<el-button class="alertBtn" type="primary" @click="userDataForm">{{$t('public.confirm')}}</el-button>
 				<el-button class="alertBtn" @click="resetUserDataForm">{{$t('public.close')}}</el-button>
 			</div>
 		</el-dialog>
 		<!--功能权限-->
-		<el-dialog append-to-body class="role-setRoleLimit-dialog" :title="$t('roleMaintenance.roleLimit')" :visible.sync="dialogVisibleFunction" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog append-to-body class="role-setRoleLimit-dialog" :title="$t('roleMaintenance.roleLimit')"
+							 :visible.sync="dialogVisibleFunction" :close-on-click-modal="false" :close-on-press-escape="false">
 			<el-form>
 				<el-form-item>
-					<el-tree :data="selectArr" node-key="id" show-checkbox ref="tree" :props="menuProps" />
+					<el-tree :data="selectArr" node-key="id" show-checkbox ref="tree" :props="menuProps"/>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="clearfix">
 				<div class="fl">
-					<el-checkbox @change="changeMenuTree(allCheckedMenu)" class="allCheckedMenu" v-model="allCheckedMenu">{{$t('public.allChecked')}}</el-checkbox>
+					<el-checkbox
+						@change="changeMenuTree(allCheckedMenu)"
+						class="allCheckedMenu"
+						v-model="allCheckedMenu">{{$t('public.allChecked')}}
+					</el-checkbox>
 				</div>
 				<el-button class="alertBtn" type="primary" @click="commitMenuData">{{$t('public.confirm')}}</el-button>
 				<el-button class="alertBtn" @click="dialogVisibleFunction = false;">{{$t('public.cancel')}}</el-button>
 			</div>
 		</el-dialog>
 		<!--数据权限-->
-		<el-dialog class="role-setDateLimit-dialog" append-to-body :title="$t('roleMaintenance.setDateLimit')" :visible.sync="dialogVisibleData" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog
+			class="role-setDateLimit-dialog"
+			append-to-body
+			:title="$t('roleMaintenance.setDateLimit')"
+			:visible.sync="dialogVisibleData"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
 			<el-form :model="resourceForm">
 				<el-form-item :label="$t('roleMaintenance.setDateLimit') + '：'">
 					<el-radio-group v-model="resourceForm.status">
-						<el-radio :label="1">{{$t('roleMaintenance.resourceView')}}</el-radio>
-						<el-radio :label="2">{{$t('roleMaintenance.businessView')}}</el-radio>
-						<el-radio :label="3">{{$t('roleMaintenance.roomView')}}</el-radio>
+						<el-radio :label="1" border>{{$t('roleMaintenance.resourceView')}}</el-radio>
+						<!--						<el-radio :label="2" border>{{$t('roleMaintenance.businessView')}}</el-radio>-->
+						<!--						<el-radio :label="3" border>{{$t('roleMaintenance.roomView')}}</el-radio>-->
 					</el-radio-group>
 				</el-form-item>
 				<div class="role-setDateLimit-dialog-line">
 					<div class="line"></div>
 				</div>
 				<el-form-item style="margin-bottom: 10px;">
-					<el-input v-model="filterText" class="width200 role-input-search" placeholder="输入名称 过滤结果" />
+					<el-input v-model="filterText" class="width200 role-input-search" :placeholder="$t('roleMaintenance.tip')"/>
 				</el-form-item>
 				<el-form-item>
-					<el-checkbox class="role-setDateLimit-dialog-checkout" :checked="checked" @change="checkedAll">全选</el-checkbox>
+					<el-checkbox
+						class="role-setDateLimit-dialog-checkout"
+						v-model="allcheckedData"
+						@change="checkedAllData(allcheckedData)">
+						{{$t('public.allChecked')}}
+					</el-checkbox>
 					<el-tree
-						id="dataLimit-box" 
-						node-key="id" 
-						:data="dataInfoResourceTree" 
-						:props="dataInfoTreeProps" 
+						id="dataLimit-box"
+						node-key="nodeId"
+						:data="dataInfoResourceTree"
+						:props="dataInfoTreeProps"
 						show-checkbox
-						default-expand-all
+						:check-strictly="true"
+						:default-expanded-keys="['tree_other']"
+						@check-change="currentChangeTree"
 						:filter-node-method="filterNode"
-						ref="vueTree" />
+						ref="vueTree"/>
+					<p class="iconfontError">
+						<span>{{$t('roleMaintenance.selectedDevice')}}</span>
+						<span>{{resourceForm.isSelectNum}}</span>
+						<span>{{$t('roleMaintenance.stand')}}</span>
+					</p>
 				</el-form-item>
 			</el-form>
-			<span slot="footer">
-        <el-button class="alertBtn" type="primary" @click="dialogVisibleData = false">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" @click="dialogVisibleData = false">{{$t('public.cancel')}}</el-button>
-      </span>
+			<div slot="footer">
+        <el-button
+					class="alertBtn"
+					type="primary"
+					@click="addDataLimit">
+					{{$t('public.confirm')}}
+				</el-button>
+        <el-button
+					class="alertBtn"
+					@click="resetDataLimit">
+					{{$t('public.cancel')}}
+				</el-button>
+      </div>
 		</el-dialog>
 	</Box>
 </template>
 
 <script>
 	import Box from '../../../../components/Box';
-	import { isNotNull } from "../../../../assets/js/validator";
-	import { dateFilter } from '../../../../assets/js/filters';
-	import { orgBreadcrumb, getMenuWithParentIdByMenuId, getParent, uniqArr, getChildren, unique, returnIsNotData } from "../../../../assets/js/recursive";
+	import {isNotNull} from "../../../../assets/js/validator";
+	import {dateFilter} from '../../../../assets/js/filters';
+	import {
+		orgBreadcrumb,
+		getMenuWithParentIdByMenuId,
+		getParent,
+		uniqArr,
+		getChildren,
+		unique,
+		returnIsNotData,
+		getObjectById
+	} from "../../../../assets/js/recursive";
 
 	export default {
 		name: "role-maintenance",
@@ -236,10 +310,11 @@
 					description: ''
 				},
 				// 数据权限
-				resourceForm:{
+				resourceForm: {
 					status: 1,
+					isSelectNum:0
 				},
-				filterText:'', // 数据权限前端过滤
+				filterText: '', // 数据权限前端过滤
 				// 全局按钮 是否禁用
 				disableBtn: {
 					edit: true,
@@ -269,6 +344,8 @@
 				selectMenuMark: false,
 				// 功能菜单权限全选
 				allCheckedMenu: false,
+				// 数据权限全选
+				allcheckedData: false,
 				// 表格数据
 				tableData: [],
 				// 内层表格数据
@@ -277,7 +354,8 @@
 				organizationName: [],
 				menuExpanded: [], // 功能菜单授权数据回显 展开树
 				keys: [],
-				dataInfoResourceTree:[], // 资源视图树
+				dataInfoResourceTree: [], // 资源视图树
+				deviceListArr: [], // 资源视图全选数据集合
 				// 外层分页
 				options: {
 					total: 0, // 总条数
@@ -303,12 +381,13 @@
 					label: 'menuName',
 					children: 'systemMenuAndLanguageRelationChildList'
 				},
-				dataInfoTreeProps:{
-					label:'nodeName',
-					children:'children',
-					isLeaf:function(data,node){
-						// 指定节点是否为叶子结点
-						return false;
+				dataInfoTreeProps: {
+					label: 'nodeName',
+					children: 'children',
+					disabled: function (data, node) {
+						if (data.orderNum === 1) {
+							return true;
+						}
 					}
 				},
 				// 所属组织列表
@@ -341,17 +420,96 @@
 				},
 			}
 		},
+		// 监听 前端过滤树
 		watch: {
-	      filterText(val) {
-	        this.$refs.vueTree.filter(val);
-	      }
-	    },
+			filterText(val) {
+				this.$refs.vueTree.filter(val);
+			}
+		},
 		methods: {
+			// 保存数据权限
+			addDataLimit(){
+				var _t = this;
+				var deviceIdArr = _t.$refs.vueTree.getCheckedKeys();
+				_t.$api.post('system/systemRoleDevice/',{
+					systemRoleDevice:{
+						roleId:_t.checkListIds.join(','),
+						deviceId:deviceIdArr.join(',') === '' ? null : deviceIdArr.join(',')
+					}
+				},function (res) {
+					switch (res.status) {
+						case 200:
+							_t.$alert('保存成功', _t.$t('public.resultTip'), {
+								confirmButtonText: _t.$t('public.confirm'),
+								confirmButtonClass: 'alertBtn'
+							}).then(()=>{
+								_t.resetDataLimit();
+							});
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						case 2005: // 添加失败
+							_t.$alert(res.message, _t.$t('public.resultTip'), {
+								confirmButtonText: _t.$t('public.confirm'),
+								confirmButtonClass: 'alertBtn'
+							}).then(()=>{
+								_t.resetDataLimit();
+							});
+							break;
+						default:
+							break;
+					}
+					_t.$refs.table.clearSelection();
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disabled = true;
+					_t.disableBtn.edit = true;
+					_t.disableBtn.more = true;
+				});
+			},
+			// 重置数据权限表单
+			resetDataLimit(){
+				var _t = this;
+				_t.resourceForm.status = 1;
+				_t.resourceForm.isSelectNum = 0;
+				_t.filterText = '';
+				_t.$refs.vueTree.setCheckedKeys([]);
+				_t.dialogVisibleData = false;
+				_t.allcheckedData = false;
+			},
+			// 树节点状态改变的时候 判断是否勾选全选按钮
+			currentChangeTree() {
+				var _t = this;
+				var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
+				_t.resourceForm.isSelectNum = selectTreeList.length;
+				if (selectTreeList.length === _t.deviceListArr.length) {
+					_t.allcheckedData = true;
+				} else {
+					_t.allcheckedData = false;
+				}
+			},
+			// 数据权限 全选
+			checkedAllData() {
+				var _t = this;
+				if (_t.allcheckedData) {
+					// 全选
+					_t.$refs.vueTree.setCheckedNodes(_t.deviceListArr);
+					var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
+					_t.resourceForm.isSelectNum = selectTreeList.length;
+				} else {
+					// 取消全选
+					_t.resourceForm.isSelectNum = 0;
+					_t.$refs.vueTree.setCheckedKeys([]);
+				}
+			},
 			// 过滤树
 			filterNode(value, data) {
 				if (!value) return true;
-		        return data.menuName.indexOf(value) !== -1;
-		    },
+				return data.nodeName.indexOf(value) !== -1;
+			},
 			// 数据权限按钮
 			infoData() {
 				var _t = this;
@@ -361,17 +519,17 @@
 			// 获取数据权限 监测目录树
 			getInfoDataTree() {
 				var _t = this;
-				_t.$api.get('asset/assetCatalog/all', {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('asset/assetCatalog/all', {}, function (res) {
+					switch (res.status) {
 						case 200:
-						var dataInfoResourceTree = res.data.children;
-						dataInfoResourceTree.unshift({
-							nodeId:'tree_other',
-							orderNum: 1,
-							nodeName:'未分配目录',
-							children:[]
-						});
-						_t.getDeviceTreeData(dataInfoResourceTree);
+							var dataInfoResourceTree = res.data.children;
+							dataInfoResourceTree.unshift({
+								nodeId: 'tree_other',
+								orderNum: 1,
+								nodeName: '未分配目录',
+								children: []
+							});
+							_t.getDeviceTreeData(dataInfoResourceTree);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -384,19 +542,93 @@
 					}
 				});
 			},
-			// 
-			getDeviceTreeData(tree){
+			// 获取设备列表
+			getDeviceTreeData(tree) {
 				var _t = this;
-				_t.$api.get('asset/assetDevice/getDeviceList',{
-					jsonString:JSON.stringify({
-						assetDevice:{}
+				_t.$api.get('asset/assetDevice/getDeviceList', {
+					jsonString: JSON.stringify({
+						assetDevice: {}
 					})
-				},function(res){
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200:
 							var deviceList = res.data.list;
+							var deviceListObject = new Object();
+							deviceList.forEach((item) => {
+								item.nodeId = item.id;
+								item.parentId = item.catalogId;
+								item.nodeName = item.deviceName;
+								item.orderNum = 2;
+								item.children = [];
+								// 未发现设备
+								if (item.catalogId === null) {
+									if (deviceListObject['tree_other'] !== undefined) {
+										deviceListObject['tree_other'].push(item);
+									} else {
+										deviceListObject['tree_other'] = [];
+										deviceListObject['tree_other'].push(item);
+									}
+								} else {
+									// 已发现的设备
+									if (deviceListObject[item.catalogId] !== undefined) {
+										deviceListObject[item.catalogId].push(item);
+									} else {
+										deviceListObject[item.catalogId] = [];
+										deviceListObject[item.catalogId].push(item);
+									}
+								}
+							});
+							// 将键值存到数组中 用于遍历
+							var keyArr = new Array();
+							for (var key in deviceListObject) {
+								keyArr.push(key);
+							}
+							keyArr.forEach((item) => {
+								var nodeList = getObjectById(tree, item, 'nodeId', 'children');
+								if (nodeList[0].nodeId === item) {
+									nodeList[0].children = deviceListObject[item];
+								}
+							});
+							var deviceListArr = new Array();
+							deviceList.forEach((item) => {
+								deviceListArr.push(item);
+							});
+							// 树节点拥有的全部设备节点id 用于全选
+							_t.deviceListArr = deviceListArr;
+							// 数据权限数据回显
+							_t.getDataLimit(tree);
 							_t.dataInfoResourceTree = tree;
-//							console.log(res.data.list)
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				});
+			},
+			// 数据权限数据回显
+			getDataLimit(treeData){
+				var _t = this;
+				_t.$api.get('system/systemRoleDevice/resourceViewDataEcho',{
+					jsonString:JSON.stringify({
+						systemRoleDevice:{
+							roleId: _t.checkListIds.join(',')
+						}
+					})
+				},function (res) {
+					switch (res.status) {
+						case 200:
+							_t.$refs.vueTree.setCheckedKeys(res.data.list);
+							_t.resourceForm.isSelectNum = res.data.count;
+							if (res.data.count === _t.deviceListArr.length && _t.deviceListArr.length !== 0) {
+								_t.allcheckedData = true;
+							} else {
+								_t.allcheckedData = false;
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -420,7 +652,7 @@
 			// 功能菜单权限全选功能
 			changeMenuTree(val) {
 				var _t = this;
-				if(val) {
+				if (val) {
 					// 全选
 					_t.$refs.tree.setCheckedNodes(_t.selectArr);
 				} else {
@@ -441,23 +673,23 @@
 				var nodeChildrenArr = [];
 				var keys = new Array();
 				var uniqArrKeys = new Array();
-				if(status) {
+				if (status) {
 					var parent = getParent(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList', 'parentId');
-					parent.forEach(function(item) {
+					parent.forEach(function (item) {
 						keys.push(item.id);
 					});
 					uniqArrKeys = uniqArr(keys);
 					_t.keys = uniqArrKeys;
 				} else {
-					_t.keys.forEach(function(item, index) {
-						if(item === node.id) {
+					_t.keys.forEach(function (item, index) {
+						if (item === node.id) {
 							_t.keys.splice(index, 1);
 						}
 					});
 					// 获取勾选带子级的节点
 					nodeChildrenArr = getChildren(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList');
 					// 循环设置取消勾选节点子集的所有节点
-					nodeChildrenArr.forEach(function(item) {
+					nodeChildrenArr.forEach(function (item) {
 						// item key值, false: 不勾选
 						_t.$refs.tree.setChecked(item, false, true);
 					});
@@ -479,8 +711,8 @@
 						},
 						languageMark: localStorage.getItem('hy-language')
 					})
-				}, function(res) {
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.$refs.tree.setCheckedKeys(res.data);
 							// 判断是否全选
@@ -491,12 +723,12 @@
 							var number = 0;
 							firstArr.forEach((val) => {
 								res.data.forEach((name) => {
-									if(val === name) {
+									if (val === name) {
 										number += 1;
 									}
 								});
 							});
-							if(number === _t.selectArr.length) {
+							if (number === _t.selectArr.length) {
 								_t.allCheckedMenu = true;
 							} else {
 								_t.allCheckedMenu = false;
@@ -525,7 +757,7 @@
 				selectMenuArr.forEach((item) => {
 					getCheckedArr.forEach((val) => {
 						var obj = new Object();
-						if(item === val) {
+						if (item === val) {
 							obj.menuId = val;
 							obj.isChecked = true;
 							selectMenuList.push(obj);
@@ -538,14 +770,14 @@
 					obj.isChecked = false;
 					selectMenuList.push(obj);
 				});
-				if(selectMenuList.length !== 0) {
+				if (selectMenuList.length !== 0) {
 					_t.$api.post('system/role/impowerRoleByMenu', {
 						systemRole: {
 							id: _t.checkListIds.join(',')
 						},
 						menuList: selectMenuList
-					}, function(res) {
-						switch(res.status) {
+					}, function (res) {
+						switch (res.status) {
 							case 200:
 								_t.dialogVisibleFunction = false;
 								_t.$refs.tree.setCheckedKeys([]);
@@ -582,9 +814,9 @@
 			// 提交授权用户
 			userDataForm() {
 				var _t = this;
-				if(_t.tags.length !== 0) {
+				if (_t.tags.length !== 0) {
 					var userIds = new Array();
-					_t.tags.forEach(function(item) {
+					_t.tags.forEach(function (item) {
 						userIds.push(item.id);
 					});
 					_t.$api.post('system/role/impowerRoleByUser', {
@@ -592,8 +824,8 @@
 							id: _t.checkListIds.join(',')
 						},
 						userId: userIds.join(',')
-					}, function(res) {
-						switch(res.status) {
+					}, function (res) {
+						switch (res.status) {
 							case 200:
 								_t.outerVisible = false;
 								_t.tags = [];
@@ -621,9 +853,9 @@
 				var _t = this;
 				var arr = newArr.concat(oldArr);
 				var hash = []; //一定要在这里置空啊
-				for(var i = 0; i < arr.length; i++) {
-					for(var j = i + 1; j < arr.length; j++) {
-						if(arr[i][id] === arr[j][id]) {
+				for (var i = 0; i < arr.length; i++) {
+					for (var j = i + 1; j < arr.length; j++) {
+						if (arr[i][id] === arr[j][id]) {
 							arr[i].statusTags = true;
 						}
 					}
@@ -635,8 +867,8 @@
 			uniqArr(arr) {
 				var result = [];
 				var obj = {};
-				for(var i = 0; i < arr.length; i++) {
-					if(!obj[arr[i].id]) {
+				for (var i = 0; i < arr.length; i++) {
+					if (!obj[arr[i].id]) {
 						result.push(arr[i]);
 						obj[arr[i].id] = true;
 					}
@@ -652,11 +884,11 @@
 							id: val
 						}
 					})
-				}, function(res) {
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200:
 							var tags = new Array();
-							res.data.forEach(function(item) {
+							res.data.forEach(function (item) {
 								var obj = new Object();
 								obj.id = item.id;
 								obj.displayName = item.displayName;
@@ -681,11 +913,11 @@
 				var _t = this;
 				var tags = _t.tags.length === 0 ? [] : _t.tags;
 				// 行已经选中
-				if(row.statusTags) {
+				if (row.statusTags) {
 					// 取消选中
 					row.statusTags = false;
 					_t.tags.forEach((item, index) => {
-						if(item.id === row.id) {
+						if (item.id === row.id) {
 							_t.tags.splice(index, 1);
 							_t.$refs.tableUser.toggleRowSelection(row, false);
 						}
@@ -701,12 +933,12 @@
 			selectHandleAll(selection) {
 				var _t = this;
 				var tags = _t.tags.length === 0 ? [] : _t.tags;
-				if(selection.length !== 0) {
+				if (selection.length !== 0) {
 					// 添加
 					selection.forEach((item) => {
 						item.statusTags = true;
 						_t.$refs.tableUser.toggleRowSelection(item, true);
-						if(item.statusTags) {
+						if (item.statusTags) {
 							_t.tags = _t.uniqArr(_t.hashPushData(selection, tags, 'id'));
 						}
 					});
@@ -731,8 +963,8 @@
 						currentPage: _t.innerOptions.currentPage,
 						pageSize: _t.innerOptions.pageSize
 					})
-				}, function(res) {
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.$nextTick(() => {
 								var innerTableData = res.data.list;
@@ -741,7 +973,7 @@
 								});
 								_t.tags.forEach((item) => {
 									innerTableData.forEach((data) => {
-										if(item.id == data.id) {
+										if (item.id == data.id) {
 											data.statusTags = true;
 											_t.$refs.tableUser.toggleRowSelection(data, true);
 										}
@@ -785,9 +1017,9 @@
 						currentPage: _t.options.currentPage,
 						pageSize: _t.options.pageSize
 					})
-				}, function(res) {
+				}, function (res) {
 					_t.$store.commit('setLoading', false);
-					switch(res.status) {
+					switch (res.status) {
 						case 200: // 查询成功
 							_t.tableData = res.data.list;
 							_t.options.currentPage = res.data.currentPage;
@@ -831,9 +1063,9 @@
 							id: _t.checkListIds.join(','),
 							enable: 1
 						}
-					}, function(res) {
+					}, function (res) {
 						_t.$store.commit('setLoading', false);
-						switch(res.status) {
+						switch (res.status) {
 							case 200:
 								_t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
@@ -873,9 +1105,9 @@
 							enable: 0,
 							id: _t.checkListIds.join(',')
 						}
-					}, function(res) {
+					}, function (res) {
 						_t.$store.commit('setLoading', false);
-						switch(res.status) {
+						switch (res.status) {
 							case 200:
 								_t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
@@ -902,7 +1134,7 @@
 			// 当前选中条数
 			selectTableNum(data) {
 				var _t = this;
-				switch(data.length) {
+				switch (data.length) {
 					case 0: // 未选中
 						_t.disableBtn.disable = true;
 						_t.disableBtn.edit = true;
@@ -914,12 +1146,12 @@
 						_t.disableBtn.more = false;
 						var checkListIds = new Array();
 						var checkListOrg = new Array();
-						data.forEach(function(item) {
+						data.forEach(function (item) {
 							_t.editDataList = item;
 							// 判断启用禁用
-							if(item.enable === false) {
+							if (item.enable === false) {
 								_t.disableBtn.enable = false;
-							} else if(item.enable === true) {
+							} else if (item.enable === true) {
 								_t.disableBtn.disable = false;
 							}
 							// 获取选中的 id
@@ -937,11 +1169,11 @@
 							enableFlag = 0;
 						var checkListIds = new Array();
 						var checkListOrg = new Array();
-						for(var i = 0; i < data.length; i++) {
+						for (var i = 0; i < data.length; i++) {
 							// 根据选中条数中的状态值判断 启用禁用数量
-							if(data[i].enable === false) {
+							if (data[i].enable === false) {
 								disableFlag++;
-							} else if(data[i].enable === true) {
+							} else if (data[i].enable === true) {
 								enableFlag++;
 							}
 							// 获取选中的数据的id值
@@ -950,13 +1182,13 @@
 						}
 						_t.checkListIds = checkListIds;
 						_t.checkListOrg = checkListOrg;
-						if(disableFlag > 0 && enableFlag > 0) {
+						if (disableFlag > 0 && enableFlag > 0) {
 							_t.disableBtn.enable = true;
 							_t.disableBtn.disable = true;
-						} else if(disableFlag === 0 && enableFlag > 0) {
+						} else if (disableFlag === 0 && enableFlag > 0) {
 							_t.disableBtn.enable = true;
 							_t.disableBtn.disable = false;
-						} else if(disableFlag > 0 && enableFlag === 0) {
+						} else if (disableFlag > 0 && enableFlag === 0) {
 							_t.disableBtn.enable = false;
 							_t.disableBtn.disable = true;
 						}
@@ -1001,8 +1233,8 @@
 						jsonString: JSON.stringify({
 							roleId: _t.checkListIds.join(',')
 						})
-					}, function(res) {
-						switch(res.status) {
+					}, function (res) {
+						switch (res.status) {
 							case 200:
 								_t.$alert('删除成功!', _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
@@ -1053,23 +1285,11 @@
 				var _t = this;
 				_t.tags.splice(_t.tags.indexOf(tag), 1);
 				_t.innerTableData.forEach((item) => {
-					if(item.id === tag.id) {
+					if (item.id === tag.id) {
 						item.status = false;
 						_t.$refs.tableUser.toggleRowSelection(item, false);
 					}
 				});
-			},
-			// 功能菜单授权 全选和取消全选
-			checkedAll() {
-				var _t = this;
-				_t.checked = !_t.checked;
-				if(_t.checked) {
-					//全选
-					_t.$refs.vueTree.setCheckedNodes(_t.organizationList);
-				} else {
-					//取消选中
-					_t.$refs.vueTree.setCheckedKeys([]);
-				}
 			},
 			// 点击所属组织节点
 			clickNodeAlert(val) {
@@ -1081,8 +1301,8 @@
 			// 查询所属组织
 			getOrganization() {
 				var _t = this;
-				_t.$api.get('system/organization/all', {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('system/organization/all', {}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.organizationList = JSON.parse(res.data).children;
 							break;
@@ -1107,7 +1327,7 @@
 			addRoleData(formName) {
 				var _t = this;
 				_t.$refs[formName].validate((valid) => {
-					if(valid) {
+					if (valid) {
 						_t.$api.post('system/role/', {
 							systemRole: {
 								organizationId: _t.addEdit.organizationId,
@@ -1117,9 +1337,9 @@
 								createBy: localStorage.getItem('hy-user-name'),
 								languageMark: localStorage.getItem('hy-language')
 							}
-						}, function(res) {
+						}, function (res) {
 							_t.dialogVisible = false;
-							switch(res.status) {
+							switch (res.status) {
 								case 200:
 									_t.getData();
 									_t.resetFormData();
@@ -1164,8 +1384,8 @@
 			// 编辑时根据id查询数据
 			getEditRoleListById(val) {
 				var _t = this;
-				_t.$api.get('system/role/' + val, {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('system/role/' + val, {}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.addEdit.roleName = res.data.roleName;
 							_t.addEdit.organization = res.data.organizationName;
@@ -1189,7 +1409,7 @@
 			editRoleData(formName) {
 				var _t = this;
 				_t.$refs[formName].validate((valid) => {
-					if(valid) {
+					if (valid) {
 						_t.$api.put('system/role/', {
 							systemRole: {
 								id: _t.addEdit.id,
@@ -1200,9 +1420,9 @@
 								lastModified: localStorage.getItem('hy-user-name'),
 								languageMark: localStorage.getItem('hy-language')
 							}
-						}, function(res) {
+						}, function (res) {
 							_t.dialogVisible = false;
-							switch(res.status) {
+							switch (res.status) {
 								case 200:
 									_t.getData();
 									_t.resetFormData();
@@ -1243,13 +1463,13 @@
 					jsonString: JSON.stringify({
 						languageMark: localStorage.getItem('hy-language')
 					})
-				}, function(res) {
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200: // 查询成功
 							var navBarArr = res.data.rootMenu;
-							if(navBarArr) {
-								navBarArr.forEach(function(item) {
-									if(item.systemMenuAndLanguageRelationChildList.length === 0) {
+							if (navBarArr) {
+								navBarArr.forEach(function (item) {
+									if (item.systemMenuAndLanguageRelationChildList.length === 0) {
 										item.systemMenuAndLanguageRelationChildList = null;
 									}
 								});
@@ -1283,44 +1503,48 @@
 		width: 600px;
 		height: 400px;
 	}
-	
+
 	.role-setUserName-dialog .el-dialog {
 		width: 820px;
 		height: 500px;
 	}
-	
+
 	.role-setRoleLimit-dialog .el-dialog {
 		width: 700px;
 		height: 450px;
 	}
-	
+
 	.role-setDateLimit-dialog .el-dialog {
 		width: 700px;
 		height: 450px;
 	}
-	
+
 	.role-setDateLimit-dialog-checkout .el-checkbox__label {
 		font-size: 12px;
 	}
-	
+
 	.role-setDateLimit-dialog-line {
 		position: relative;
 	}
-	
+
 	.role-setDateLimit-dialog-line div.line {
 		position: absolute;
-		top: -15px;
+		top: -10px;
 		left: -20px;
 		right: -20px;
 		height: 1px;
 		border-bottom: 1px solid #eaedf1;
 	}
-	
+
 	.role-input-search .el-input__inner {
 		height: 32px;
 	}
-	
+
 	.allCheckedMenu .el-checkbox__label {
 		font-size: 12px;
+	}
+
+	#dataLimit-box .el-checkbox.is-disabled {
+		display: none;
 	}
 </style>

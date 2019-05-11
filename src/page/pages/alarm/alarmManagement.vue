@@ -50,7 +50,7 @@
             </el-popover>
           </div>
           <!--表格-->
-          <el-table :data="tableData" stripe @cell-click="cellClickColumn">
+          <el-table :data="tableData" stripe border @cell-click="cellClickColumn">
             <el-table-column :label="$t('public.index')" header-align="left" align="left">
               <template slot-scope="scope">
                 <span>

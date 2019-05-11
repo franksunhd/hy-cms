@@ -54,7 +54,7 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
+      <el-table :data="tableData" ref="table" border stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
         <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
@@ -139,7 +139,7 @@
       :visible.sync="dialogVisibleDetail"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-table :data="statusDetailData" stripe>
+      <el-table :data="statusDetailData" stripe border>
         <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.$index+(optionsDetail.currentPage - 1) * optionsDetail.pageSize + 1}}

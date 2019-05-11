@@ -73,7 +73,7 @@
       <el-row>
         <el-col>
           <div class="home-main-title">当前告警设备列表</div>
-          <el-table :data="tableData" class="indexTableBox" border style="width: 100%">
+          <el-table :data="tableData" class="indexTableBox" stripe border style="width: 100%">
             <el-table-column prop="serialNumber" label="序号" width="90">
             </el-table-column>
             <el-table-column prop="alarmTime" label="告警时间" width="160">
@@ -280,6 +280,8 @@
     },
     mounted() {
      this.drawLine();
+     	// 给body设置自定义属性用于登录过期 提示只执行一次
+			document.body.setAttribute('data-return',false);
     }
   }
 </script>

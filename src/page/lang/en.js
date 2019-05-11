@@ -65,66 +65,85 @@ export default {
 		moveDown: 'Down',
 		allChecked: 'allChecked'
 	},
-	// 系统设置模块
+	// 系统设置模块 导航
 	system: {
 		systemSetting: 'system Settings',
 		systemMonitoring: 'system Monitoring',
-		alarmSettings:'alarm Settings'
+		alarmSettings: 'alarm Settings'
 	},
 	// 面包屑
 	breadcrumb: {
+		//Home
+		ComputerRoomEquipment: 'ComputerRoomEquipment',
+		//系统管理-->系统设置
 		systemSetting: 'systemSettings',
 		license: 'License information maintenance',
+		//系统管理-->系统设置-->系统管理
 		systemManagement: 'system management',
 		informationPlatform: 'information platform',
+		platformLanguage: 'platform Language',
+		dataDictionary: 'data Dictionary',
 		licenseNotice: 'License notice',
 		interfaceTest: 'interface test',
+		//系统管理-->系统设置-->用户管理
 		userManagement: 'user management',
 		userMaintenance: 'user maintenance',
 		roleMaintenance: 'role maintenance',
 		organizeMaintenance: 'organize maintenance',
-		platformLanguage: 'platform Language',
-		dataDictionary: 'data Dictionary',
+		functionMenuMaintenance: 'function Menu Maintenance',
+		//系统管理-->系统设置-->数据库管理
 		dataBaseManagement: 'dataBase Management',
 		dataBaseBackUp: 'dataBase BackUp',
 		backUpTimer: 'backUp Timer',
 		dataBaseRestore: 'dataBase Restore',
+		//系统管理-->系统设置-->设备采集设置
 		deviceAcquisitionSettings: 'device Acquisition Settings',
 		nodeGroupMaintenance: 'node Group Maintenance',
-		functionMenuMaintenance: 'function Menu Maintenance',
 		acquisitionNodeManagement: 'acquisition Node Management',
 		collectionTaskAssignment: 'collection Task Assignment',
 		acquisitionNodeState: 'acquisition Node State',
+		//系统管理-->系统设置-->日志管理
 		logManagement: 'log Management',
 		loginLog: 'login Log',
 		operationLog: 'operation Log',
 		jobLog: 'job Log',
 		notificationLog: 'notification Log',
-		testLog: 'test Log',
+		monitorLog: 'monitor Log',
+		//系统管理-->系统监测
 		SystemMonitoring: 'System Monitoring',
 		WebApplication: ' Web Application',
 		DatabaseApplication: 'DatabaseApplication',
 		CollectorApplication: 'CollectorApplication',
-		ComputerRoomEquipment: 'ComputerRoomEquipment',
+		//设备发现
 		DeviceDiscovery: 'DeviceDiscovery',
 		DeviceTypeManagement: "DeviceTypeManagement",
 		DeviceInformationSetting: "DeviceInformationSetting",
 		DeviceDiscoverySettings: 'DeviceDiscoverySettings',
 		AutomaticDeviceDiscovery: 'AutomaticDeviceDiscovery',
-		DeviceManualDetection: 'DeviceManualDetection',
+		DeviceManualDetection: 'AutomaticDeviceDiscovery',
+		//设备发现-->设备自动发现（DeviceManualDetection）
 		DeviceType: 'DeviceType',
 		rackTowerServer: 'rackTowerServer',
-		alarmManagement: 'alarmManagement',
-		alarmCurrent: 'alarmCurrent',
-		alarmHistory: 'alarmHistory',
+		//监测管理
 		monitorManage: 'monitorManage',
 		equipmentMonitoring: 'equipmentMonitoring',
 		monitorThreshold: 'monitorThreshold',
-		alarmSettings:'alarmSettings',
-		basicSettings:'basicSettings',
-		alarmGroupSettings:'alarmGroupSettings',
+		monitorStatusSearch: 'monitorStatusSearch',
+		//告警管理
+		alarmManagement: 'alarmManagement',
+		alarmCurrent: 'alarmCurrent',
+		alarmHistory: 'alarmHistory',
+		//告警管理-->告警设置
+		alarmSettings: 'alarmSettings',
+		//告警管理-->告警设置--基础设置
+		basicSettings: 'basicSettings',
+		alarmGroupSettings: 'alarmGroupSettings',
+		alarmRuleSettings:'alarmRuleSettings',
+		//资产管理
+		assetManage: 'assetManage',
+		assetDevice: 'assetDevice'
 	},
-	// 许可证信息维护
+	// 系统管理-系统设置-许可证信息维护
 	license: {
 		version: 'version',
 		customerName: 'customerName',
@@ -140,7 +159,7 @@ export default {
 		authorizationModule: 'authorizationModule',
 		authorizationUpdateTime: 'authorizationUpdateTime'
 	},
-	// 平台信息设置
+	// 系统管理-系统设置-系统管理-平台信息设置
 	informationPlatform: {
 		loginTitle: 'loginTitle',
 		loginLogo: 'loginLogo',
@@ -149,20 +168,56 @@ export default {
 		homeTitle: 'homeTitle',
 		homeLogo: 'homeLogo'
 	},
-	// License到期通知
+	// 系统管理-系统设置-系统管理-平台语言设置
+	platformLanguage: {
+		setDefault: 'setDefault',
+		importFunction: 'importFunction',
+		importData: 'importData',
+		languageCode: 'languageCode',
+		languageCodes: 'languageCodes',
+		languageName: 'languageName',
+		status: 'status',
+		description: 'description',
+		sort: 'sort',
+		isDefault: 'isDefault',
+		createName: 'createName',
+		createTime: 'createTime',
+		createUpdateLanguage: 'create/update Language',
+		translationName: 'translation Name',
+		descriptionAlert: 'description',
+		Order: 'Order',
+		isEnable: 'isEnable'
+	},
+	// 系统管理-系统设置-系统管理-数据字典管理
+	dataDictionary: {
+		systemDataDictionary: 'system Data Dictionary',
+		businessCode: 'businessCode',
+		dictionaryName: 'dictionaryName',
+		status: 'status',
+		createUpdateDictionary: 'create/update Dictionary',
+		parentDictionary: 'parent Dictionary',
+		dictionaryType: 'dictionary Type',
+		directoryLevel: 'directory Level',
+		orderIndex: 'order Index',
+		statusAlert: 'status',
+		sort: 'sort',
+		createName: 'createName',
+		createTime: 'createTime'
+	},
+	// 系统管理-系统设置-系统管理-License到期通知
 	licenseNotice: {
 		selectUser: 'select user',
 		licenseTime: 'licenseTime',
 		licenseUser: 'licenseUser',
 		licenseWay: 'licenseWay'
 	},
-	// 接口访问测试
+	// 系统管理-系统设置-系统管理-接口访问测试
 	interfaceTest: {
 		interfaceMode: 'interface mode',
 		apiAddress: 'API address',
 		accessParameters: 'access parameters'
 	},
-	// 用户维护
+	// 系统管理-系统设置-用户管理-用户维护
 	userMaintenance: {
 		account: 'username/acccount',
 		organization: 'organization',
@@ -180,9 +235,10 @@ export default {
 		emails: 'emails',
 		statusAlert: 'statusAlert',
 		assignRole: 'assignRole',
-		placeSelectOrg:'placeSelectOrg',
+		placeSelectOrg: 'placeSelectOrg',
+		isNotRoleOnOrg: 'isNotRoleOnOrg'
 	},
-	// 角色维护
+	// 系统管理-系统设置-用户管理-角色维护
 	roleMaintenance: {
 		roleName: 'role name',
 		roleDate: 'create/update Date',
@@ -210,11 +266,15 @@ export default {
 		setRoleLimit: 'setRoleLimit',
 		roleLimit: 'roleLimit',
 		setDateLimit: 'setDateLimit',
-		resourceView:'resourceView',
-		businessView:'businessView',
-		roomView:'roomView'
+		resourceView: 'resourceView',
+		businessView: 'businessView',
+		roomView: 'roomView',
+		username: 'username',
+		selectedDevice: 'selectedDevice',
+		stand: 'stand',
+		tip: 'enter text...'
 	},
-	// 组织维护
+	// 系统管理-系统设置-用户管理-组织维护
 	organizeMaintenance: {
 		organizationName: 'organizationName',
 		createUpdateDate: 'create/update date',
@@ -232,43 +292,31 @@ export default {
 		organizationDes: 'organizationDes',
 		sort: 'sort'
 	},
-	// 平台语言设置
-	platformLanguage: {
-		setDefault: 'setDefault',
-		importFunction: 'importFunction',
-		importData: 'importData',
-		languageCode: 'languageCode',
-		languageCodes: 'languageCodes',
-		languageName: 'languageName',
-		status: 'status',
-		description: 'description',
-		sort: 'sort',
-		isDefault: 'isDefault',
-		createName: 'createName',
-		createTime: 'createTime',
-		createUpdateLanguage: 'create/update Language',
-		translationName: 'translation Name',
-		descriptionAlert: 'description',
-		Order: 'Order',
-		isEnable: 'isEnable'
-	},
-	// 数据字典管理
-	dataDictionary: {
-		systemDataDictionary: 'system Data Dictionary',
+	// 系统管理-系统设置-用户管理-功能菜单维护
+	functionMenuMaintenance: {
+		systemDataDictionary: 'systemDataDictionary',
 		businessCode: 'businessCode',
 		dictionaryName: 'dictionaryName',
 		status: 'status',
-		createUpdateDictionary: 'create/update Dictionary',
-		parentDictionary: 'parent Dictionary',
-		dictionaryType: 'dictionary Type',
-		directoryLevel: 'directory Level',
-		orderIndex: 'order Index',
-		statusAlert: 'status',
+		menuName: 'menuName',
+		icon: 'icon',
+		link: 'link',
+		jumpType: 'jumpType',
+		modelLevel: 'modelLevel',
 		sort: 'sort',
 		createName: 'createName',
-		createTime: 'createTime'
+		createTime: 'createTime',
+		createUpdateDictionary: 'createUpdateDictionary',
+		menuIcon: 'menuIcon',
+		menuUrl: 'menuUrl',
+		roleMenu: 'roleMenu',
+		directoryLevel: 'directoryLevel',
+		orderIndex: 'orderIndex',
+		statusAlert: 'statusAlert',
+		selectUser: 'selectUser',
+		parentName: 'parentName',
 	},
-	// 数据库备份
+	// 系统管理-系统设置-数据库管理-数据库备份
 	dataBaseBackUp: {
 		backUpAllTable: 'backUp All Table',
 		backUpThisDataBase: 'backUp This DataBase',
@@ -278,7 +326,7 @@ export default {
 		tableName: 'table Name',
 		tableDes: 'table Description'
 	},
-	// 备份定时器
+	// 系统管理-系统设置-数据库管理-备份定时器
 	backUpTimer: {
 		createTime: 'createTime',
 		backUpType: 'backUp Type',
@@ -298,7 +346,7 @@ export default {
 		note: 'note',
 		backUpTimerTitle: 'create/update backUpTimer'
 	},
-	// 数据库还原
+	// 系统管理-系统设置-数据库管理-数据库还原
 	dataBaseRestore: {
 		backUpObject: 'backUp Object',
 		backUpTime: 'backUp Time',
@@ -318,7 +366,7 @@ export default {
 		timeRule: 'time Rule',
 		ruleDes: 'Description'
 	},
-	// 节点组维护
+	// 系统管理-系统设置-设备采集设置-节点组维护
 	nodeGroupMaintenance: {
 		groupName: 'groupName',
 		nodeGroupName: 'nodeGroupName',
@@ -331,7 +379,7 @@ export default {
 		IPList: 'IPList',
 		note: 'note'
 	},
-	// 采集节点管理
+	// 系统管理-系统设置-设备采集设置-采集节点管理
 	acquisitionNodeManagement: {
 		nodeName: 'node Name',
 		nodeIp: 'node Ip',
@@ -359,7 +407,7 @@ export default {
 		gatewayIp: 'gatewayIp',
 		testPort: 'testPort'
 	},
-	// 采集任务分配
+	// 系统管理-系统设置-设备采集设置-采集任务分配
 	collectionTaskAssignment: {
 		nodeName: 'node Name',
 		nodeIp: 'node Ip',
@@ -382,7 +430,7 @@ export default {
 		statusAlert: 'statusAlert',
 		monitoringTask: 'monitoring Task',
 	},
-	// 采集节点状态
+	// 系统管理-系统设置-设备采集设置-采集节点状态
 	acquisitionNodeState: {
 		nodeName: 'nodeName',
 		nodeIp: 'nodeIp',
@@ -404,7 +452,7 @@ export default {
 		cancelIgnore: 'cancelIgnore',
 		offLine: 'offLine'
 	},
-	// 登录日志
+	// 系统管理-系统设置-日志管理-登录日志
 	loginLog: {
 		userName: 'userName/account/mobile/email',
 		loginDate: 'loginDate',
@@ -416,7 +464,7 @@ export default {
 		logOutTime: 'logOutTime',
 		timeLength: 'timeLength'
 	},
-	// 操作日志
+	// 系统管理-系统设置-日志管理-操作日志
 	operationLog: {
 		userName: 'userName/account/mobile/email',
 		loginDate: 'loginDate',
@@ -425,31 +473,162 @@ export default {
 		operationStaff: 'operationStaff',
 		operationTime: 'operationTime',
 	},
-	// 功能菜单维护
-	functionMenuMaintenance: {
-		systemDataDictionary: 'systemDataDictionary',
-		businessCode: 'businessCode',
-		dictionaryName: 'dictionaryName',
-		status: 'status',
-		menuName: 'menuName',
-		icon: 'icon',
-		link: 'link',
-		jumpType: 'jumpType',
-		modelLevel: 'modelLevel',
-		sort: 'sort',
-		createName: 'createName',
-		createTime: 'createTime',
-		createUpdateDictionary: 'createUpdateDictionary',
-		menuIcon: 'menuIcon',
-		menuUrl: 'menuUrl',
-		roleMenu: 'roleMenu',
-		directoryLevel: 'directoryLevel',
-		orderIndex: 'orderIndex',
-		statusAlert: 'statusAlert',
-		selectUser: 'selectUser',
-		parentName: 'parentName',
+	// 系统管理-系统监测-WEB应用
+	// 系统管理-系统监测-数据库应用
+	// 系统管理-系统监测-采集器应用
+	// 设备发现-设备手动发现
+	DeviceManualDetection: {
+		ipAddresses: 'ipAddresses',
+		username: 'username',
+		password: 'password',
+		port: 'port',
+		snmpVersion: 'snmpVersion',
+		snmpPort: 'snmpPort',
+		snmpCommunity: 'snmpCommunity',
+		snmpUsername: 'snmpUsername',
+		snmpSecurityLevel: 'snmpSecurityLevel',
+		snmpAuthAlgorithm: 'snmpAuthAlgorithm',
+		snmpAuthPassword: 'snmpAuthPassword',
+		snmpPrivacyAlgorithm: 'snmpPrivacyAlgorithm',
+		snmpPrivacyPassword: 'snmpPrivacyPassword',
+		snmpContextName: 'snmpContextName',
+		increaseRetrieve: 'increaseRetrieve',
+		BeganToSee: 'BeganToSee',
+		UncompletedDiscoveryTask: 'UncompletedDiscoveryTask',
+		ReturnToDeviceManualDiscovery: 'ReturnToDeviceManualDiscovery',
+		ListOfDevicesFound: 'ListOfDevicesFound',
+		AddTheSelectedDevice: 'AddTheSelectedDevice',
+		DiscoveryExport: 'DiscoveryExport',
+		BrandModels: 'BrandModels',
+		FoundThatTheState: 'FoundThatTheState',
+		describe: 'describe',
+		ipAddress: 'ipAddress'
 	},
-	// 告警管理
+	// 监测管理-设备监测
+	EquipmentMonitoring: {
+		FutureGenerations: 'FutureGenerations',
+		index: 'index',
+		workStatus: 'workStatus',
+		status: 'status',
+		AssetInformation: 'AssetInformation',
+		servicetag: 'servicetag',
+		manufacturer: 'manufacturer',
+		ManufacturersModel: 'ManufacturersModel',
+		type: 'type',
+		lastMonitorTime: 'lastMonitorTime ',
+		operation: 'operation',
+		MonitoringOfTheInterval: 'MonitoringOfTheInterval',
+		TransferOfGrouping: 'TransferOfGrouping',
+		AddTheMonitor: 'AddTheMonitor',
+		StartTheMonitoring: 'StartTheMonitoring',
+		SuspendMonitoring: 'SuspendMonitoring',
+		DeleteTheMonitoring: 'DeleteTheMonitoring',
+		IgnoreTheAlarm: 'IgnoreTheAlarm',
+		CancelToIgnore: 'CancelToIgnore',
+		OfflineEquipment: 'OfflineEquipment',
+		AddDeviceMonitoring: 'AddDeviceMonitoring',
+		DeviceName: 'DeviceName',
+		DeviceType: 'DeviceType',
+		EquipmentOwner: 'EquipmentOwner',
+		TheNextStep: 'TheNextStep',
+		cancel: 'cancel',
+		determine: 'determine',
+		EquipmentGroup: 'EquipmentGroup',
+		news: 'news',
+		TheParentNode: 'TheParentNode',
+		TheLineNumbers: 'TheLineNumbers',
+		check: 'check',
+		TheFirst: 'TheFirst',
+		TheSecond: 'TheSecond',
+		TheThird: 'TheThird',
+		TheFourth: 'TheFourth',
+		InsertAbove: 'InsertAbove',
+		BelowTheInsert: 'BelowTheInsert',
+		DeleteTheBank: 'DeleteTheBank',
+		line: 'line',
+		EditDeviceGrouping: 'EditDeviceGrouping',
+		confirmation: 'confirmation',
+		Model: 'Model',
+		brand: 'brand',
+		ThePreviousPage:'ThePreviousPage',
+		state:'state',
+		ip:'ip',
+	},
+	// 监测管理-设备监测-监测阀值
+	monitorThreshold: {
+		equipmentName: 'equipmentName',
+		serialNumber: 'serialNumber',
+		equipmentMonitoring: 'Monitoring',
+		equipmentModel: 'Model',
+		equipmentType: 'Type',
+		ip: 'ip',
+		roomName: 'roomName',
+		frameName: 'frameName',
+		monitorIndex: 'monitorIndex',
+		IndexThreshold: 'IndexThreshold',
+		Index: 'Index',
+		defaultThreshold: 'defaultThreshold',
+		mainThreshold: 'mainThreshold',
+		formThreshold: 'formThreshold',
+		alarmLevel: 'alarmLevel',
+		alarmPlaceholder: 'enter text...',
+		showDefault: 'showDefault',
+		returnDefault: 'returnDefault',
+		addMainMonitor: 'addMainMonitor'
+	},
+	// 监测 告警弹出的标签页
+	administrationTabs: {
+		equipmentInfo: 'equipmentInfo',
+		equipmentAllStatus: 'equipmentAllStatus',
+		equipmentName: 'equipmentName',
+		equipmentIp: 'equipmentIp',
+		equipmentModel: 'equipmentModel',
+		serialNumber: 'serialNumber',
+		equipmentMonitoring: 'equipmentMonitoring',
+		status: 'status',
+		monitorDetail: 'monitorDetail',
+		alarmEvent: 'alarmEvent',
+		resourceName: 'resourceName',
+		latestState: 'latestState',
+		updateTime: 'updateTime',
+		level: 'level',
+		alarmStatus: 'alarmStatus',
+		happenTime: 'happenTime',
+		alarmObject: 'alarmObject',
+		hardware: 'hardware',
+		network: 'network',
+		manageInformation: 'manageInformation',
+		locationInformation: 'locationInformation',
+		maintenanceInformation: 'maintenanceInformation',
+		changeInformation: 'changeInformation',
+		threshold: 'threshold'
+	},
+	// 监测管理-业务监测
+	// 监测管理-机房监测
+	// 监测管理-状态搜索
+	monitorStatusSearch: {
+		formType: 'Type',
+		formName: 'Name',
+		formStatus: 'StatusText',
+		formIP: 'IP',
+		formStatusType: 'StatusType',
+		formMonitorRate: 'MonitorRate',
+		formMonitorFun: 'MonitorFun',
+		columnStatus: 'Status',
+		columnIp: 'IP',
+		columnType: 'Type',
+		columnName: 'Name',
+		columnStatusText: 'StatusText',
+		columnMonitorFunText: 'MonitorFun',
+		columnMonitorRate: 'MonitorRate',
+		columnLastModifyTime: 'LastModifyTime',
+		columnOp: 'OP',
+		dialogBatchOperationTip:'Please confirm to batch operation ?',
+		dialogToSelectedLineTip:'Please check the need record operating table！',
+		dialogSuccessTip:'恭喜您操作成功！',
+		dialogFailedTip:'抱歉，操作失败，请稍后再次尝试！'
+	},
+	// 告警管理-告警汇总
 	alarmManagement: {
 		status: 'status',
 		equipmentName: 'equipmentName',
@@ -487,7 +666,7 @@ export default {
 		linkSpeed: 'linkSpeed',
 		currentStatus: 'currentStatus'
 	},
-	// 当前告警
+	// 告警管理-当前告警
 	alarmCurrent: {
 		status: 'status',
 		equipmentName: 'equipmentName',
@@ -559,7 +738,7 @@ export default {
 		alarmLevelText: 'alarmLevelText',
 		alarmThisTime: 'alarmThisTime'
 	},
-	// 历史告警
+	// 告警管理-历史告警
 	alarmHistory: {
 		status: 'status',
 		equipmentName: 'equipmentName',
@@ -633,99 +812,27 @@ export default {
 		closeBy: 'closeBy',
 		closeTime: 'closeTime'
 	},
-	//设备监测
-	EquipmentMonitoring: {
-		FutureGenerations: 'FutureGenerations',
-		index: 'index',
-		workStatus: 'workStatus',
-		status: 'status',
-		AssetInformation: 'AssetInformation',
-		servicetag: 'servicetag',
-		manufacturer: 'manufacturer',
-		ManufacturersModel: 'ManufacturersModel',
-		type: 'type',
-		lastMonitorTime: 'lastMonitorTime ',
-		operation: 'operation'
-	},
-	// 监测 告警弹出的标签页
-	administrationTabs: {
-		equipmentInfo: 'equipmentInfo',
-		equipmentAllStatus: 'equipmentAllStatus',
-		equipmentName: 'equipmentName',
-		equipmentIp: 'equipmentIp',
-		equipmentModel: 'equipmentModel',
-		serialNumber: 'serialNumber',
-		equipmentMonitoring: 'equipmentMonitoring',
-		status: 'status',
-		monitorDetail: 'monitorDetail',
-		alarmEvent: 'alarmEvent',
-		resourceName: 'resourceName',
-		latestState: 'latestState',
-		updateTime: 'updateTime',
-		level: 'level',
-		alarmStatus: 'alarmStatus',
-		happenTime: 'happenTime',
-		alarmObject: 'alarmObject',
-		hardware: 'hardware',
-		network: 'network',
-		manageInformation: 'manageInformation',
-		locationInformation: 'locationInformation',
-		maintenanceInformation: 'maintenanceInformation',
-		changeInformation: 'changeInformation',
-		threshold: 'threshold'
-	},
-	//设备手动发现
-	DeviceManualDetection: {
-		ipAddresses: 'ipAddresses',
-		username: 'username',
-		password: 'password',
-		port: 'port',
-		snmpVersion: 'snmpVersion',
-		snmpPort: 'snmpPort',
-		snmpCommunity: 'snmpCommunity',
-		snmpUsername: 'snmpUsername',
-		snmpSecurityLevel: 'snmpSecurityLevel',
-		snmpAuthAlgorithm: 'snmpAuthAlgorithm',
-		snmpAuthPassword: 'snmpAuthPassword',
-		snmpPrivacyAlgorithm: 'snmpPrivacyAlgorithm',
-		snmpPrivacyPassword: 'snmpPrivacyPassword',
-		snmpContextName: 'snmpContextName',
-		increaseRetrieve: 'increaseRetrieve',
-		BeganToSee: 'BeganToSee',
-		UncompletedDiscoveryTask: 'UncompletedDiscoveryTask',
-		ReturnToDeviceManualDiscovery: 'ReturnToDeviceManualDiscovery',
-		ListOfDevicesFound: 'ListOfDevicesFound',
-		AddTheSelectedDevice: 'AddTheSelectedDevice',
-		DiscoveryExport: 'DiscoveryExport',
-		BrandModels: 'BrandModels',
-		FoundThatTheState: 'FoundThatTheState',
-		describe: 'describe',
-		ipAddress: 'ipAddress'
-	},
-	// 监测阀值
-	monitorThreshold: {
-		equipmentName: 'equipmentName',
-		serialNumber: 'serialNumber',
-		equipmentMonitoring: 'Monitoring',
-		equipmentModel: 'Model',
-		equipmentType: 'Type',
-		ip: 'ip',
-		roomName: 'roomName',
-		frameName: 'frameName',
-		monitorIndex: 'monitorIndex',
-		IndexThreshold: 'IndexThreshold',
-		Index: 'Index',
-		defaultThreshold: 'defaultThreshold',
-		mainThreshold: 'mainThreshold',
-		formThreshold: 'formThreshold',
-		alarmLevel: 'alarmLevel',
-		alarmPlaceholder: 'enter text...',
-		showDefault: 'showDefault',
-		returnDefault: 'returnDefault',
-		addMainMonitor: 'addMainMonitor'
-	},
 	// 告警组设置
-	alarmGroupSettings:{
-		
+	alarmGroupSettings: {
+		groupName: '告警组名称(英)',
+		ipName: '设备IP/名称(英)',
+		deviceNum: '设备总量(英)',
+		createBy: '创建人(英)',
+		createTime: '创建时间(英)',
+		updateName: '更新人(英)',
+		updateTime: '更新时间(英)',
+		addEditTitle: '新增/编辑告警组(英)',
+		deviceView: '设备视图(英)',
+		resourceView: '资源视图(英)',
+		businessView: '业务视图(英)',
+		roomView: '机房视图(英)',
+		importRole: '从角色中导入(英)',
+		selectedDevice: '已选设备(英)',
+		stand: '台(英)',
+		tip: '输入名称 过滤结果(英)'
+	},
+	// 告警管理-告警规则设置
+	alarmRuleSettings:{
+
 	}
 }

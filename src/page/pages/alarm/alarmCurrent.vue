@@ -133,6 +133,7 @@
         :data="tableData"
         ref="table"
         stripe
+				border
         @selection-change="selectTableNum"
         @cell-click="cellClickColumn"
         @cell-mouse-enter="cellMouseEnter"

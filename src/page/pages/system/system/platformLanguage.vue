@@ -69,7 +69,7 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe ref="table" @selection-change="selectTableNum">
+      <el-table :data="tableData" border stripe ref="table" @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left"/>
         <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">

@@ -69,7 +69,7 @@
           </el-button>
         </div>
         <!--表格-->
-        <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
+        <el-table :data="tableData" ref="table" border stripe @selection-change="selectTableNum">
           <el-table-column type="selection" fixed header-align="left" align="left"/>
           <el-table-column width="60px" fixed :label="$t('public.index')" header-align="left" align="left">
             <template slot-scope="scope">
@@ -130,6 +130,7 @@
           <el-popover
             trigger="click"
             placement="bottom-start"
+            @show="disablePopover"
             v-model="isShowEditPopover"
             ref="popover">
             <el-tree
@@ -142,6 +143,7 @@
               v-model="addEdit.organization"
               style="width: 200px;"
               suffix-icon="el-icon-arrow-down"
+              :disabled="ifAdd == false" 
               readonly
               slot="reference"/>
           </el-popover>
@@ -236,6 +238,13 @@
       }
     },
     methods: {
+    	// 编辑时禁用显示属性下拉框
+			disablePopover(){
+				var _t = this;
+				if(_t.ifAdd === false){
+					_t.isShowEditPopover = false;
+				}
+			},
       // 重置筛选表单
       resetData() {
         var _t = this;
@@ -247,15 +256,15 @@
       resetFormData() {
         var _t = this;
         _t.addEdit.id = '';
-        _t.addEdit.organization = '';
-        _t.addEdit.organizationId = '';
+//      _t.addEdit.organization = '';
+//      _t.addEdit.organizationId = '';
         _t.addEdit.organizationName = '';
         _t.addEdit.enable = 1;
         _t.addEdit.description = '';
         _t.dialogVisible = false;
         _t.$refs.table.clearSelection();
         _t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
-        _t.$refs.ruleForm.clearValidate(); //移除校验结果
+//      _t.$refs.ruleForm.clearValidate(); //移除校验结果
       },
       // 选中所属组织节点
       clickNodeAlert(val) {

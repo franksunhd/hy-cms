@@ -43,7 +43,7 @@
 			</ul>
 		</div>
 		<div class="equipmentList clearfix" style="margin-bottom: 50px;">
-			<el-table :data="tableData" stripe @cell-click="cellClickColumn">
+			<el-table border :data="tableData" stripe @cell-click="cellClickColumn">
 				<el-table-column width="80px" label="序号" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>
@@ -275,7 +275,8 @@
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
 						assetDevice: {
-							type: _t.formItem.equipmentTypeId
+							type: _t.formItem.equipmentTypeId,
+							monitorStatus:1,
 						},
 						alarmDevice: true,
 						currentPage: _t.options.currentPage,

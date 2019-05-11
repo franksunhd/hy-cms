@@ -546,7 +546,9 @@
 #systemSettingsMonitoring-inSet,
 #systemSettingsMonitoring-outSet,
 #alarmSettings-navBar-inSet,
-#alarmSettings-navBar-outSet {
+#alarmSettings-navBar-outSet,
+#EquipmentMonitoring-navBar-inSet,
+#EquipmentMonitoring-navBar-outSet {
   background-color: #3f81d0;
   color: #fff;
 }
@@ -817,4 +819,26 @@ span.el-tree-node__label {
 .monitoringDetails-header.el-tabs--card > .el-tabs__content {
   border-right: 1px solid #eaedf1;
   border-left: 1px solid #eaedf1;
+}
+
+.alarmRuleSettings-borderColor {
+	border: 1px solid #eef1f9;
+}
+
+.alarmRuleSettings-borderTop {
+	border-top: 1px solid #e1e1e1;
+	background-color: #f0f0f0;
+}
+
+.alarmRule-checkedBox.iconfontError .el-checkbox__input.is-checked+.el-checkbox__label {
+	color: #fb6041;
+}
+
+/*表格复选框样式该单选按钮样式*/
+.alarmSoundData-table .el-table__body tr td .el-checkbox.is-checked .el-checkbox__inner {
+	background-color: #3F81D0;
+}
+
+.alarmSoundData-table .el-table__body tr td .el-checkbox.is-checked .el-checkbox__inner:after {
+	background-color: #fff;
 }

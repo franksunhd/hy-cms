@@ -4,7 +4,7 @@ var root = "http://127.0.0.1/web";   //正式环境
 // var root = "http://192.168.0.9/webapi";   //测试环境内网
 
 // 监测阀值 设备logo地址
-var deviceLogo = "http://192.168.0.9/webapi";
+var deviceLogo = root;
 
 // 校验手机号的正则
 var mobileRegular = /^(0|86|17951)?(1[3-9][0-9])[0-9]{8}$/;
@@ -81,4 +81,8 @@ export default {
   deviceLogo: function(){
   	return deviceLogo;
   },
+	// 试听音频文件
+	root:function () {
+		return root;
+	}
 }

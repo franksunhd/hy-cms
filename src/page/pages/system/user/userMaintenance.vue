@@ -54,7 +54,7 @@
 					<i class="el-icon-delete"></i> {{$t('public.delete')}}
 				</el-button>
 			</div>
-			<el-table :data="tableData" stripe ref="table" @selection-change="selectTableNum">
+			<el-table :data="tableData" border stripe ref="table" @selection-change="selectTableNum">
 				<el-table-column type="selection" fixed header-align="left" align="left" />
 				<el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
 					<template slot-scope="scope">

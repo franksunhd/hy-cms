@@ -5,7 +5,7 @@
       <el-breadcrumb>
         <el-breadcrumb-item>{{$t('breadcrumb.systemSetting')}}</el-breadcrumb-item>
         <el-breadcrumb-item>{{$t('breadcrumb.logManagement')}}</el-breadcrumb-item>
-        <el-breadcrumb-item>{{$t('breadcrumb.testLog')}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{$t('breadcrumb.monitorLog')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <!--<el-tree-->
@@ -34,6 +34,8 @@
       <el-button @click="addData">点击</el-button>
       <el-table
         ref="table"
+				stripe
+				border
         @select="selectHandle"
         :row-key="getRowKeys"
         @select-all="selectHandleAll"
@@ -52,7 +54,7 @@
   import {getParent, uniqArr, getChildren,unique} from '../../../../assets/js/recursive';
 
   export default {
-    name: "testLog",
+    name: "monitorLog",
     components: {Box},
     data() {
       return {

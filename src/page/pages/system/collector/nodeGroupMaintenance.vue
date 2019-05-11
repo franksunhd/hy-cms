@@ -37,7 +37,7 @@
         </el-button>
       </div>
       <!--表格-->
-      <el-table :data="tableData" ref="table" stripe @selection-change="selectTableNum">
+      <el-table :data="tableData" ref="table" border stripe @selection-change="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left" />
         <el-table-column width="60px" :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">

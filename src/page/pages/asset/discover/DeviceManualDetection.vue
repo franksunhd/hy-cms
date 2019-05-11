@@ -12,7 +12,7 @@
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
 					<div class="TreeControl">
-						<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" :expand-on-click-node="false" :default-expand-all="false">
+						<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" highlight-current :expand-on-click-node="true" :default-expand-all="false">
 						</el-tree>
 
 					</div>
@@ -292,17 +292,14 @@
 			//安全级别筛选
 			selectsnmpSecurityLevel(val) {
 				if(val.snmpSecurityLevel === 'noAuthNoPriv') {
-					val.snmpAuthAlgorithm = "";
+					val.snmpAuthAlgorithm = '';
 					val.snmpAuthPassword = '';
 					val.snmpPrivacyAlgorithm = '';
 					val.snmpPrivacyPassword = '';
-
-				} else if(val === 'authNoPriv') {
-					val.snmpAuthAlgorithm = "";
-					val.snmpAuthPassword = '';
-
-				} else if(val === 'authPriv') {
-
+				} else if(val.snmpSecurityLevel === 'authNoPriv') {
+					val.snmpPrivacyAlgorithm = '';
+					val.snmpPrivacyPassword = '';
+				} else if(val.snmpSecurityLevel === 'authPriv') {
 				}
 			},
 			// 查询表格中状态对应的数据值

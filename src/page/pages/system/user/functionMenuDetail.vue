@@ -16,9 +16,25 @@
 		</div>
 		<el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
 			<el-form-item :label="$t('functionMenuMaintenance.parentName') + '：'">
-				<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover">
-					<el-tree :data="treeData" highlight-current :expand-on-click-node="false" @node-click="clickNodeAlert" :props="defaultProps" />
-					<el-input v-model="addEdit.parentName" style="width: 200px;" suffix-icon="el-icon-arrow-down" readonly :disabled="ifAdd == false" slot="reference" />
+				<el-popover 
+					trigger="click"
+					@show="disablePopover"
+					placement="bottom-start" 
+					v-model="isShowEditPopover" 
+					ref="popover">
+					<el-tree 
+						:data="treeData" 
+						highlight-current 
+						:expand-on-click-node="false" 
+						@node-click="clickNodeAlert" 
+						:props="defaultProps" />
+					<el-input 
+						v-model="addEdit.parentName" 
+						style="width: 200px;" 
+						suffix-icon="el-icon-arrow-down" 
+						readonly
+						:disabled="ifAdd == false" 
+						slot="reference" />
 				</el-popover>
 			</el-form-item>
 			<el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
@@ -162,6 +178,13 @@
 			}
 		},
 		methods: {
+			// 编辑时禁用显示属性下拉框
+			disablePopover(){
+				var _t = this;
+				if(_t.ifAdd === false){
+					_t.isShowEditPopover = false;
+				}
+			},
 			// 输入框菜单名称校验
 			menuNameInput(data) {
 				if(data.menuName.trim() === '') {
@@ -649,6 +672,12 @@
 			} else {
 				_t.ifAdd = false;
 			}
+		},
+		beforeDestroy() {
+			localStorage.removeItem('functionIsAdd');
+			localStorage.removeItem('functionMenuId');
+			localStorage.removeItem('functionMenuLevel');
+			localStorage.removeItem('functionParentId');
 		}
 	}
 </script>

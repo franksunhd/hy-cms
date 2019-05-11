@@ -28,7 +28,8 @@
       <div class="box-right-abs">
         <div class="box-close" @click="ClickClose"><i class="el-icon-close"></i></div>
       </div>
-      <div class="fnlist" v-for="(value,index) in selectArr" :key="index">
+      <p class="result-tip" v-if="selectArr.length === 0">没有对应的菜单权限</p>
+      <div v-else class="fnlist" v-for="(value,index) in selectArr" :key="index">
         <span class="fnspan">{{value.menuName}}</span>
         <ul class="app-side-ul">
           <li v-for="(item,index) in value.systemMenuAndLanguageRelationChildList" :item="item" :key="index">
@@ -306,6 +307,11 @@
     left: 0;
     bottom: 0;
   }
+  
+  .result-tip {
+  	height: 50px;
+  	line-height: 50px;
+  }
 
   .box-right-box {
     width: 840px;
@@ -508,7 +514,7 @@
   .box-close {
     float: right;
     margin-right: 10px;
-    margin-top: 20px;
+    margin-top: 0;
     font-size: 25px;
     cursor: pointer;
   }

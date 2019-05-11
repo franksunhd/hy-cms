@@ -72,7 +72,7 @@
         </el-select>
       </div>
       <!--表格-->
-      <el-table :data="tableData" stripe @select="selectTableNum" @select-all="selectTableNum">
+      <el-table :data="tableData" border stripe @select="selectTableNum" @select-all="selectTableNum">
         <el-table-column type="selection" fixed header-align="left" align="left" />
         <el-table-column :label="$t('public.index')" header-align="left" align="left">
           <template slot-scope="scope">
