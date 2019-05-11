@@ -23,12 +23,17 @@ import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
 import './assets/css/fontStyle.css';
 import './assets/font/iconfont.css';
-// 富文本编辑器
+// 富文本编辑器 ueditor
 import '../static/UEditor/ueditor.config';
 import '../static/UEditor/ueditor.all.min';
 import '../static/UEditor/lang/zh-cn/zh-cn';
 import '../static/UEditor/lang/en/en';
 import '../static/UEditor/ueditor.parse.min';
+
+// 富文本编辑器
+import tinymce from 'tinymce/tinymce';
+import 'tinymce/themes/mobile/theme';
+// import Editor from '@tinymce/tinymce-vue';
 
 Vue.use(Vuex);
 Vue.use(VueDND);
