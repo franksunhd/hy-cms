@@ -15,9 +15,7 @@ import * as custom from './assets/js/filters';
 import tagsview from './assets/js/tagsview';
 import getters from './assets/js/getters';
 import vueBus from 'vue-bus';
-
-import VueContextMenu from '@xunlei/vue-context-menu'
-
+import VueContextMenu from '@xunlei/vue-context-menu';
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
 import './assets/css/common.css';
@@ -25,11 +23,17 @@ import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
 import './assets/css/fontStyle.css';
 import './assets/font/iconfont.css';
+// 富文本编辑器
+import '../static/UEditor/ueditor.config';
+import '../static/UEditor/ueditor.all.min';
+import '../static/UEditor/lang/zh-cn/zh-cn';
+import '../static/UEditor/lang/en/en';
+import '../static/UEditor/ueditor.parse.min';
 
-Vue.use(VueContextMenu);
 Vue.use(Vuex);
 Vue.use(VueDND);
 Vue.use(vueBus);
+Vue.use(VueContextMenu);
 Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value)
 });
@@ -56,14 +60,14 @@ Vue.prototype.exclude = (name, message) => {
 			confirmButtonClass:'alertBtn',
 			type: 'warning',
 			callback: action => {
-				name.$store.commit("setLoading", false);
-				name.$router.push({name: 'Login'});
-				localStorage.removeItem('hy-language');
-				localStorage.removeItem('hy-menu-id');
-				localStorage.removeItem('hy-organization-id');
-				localStorage.removeItem('hy-token');
-				localStorage.removeItem('hy-user-id');
-				localStorage.removeItem('hy-user-name');
+				// name.$store.commit("setLoading", false);
+				// name.$router.push({name: 'Login'});
+				// localStorage.removeItem('hy-language');
+				// localStorage.removeItem('hy-menu-id');
+				// localStorage.removeItem('hy-organization-id');
+				// localStorage.removeItem('hy-token');
+				// localStorage.removeItem('hy-user-id');
+				// localStorage.removeItem('hy-user-name');
 			}
 		});
 	}
@@ -94,7 +98,7 @@ new Vue({
   components: {App},
   template: '<App/>',
   watch: {
-    "$route": 'checkLogin'
+    // "$route": 'checkLogin'
   },
   methods: {
     // 检查是否登录
