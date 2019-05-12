@@ -8,22 +8,36 @@
         <el-breadcrumb-item>{{$t('breadcrumb.jobLog')}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <!--富文本编辑器-->
-    <div class="components-container">
-      <button @click="getUEContent()">获取内容</button>
-      <div class="editor-container">
-        <uEditor :defaultMsg="defaultMsg" :config="config" ref="ue"></uEditor>
-      </div>
+
+    <!--  富文本编辑器 quill -->
+
+    <div class="padding20 borderBottom" >
+      <el-button type="primary" class="width50 marBottom10" @click="saveHtml">保存</el-button>
+      <quill-editor
+        v-model="content"
+        :options="editorOptions"
+        ref="myQuillEditor"></quill-editor>
     </div>
+<!--    <div class="padding20">-->
+<!--      &lt;!&ndash;    富文本编辑器 ueditor &ndash;&gt;-->
+<!--      <div class="components-container">-->
+<!--        <el-button class="marBottom10" type="primary" @click="getUEContent()">获取内容</el-button>-->
+<!--        <div class="editor-container">-->
+<!--          <uEditor :defaultMsg="defaultMsg" :config="config" ref="ue"></uEditor>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
   </Box>
 </template>
 
 <script>
   import Box from '../../../../components/Box';
   import uEditor from '../../../../components/uEditor';
+
   export default {
     name: "jobLog",
-    components:{Box,uEditor},
+    components: {Box, uEditor},
     data() {
       return {
         defaultMsg: '这里是UE测试',
@@ -31,7 +45,7 @@
           initialFrameWidth: null, // 初始化宽度
           initialFrameHeight: 100, // 初始化高度
           // 工具栏设置
-          toolbars:[
+          toolbars: [
             // 工具栏按钮
             [
               'undo', //撤销
@@ -56,10 +70,31 @@
               'attachment', //附件
             ]
           ]
+        },
+
+
+        // quill
+        content:'1234',
+        editorOptions:{
+          modules:{
+            toolbar: [
+              ['bold', 'italic','underline','strike'],
+              [{'color':[]},{'background':[]}],
+              [{'header':[1,2,3,4,5,6,false]}],
+              [{'size': ['12px', '14px', '16px' ,'18px', '20px', '22px', '24px']}],
+            ]
+          },
+          theme:'snow'
         }
       }
     },
+    computed:{
+      editor(){
+        return this.$refs.myQuillEditor.quill;
+      }
+    },
     methods: {
+      // ue
       getUEContent() {
         let content = this.$refs.ue.getUEContent();
         this.$notify({
@@ -68,6 +103,9 @@
           type: 'success'
         });
         console.log(content)
+      },
+      saveHtml(){
+        console.log(this.content);
       }
     },
     created() {
@@ -76,7 +114,7 @@
 </script>
 
 <style scoped>
-  .info{
+  .info {
     border-radius: 10px;
     line-height: 20px;
     padding: 10px;

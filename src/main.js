@@ -35,6 +35,17 @@ import tinymce from 'tinymce/tinymce';
 import 'tinymce/themes/mobile/theme';
 // import Editor from '@tinymce/tinymce-vue';
 
+// quill
+import VueQuillEditor from 'vue-quill-editor';
+import './assets/quillEditor/quill.core';
+import './assets/quillEditor/quill';
+
+import './assets/quillEditor/quill.core.css';
+import './assets/quillEditor/quill.snow.css';
+import './assets/quillEditor/quill.bubble.css';
+import './assets/css/quillEditor.css';
+
+
 Vue.use(Vuex);
 Vue.use(VueDND);
 Vue.use(vueBus);
@@ -42,6 +53,7 @@ Vue.use(VueContextMenu);
 Vue.use(ElementUI, {
   i18n: (key, value) => i18n.t(key, value)
 });
+Vue.use(VueQuillEditor);
 
 Vue.config.productionTip = false;
 Vue.prototype.getCookie = getCookie;
