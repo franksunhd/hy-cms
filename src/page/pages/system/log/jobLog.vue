@@ -11,22 +11,22 @@
 
     <!--  富文本编辑器 quill -->
 
-    <div class="padding20 borderBottom" >
-      <el-button type="primary" class="width50 marBottom10" @click="saveHtml">保存</el-button>
-      <quill-editor
-        v-model="content"
-        :options="editorOptions"
-        ref="myQuillEditor"></quill-editor>
-    </div>
-<!--    <div class="padding20">-->
-<!--      &lt;!&ndash;    富文本编辑器 ueditor &ndash;&gt;-->
-<!--      <div class="components-container">-->
-<!--        <el-button class="marBottom10" type="primary" @click="getUEContent()">获取内容</el-button>-->
-<!--        <div class="editor-container">-->
-<!--          <uEditor :defaultMsg="defaultMsg" :config="config" ref="ue"></uEditor>-->
-<!--        </div>-->
-<!--      </div>-->
+<!--    <div class="padding20 borderBottom" >-->
+<!--      <el-button type="primary" class="width50 marBottom10" @click="saveHtml">保存</el-button>-->
+<!--      <quill-editor-->
+<!--        v-model="content"-->
+<!--        :options="editorOptions"-->
+<!--        ref="myQuillEditor"></quill-editor>-->
 <!--    </div>-->
+    <div class="padding20">
+      <!--    富文本编辑器 ueditor -->
+      <div class="components-container">
+        <el-button class="marBottom10" type="primary" @click="getUEContent()">获取内容</el-button>
+        <div class="editor-container">
+          <uEditor :defaultMsg="defaultMsg" :config="config" ref="ue"></uEditor>
+        </div>
+      </div>
+    </div>
 
   </Box>
 </template>
