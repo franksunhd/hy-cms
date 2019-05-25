@@ -8,8 +8,8 @@
 		</el-carousel>
 		<!--header-->
 		<div class="login-header">
-			<img class="login-logo" src="../assets/img/logo.png" alt="logo">
-			<span class="login-logoText">带外设备管理平台</span>
+			<img class="login-logo" src="../assets/img/logo_login.png" alt="logo">
+			<span class="login-logoText">智能硬件管理平台</span>
 		</div>
 		<!--main-->
 		<div class="login-form">
@@ -65,7 +65,7 @@
 		</div>
 		<!--footer-->
 		<div class="login-footer">
-			版权所有 京ICP 0123456789 号
+			博新融通（北京）科技有限公司
 		</div>
 	</div>
 </template>
@@ -225,6 +225,7 @@
 		height: 40px;
 		line-height: 40px;
 		border-radius: 4px;
+		margin-top: 10px;
 	}
 
 	#comments-canvas {

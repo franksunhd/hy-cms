@@ -19,32 +19,32 @@
     <!--:props="defaultProps"-->
     <!--:default-checked-keys="keys"-->
     <!--:check-strictly="true"/>-->
-    <div class="padding20 borderBottom">
-      <el-tag
-        v-for="(tag,index) in tags"
-        :key="index"
-        closable
-        @close="handleClose(tag)">
-        {{tag.displayName}}
-      </el-tag>
-    </div>
-    <div class="padding20">
-      <el-button @click="checkTable(1)">上一页</el-button>
-      <el-button @click="checkTable(2)">下一页</el-button>
-      <el-button @click="addData">点击</el-button>
-      <el-table
-        ref="table"
-				stripe
-				border
-        @select="selectHandle"
-        :row-key="getRowKeys"
-        @select-all="selectHandleAll"
-        :data="tableData">
-        <el-table-column :reserve-selection="true" type="selection" fixed/>
-        <el-table-column prop="displayName" label="姓名"/>
-        <el-table-column prop="age" label="年龄"/>
-      </el-table>
-    </div>
+<!--    <div class="padding20 borderBottom">-->
+<!--      <el-tag-->
+<!--        v-for="(tag,index) in tags"-->
+<!--        :key="index"-->
+<!--        closable-->
+<!--        @close="handleClose(tag)">-->
+<!--        {{tag.displayName}}-->
+<!--      </el-tag>-->
+<!--    </div>-->
+<!--    <div class="padding20">-->
+<!--      <el-button @click="checkTable(1)">上一页</el-button>-->
+<!--      <el-button @click="checkTable(2)">下一页</el-button>-->
+<!--      <el-button @click="addData">点击</el-button>-->
+<!--      <el-table-->
+<!--        ref="table"-->
+<!--				stripe-->
+<!--				border-->
+<!--        @select="selectHandle"-->
+<!--        :row-key="getRowKeys"-->
+<!--        @select-all="selectHandleAll"-->
+<!--        :data="tableData">-->
+<!--        <el-table-column :reserve-selection="true" type="selection" fixed/>-->
+<!--        <el-table-column prop="displayName" label="姓名"/>-->
+<!--        <el-table-column prop="age" label="年龄"/>-->
+<!--      </el-table>-->
+<!--    </div>-->
   </Box>
 </template>
 

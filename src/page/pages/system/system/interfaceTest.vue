@@ -41,62 +41,12 @@
     data(){
       return {
         interfaceWay:'',
-        originalJson:[
-          {
-            permissionId: 1,
-            permissionName: "haha",
-            permissionUrl: null,
-            "level": 1,
-            "parentId": null,
-            "status": 1,
-            "permissions": [
-              {
-                "permissionId": 2,
-                "permissionName": "xixi",
-                "permissionUrl": null,
-                "level": 2,
-                "parentId": 1,
-                "status": 1,
-                "permissions": null
-              },
-              {
-                "permissionId": 3,
-                "permissionName": "heihei",
-                "permissionUrl": null,
-                "level": 2,
-                "parentId": 1,
-                "status": 1,
-                "permissions": null
-              }
-            ]
-          },
-          {
-            "permissionId": 4,
-            "permissionName": "lala",
-            "permissionUrl": null,
-            "level": 1,
-            "parentId": null,
-            "status": 1,
-            "permissions": [
-              {
-                "permissionId": 6,
-                "permissionName": "huhu",
-                "permissionUrl": null,
-                "level": 2,
-                "parentId": 4,
-                "status": 1,
-                "permissions": null
-              }
-            ]
-          }
-        ]
+        originalJson:[]
       }
     },
     methods:{
       // 改变单选按钮的值
-      changeInterfaceWay(){
-        console.log(this.interfaceWay);
-      },
+      changeInterfaceWay(){},
       // 请求按钮
       request(){
         var resultJson = this.formatJson(this.originalJson);
@@ -137,7 +87,6 @@
           json = json.replace(reg, ':');
         }
         (json.split('\r\n')).forEach(function(node, index) {
-          //console.log(node);
           var i = 0,
             indent = 0,
             padding = '';

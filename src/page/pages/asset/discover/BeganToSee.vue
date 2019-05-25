@@ -8,27 +8,25 @@
 			</el-breadcrumb>
 		</div>
 		<div class="BeganToSee-col clearfix">
-			<div class="BeganToSee-return" @click="BeganToSeeReturn"><i class="el-icon-back">&nbsp;&nbsp;{{$t('DeviceManualDetection.ReturnToDeviceManualDiscovery')}}</i></div>
+			<div class="BeganToSee-return" @click="BeganToSeeReturn">
+				<i class="el-icon-back">
+					{{$t('DeviceManualDetection.ReturnToDeviceManualDiscovery')}}</i>
+			</div>
 			<div class="BeganToSee-IncompleteDiscovery" @click="UncompletedDiscoveryTask">
 				<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa" >
 					<div class="ListOfUncompletedDiscoveries-process" >
-						<h3>发现队列中正在执行设备发现的进程</h3>
+						<h3>{{$t('DeviceManualDetection.showProcess')}}</h3>
 						<ul v-for="(item,index) in process" :key="item.sn" @click="handClickprocess(item.sn)">
 							<li>{{item.id}}</li>
 							<li>{{item.date |dateFilter}}</li>
 							<li>{{item.name}}</li>
 						</ul>
 					</div>
-					<el-button slot="reference">{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}</el-button>
+					<el-button slot="reference">
+						{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}
+					</el-button>
 				</el-popover>
 			</div>
-			<!--<div class="BeganToSee-RefreshRate">
-				<span>页面刷新频率</span>
-				<el-select v-model="value" placeholder="请选择" style="width: 100px;">
-					<el-option v-for="item in optionss" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
-				</el-select>
-			</div>-->
 		</div>
 		<div class="padding10">
 			<el-row>
@@ -42,10 +40,17 @@
 						<div class="BeganToSee-right-list"> {{BeganToSee}}{{$t('DeviceManualDetection.ListOfDevicesFound')}}</div>
 						<div class="BeganToSee-button">
 							<el-button class="BeganToSee-addEquipment" @click="addEquipment">
-								<i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.AddTheSelectedDevice')}}</i>
+								<span class="iconfont fs14">&#xe6a1;</span>
+								<!--<i class="el-icon-circle-plus">-->
+									{{$t('DeviceManualDetection.AddTheSelectedDevice')}}
+								<!--</i>-->
 							</el-button>
-							<el-button class="BeganToSee-exportEquipment " @click="DiscoveryExport">
-								<i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.DiscoveryExport')}}</i>
+							<el-button class="BeganToSee-exportEquipment "
+												 @click="DiscoveryExport">
+								<span class="iconfont fs14">&#xe6a8;</span>
+								<!--<i class="el-icon-circle-plus">-->
+									{{$t('DeviceManualDetection.DiscoveryExport')}}
+								<!--</i>-->
 							</el-button>
 							<!--表格-->
 							<el-table border :data="tableData" :default-sort="{prop: 'ip', order: 'ascending'}" style="width: 100%; margin-top: 16px;" @selection-change="handleSelectionChange">
@@ -64,9 +69,9 @@
 								<el-table-column prop="discovery" :label="$t('DeviceManualDetection.FoundThatTheState')" show-overflow-tooltip/>
 								<el-table-column :label="$t('DeviceManualDetection.describe')" show-overflow-tooltip>
 									<template slot-scope="scope">
-										<span v-if="describes[scope.row.ip]=='-1'">已存在</span>
-										<span v-if="describes[scope.row.ip]=='1'">添加成功</span>
-										<span v-if="describes[scope.row.ip]=='0'">添加失败</span>
+										<span v-if="describes[scope.row.ip]=='-1'">{{$t('DeviceManualDetection.existing')}}</span>
+										<span v-if="describes[scope.row.ip]=='1'">{{$t('DeviceManualDetection.AddASuccess')}}</span>
+										<span v-if="describes[scope.row.ip]=='0'">{{$t('DeviceManualDetection.AddFailure')}}</span>
 									</template>
 								</el-table-column>
 							</el-table>
@@ -191,7 +196,7 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
-							_t.tableDataBase = [];
+							_t.tableDataBase = {};
 							_t.tableData = [];
 							_t.options.currentPage = 1;
 							_t.options.total = 0;
@@ -205,7 +210,8 @@
 				_t.$api.post('/asset/discovery/history', {}, function(res) {
 					switch(res.status) {
 						case 200:
-							_t.getSnData(res.data);
+							var resData = res.data ===null ? [] : res.data;
+							_t.getSnData(resData);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -223,14 +229,26 @@
 				this.val = val;
 				this.visible2=false;
 				this.getData();
-
 			},
 			/*定时器*/
 			timer() {
+				//获取设备发现接口的频率
+				var rate = 1; //默认1秒
+				var refreshRateMap = localStorage.getItem('RefreshRateMap');
+				if(null !=  refreshRateMap && undefined != refreshRateMap){
+					var refreshRateMap= JSON.parse(refreshRateMap);
+					var rateMap = refreshRateMap['RefreshRate-Discovery'];
+					if(null != rateMap && undefined != rateMap){
+						rate = rateMap.dictionaryCode;
+						if (null == rate || '' == rate || undefined == rate) {
+							rate = 1; //都为空时默认1秒
+						}
+					}
+				}
 				var _t = this;
 				return setTimeout(() => {
 					_t.getData()
-				}, 1000)
+				}, 1000*rate)
 			},
 			//刷新接口
 			getData() {
@@ -256,7 +274,6 @@
 				}, function(res) {
 					switch(res.status) {
 						case 200:
-						console.log(res);
 							var stayDevice = res.data.stayDevice;
 							let timers;
 							if(stayDevice !== 0) {
@@ -265,7 +282,7 @@
 								clearTimeout(_t.timer);
 							}
 							var Income = [];
-							Income = res.data.pageList;
+							Income = res.data.pageList === null ? [] : res.data.pageList;
 							_t.tableData = [];
 							for(var i = 0; i < Income.length; i++) {
 								if(Income[i].discovery === true) {
@@ -303,7 +320,6 @@
 							var Dincome2 = dateFilterSeconds(res.requesttime);
 							_t.Dincome2 = Dincome2;
 							_t.options.currentPage = res.data.currentPage;
-							console.log(res.data.currentPage)
 							_t.options.total = res.data.totalResultSize;
 							_t.drawLine();
 							break;
@@ -402,7 +418,6 @@
 				myChart.setOption(option);
 				myChart.off('click');
 				myChart.on('click', function(param) {
-					console.log(111)
 					_t.paramStatus = param.dataIndex - 1;
 					_t.$refs.pages.handleCurrentChange(1);
 					_t.$refs.pages.handleCurrentChange(1);
@@ -417,7 +432,6 @@
 			// 改变每页显示条数
 			handleSizeChangeSub(val) {
 				var _t = this;
-				console.log(val);
 				_t.options.pageSize = val;
 				_t.getData();
 			},

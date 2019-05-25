@@ -42,19 +42,19 @@
       <!--全局操作-->
       <div class="marBottom16">
         <el-button @click="runRestore" :disabled="disableBtn.enable">
-          <i class="el-icon-circle-check-outline"></i>
+					<span class="iconfont fs14">&#xe65d;</span>
           {{$t('dataBaseRestore.runRestore')}}
         </el-button>
         <el-button class="queryBtn" @click="deleteRestore" :disabled="disableBtn.more">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe647;</span>
           {{$t('dataBaseRestore.deleteRestore')}}
         </el-button>
         <el-button @click="restoreHistory" :disabled="disableBtn.edit">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe6a7;</span>
           {{$t('dataBaseRestore.restoreHistory')}}
         </el-button>
         <el-button @click="backUpRole" :disabled="disableBtn.edit">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe65c;</span>
           {{$t('dataBaseRestore.backUpRole')}}
         </el-button>
       </div>
@@ -271,9 +271,7 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val) {
-        console.log(val)
-      },
+      handleCurrentChange(val) {},
       // 执行还原
       runRestore() {
 

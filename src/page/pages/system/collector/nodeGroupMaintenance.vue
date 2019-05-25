@@ -24,15 +24,15 @@
       <!--全局操作-->
       <div class="marBottom16">
         <el-button type="warning" class="queryBtn" @click="addDataBtn">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe689;</span>
           {{$t('public.add')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-          <i class="el-icon-edit-outline"></i>
+					<span class="iconfont fs14">&#xe641;</span>
           {{$t('public.edit')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe647;</span>
           {{$t('public.delete')}}
         </el-button>
       </div>
@@ -50,13 +50,13 @@
         <el-table-column min-width="150px" :label="$t('nodeGroupMaintenance.IPList')" header-align="left" align="left">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.manageIpItem" :key="index">
-              {{index + 1}}、{{item.startIp}} 至 {{item.endIp}} 【网关IP:{{item.gatewayIp}}】
+              {{index + 1}}、{{item.startIp}} {{$t('nodeGroupMaintenance.to')}} {{item.endIp}} 【{{$t('nodeGroupMaintenance.ip')}}:{{item.gatewayIp}}】
             </div>
           </template>
         </el-table-column>
         <el-table-column min-width="100px" prop="description" :label="$t('nodeGroupMaintenance.description')" header-align="left" align="left" />
         <el-table-column width="150px" prop="collectorCount" :label="$t('nodeGroupMaintenance.collectionNodesNum')" header-align="left" align="left" />
-        <el-table-column width="150px" prop="createBy" :label="$t('nodeGroupMaintenance.createName')" header-align="left" align="left" />
+        <el-table-column width="150px" prop="createByUser" :label="$t('nodeGroupMaintenance.createName')" header-align="left" align="left" />
         <el-table-column width="160px" :label="$t('nodeGroupMaintenance.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
@@ -82,9 +82,7 @@
       <p class="nodeGroup-dialog-tip">
         <i class="el-icon-warning"></i>
         <span>
-          注意：“网关IP”主要用于验证采集节点与带外IP段的通讯是否正常，
-          一般填“网关”，若无网关情况下，选填一个有设备的带外网IP，
-          如果采集节点与此IP通讯不正常则代表可能无法采集此IP段的相关设备！
+          {{$t('nodeGroupMaintenance.tip')}}
         </span>
       </p>
       <el-form label-width="96px" :model="addEdit" :rules="rules" ref="formName">
@@ -103,7 +101,7 @@
               <span class="isNotNull" v-if="item.endIpFlag">{{item.endIpTip}}</span>
             </div>
             <div class="nodeGroup-formInputBox">
-              <span>网关IP:</span>
+              <span>{{$t('nodeGroupMaintenance.ip')}}:</span>
               <el-input :id="'IpListGatewayIp' + index" class="width200" @blur="rulesFormData(item,index,3)" v-model="item.gatewayIp" />
               <span class="marginLeft40 isNotNull" v-if="item.gatewayIpFlag">{{item.gatewayIpTip}}</span>
             </div>
@@ -248,7 +246,7 @@
       // 删除
       deleteData(){
         var _t = this;
-        _t.$confirm('请问是否确认删除当前的记录?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('nodeGroupMaintenance.dialogDeleteTipText'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -266,7 +264,7 @@
             _t.$store.commit('setLoading',false);
             switch (res.status) {
               case 200:
-                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('nodeGroupMaintenance.dialogDeleteTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
                 });
@@ -313,10 +311,11 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              res.data.list.forEach(function (item) {
+            	var dataList = res.data.list === null ? [] : res.data.list;
+							dataList.forEach(function (item) {
                 item.manageIpItem = JSON.parse(item.manageIp);
               });
-              _t.tableData = res.data.list;
+              _t.tableData = dataList;
               _t.options.total = res.data.count;
               _t.options.currentPage = res.data.currentPage;
               break;

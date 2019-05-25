@@ -90,8 +90,8 @@
         <el-table-column :label="$t('acquisitionNodeState.description')" header-align="left" align="left" />
         <el-table-column :label="$t('acquisitionNodeState.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('acquisitionNodeState.executionStatus')" header-align="left" align="left" />
@@ -182,14 +182,13 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val){
-        console.log(val)
-      },
+      handleCurrentChange(val){},
       // 执行监测
       runMonitoring(){
-        this.$confirm('请问是否确认立即开始执行监测?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+      	var _t = this;
+				_t.$confirm(_t.$t('acquisitionNodeState.dialogRunningTip'),_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning',
         }).then(()=>{
@@ -200,12 +199,12 @@
       },
       // 停止监测
       stopMonitoring(){
-        this.$confirm('请问是否确认要停止正在执行的监测?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+      	var _t = this;
+				_t.$confirm(_t.$t('acquisitionNodeState.dialogStoppedTip'),_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           cancelButtonClass: "btn-custom-cancel",
           type: 'warning',
-
         }).then(()=>{
 
         }).catch(()=>{

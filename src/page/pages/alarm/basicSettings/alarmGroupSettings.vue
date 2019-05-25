@@ -49,13 +49,13 @@
 				<el-table-column prop="name" :label="$t('alarmGroupSettings.groupName')" header-align="left" align="left"/>
 				<el-table-column prop="assetCount" :label="$t('alarmGroupSettings.deviceNum')" header-align="left"
 												 align="left"/>
-				<el-table-column prop="createBy" :label="$t('alarmGroupSettings.createBy')" header-align="left" align="left"/>
+				<el-table-column prop="createByUser" :label="$t('alarmGroupSettings.createBy')" header-align="left" align="left"/>
 				<el-table-column :label="$t('alarmGroupSettings.createTime')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.createTime | dateFilter}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="lastModifyBy" :label="$t('alarmGroupSettings.updateName')" header-align="left"
+				<el-table-column prop="lastModifyByUser" :label="$t('alarmGroupSettings.updateName')" header-align="left"
 												 align="left"/>
 				<el-table-column :label="$t('alarmGroupSettings.updateTime')" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -135,17 +135,15 @@
 				append-to-body
 				:title="$t('alarmGroupSettings.addEditTitle')"
 				:visible.sync="dialogVisibleInner"
+				:before-close="resetRoleGroup"
 				:close-on-click-modal="false"
 				:close-on-press-escape="false">
-				<el-tree
-					id="alarmGroup-tree"
-					ref="orgRole"
-					:data="orgRoleList"
-					show-checkbox
-					node-key="nodeId"
-					:default-expanded-keys="defaultExpandedKeys"
-					:check-strictly="true"
-					:props="orgRoleListProps"/>
+				<el-checkbox-group v-model="checkListRole">
+					<div class="marBottom10" v-for="(item,index) in orgRoleList" :key="index">
+						<el-checkbox :label="item.id">{{item.roleName}}</el-checkbox>
+						<br>
+					</div>
+				</el-checkbox-group>
 				<div slot="footer">
 					<el-button type="primary" class="alertBtn" @click="importRoleBtn">
 						{{$t('public.confirm')}}
@@ -206,6 +204,7 @@
 				defaultExpandedKeys: [], // 从角色导入默认展开第一个节点
 				orgRoleList: [], // 从角色导入树形
 				checkIdsList:[], // 表格选中的id集合
+				checkListRole:[], // 从角色导入 选中角色集合
 				dialogVisible: false, // 新增编辑弹出层
 				dialogVisibleInner: false, // 从角色导入弹出层
 				ifAdd: true, // 是否新增
@@ -240,7 +239,6 @@
 						{validator: isNotNull, trigger: ['blur']}
 					]
 				}
-
 			}
 		},
 		// 监听
@@ -250,6 +248,12 @@
 			}
 		},
 		methods: {
+			// 重置角色导入
+			resetRoleGroup(){
+				var _t= this;
+				_t.dialogVisibleInner = false;
+				_t.checkListRole = [];
+			},
 			// 当前选中条数
 			selectTableNum(data) {
 				var _t = this;
@@ -283,7 +287,7 @@
 			// 导入角色保存
 			importRoleBtn() {
 				var _t = this;
-				var selectRoleList = _t.$refs.orgRole.getCheckedKeys();
+				var selectRoleList = _t.checkListRole;
 				_t.$api.get('system/systemRoleDevice/resourceViewDataEcho',{
 					jsonString:JSON.stringify({
 						systemRoleDevice:{
@@ -295,7 +299,7 @@
 						case 200:
 							// 先获取目前已选的节点
 							var isSelectedArr = _t.$refs.vueTree.getCheckedKeys();
-							var returnListArr = res.data.list;
+							var returnListArr = res.data.list === null ? [] : res.data.list;
 							returnListArr.forEach((item)=>{
 								isSelectedArr.push(item);
 							});
@@ -308,6 +312,7 @@
 								_t.allcheckedData = false;
 							}
 							_t.addEdit.isSelectNum = selectKeys.length;
+							_t.checkListRole = [];
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -316,6 +321,7 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
+							_t.checkListRole = [];
 							break;
 					}
 				});
@@ -433,7 +439,7 @@
 			// 删除按钮
 			deleteData() {
 				var _t = this;
-				_t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('alarmGroupSettings.dialogDeleteTipText'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -449,12 +455,12 @@
 						_t.$store.commit('setLoading', false);
 						switch (res.status) {
 							case 200:
-								_t.$alert('删除成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('alarmGroupSettings.dialogDeleteTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							case 1003: // 无操作权限
@@ -470,12 +476,12 @@
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							default:
 								_t.getData();
-								_t.resetFormData();
+								_t.$refs.table.clearSelection();
 								break;
 						}
 						_t.disableBtn.edit = true;
@@ -524,7 +530,7 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.tableData = res.data.list;
+							_t.tableData = res.data.list === null ? [] : res.data.list;
 							_t.options.currentPage = res.data.currentPage;
 							_t.options.total = res.data.count;
 							break;
@@ -562,11 +568,11 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							var dataInfoResourceTree = res.data.children;
+							var dataInfoResourceTree = res.data.children === null ? [] : res.data.children;
 							dataInfoResourceTree.unshift({
 								nodeId: 'tree_other',
 								orderNum: 1,
-								nodeName: '未分配目录',
+								nodeName: _t.$t('alarmGroupSettings.isNotDirectory'),
 								children: []
 							});
 							// 获取设备列表集合
@@ -595,14 +601,16 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							var deviceList = res.data.list;
+							var deviceList = res.data.list === null ? [] : res.data.list;
 							var deviceListObject = new Object();
 							deviceList.forEach((item) => {
 								item.nodeId = item.id;
 								item.parentId = item.catalogId;
 								item.nodeName = item.deviceName;
 								item.orderNum = 2;
-								item.children = [];
+								if (item.children === undefined) {
+									item.children = [];
+								}
 								// 未发现设备
 								if (item.catalogId === null) {
 									if (deviceListObject['tree_other'] !== undefined) {
@@ -628,8 +636,14 @@
 							}
 							keyArr.forEach((item) => {
 								var nodeList = getObjectById(tree, item, 'nodeId', 'children');
-								if (nodeList[0].nodeId === item) {
-									nodeList[0].children = deviceListObject[item];
+								if (nodeList[0] && nodeList[0].nodeId === item) {
+									if (nodeList[0].children.length !== 0) {
+										deviceListObject[item].forEach((data)=>{
+											nodeList[0].children.unshift(data);
+										});
+									} else {
+										nodeList[0].children = deviceListObject[item];
+									}
 								}
 							});
 							var deviceListArr = new Array();
@@ -660,13 +674,11 @@
 			getOrgRoleList() {
 				var _t = this;
 				_t.$store.commit('setLoading', true);
-				_t.$api.get('system/organization/getOrgRoleUserTree', {}, function (res) {
+				_t.$api.get('system/role/all', {}, function (res) {
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							var JsonTree = JSON.parse(res.data);
-							_t.defaultExpandedKeys[0] = JsonTree.children[0].nodeId;
-							_t.orgRoleList = JsonTree.children;
+							_t.orgRoleList = res.data.list === null ? [] : res.data.list;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -675,6 +687,7 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
+							_t.orgRoleList = [];
 							break;
 					}
 				});
@@ -692,6 +705,7 @@
 					switch (res.status) {
 						case 200:
 							var returnData = res.data;
+							returnData.alarmNoticeGroupAssetList = returnData.alarmNoticeGroupAssetList === null ? [] : returnData.alarmNoticeGroupAssetList;
 							_t.addEdit.groupName = returnData.name;
 							_t.addEdit.viewStatus = returnData.viewType.toString();
 							// 存储已选的设备id集合
@@ -759,12 +773,11 @@
 		border-bottom: 1px solid #eaedf1;
 	}
 
-	#alarmGroup-box .el-checkbox.is-disabled,
-	#alarmGroup-tree .el-checkbox.is-disabled {
+	#alarmGroup-box .el-checkbox.is-disabled {
 		display: none;
 	}
 
-	#alarmGroup-tree .el-tree-node.is-focusable .el-icon-caret-right:before {
-		display: none;
-	}
+	/*#alarmGroup-tree .el-tree-node.is-focusable .el-icon-caret-right:before {*/
+	/*	display: none;*/
+	/*}*/
 </style>

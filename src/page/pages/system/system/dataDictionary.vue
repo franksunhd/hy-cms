@@ -49,19 +49,24 @@
 				<!--全局操作-->
 				<div class="marBottom16">
 					<el-button type="warning" class="queryBtn" @click="addDataBtn">
-						<i class="el-icon-circle-plus-outline"></i> {{$t('public.add')}}
+						<span class="iconfont fs14">&#xe689;</span>
+						{{$t('public.add')}}
 					</el-button>
 					<el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-						<i class="el-icon-edit-outline"></i> {{$t('public.edit')}}
+						<span class="iconfont fs14">&#xe641;</span>
+						{{$t('public.edit')}}
 					</el-button>
 					<el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-						<i class="el-icon-circle-check-outline"></i> {{$t('public.enable')}}
+						<span class="iconfont fs14">&#xe645;</span>
+						{{$t('public.enable')}}
 					</el-button>
 					<el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-						<i class="el-icon-circle-close-outline"></i> {{$t('public.disable')}}
+						<span class="iconfont fs14">&#xe646;</span>
+						{{$t('public.disable')}}
 					</el-button>
 					<el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-						<i class="el-icon-delete"></i> {{$t('public.delete')}}
+						<span class="iconfont fs14">&#xe647;</span>
+						{{$t('public.delete')}}
 					</el-button>
 				</div>
 				<!--表格-->
@@ -100,8 +105,8 @@
 					</el-table-column>
 					<el-table-column width="100px" :label="$t('dataDictionary.status')" header-align="left" align="left">
 						<template slot-scope="scope">
-							<span v-if="scope.row.enable === true">启用</span>
-							<span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+							<span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
+							<span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
 						</template>
 					</el-table-column>
 					<el-table-column min-width="100px" prop="createBy" :label="$t('dataDictionary.createName')"
@@ -156,8 +161,9 @@
 				<el-form-item class="star" :label="$t('dataDictionary.dictionaryType') + '：'" prop="dictionaryType">
 					<el-input v-model="addEdit.dictionaryType" class="width200" clearable/>
 				</el-form-item>
+				<!--控制业务编码-->
 				<el-form-item class="star" :label="$t('dataDictionary.businessCode') + '：'" prop="dictionaryCode">
-					<el-input :disabled="ifAdd === false" v-model="addEdit.dictionaryCode" clearable class="width200"/>
+					<el-input :disabled="isDisabled" v-model="addEdit.dictionaryCode" clearable class="width200"/>
 				</el-form-item>
 				<br>
 				<el-form-item
@@ -247,9 +253,10 @@
 				dialogVisible: false, // 新增编辑弹出层
 				isShowEditPopover: false, // 控制父级组织弹出层的显示隐藏
 				ifAdd: true, // 新增编辑判断
+				isDisabled:false,
 				statusList: [
-					{label: '启用', value: 1},
-					{label: '禁用', value: 0},
+					{label: this.$t('public.enable'), value: 1},
+					{label: this.$t('public.disable'), value: 0},
 				],
 				treeData: [], // 左侧导航数据
 				tableData: [], // 表格数据
@@ -397,7 +404,7 @@
 			// 启用
 			enableData() {
 				var _t = this;
-				_t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('dataDictionary.confirmEnableTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -414,7 +421,7 @@
 						_t.$store.commit('setLoading', false);
 						switch (res.status) {
 							case 200:
-								_t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('dataDictionary.confirmEnableSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
@@ -439,7 +446,7 @@
 			// 禁用
 			disableData() {
 				var _t = this;
-				_t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('dataDictionary.confirmDisableTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -455,7 +462,7 @@
 					}, function (res) {
 						switch (res.status) {
 							case 200:
-								_t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('dataDictionary.confirmDisableSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
@@ -480,7 +487,7 @@
 			// 删除
 			deleteData() {
 				var _t = this;
-				_t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('dataDictionary.confirmDeleteTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -496,7 +503,7 @@
 						_t.$store.commit('setLoading', false);
 						switch (res.status) {
 							case 200:
-								_t.$alert('删除成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('dataDictionary.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
@@ -557,7 +564,7 @@
 					switch (res.status) {
 						case 200:
 							// 渲染树节点
-							_t.treeData = res.data.treeNode.children;
+							_t.treeData = res.data.treeNode.children === null ? [] : res.data.treeNode.children;
 							if (bool) {
 								// 渲染虚拟节点
 								_t.formItem.nodeId = res.data.treeNode.nodeId;
@@ -596,6 +603,9 @@
 				var _t = this;
 				_t.ifAdd = true;
 				_t.dialogVisible = true;
+				if (_t.ifAdd === true) {
+					_t.isDisabled = false;
+				}
 				_t.getLanguageList();
 				if (_t.formItem.nodeId !== '0') {
 					_t.addEdit.parentId = _t.formItem.nodeId;
@@ -607,10 +617,9 @@
 			//新增表格数据
 			addData(formName) {
 				var _t = this;
-				console.log(_t.addEdit.parentId);
-				console.log(_t.addEdit.nodeName)
 				// 字典名称有为空的情况
 				var isNullNum = 0;
+				_t.systemBasedataLanguageList = _t.systemBasedataLanguageList === null ? [] : _t.systemBasedataLanguageList;
 				_t.systemBasedataLanguageList.forEach(function (item) {
 					if (item.basedataName.trim() === '') {
 						item.flag = true;
@@ -672,7 +681,7 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.tableData = res.data.list;
+							_t.tableData = res.data.list === null ? [] : res.data.list;
 							_t.options.total = res.data.count;
 							_t.options.currentPage = res.data.currentPage;
 							break;
@@ -696,6 +705,13 @@
 				_t.ifAdd = false;
 				_t.dialogVisible = true;
 				_t.addEdit.id = _t.checkListIds.join(',');
+				// 超级管理员 业务编码不禁用 其余禁用
+				var userId = localStorage.getItem('hy-user-id');
+				if (userId !== 'user_superAdmin' && _t.ifAdd === false) {
+					_t.isDisabled = true;
+				} else {
+					_t.isDisabled = false;
+				}
 				_t.getEditData(_t.addEdit.id);
 			},
 			// 根据选中的表格的数据id 查询最新的数据
@@ -724,7 +740,7 @@
 				_t.$api.get('system/language/all', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var systemBasedataLanguageList = res.data.list;
+							var systemBasedataLanguageList = res.data.list === null ? [] : res.data.list;
 							systemBasedataLanguageList.forEach(function (item) {
 								item.basedataName = '';
 								item.languageMark = '';
@@ -746,7 +762,10 @@
 							_t.addEdit.level = resData.level;
 							_t.addEdit.enable == 1 ? true : false;
 							_t.systemBasedataLanguageList = systemBasedataLanguageList;
-							_t.addEdit.nodeName = orgBreadcrumb(_t.treeData, resData.parentId == null ? '0' : resData.parentId)[0];
+							var parentID = resData.parentId == null ? '0' : resData.parentId;
+							if (parentID !== '0') {
+								_t.addEdit.nodeName = orgBreadcrumb(_t.treeData, parentID)[0];
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -764,6 +783,7 @@
 				var _t = this;
 				// 字典名称有为空的情况
 				var isNullNum = 0;
+				_t.systemBasedataLanguageList = _t.systemBasedataLanguageList === null ? [] : _t.systemBasedataLanguageList;
 				_t.systemBasedataLanguageList.forEach(function (item) {
 					if (item.basedataName.trim() == '') {
 						item.flag = true;
@@ -773,7 +793,7 @@
 					}
 				});
 				_t.$refs[formName].validate((valid) => {
-					if (valid && isNullNum == _t.systemBasedataLanguageList.length) {
+					if (valid && isNullNum === _t.systemBasedataLanguageList.length) {
 						_t.$api.put('system/basedata/', {
 							systemBasedata: {
 								id: _t.addEdit.id,
@@ -822,7 +842,7 @@
 				_t.$api.get('system/language/all', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var systemBasedataLanguageList = res.data.list;
+							var systemBasedataLanguageList = res.data.list === null ? [] : res.data.list;
 							systemBasedataLanguageList.forEach(function (item) {
 								item.basedataName = '';
 								item.languageMark = item.languageCode;
@@ -847,6 +867,7 @@
 				_t.$store.commit('setLoading', true);
 				var dataIdArr = new Array();
 				dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
 				_t.tableData.forEach(function (item, index) {
 					if (item.id === data.id) {
 						dataIdArr.push(_t.tableData[index - 1].id)
@@ -878,6 +899,7 @@
 				_t.$store.commit('setLoading', true);
 				var dataIdArr = new Array();
 				dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
 				_t.tableData.forEach(function (item, index) {
 					if (item.id === data.id) {
 						dataIdArr.push(_t.tableData[index + 1].id)

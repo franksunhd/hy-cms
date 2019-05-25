@@ -85,9 +85,7 @@
     },
     methods: {
       // 外层 改变当前页码
-      handleCurrentChange(val){
-        console.log(val);
-      },
+      handleCurrentChange(val){},
     },
     created() {
     }

@@ -48,23 +48,23 @@
         <!--全局操作-->
         <div class="marBottom16">
           <el-button :disabled="addEdit.menuLevel == 5" type="warning" class="queryBtn" @click="addDataBtn">
-            <i class="el-icon-circle-plus-outline"></i>
+						<span class="iconfont fs14">&#xe689;</span>
             {{$t('public.add')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-            <i class="el-icon-edit-outline"></i>
+						<span class="iconfont fs14">&#xe641;</span>
             {{$t('public.edit')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-            <i class="el-icon-circle-check-outline"></i>
+						<span class="iconfont fs14">&#xe645;</span>
             {{$t('public.enable')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-            <i class="el-icon-circle-close-outline"></i>
+						<span class="iconfont fs14">&#xe646;</span>
             {{$t('public.disable')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-            <i class="el-icon-delete"></i>
+						<span class="iconfont fs14">&#xe647;</span>
             {{$t('public.delete')}}
           </el-button>
         </div>
@@ -116,14 +116,14 @@
           </el-table-column>
           <el-table-column :label="$t('functionMenuMaintenance.status')" header-align="left" align="left">
             <template slot-scope="scope">
-              <span v-if="scope.row.enable === true">启用</span>
-              <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+              <span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
+              <span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
             </template>
           </el-table-column>
           <el-table-column :label="$t('functionMenuMaintenance.createName')" header-align="left" align="left">
           	<template slot-scope="scope">
-              <el-tooltip effect="dark" :content="scope.row.createBy" placement="left-start">
-                <span>{{scope.row.createBy}}</span>
+              <el-tooltip effect="dark" :content="scope.row.createByUser" placement="left-start">
+                <span>{{scope.row.createByUser}}</span>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -300,8 +300,8 @@
         ifAdd: true, // 是否新增
         selectUserIsNull: false, // 选中用户是否为空
         statusList: [
-          {label: '启用', value: 1},
-          {label: '禁用', value: 0},
+          {label: this.$t('public.enable'), value: 1},
+          {label: this.$t('public.disable'), value: 0},
         ],
         status: '',
         organization: '',
@@ -552,7 +552,8 @@
         _t.$api.get('system/language/all', {}, function (res) {
           switch (res.status) {
             case 200:
-              var languageList = res.data.list;
+							resData.systemMenuLanguageList = resData.systemMenuLanguageList === null ? [] : resData.systemMenuLanguageList;
+              var languageList = res.data.list === null ? [] : res.data.list;
               languageList.forEach(function (item) {
                 item.menuName = '';
                 item.flag = false;
@@ -603,7 +604,7 @@
           switch (res.status) {
             case 200:
               var nodeIdArr = new Array();
-              var resData = res.data;
+              var resData = res.data === null ? [] : res.data;
               resData.forEach(function (item) {
                 var obj = new Object();
                 obj.children = [];
@@ -761,7 +762,7 @@
       // 启用
       enableData() {
         var _t = this;
-        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('functionMenuMaintenance.confirmEnableTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -778,7 +779,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('functionMenuMaintenance.confirmEnableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
@@ -809,7 +810,7 @@
       // 禁用
       disableData() {
         var _t = this;
-        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('functionMenuMaintenance.confirmDisableTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -826,7 +827,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('functionMenuMaintenance.confirmDisableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
@@ -858,7 +859,7 @@
       // 删除
       deleteData() {
         var _t = this;
-        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('functionMenuMaintenance.confirmDeleteTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -874,7 +875,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('functionMenuMaintenance.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
@@ -929,7 +930,7 @@
         var _t = this;
         _t.dialogVisibleAlert = false;
         _t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
-        if (_t.listData.length == 0) {
+        if (_t.listData.length === 0) {
           _t.selectUserIsNull = true;
         } else {
           _t.selectUserIsNull = false;
@@ -939,7 +940,7 @@
       // 删除标签
       handleClose(tag) {
         var _t = this;
-        var listData = _t.listData;
+        var listData = _t.listData === null ? [] : _t.listData;
         listData.forEach(function (item, index) {
           var tags = item.tags;
           if (tags.length > 1) { // 该区域删除之后还有标签
@@ -962,14 +963,14 @@
           }
         });
         // 删除标签之后 角色为空 显示提示
-        if (_t.listData.length == 0) {
+        if (_t.listData.length === 0) {
           _t.selectUserIsNull = true;
         }
       },
       // 剩余人员
       result() {
         var _t = this;
-        var listData = _t.listData;
+        var listData = _t.listData === null ? [] : _t.listData;
         var nodeArr = new Array();
         listData.forEach(function (item) {
           if (item.tags.length !== 0) {
@@ -992,7 +993,7 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              _t.treeData = res.data.rootMenu;
+              _t.treeData = res.data.rootMenu === null ? [] : res.data.rootMenu;
               if (_t.formItem.nodeId !== '0') {
                 _t.$nextTick(function () {
                   _t.$refs.treeMenu.setCurrentKey(_t.formItem.nodeId)
@@ -1047,7 +1048,7 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200: // 查询成功
-              _t.tableData = res.data.list;
+              _t.tableData = res.data.list === null ? [] : res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
@@ -1070,6 +1071,7 @@
         var _t = this;
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
         _t.tableData.forEach(function (item, index) {
           if (item.id == data.id) {
             dataIdArr.push(_t.tableData[index - 1].id)
@@ -1107,6 +1109,7 @@
         _t.$store.commit('setLoading', true);
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
         _t.tableData.forEach(function (item, index) {
           if (item.id == data.id) {
             dataIdArr.push(_t.tableData[index + 1].id)
@@ -1144,7 +1147,8 @@
         // 编辑时 过滤数据
         if (_t.ifAdd == false) {
           var checkArr = new Array();
-          _t.result().forEach(function (item) {
+          var result = _t.result() === null ? [] : _t.result();
+          result.forEach(function (item) {
             checkArr.push(item.nodeId);
           });
           _t.checkedKeysArr = checkArr;
@@ -1155,9 +1159,7 @@
         var _t = this;
         _t.$api.get('system/organization/getOrgRole', {
           jsonString:JSON.stringify({
-            systemMenu:{
-
-            }
+            systemMenu:{}
           })
         }, function (res) {
           switch (res.status) {

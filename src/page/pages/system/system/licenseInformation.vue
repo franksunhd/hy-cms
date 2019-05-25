@@ -9,21 +9,21 @@
     </div>
     <div class="padding20">
       <el-form inline label-width="200px" class="marginBottom10">
-        <el-form-item :label="$t('license.version') + '：'">3.0</el-form-item><br>
-        <el-form-item :label="$t('license.customerName') + '：'">上海XXXXXXXXXXXXXXX证券营业部</el-form-item><br>
+        <el-form-item :label="$t('license.version') + '：'"></el-form-item><br>
+        <el-form-item :label="$t('license.customerName') + '：'"></el-form-item><br>
         <el-form-item :label="$t('license.LicenseGenerated') + '：'">
-          <span style="width: 100px;display: inline-block;">2019-02-01</span>
+          <span style="width: 100px;display: inline-block;"></span>
         </el-form-item>
-        <el-form-item :label="$t('license.validity') + '：'">2019-02-01</el-form-item><br>
+        <el-form-item :label="$t('license.validity') + '：'"></el-form-item><br>
         <el-form-item :label="$t('license.allNumber') + '：'">
-          <span style="width: 100px;display: inline-block;">666</span>
+          <span style="width: 100px;display: inline-block;"></span>
         </el-form-item>
-        <el-form-item :label="$t('license.hasNumber') + '：'">102</el-form-item><br>
-        <el-form-item :label="$t('license.effectiveModule') + '：'">ALL</el-form-item>
+        <el-form-item :label="$t('license.hasNumber') + '：'"></el-form-item><br>
+        <el-form-item :label="$t('license.effectiveModule') + '：'"></el-form-item>
       </el-form>
     </div>
     <div class="padding20 borderBottom licensenInfo-btn-box">
-      <el-button size="small" @click="dialogVisible = true">{{$t('license.uploadLicense')}}</el-button>
+      <el-button size="small" @click="">{{$t('license.uploadLicense')}}</el-button>
       <el-button type="primary" size="small" @click="isShow = true">{{$t('license.viewHistory')}}</el-button>
     </div>
     <!--更新许可证书-->
@@ -63,16 +63,7 @@
       return {
         dialogVisible:false,
         isShow:false,
-        tableData:[
-          {
-            1:'你从为别玩碧波被窝我饿哦北欧文本你从为别玩碧波被窝对我饿哦北欧文本',
-            2:'99999',
-            3:'2019-99-99至9999-99-99',
-            4:'我饿哦北欧文本你从为别玩碧波被窝对',
-            5:''
-          },
-          {}
-        ]
+        tableData:[]
       }
     },
     methods:{

@@ -33,34 +33,35 @@
 			<!--全局操作-->
 			<div class="marBottom16">
 				<el-button type="warning" class="queryBtn" @click="addRoleDataBtn">
-					<i class="el-icon-circle-plus-outline"></i> {{$t('public.add')}}
+					<span class="iconfont fs14">&#xe689;</span> {{$t('public.add')}}
 				</el-button>
 				<el-button class="queryBtn" :disabled="disableBtn.edit" @click="editRoleDatBtn">
-					<i class="el-icon-edit-outline"></i> {{$t('public.edit')}}
+					<span class="iconfont fs14">&#xe641;</span> {{$t('public.edit')}}
 				</el-button>
 				<el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-					<i class="el-icon-circle-check-outline"></i> {{$t('public.enable')}}
+					<span class="iconfont fs14">&#xe645;</span> {{$t('public.enable')}}
 				</el-button>
 				<el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-					<i class="el-icon-circle-close-outline"></i> {{$t('public.disable')}}
+					<span class="iconfont fs14">&#xe646;</span> {{$t('public.disable')}}
 				</el-button>
 				<el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-					<i class="el-icon-delete"></i> {{$t('public.delete')}}
+					<span class="iconfont fs14">&#xe647;</span> {{$t('public.delete')}}
 				</el-button>
 				<el-button :disabled="disableBtn.edit" @click="authorizationData">
-					<span class="iconfont">&#xe652;</span> {{$t('roleMaintenance.userAuthorization')}}
+					<span class="iconfont fs14">&#xe652;</span> {{$t('roleMaintenance.userAuthorization')}}
 				</el-button>
 				<el-button :disabled="disableBtn.edit" @click="functionData">
-					<span class="iconfont">&#xe658;</span> {{$t('roleMaintenance.functionLimit')}}
+					<span class="iconfont fs14">&#xe658;</span> {{$t('roleMaintenance.functionLimit')}}
 				</el-button>
 				<el-button :disabled="disableBtn.edit" @click="infoData">
-					<span class="iconfont">&#xe654;</span> {{$t('roleMaintenance.dataLimit')}}
+					<span class="iconfont fs14">&#xe654;</span> {{$t('roleMaintenance.dataLimit')}}
 				</el-button>
 			</div>
 			<!--表格-->
 			<el-table :data="tableData" ref="table" border stripe @selection-change="selectTableNum">
 				<el-table-column type="selection" fixed header-align="left" align="left"/>
 				<el-table-column prop="roleName" :label="$t('roleMaintenance.roleName')" header-align="left" align="left"/>
+				<!-- 所属组织
 				<el-table-column :label="$t('roleMaintenance.organization')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" :content="scope.row.organizationName" placement="left-start">
@@ -68,6 +69,7 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
+				-->
 				<el-table-column prop="userCount" :label="$t('roleMaintenance.userNum')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.status')" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -75,13 +77,14 @@
 						<span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="createBy" :label="$t('roleMaintenance.createName')" header-align="left" align="left"/>
+				<el-table-column prop="createByUser" :label="$t('roleMaintenance.createName')" header-align="left"
+												 align="left"/>
 				<el-table-column :label="$t('roleMaintenance.createTime')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.createTime | dateFilter}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="lastModifyBy" :label="$t('roleMaintenance.updateName')" header-align="left"
+				<el-table-column prop="lastModifyByUser" :label="$t('roleMaintenance.updateName')" header-align="left"
 												 align="left"/>
 				<el-table-column :label="$t('roleMaintenance.updateTime')" width="200" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -98,9 +101,15 @@
 				@handleCurrentChangeSub="handleCurrentChange"/>
 		</div>
 		<!--新增/编辑-->
-		<el-dialog class="roleMaintenance-dialog" :title="$t('roleMaintenance.addUpdateRole')" append-to-body
-							 :visible.sync="dialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog
+			class="roleMaintenance-dialog"
+			:title="$t('roleMaintenance.addUpdateRole')"
+			append-to-body
+			:visible.sync="dialogVisible"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
 			<el-form :model="addEdit" label-width="96px" :rules="rules" ref="ruleForm">
+				<!-- 所属组织
 				<el-form-item class="star" :label="$t('roleMaintenance.organization') +'：'" prop="organization">
 					<el-popover trigger="click" placement="bottom-start" v-model="isShowEditPopover" ref="popover">
 						<el-tree :data="organizationList" highlight-current :expand-on-click-node="false"
@@ -109,6 +118,7 @@
 											slot="reference"/>
 					</el-popover>
 				</el-form-item>
+				-->
 				<el-form-item class="star" :label="$t('roleMaintenance.roleName') +'：'" prop="roleName">
 					<el-input v-model="addEdit.roleName" class="width200" clearable/>
 				</el-form-item>
@@ -134,8 +144,10 @@
 			append-to-body
 			:title="$t('roleMaintenance.setUserName')"
 			:visible.sync="outerVisible"
+			:before-close="resetUserDataForm"
 			:close-on-click-modal="false"
 			:close-on-press-escape="false">
+			<!--
 			<el-form label-width="150px">
 				<el-form-item :label="$t('roleMaintenance.roleOrganization') + '：'">
 					<template v-for="(item,index) in organizationName">
@@ -156,20 +168,40 @@
 				</el-form-item>
 			</el-form>
 			<div style="height: 15px;border-top: 1px solid #e0e0e0;"></div>
-			<el-form inline>
+			-->
+			<el-form inline :model="userLimit">
+				<el-form-item :label="$t('roleMaintenance.organization') +'：'">
+					<el-popover
+						trigger="click"
+						placement="bottom-start"
+						v-model="isShowEditPopover"
+						ref="popover">
+						<el-tree
+							:data="organizationList"
+							highlight-current
+							:expand-on-click-node="false"
+							@node-click="clickNodeAlert"
+							:props="defaultProps"/>
+						<el-input
+							v-model="userLimit.organization"
+							class="width200"
+							suffix-icon="el-icon-arrow-down"
+							readonly
+							slot="reference"/>
+					</el-popover>
+				</el-form-item>
 				<el-form-item :label="$t('roleMaintenance.username') +'：'">
-					<el-input v-model="formItem.username"/>
+					<el-input v-model="userLimit.username"/>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" class="queryBtn" @click="selectRole">{{$t('public.query')}}</el-button>
+					<el-button class="queryBtn" @click="resetUserLimit">{{$t('public.reset')}}</el-button>
 				</el-form-item>
 			</el-form>
-			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" border stripe @select="selectHandle"
-								@select-all="selectHandleAll">
+			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" border stripe @select="selectHandle" @select-all="selectHandleAll">
 				<el-table-column :reserve-selection="true" type="selection" fixed header-align="left" align="left"/>
 				<el-table-column prop="displayName" :label="$t('public.name')" header-align="left" align="left"/>
 				<el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="left" align="left"/>
-				<el-table-column :label="$t('public.sex')" header-align="left" align="left"/>
 				<el-table-column :label="$t('roleMaintenance.registerDate')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<span>{{scope.row.createTime | dateFilter}}</span>
@@ -189,11 +221,22 @@
 			</div>
 		</el-dialog>
 		<!--功能权限-->
-		<el-dialog append-to-body class="role-setRoleLimit-dialog" :title="$t('roleMaintenance.roleLimit')"
-							 :visible.sync="dialogVisibleFunction" :close-on-click-modal="false" :close-on-press-escape="false">
+		<el-dialog
+			append-to-body
+			class="role-setRoleLimit-dialog"
+			:title="$t('roleMaintenance.roleLimit')"
+			:visible.sync="dialogVisibleFunction"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
 			<el-form>
 				<el-form-item>
-					<el-tree :data="selectArr" node-key="id" show-checkbox ref="tree" :props="menuProps"/>
+					<el-tree
+						:data="selectArr"
+						node-key="id"
+						show-checkbox
+						ref="tree"
+						@check-change="currentChangeMenuTree"
+						:props="menuProps"/>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="clearfix">
@@ -256,18 +299,9 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer">
-        <el-button
-					class="alertBtn"
-					type="primary"
-					@click="addDataLimit">
-					{{$t('public.confirm')}}
-				</el-button>
-        <el-button
-					class="alertBtn"
-					@click="resetDataLimit">
-					{{$t('public.cancel')}}
-				</el-button>
-      </div>
+				<el-button class="alertBtn" type="primary" @click="addDataLimit">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="resetDataLimit">{{$t('public.cancel')}}</el-button>
+			</div>
 		</el-dialog>
 	</Box>
 </template>
@@ -289,9 +323,7 @@
 
 	export default {
 		name: "role-maintenance",
-		components: {
-			Box
-		},
+		components: {Box},
 		data() {
 			return {
 				// 查询表单
@@ -309,10 +341,16 @@
 					status: 1,
 					description: ''
 				},
+				// 用户授权表单
+				userLimit: {
+					organization: this.$t('public.all'), // 所属组织名
+					organizationId: null, // 所属组织id
+					username: '', // 姓名
+				},
 				// 数据权限
 				resourceForm: {
 					status: 1,
-					isSelectNum:0
+					isSelectNum: 0
 				},
 				filterText: '', // 数据权限前端过滤
 				// 全局按钮 是否禁用
@@ -427,22 +465,49 @@
 			}
 		},
 		methods: {
+			// 重置用户授权
+			resetUserLimit() {
+				var _t = this;
+				_t.userLimit.organization = _t.$t('public.all'); // 所属组织名
+				_t.userLimit.organizationId = null; // 所属组织id
+				_t.userLimit.username = ''; // 姓名
+			},
+			// 功能权限菜单改变的时候
+			currentChangeMenuTree() {
+				var _t = this;
+				var firstArr = _t.$refs.tree.getCheckedKeys();
+				var number = 0; // 计数
+				firstArr.forEach((val) => {
+					_t.selectArr.forEach((t) => {
+						if (val === t.id) {
+							number += 1; // 第一层选中计数加1
+						}
+					});
+				});
+				// 计数的值和树节点上第一级的数量一样 全选勾选
+				if (number === _t.selectArr.length) {
+					_t.allCheckedMenu = true;
+				} else {
+					// 取消勾选
+					_t.allCheckedMenu = false;
+				}
+			},
 			// 保存数据权限
-			addDataLimit(){
+			addDataLimit() {
 				var _t = this;
 				var deviceIdArr = _t.$refs.vueTree.getCheckedKeys();
-				_t.$api.post('system/systemRoleDevice/',{
-					systemRoleDevice:{
-						roleId:_t.checkListIds.join(','),
-						deviceId:deviceIdArr.join(',') === '' ? null : deviceIdArr.join(',')
+				_t.$api.post('system/systemRoleDevice/', {
+					systemRoleDevice: {
+						roleId: _t.checkListIds.join(','),
+						deviceId: deviceIdArr.join(',') === '' ? null : deviceIdArr.join(',')
 					}
-				},function (res) {
+				}, function (res) {
 					switch (res.status) {
 						case 200:
-							_t.$alert('保存成功', _t.$t('public.resultTip'), {
+							_t.$alert(_t.$t('roleMaintenance.confirmSaveSuccessTip'), _t.$t('public.resultTip'), {
 								confirmButtonText: _t.$t('public.confirm'),
 								confirmButtonClass: 'alertBtn'
-							}).then(()=>{
+							}).then(() => {
 								_t.resetDataLimit();
 							});
 							break;
@@ -456,7 +521,7 @@
 							_t.$alert(res.message, _t.$t('public.resultTip'), {
 								confirmButtonText: _t.$t('public.confirm'),
 								confirmButtonClass: 'alertBtn'
-							}).then(()=>{
+							}).then(() => {
 								_t.resetDataLimit();
 							});
 							break;
@@ -471,7 +536,7 @@
 				});
 			},
 			// 重置数据权限表单
-			resetDataLimit(){
+			resetDataLimit() {
 				var _t = this;
 				_t.resourceForm.status = 1;
 				_t.resourceForm.isSelectNum = 0;
@@ -526,7 +591,7 @@
 							dataInfoResourceTree.unshift({
 								nodeId: 'tree_other',
 								orderNum: 1,
-								nodeName: '未分配目录',
+								nodeName: _t.$t('roleMaintenance.isNotDirectory'),
 								children: []
 							});
 							_t.getDeviceTreeData(dataInfoResourceTree);
@@ -552,14 +617,17 @@
 				}, function (res) {
 					switch (res.status) {
 						case 200:
-							var deviceList = res.data.list;
+							var deviceList = res.data.list === null ? [] : res.data.list;
 							var deviceListObject = new Object();
 							deviceList.forEach((item) => {
 								item.nodeId = item.id;
 								item.parentId = item.catalogId;
 								item.nodeName = item.deviceName;
 								item.orderNum = 2;
-								item.children = [];
+								item.class = 1;
+								if (item.children === undefined) {
+									item.children = [];
+								}
 								// 未发现设备
 								if (item.catalogId === null) {
 									if (deviceListObject['tree_other'] !== undefined) {
@@ -585,8 +653,14 @@
 							}
 							keyArr.forEach((item) => {
 								var nodeList = getObjectById(tree, item, 'nodeId', 'children');
-								if (nodeList[0].nodeId === item) {
-									nodeList[0].children = deviceListObject[item];
+								if (nodeList[0] && nodeList[0].nodeId === item) {
+									if (nodeList[0].children.length !== 0) {
+										deviceListObject[item].forEach((data) => {
+											nodeList[0].children.unshift(data);
+										});
+									} else {
+										nodeList[0].children = deviceListObject[item];
+									}
 								}
 							});
 							var deviceListArr = new Array();
@@ -611,15 +685,15 @@
 				});
 			},
 			// 数据权限数据回显
-			getDataLimit(treeData){
+			getDataLimit(treeData) {
 				var _t = this;
-				_t.$api.get('system/systemRoleDevice/resourceViewDataEcho',{
-					jsonString:JSON.stringify({
-						systemRoleDevice:{
+				_t.$api.get('system/systemRoleDevice/resourceViewDataEcho', {
+					jsonString: JSON.stringify({
+						systemRoleDevice: {
 							roleId: _t.checkListIds.join(',')
 						}
 					})
-				},function (res) {
+				}, function (res) {
 					switch (res.status) {
 						case 200:
 							_t.$refs.vueTree.setCheckedKeys(res.data.list);
@@ -648,6 +722,7 @@
 				_t.outerVisible = false;
 				_t.tags = [];
 				_t.tagsLength = false;
+				_t.resetUserLimit();
 			},
 			// 功能菜单权限全选功能
 			changeMenuTree(val) {
@@ -715,22 +790,21 @@
 					switch (res.status) {
 						case 200:
 							_t.$refs.tree.setCheckedKeys(res.data);
-							// 判断是否全选
-							var firstArr = new Array();
-							_t.selectArr.forEach((item) => {
-								firstArr.push(item.id);
-							});
-							var number = 0;
+							// 判断是否全选 获取选中的节点数组
+							var firstArr = _t.$refs.tree.getCheckedKeys();
+							var number = 0; // 计数
 							firstArr.forEach((val) => {
-								res.data.forEach((name) => {
-									if (val === name) {
-										number += 1;
+								_t.selectArr.forEach((t) => {
+									if (val === t.id) {
+										number += 1; // 第一层选中计数加1
 									}
 								});
 							});
+							// 计数的值和树节点上第一级的数量一样 全选勾选
 							if (number === _t.selectArr.length) {
 								_t.allCheckedMenu = true;
 							} else {
+								// 取消勾选
 								_t.allCheckedMenu = false;
 							}
 							break;
@@ -782,7 +856,7 @@
 								_t.dialogVisibleFunction = false;
 								_t.$refs.tree.setCheckedKeys([]);
 								_t.$bus.emit('getMenu', true);
-								_t.resetFormData();
+								_t.$refs.table.clearSelection();
 								break;
 							case 1003: // 无操作权限
 							case 1004: // 登录过期
@@ -809,7 +883,7 @@
 				_t.dialogVisible = false;
 				_t.$refs.table.clearSelection();
 				_t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
-				//				_t.$refs.ruleForm.clearValidate(); //移除校验结果
+				// _t.$refs.ruleForm.clearValidate(); //移除校验结果
 			},
 			// 提交授权用户
 			userDataForm() {
@@ -888,7 +962,8 @@
 					switch (res.status) {
 						case 200:
 							var tags = new Array();
-							res.data.forEach(function (item) {
+							var resData = res.data === null ? [] : res.data;
+							resData.forEach(function (item) {
 								var obj = new Object();
 								obj.id = item.id;
 								obj.displayName = item.displayName;
@@ -956,8 +1031,8 @@
 				_t.$api.get('/system/user/pagelist/', {
 					jsonString: JSON.stringify({
 						systemUser: {
-							username: _t.formItem.username == null ? null : _t.formItem.username.trim(),
-							organizationId: _t.checkListOrg.join(','),
+							username: _t.userLimit.username == null ? null : _t.userLimit.username.trim(),
+							organizationId: _t.userLimit.organizationId === null ? null : _t.userLimit.organizationId,
 							languageMark: localStorage.getItem('hy-language')
 						},
 						currentPage: _t.innerOptions.currentPage,
@@ -967,7 +1042,7 @@
 					switch (res.status) {
 						case 200:
 							_t.$nextTick(() => {
-								var innerTableData = res.data.list;
+								var innerTableData = res.data.list === null ? [] : res.data.list;
 								innerTableData.forEach((val) => {
 									val.statusTags = false;
 								});
@@ -1021,7 +1096,7 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200: // 查询成功
-							_t.tableData = res.data.list;
+							_t.tableData = res.data.list === null ? [] : res.data.list;
 							_t.options.currentPage = res.data.currentPage;
 							_t.options.total = res.data.count;
 							_t.disableBtn.edit = true;
@@ -1050,7 +1125,7 @@
 			// 启用
 			enableData() {
 				var _t = this;
-				_t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('roleMaintenance.confirmEnableTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -1067,12 +1142,12 @@
 						_t.$store.commit('setLoading', false);
 						switch (res.status) {
 							case 200:
-								_t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('roleMaintenance.confirmEnableSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							case 1003: // 无操作权限
@@ -1092,7 +1167,7 @@
 			// 禁用
 			disableData() {
 				var _t = this;
-				_t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('roleMaintenance.confirmDisableTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -1109,12 +1184,12 @@
 						_t.$store.commit('setLoading', false);
 						switch (res.status) {
 							case 200:
-								_t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('roleMaintenance.confirmDisableSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							case 1003: // 无操作权限
@@ -1222,7 +1297,7 @@
 			// 删除
 			deleteData() {
 				var _t = this;
-				_t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+				_t.$confirm(_t.$t('roleMaintenance.confirmDeleteTip'), _t.$t('public.confirmTip'), {
 					confirmButtonText: _t.$t('public.confirm'),
 					cancelButtonText: _t.$t('public.close'),
 					type: 'warning',
@@ -1236,12 +1311,12 @@
 					}, function (res) {
 						switch (res.status) {
 							case 200:
-								_t.$alert('删除成功!', _t.$t('public.resultTip'), {
+								_t.$alert(_t.$t('roleMaintenance.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
 									confirmButtonText: _t.$t('public.confirm'),
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							case 1003: // 无操作权限
@@ -1257,7 +1332,7 @@
 									confirmButtonClass: 'alertBtn'
 								}).then(() => {
 									_t.getData();
-									_t.resetFormData();
+									_t.$refs.table.clearSelection();
 								});
 								break;
 							default:
@@ -1276,9 +1351,11 @@
 			// 用户授权 数据回显
 			authorizationData() {
 				var _t = this;
-				_t.organizationName = orgBreadcrumb(_t.organizationList, _t.editDataList.organizationId);
 				_t.outerVisible = true;
+				// 查询 用户授权 表格信息
 				_t.getAuthorizationData(_t.checkListIds.join(','));
+				// 查询所属组织
+				_t.getOrganization();
 			},
 			// 关闭标签
 			handleClose(tag) {
@@ -1294,8 +1371,8 @@
 			// 点击所属组织节点
 			clickNodeAlert(val) {
 				var _t = this;
-				_t.addEdit.organization = val.nodeName;
-				_t.addEdit.organizationId = val.nodeId;
+				_t.userLimit.organization = val.nodeName;
+				_t.userLimit.organizationId = val.nodeId;
 				_t.isShowEditPopover = false;
 			},
 			// 查询所属组织
@@ -1304,7 +1381,17 @@
 				_t.$api.get('system/organization/all', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							_t.organizationList = JSON.parse(res.data).children;
+							var organizationList = JSON.parse(res.data).children;
+							var objAll = {
+								nodeId: null,
+								nodeName: _t.$t('public.all'),
+								level: 1,
+								orderNum: 1,
+								parentNodeId: '0',
+								children: []
+							};
+							organizationList.unshift(objAll);
+							_t.organizationList = organizationList;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -1330,7 +1417,7 @@
 					if (valid) {
 						_t.$api.post('system/role/', {
 							systemRole: {
-								organizationId: _t.addEdit.organizationId,
+								// organizationId: _t.addEdit.organizationId,
 								roleName: _t.addEdit.roleName === null ? null : _t.addEdit.roleName.trim(),
 								enable: _t.addEdit.status,
 								description: _t.addEdit.description === null ? null : _t.addEdit.description.trim(),
@@ -1413,7 +1500,7 @@
 						_t.$api.put('system/role/', {
 							systemRole: {
 								id: _t.addEdit.id,
-								organizationId: _t.addEdit.organizationId,
+								// organizationId: _t.addEdit.organizationId,
 								roleName: _t.addEdit.roleName === null ? null : _t.addEdit.roleName.trim(),
 								enable: _t.addEdit.status,
 								description: _t.addEdit.description === null ? null : _t.addEdit.description.trim(),
@@ -1466,7 +1553,7 @@
 				}, function (res) {
 					switch (res.status) {
 						case 200: // 查询成功
-							var navBarArr = res.data.rootMenu;
+							var navBarArr = res.data.rootMenu === null ? [] : res.data.rootMenu;
 							if (navBarArr) {
 								navBarArr.forEach(function (item) {
 									if (item.systemMenuAndLanguageRelationChildList.length === 0) {
@@ -1492,7 +1579,6 @@
 		created() {
 			this.$store.commit('setLoading', true);
 			this.getData();
-			this.getOrganization();
 			this.getMenuData();
 		},
 	}

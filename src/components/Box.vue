@@ -1,6 +1,10 @@
 <template>
   <!--所有内容组件的加载区域-->
-  <div id="appMain" class="app-main" v-loading.body.lock="loading" element-loading-text="拼命加载中">
+  <div
+		id="appMain"
+		class="app-main"
+		v-loading.body.lock="loading"
+		:element-loading-text="$t('public.loading')">
     <div class="box-wrap">
       <slot />
     </div>

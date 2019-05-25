@@ -45,19 +45,19 @@
       <!--全局操作-->
       <div class="marBottom16">
         <el-button type="warning" @click="addTimer">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe689;</span>
           {{$t('backUpTimer.addTimer')}}
         </el-button>
         <el-button @click="editTimer" :disabled="disableBtn.edit">
-          <i class="el-icon-edit-outline"></i>
+					<span class="iconfont fs14">&#xe641;</span>
           {{$t('backUpTimer.editTimer')}}
         </el-button>
         <el-button @click="runTimer" :disabled="disableBtn.enable">
-          <i class="el-icon-circle-check-outline"></i>
+					<span class="iconfont fs14">&#xe645;</span>
           {{$t('backUpTimer.runTimer')}}
         </el-button>
         <el-button @click="deleteTimer" :disabled="disableBtn.more" class="queryBtn">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe647;</span>
           {{$t('backUpTimer.deleteTimer')}}
         </el-button>
       </div>
@@ -77,8 +77,8 @@
         <el-table-column :label="$t('backUpTimer.ruleDescription')" header-align="left" align="left"/>
         <el-table-column :label="$t('backUpTimer.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status === 1">启用</span>
-            <span v-if="scope.row.status === 0" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.status === 1">{{$t('public.enable')}}</span>
+            <span v-if="scope.row.status === 0" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('backUpTimer.note')" header-align="left" align="left"/>
@@ -201,9 +201,7 @@
         }
       },
       // 改变当前页码
-      handleCurrentChange(val) {
-        console.log(val)
-      },
+      handleCurrentChange(val) {},
       // 新增定时器
       addTimer() {
         this.dialogVisibleAlert = true;

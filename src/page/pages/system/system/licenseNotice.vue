@@ -242,12 +242,8 @@
       }
     },
     methods: {
-      changeTime() {
-        console.log(this.radio);
-      },
-      changeWay() {
-        console.log(this.noticeWay);
-      },
+      changeTime() {},
+      changeWay() {},
       // 获取节点显示数据
       getCheckedNodes() {
         this.dialogVisible = false;
@@ -341,7 +337,6 @@
             }
           } else {
             // 删除本标签之后删除该区域
-            // console.log(2);
             for (var k = 0; k < headChildren.length; k++) {
               if (item.id === headChildren[k].id) {
                 headChildren.splice(k, 1);
@@ -366,7 +361,6 @@
             }
           }
         }
-        console.log(allNode);
       }
     },
     created() {

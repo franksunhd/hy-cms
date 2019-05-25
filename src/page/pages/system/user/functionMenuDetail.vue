@@ -11,47 +11,49 @@
 		<div class="padding20">
 			<div class="grayBg functionMenuDetail-title systemBlue" @click="goBack">
 				<span class="iconfont">&#xe691;</span>
-				<span>返回上一级</span>
+				<span>{{$t('functionMenuMaintenance.goBack')}}</span>
 			</div>
 		</div>
 		<el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
 			<el-form-item :label="$t('functionMenuMaintenance.parentName') + '：'">
-				<el-popover 
+				<el-popover
 					trigger="click"
 					@show="disablePopover"
-					placement="bottom-start" 
-					v-model="isShowEditPopover" 
+					placement="bottom-start"
+					v-model="isShowEditPopover"
 					ref="popover">
-					<el-tree 
-						:data="treeData" 
-						highlight-current 
-						:expand-on-click-node="false" 
-						@node-click="clickNodeAlert" 
-						:props="defaultProps" />
-					<el-input 
-						v-model="addEdit.parentName" 
-						style="width: 200px;" 
-						suffix-icon="el-icon-arrow-down" 
+					<el-tree
+						:data="treeData"
+						highlight-current
+						:expand-on-click-node="false"
+						@node-click="clickNodeAlert"
+						:props="defaultProps"/>
+					<el-input
+						v-model="addEdit.parentName"
+						class="width200"
+						suffix-icon="el-icon-arrow-down"
 						readonly
-						:disabled="ifAdd == false" 
-						slot="reference" />
+						:disabled="ifAdd == false"
+						slot="reference"/>
 				</el-popover>
 			</el-form-item>
 			<el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
 				<div class="positionRelative" v-for="(item,index) in languageList">
-					<el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;" class="width200" :placeholder="item.languageName" />
-					<span class="isNotNull" v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
+					<el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;"
+										class="width200" :placeholder="item.languageName"/>
+					<span class="isNotNull"
+								v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
 				</div>
 			</el-form-item>
 			<el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
-				<el-input v-model="addEdit.menuClass" placeholder="Class 样式图标" class="width200 marBottom10" />
+				<el-input v-model="addEdit.menuClass" :placeholder="$t('functionMenuMaintenance.className')" class="width200 marBottom10"/>
 				<el-upload action="">
-					<el-button class="queryBtn" size="small" type="primary">点击上传</el-button>
+					<el-button size="small" type="primary">{{$t('functionMenuMaintenance.clickImport')}}</el-button>
 				</el-upload>
-				<el-input v-if="false" v-model="addEdit.menuIcon" />
+				<el-input v-if="false" v-model="addEdit.menuIcon"/>
 			</el-form-item>
 			<el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
-				<el-input v-model="addEdit.menuHref" class="width200" />
+				<el-input v-model="addEdit.menuHref" class="width200"/>
 			</el-form-item>
 			<el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
 				<el-radio-group v-model="addEdit.jumpType">
@@ -60,7 +62,7 @@
 					<el-radio label="_parent">_parent</el-radio>
 					<el-radio label="_top">_top</el-radio>
 					<el-radio label="framename">
-						<el-input v-model="addEdit.jumpText" placeholder="framename" class="width170" />
+						<el-input v-model="addEdit.jumpText" placeholder="framename" class="width170"/>
 					</el-radio>
 				</el-radio-group>
 			</el-form-item>
@@ -79,11 +81,12 @@
 						</template>
 					</p>
 					<!--标签部分循环-->
-					<el-tag style="margin: 0 10px 10px 0;" v-for="tag in item.tags" :key="tag.id" @close="handleClose(tag)" closable>
+					<el-tag style="margin: 0 10px 10px 0;" v-for="tag in item.tags" :key="tag.id" @close="handleClose(tag)"
+									closable>
 						{{tag.nodeName}}
 					</el-tag>
 				</div>
-				<p v-if="selectUserIsNull == true" class="el-form-item__error">必选项不能为空</p>
+				<p v-if="selectUserIsNull == true" class="el-form-item__error">{{$t('public.isNotNull')}}</p>
 			</el-form-item>
 			<!--<el-form-item class="star" :label="$t('functionMenuMaintenance.modelLevel') + '：'" prop="menuLevel">-->
 			<!--<el-input v-model="addEdit.menuLevel" class="width200" readonly/>-->
@@ -95,13 +98,19 @@
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-if="ifAdd == true" type="primary" class="queryBtn" @click="addData('roleName')">{{$t('public.save')}}</el-button>
-				<el-button v-if="ifAdd == false" type="primary" class="queryBtn" @click="editData('roleName')">{{$t('public.save')}}</el-button>
+				<el-button v-if="ifAdd == true" type="primary" class="queryBtn" @click="addData('roleName')">
+					{{$t('public.save')}}
+				</el-button>
+				<el-button v-if="ifAdd == false" type="primary" class="queryBtn" @click="editData('roleName')">
+					{{$t('public.save')}}
+				</el-button>
 			</el-form-item>
 		</el-form>
 		<!--选择用户-->
-		<el-dialog class="functionMenuDetail-dialog-selectUser" :title="$t('functionMenuMaintenance.selectUser')" :visible.sync="dialogVisibleAlert" append-to-body>
-			<el-tree :data="selectUser" :props="defaultPropsUser" show-checkbox node-key="nodeId" :default-checked-keys="checkedKeysArr" ref="tree" />
+		<el-dialog class="functionMenuDetail-dialog-selectUser" :title="$t('functionMenuMaintenance.selectUser')"
+							 :visible.sync="dialogVisibleAlert" append-to-body>
+			<el-tree :data="selectUser" :props="defaultPropsUser" show-checkbox node-key="nodeId"
+							 :default-checked-keys="checkedKeysArr" ref="tree"/>
 			<span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="getCheckedNodes" class="alertBtn">{{$t('public.confirm')}}</el-button>
           <el-button @click="dialogVisibleAlert = false" class="alertBtn">{{$t('public.cancel')}}</el-button>
@@ -112,8 +121,9 @@
 
 <script>
 	import Box from '../../../../components/Box';
-	import { isNotNull, isMenuHref } from "../../../../assets/js/validator";
-	import { queryOrgWithRole, returnObjectById } from "../../../../assets/js/recursive";
+	import {isNotNull, isMenuHref} from "../../../../assets/js/validator";
+	import {queryOrgWithRole, returnObjectById} from "../../../../assets/js/recursive";
+
 	export default {
 		name: "functionMenuDetail",
 		components: {
@@ -179,15 +189,15 @@
 		},
 		methods: {
 			// 编辑时禁用显示属性下拉框
-			disablePopover(){
+			disablePopover() {
 				var _t = this;
-				if(_t.ifAdd === false){
+				if (_t.ifAdd === false) {
 					_t.isShowEditPopover = false;
 				}
 			},
 			// 输入框菜单名称校验
 			menuNameInput(data) {
-				if(data.menuName.trim() === '') {
+				if (data.menuName.trim() === '') {
 					data.flag = true;
 					document.getElementById(data.id).style.borderColor = '#fb6041';
 				} else {
@@ -209,9 +219,9 @@
 				_t.getOrgRoleList();
 				_t.dialogVisibleAlert = true;
 				// 编辑时 过滤数据
-				if(_t.ifAdd == false) {
+				if (_t.ifAdd == false) {
 					var checkArr = new Array();
-					_t.result().forEach(function(item) {
+					_t.result().forEach(function (item) {
 						checkArr.push(item.nodeId);
 					});
 					_t.checkedKeysArr = checkArr;
@@ -220,20 +230,20 @@
 			// 删除标签
 			handleClose(tag) {
 				var _t = this;
-				var listData = _t.listData;
-				listData.forEach(function(item, index) {
+				var listData = _t.listData === null ? [] : _t.listData;
+				listData.forEach(function (item, index) {
 					var tags = item.tags;
-					if(tags.length > 1) { // 该区域删除之后还有标签
-						tags.forEach(function(val, i) {
-							if(tag.nodeId == tags[i].nodeId) {
+					if (tags.length > 1) { // 该区域删除之后还有标签
+						tags.forEach(function (val, i) {
+							if (tag.nodeId == tags[i].nodeId) {
 								tags.splice(i, 1);
 								_t.result();
 								return false;
 							}
 						});
 					} else { // 该区域删除之后没有标签了 删除该区域
-						tags.forEach(function(val, i) {
-							if(tag.nodeId == tags[i].nodeId) {
+						tags.forEach(function (val, i) {
+							if (tag.nodeId == tags[i].nodeId) {
 								tags.splice(i, 1);
 								listData.splice(index, 1);
 								_t.result();
@@ -243,18 +253,18 @@
 					}
 				});
 				// 删除标签之后 角色为空 显示提示
-				if(_t.listData.length == 0) {
+				if (_t.listData.length == 0) {
 					_t.selectUserIsNull = true;
 				}
 			},
 			// 剩余人员
 			result() {
 				var _t = this;
-				var listData = _t.listData;
+				var listData = _t.listData === null ? [] : _t.listData;
 				var nodeArr = new Array();
-				listData.forEach(function(item) {
-					if(item.tags.length !== 0) {
-						item.tags.forEach(function(val) {
+				listData.forEach(function (item) {
+					if (item.tags.length !== 0) {
+						item.tags.forEach(function (val) {
 							nodeArr.push(val);
 						});
 					}
@@ -266,7 +276,7 @@
 				var _t = this;
 				_t.dialogVisibleAlert = false;
 				_t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
-				if(_t.listData.length == 0) {
+				if (_t.listData.length == 0) {
 					_t.selectUserIsNull = true;
 				} else {
 					_t.selectUserIsNull = false;
@@ -281,13 +291,13 @@
 						menuLevel: '1_2_3_4',
 						languageMark: localStorage.getItem('hy-language')
 					})
-				}, function(res) {
+				}, function (res) {
 					_t.$store.commit('setLoading', false);
-					switch(res.status) {
+					switch (res.status) {
 						case 200: // 查询成功
-							_t.treeData = res.data.rootMenu;
+							_t.treeData = res.data.rootMenu === null ? [] : res.data.rootMenu;
 							// 判断是新增还是编辑
-							if(_t.ifAdd == true) {
+							if (_t.ifAdd == true) {
 								// 新增
 								_t.getLanguage();
 							} else {
@@ -316,13 +326,13 @@
 					jsonString: JSON.stringify({
 						systemMenu: {}
 					})
-				}, function(res) {
-					switch(res.status) {
+				}, function (res) {
+					switch (res.status) {
 						case 200:
 							var selectUser = new Array();
 							selectUser.push(JSON.parse(res.data));
 							_t.selectUser = selectUser[0].children;
-							if(_t.ifAdd == false) {
+							if (_t.ifAdd == false) {
 								_t.getEditRoleData(_t.addEdit.id);
 							}
 							break;
@@ -341,17 +351,18 @@
 			// 查询当前支持的语言
 			getLanguage() {
 				var _t = this;
-				_t.$api.get('system/language/all', {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('system/language/all', {}, function (res) {
+					switch (res.status) {
 						case 200:
-							var languageList = res.data.list;
-							languageList.forEach(function(item) {
+							var languageList = res.data.list === null ? [] : res.data.list;
+							languageList.forEach(function (item) {
 								item.menuName = '';
 								item.languageMark = item.languageCode;
 								item.flag = false;
 							});
 							_t.languageList = languageList;
-							if(_t.addEdit.parentId !== null) {
+							_t.addEdit.parentId = _t.addEdit.parentId === 'null' ? null : _t.addEdit.parentId;
+							if (_t.addEdit.parentId !== null) {
 								var menuNameMap = returnObjectById(_t.treeData, _t.addEdit.parentId);
 								_t.addEdit.parentName = menuNameMap.menuName;
 							}
@@ -371,8 +382,8 @@
 			// 根据菜单id查询需要编辑的数据
 			getEditData(data) {
 				var _t = this;
-				_t.$api.get('system/menu/' + data, {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('system/menu/' + data, {}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.getEditLanguageData(res.data);
 							break;
@@ -390,18 +401,19 @@
 			// 根据系统支持的语言 组装菜单名称
 			getEditLanguageData(resData) {
 				var _t = this;
-				_t.$api.get('system/language/all', {}, function(res) {
-					switch(res.status) {
+				_t.$api.get('system/language/all', {}, function (res) {
+					switch (res.status) {
 						case 200:
-							var languageList = res.data.list;
-							languageList.forEach(function(item) {
+							resData.systemMenuLanguageList = resData.systemMenuLanguageList === null ? [] : resData.systemMenuLanguageList;
+							var languageList = res.data.list === null ? [] : res.data.list;
+							languageList.forEach(function (item) {
 								item.menuName = '';
 								item.flag = false;
 								item.languageMark = item.languageCode;
 							});
-							languageList.forEach(function(item) {
+							languageList.forEach(function (item) {
 								resData.systemMenuLanguageList.forEach((val) => {
-									if(item.languageCode === val.languageMark) {
+									if (item.languageCode === val.languageMark) {
 										item.menuName = val.menuName;
 									}
 								})
@@ -415,7 +427,7 @@
 							_t.addEdit.menuIcon = resData.menuIcon == null ? '' : resData.menuIcon;
 							_t.addEdit.orderMark = resData.orderMark;
 							_t.addEdit.enable = resData.enable == true ? 1 : 0;
-							if(_t.addEdit.parentId !== null) {
+							if (_t.addEdit.parentId !== null) {
 								var menuNameMap = returnObjectById(_t.treeData, _t.addEdit.parentId);
 								_t.addEdit.parentName = menuNameMap.menuName;
 							}
@@ -435,41 +447,43 @@
 			// 根据菜单id 查询 需要编辑的数据下的角色列表
 			getEditRoleData(data) {
 				var _t = this;
-				_t.$api.get('system/role/getRoleByMenu', {
-						jsonString: JSON.stringify({
-							systemMenu: {
-								id: data
+				if (data !== null) {
+					_t.$api.get('system/role/getRoleByMenu', {
+							jsonString: JSON.stringify({
+								systemMenu: {
+									id: data
+								}
+							})
+						},
+						function (res) {
+							switch (res.status) {
+								case 200:
+									var nodeIdArr = new Array();
+									var resData = res.data === null ? [] : res.data;
+									resData.forEach(function (item) {
+										if (item !== null) {
+											var obj = new Object();
+											obj.children = [];
+											obj.level = 1; // 类型 1代表角色类型 2代表组织类型
+											obj.nodeId = item.id;
+											obj.nodeName = item.roleName;
+											obj.parentNodeId = item.organizationId == null ? '0' : item.organizationId;
+											nodeIdArr.push(obj);
+										}
+									});
+									_t.listData = queryOrgWithRole(_t.selectUser, nodeIdArr, 1);
+									break;
+								case 1003: // 无操作权限
+								case 1004: // 登录过期
+								case 1005: // token过期
+								case 1006: // token不通过
+									_t.exclude(_t, res.message);
+									break;
+								default:
+									break;
 							}
-						})
-					},
-					function(res) {
-						switch(res.status) {
-							case 200:
-								var nodeIdArr = new Array();
-								var resData = res.data;
-								resData.forEach(function(item) {
-									if(item !== null) {
-										var obj = new Object();
-										obj.children = [];
-										obj.level = 1; // 类型 1代表角色类型 2代表组织类型
-										obj.nodeId = item.id;
-										obj.nodeName = item.roleName;
-										obj.parentNodeId = item.organizationId == null ? '0' : item.organizationId;
-										nodeIdArr.push(obj);
-									}
-								});
-								_t.listData = queryOrgWithRole(_t.selectUser, nodeIdArr, 1);
-								break;
-							case 1003: // 无操作权限
-							case 1004: // 登录过期
-							case 1005: // token过期
-							case 1006: // token不通过
-								_t.exclude(_t, res.message);
-								break;
-							default:
-								break;
-						}
 					});
+				}
 			},
 			// 返回上一级
 			goBack() {
@@ -479,15 +493,15 @@
 			addData(formName) {
 				var _t = this;
 				// 选择用户为空的情况
-				if(_t.listData.length == 0) {
+				if (_t.listData.length === 0) {
 					_t.selectUserIsNull = true;
 				} else {
 					_t.selectUserIsNull = false;
 				}
 				// 菜单名称有为空的情况
 				var isNullNum = 0;
-				_t.languageList.forEach(function(item) {
-					if(item.menuName == '') {
+				_t.languageList.forEach(function (item) {
+					if (item.menuName == '') {
 						item.flag = true;
 						document.getElementById(item.id).style.borderColor = 'red';
 					} else {
@@ -497,7 +511,7 @@
 				// 菜单图标判断
 				var menuClass = null;
 				var menuIcon = null;
-				if(_t.addEdit.menuClass.trim() === '' && _t.addEdit.menuIcon.trim() === '') {
+				if (_t.addEdit.menuClass.trim() === '' && _t.addEdit.menuIcon.trim() === '') {
 					menuClass = 'icon-gongnengquanxian';
 					menuIcon = null;
 				} else if (_t.addEdit.menuClass.trim() !== '' && _t.addEdit.menuIcon.trim() === '') {
@@ -511,15 +525,16 @@
 					menuIcon = null;
 				}
 				_t.$refs[formName].validate((valid) => {
-					if(valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+					if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
 						// 角色集合
 						var selectRoleList = new Array();
-						_t.result().forEach(function(item) {
+						var result = _t.result() === null ? [] : _t.result();
+						result.forEach(function (item) {
 							selectRoleList.push(item.nodeId);
 						});
 						// 跳转方式
 						var menuTarget = '';
-						if(_t.addEdit.jumpType === 'framename') {
+						if (_t.addEdit.jumpType === 'framename') {
 							menuTarget = _t.addEdit.jumpText;
 						} else {
 							menuTarget = _t.addEdit.jumpType;
@@ -528,9 +543,9 @@
 							systemMenu: {
 								parentId: _t.addEdit.parentId,
 								menuName: _t.languageList,
-								menuTarget:menuTarget,
-								menuClass:menuClass,
-								menuIcon:menuIcon,
+								menuTarget: menuTarget,
+								menuClass: menuClass,
+								menuIcon: menuIcon,
 								menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
 								orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
 								menuLevel: _t.addEdit.menuLevel,
@@ -538,8 +553,8 @@
 								languageMark: localStorage.getItem('hy-language')
 							},
 							roleId: selectRoleList.join(',')
-						}, function(res) {
-							switch(res.status) {
+						}, function (res) {
+							switch (res.status) {
 								case 200:
 									_t.$router.push({
 										name: 'functionMenuMaintenance'
@@ -569,15 +584,15 @@
 			// 编辑提交
 			editData(formName) {
 				var _t = this;
-				if(_t.listData.length == 0) {
+				if (_t.listData.length === 0) {
 					_t.selectUserIsNull = true;
 				} else {
 					_t.selectUserIsNull = false;
 				}
 				// 菜单名称有为空的情况
 				var isNullNum = 0;
-				_t.languageList.forEach(function(item) {
-					if(item.menuName == '') {
+				_t.languageList.forEach(function (item) {
+					if (item.menuName == '') {
 						item.flag = true;
 						document.getElementById(item.id).style.borderColor = 'red';
 					} else {
@@ -587,7 +602,7 @@
 				// 菜单图标判断
 				var menuClass = null;
 				var menuIcon = null;
-				if(_t.addEdit.menuClass.trim() === '' && _t.addEdit.menuIcon.trim() === '') {
+				if (_t.addEdit.menuClass.trim() === '' && _t.addEdit.menuIcon.trim() === '') {
 					menuClass = 'icon-gongnengquanxian';
 					menuIcon = null;
 				} else if (_t.addEdit.menuClass.trim() !== '' && _t.addEdit.menuIcon.trim() === '') {
@@ -601,15 +616,16 @@
 					menuIcon = null;
 				}
 				_t.$refs[formName].validate((valid) => {
-					if(valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+					if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
 						var selectUserList = new Array();
 						// 角色集合
-						_t.result().forEach(function(item) {
+						var result = _t.result() === null ? [] : _t.result();
+						result.forEach(function (item) {
 							selectUserList.push(item.nodeId);
 						});
 						// 跳转方式
 						var menuTarget = '';
-						if(_t.addEdit.jumpType === 'framename') {
+						if (_t.addEdit.jumpType === 'framename') {
 							menuTarget = _t.addEdit.jumpText;
 						} else {
 							menuTarget = _t.addEdit.jumpType;
@@ -619,9 +635,9 @@
 								id: _t.addEdit.id,
 								parentId: _t.addEdit.parentId,
 								menuName: _t.languageList,
-								menuClass:menuClass,
-								menuIcon:menuIcon,
-								menuTarget:menuTarget,
+								menuClass: menuClass,
+								menuIcon: menuIcon,
+								menuTarget: menuTarget,
 								menuHref: _t.addEdit.menuHref == null ? null : _t.addEdit.menuHref.toString().trim(),
 								orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.toString().trim(),
 								menuLevel: _t.addEdit.menuLevel,
@@ -629,8 +645,8 @@
 								languageMark: localStorage.getItem('hy-language')
 							},
 							roleId: selectUserList.join(',')
-						}, function(res) {
-							switch(res.status) {
+						}, function (res) {
+							switch (res.status) {
 								case 200:
 									_t.$router.push({
 										name: 'functionMenuMaintenance'
@@ -667,7 +683,7 @@
 			_t.addEdit.menuLevel = _t.$route.params.functionMenuLevel ? _t.$route.params.functionMenuLevel : localStorage.getItem('functionMenuLevel');
 			// 获取父级菜单下拉列表
 			_t.getMenuData();
-			if(_t.ifAdd == true) {
+			if (_t.ifAdd == true) {
 				_t.ifAdd = true;
 			} else {
 				_t.ifAdd = false;
@@ -695,7 +711,7 @@
 		width: 700px;
 		height: 450px;
 	}
-	
+
 	.systemUser-box {
 		margin-left: 20px;
 	}

@@ -36,35 +36,35 @@
       <!--全局操作-->
       <div class="marBottom16">
         <el-button type="warning" class="queryBtn" @click="addDataBtn">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe689;</span>
           {{$t('public.add')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-          <i class="el-icon-edit-outline"></i>
+					<span class="iconfont fs14">&#xe641;</span>
           {{$t('public.edit')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-          <i class="el-icon-circle-check-outline"></i>
+					<span class="iconfont fs14">&#xe645;</span>
           {{$t('public.enable')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-          <i class="el-icon-circle-close-outline"></i>
+					<span class="iconfont fs14">&#xe646;</span>
           {{$t('public.disable')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe647;</span>
           {{$t('public.delete')}}
         </el-button>
         <el-button @click="setDefault" :disabled="disableBtn.default">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe6a4;</span>
           {{$t('platformLanguage.setDefault')}}
         </el-button>
         <el-button @click="importFunction" :disabled="disableBtn.edit">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe6a3;</span>
           {{$t('platformLanguage.importFunction')}}
         </el-button>
         <el-button @click="importData" :disabled="disableBtn.edit">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe6a5;</span>
           {{$t('platformLanguage.importData')}}
         </el-button>
       </div>
@@ -83,20 +83,20 @@
         <el-table-column prop="description" :label="$t('platformLanguage.description')" header-align="left" align="left" />
         <el-table-column :label="$t('platformLanguage.sort')" header-align="left" align="left">
           <template slot-scope="scope">
-            <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
-            <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移</el-button>
+            <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">{{$t('public.moveUp')}}</el-button>
+            <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">{{$t('public.moveDown')}}</el-button>
           </template>
         </el-table-column>
         <el-table-column :label="$t('platformLanguage.isDefault')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.isDefault == true">是</span>
-            <span v-if="scope.row.isDefault == false" class="disabledStatusColor">否</span>
+            <span v-if="scope.row.isDefault == true">{{$t('public.YES')}}</span>
+            <span v-if="scope.row.isDefault == false" class="disabledStatusColor">{{$t('public.NO')}}</span>
           </template>
         </el-table-column>
         <el-table-column :label="$t('platformLanguage.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.enable === true">启用</span>
-            <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+            <span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
+            <span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="createBy" :label="$t('platformLanguage.createName')" header-align="left" align="left"/>
@@ -192,8 +192,8 @@
         },
         // 状态列表
         statusList:[
-          {label:'启用',value:1},
-          {label:'禁用',value:0},
+          {label:this.$t('public.enable'),value:1},
+          {label:this.$t('public.disable'),value:0},
         ],
         dialogVisible:false, // 新增编辑弹出层
         ifAdd:true, // 新增编辑判断
@@ -323,12 +323,12 @@
                 default:
                   break;
               }
+							_t.disableBtn.edit = true;
+							_t.disableBtn.enable = true;
+							_t.disableBtn.disable = true;
+							_t.disableBtn.more = true;
+							_t.disableBtn.default = true;
             });
-            _t.disableBtn.edit = true;
-            _t.disableBtn.enable = true;
-            _t.disableBtn.disable = true;
-            _t.disableBtn.more = true;
-            _t.disableBtn.default = true;
           }
         })
       },
@@ -367,12 +367,12 @@
                 default:
                   break;
               }
+							_t.disableBtn.edit = true;
+							_t.disableBtn.enable = true;
+							_t.disableBtn.disable = true;
+							_t.disableBtn.more = true;
+							_t.disableBtn.default = true;
             });
-            _t.disableBtn.edit = true;
-            _t.disableBtn.enable = true;
-            _t.disableBtn.disable = true;
-            _t.disableBtn.more = true;
-            _t.disableBtn.default = true;
           }
         });
       },
@@ -454,7 +454,7 @@
       // 启用
       enableData() {
         var _t = this;
-        _t.$confirm('请问是否确认启用当前的记录?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmEnableTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -471,7 +471,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('platformLanguage.confirmEnableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
                 }).then(()=>{
@@ -490,20 +490,20 @@
                 break;
             }
           });
+					_t.disableBtn.edit = true;
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disable = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.default = true;
+					_t.$refs.table.clearSelection();
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 禁用
       disableData(){
         var _t = this;
-        _t.$confirm('请问是否确认禁用当前的记录?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmDisableTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -520,7 +520,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('platformLanguage.confirmDisableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn',
                 }).then(()=>{
@@ -538,20 +538,20 @@
                 break;
             }
           });
+					_t.disableBtn.edit = true;
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disable = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.default = true;
+					_t.$refs.table.clearSelection();
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 删除
       deleteData(){
         var _t = this;
-        _t.$confirm('请问是否确认删除当前的记录?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmDeleteTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: this.$t('public.confirm'),
           cancelButtonText: this.$t('public.close'),
           type: 'warning',
@@ -565,7 +565,7 @@
           }, function (res) {
             switch (res.status) {
               case 200:
-                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('platformLanguage.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
                 }).then(()=>{
@@ -590,22 +590,26 @@
                 _t.getData();
                 break;
             }
-
+						_t.disableBtn.edit = true;
+						_t.disableBtn.enable = true;
+						_t.disableBtn.disable = true;
+						_t.disableBtn.more = true;
+						_t.disableBtn.default = true;
+						_t.$refs.table.clearSelection();_t.disableBtn.edit = true;
+						_t.disableBtn.enable = true;
+						_t.disableBtn.disable = true;
+						_t.disableBtn.more = true;
+						_t.disableBtn.default = true;
+						_t.$refs.table.clearSelection();
           });
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 设为默认
       setDefault(){
         var _t = this;
-        _t.$confirm('请问是否确认将当前的记录设为默认?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmSetDefaultTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -622,7 +626,7 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录设置成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('platformLanguage.confirmSetDefaultSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
                 }).then(()=>{
@@ -640,57 +644,55 @@
                 break;
             }
           });
+					_t.disableBtn.edit = true;
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disable = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.default = true;
+					_t.$refs.table.clearSelection();
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 导入功能菜单
       importFunction(){
         var _t = this;
-        _t.$confirm('请问是否确认下载选中记录的相应文件?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmImportMenuTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
           confirmButtonClass:'alertBtn',
           cancelButtonClass:'alertBtn'
         }).then(()=>{
-
+					_t.disableBtn.edit = true;
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disable = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.default = true;
+					_t.$refs.table.clearSelection();
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 导入数据字典菜单
       importData(){
         var _t = this;
-        _t.$confirm('请问是否确认下载选中记录的相应文件?',_t.$t('public.confirmTip'),{
+        _t.$confirm(_t.$t('platformLanguage.confirmImportDataBaseTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
           confirmButtonClass:'alertBtn',
           cancelButtonClass:'alertBtn'
         }).then(()=>{
-
+					_t.disableBtn.edit = true;
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disable = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.default = true;
+					_t.$refs.table.clearSelection();
         }).catch(()=>{
           return;
         });
-        _t.disableBtn.edit = true;
-        _t.disableBtn.enable = true;
-        _t.disableBtn.disable = true;
-        _t.disableBtn.more = true;
-        _t.disableBtn.default = true;
-        _t.$refs.table.clearSelection();
       },
       // 获取表格数据
       getData() {
@@ -710,7 +712,7 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
-              _t.tableData = res.data.list;
+              _t.tableData = res.data.list === null ? [] : res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
@@ -734,6 +736,7 @@
         _t.$store.commit('setLoading', true);
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
         _t.tableData.forEach(function (item,index) {
           if (item.id === data.id) {
             dataIdArr.push(_t.tableData[index - 1].id)
@@ -764,6 +767,7 @@
         _t.$store.commit('setLoading', true);
         var dataIdArr = new Array();
         dataIdArr.push(data.id);
+				_t.tableData = _t.tableData === null ? [] : _t.tableData;
         _t.tableData.forEach(function (item,index) {
           if (item.id === data.id) {
             dataIdArr.push(_t.tableData[index + 1].id)
@@ -795,7 +799,6 @@
     }
   }
 </script>
-
 <style>
   .platformLanguage-dialog .el-dialog {
     width: 600px;

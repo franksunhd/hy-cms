@@ -178,15 +178,9 @@
 
 		methods: {
 			// 左侧源数据选中事件
-    leftCheckChange(nodeObj, treeObj) {
-      // console.log(nodeObj);
-      // console.log(treeObj);
-    },
+    leftCheckChange(nodeObj, treeObj) {},
     // 右侧目标数据选中事件
-    rightCheckChange(nodeObj, treeObj) {
-      // console.log(nodeObj);
-      // console.log(treeObj);
-    },
+    rightCheckChange(nodeObj, treeObj) {},
     // 自定义节点 仅树形结构支持
     renderContent(h, { node, data, store }) {
       return (

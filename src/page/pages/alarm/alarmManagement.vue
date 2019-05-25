@@ -166,31 +166,7 @@
       </span>
     </el-dialog>
     <!--标签页-->
-    <el-tabs
-      v-if="isShowTabBox_tab"
-      v-model="editableTabsValue"
-      type="card"
-      class="whiteBg"
-      id="alarmManagement-tabs"
-      tab-position="bottom"
-      closable
-      @tab-click="clickTabs"
-      @tab-remove="removeTab">
-      <el-tab-pane
-        :key="index"
-        stretch
-        v-for="(item, index) in editableTabs"
-        :name="item.name"
-        :label="item.title">
-        <div class="alarmManagement-btn">
-          <!--收起-->
-          <span @click="packUp" class="iconfont" style="cursor: pointer;">&#xe61d;</span>
-          <!--关闭弹出层-->
-          <span @click="closeTab" class="iconfont" style="cursor: pointer;">&#xe615;</span>
-        </div>
-        <AdministrationTags v-if="isShowTabBox" :pages-id="item.content" />
-      </el-tab-pane>
-    </el-tabs>
+
   </Box>
 </template>
 
@@ -204,9 +180,6 @@
     components: {Box,AdministrationTags},
     data() {
       return {
-        editableTabsValue:'', // 当前页签
-        editableTabs:[], // 页面集合
-        tabIndex: 0, // 页签序号
         sortArr: [
           {label: 'Top10', value: 10},
           {label: 'Top15', value: 15},
@@ -231,53 +204,14 @@
         },
         isShowEditPopover: false, // 控制树形下拉框的显示隐藏
         dialogVisible:false, // 设备告警详情弹出层
-        isShowTabBox:false, // 控制标签页内容是否显示
-        isShowTabBox_tab:false,
         organizationList: [], // 树形下拉框的数据
         equipmentData:{}, // 设备告警详情
-        tableData: [
-          {
-            id:'1',
-            status: 1,
-            equipmentName: '惠普1',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-
-          },
-          {
-            id:'2',
-            status: 2,
-            equipmentName: '惠普2',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-          },
-          {
-            id:'3',
-            status: 3,
-            equipmentName: '惠普3',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-          },
-          {
-            id:'4',
-            status: 1,
-            equipmentName: '惠普4',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-          },
-          {
-            id:'5',
-            status: 2,
-            equipmentName: '惠普5',
-            alarmContent: '告警内容告警内容告警内容告警内容告,警内容告警内容告警内容告警内容告警内容告警内容告警内,容告警内容告警内容告警内容告警内容告警内容',
-            lastModifiedTime: '2019-02-10 12:22:11',
-          },
-        ], // 最新告警列表表格数据
+        tableData: [], // 最新告警列表表格数据
         // 千层饼图
         optionsPuff: {
           // 标题
           title: {
-            text: '设备告警级别占比',
+            text: this.$t('alarmManagement.eChartTipTitle'),
             subtext: dateFilterSeconds(new Date()),
             textStyle: {
               color: 'blue'
@@ -316,7 +250,7 @@
         optionLine: {
           // 标题
           title: {
-            text: '设备告警级别实时数据',
+            text: this.$t('alarmManagement.eChartTipTitleStatus'),
             textStyle: {
               color: 'blue'
             },
@@ -405,22 +339,20 @@
       cellClickColumn(row, column){
         var _t = this;
         // 点击状态列
-        if (column.label == _t.$t('alarmManagement.status')) {
+        if (column.label === _t.$t('alarmManagement.status')) {
           _t.dialogVisible = true;
           _t.addEdit.id = row.id;
         }
         // 点击设备名称列
-        if (column.label == _t.$t('alarmManagement.equipmentName')) {
-          _t.addTab(row.equipmentName,row.id);
+        if (column.label === _t.$t('alarmManagement.equipmentName')) {
         }
         // 点击告警内容列
-        if (column.label == _t.$t('alarmManagement.alarmContent')) {
+        if (column.label === _t.$t('alarmManagement.alarmContent')) {
           _t.dialogVisible = true;
           _t.addEdit.id = row.id;
         }
         // 点击最新告警时间列
-        if (column.label == _t.$t('alarmManagement.lastAlarmTime')) {
-          _t.addTab(row.equipmentName,row.id);
+        if (column.label === _t.$t('alarmManagement.lastAlarmTime')) {
         }
       },
       // 点击下拉框的节点
@@ -475,67 +407,6 @@
         var myChart = this.$echarts.init(document.getElementById('alarmLine'));
         myChart.setOption(_t.optionLine, true);
       },
-      // 删除页签
-      removeTab(targetName){
-        var _t = this;
-        // 获取页面集合
-        var tabs = _t.editableTabs;
-        // 获取当前选中的页签
-        var activeName = _t.editableTabsValue;
-        if (activeName === targetName) {
-          tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
-              var nextTab = tabs[index + 1] || tabs[index - 1];
-              if (nextTab) {
-                activeName = nextTab.name;
-              } else {
-                _t.isShowTabBox_tab = false;
-              }
-            }
-          });
-        }
-        // 删除之后的页签
-        _t.editableTabsValue = activeName;
-        _t.editableTabs = tabs.filter(tab => tab.name !== targetName);
-      },
-      // 添加页签
-      addTab(title,id) {
-        var _t = this;
-        var newTabName = ++_t.tabIndex + '';
-        _t.editableTabs.push({
-          title: title,
-          name:newTabName,
-          content: id
-        });
-        _t.editableTabsValue = newTabName;
-        _t.isShowTabBox = true;
-        _t.isShowTabBox_tab = true;
-        if (_t.editableTabs.length > 1) {
-          document.getElementById('alarmManagement-tabs').style.top = '118px';
-        }
-      },
-      // 收起
-      packUp(){
-        var _t = this;
-        _t.isShowTabBox = false;
-        document.getElementById('alarmManagement-tabs').style.top = 'initial';
-        _t.editableTabsValue = '';
-      },
-      // 关闭标签页
-      closeTab(){
-        var _t = this;
-        _t.editableTabsValue = '';
-        _t.editableTabs = [];
-        _t.tabIndex = 0;
-        _t.isShowTabBox_tab = false;
-        _t.isShowTabBox = false;
-      },
-      // 点击标签页
-      clickTabs(){
-        var _t = this;
-        _t.isShowTabBox = true;
-        document.getElementById('alarmManagement-tabs').style.top = '118px';
-      }
     },
     created() {
       // this.$store.commit('setLoading',true);

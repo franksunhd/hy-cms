@@ -16,12 +16,6 @@
     data() {
       return {}
     },
-    // watch:{
-    //   $route(){
-    //     console.log(1)
-    //     this.visitedViews = this.$store.state.tagsview.visitedviews;
-    //   }
-    // },
     computed: {
       visitedViews() {//store中取值
         return this.$store.state.tagsview.visitedviews

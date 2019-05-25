@@ -97,7 +97,8 @@ const alarmSettings = () => import ("@/components/alarmSettings");
 const alarmGroupSettings = () => import ("@/page/pages/alarm/basicSettings/alarmGroupSettings");
 // 告警管理-->告警设置-->基础设置-->告警规则设置
 const alarmRuleSettings = () => import ("@/page/pages/alarm/basicSettings/alarmRuleSettings");
-// 告警管理-->告警设置-->通知方式-->右键设置
+// 告警管理-->告警设置-->通知方式-->邮件设置
+const emailSettings = () => import ("@/page/pages/alarm/noticeWaySettings/emailSettings");
 // 告警管理-->告警设置-->通知方式-->短信设置
 // 告警管理-->告警设置-->通知方式-->微信设置
 // 告警管理-->告警设置-->通知方式-->Syslog设置
@@ -112,7 +113,10 @@ const assetDeviceMaintenance = () => import ("@/page/pages/asset/assetDeviceMain
 // 资产管理-->机房机架
 // 资产管理-->保修管理
 // 资产管理-->变更管理
-
+// 机房管理-->机房配置
+const ComputerConfiguration = () => import ("@/page/pages/serverRoom/ComputerConfiguration");
+// 机房管理-->机柜配置
+const RackConfiguration = () => import ("@/page/pages/rack/RackConfiguration");
 Vue.use(Router);
 var companyName = "YUser";
 export default new Router({
@@ -333,8 +337,13 @@ export default new Router({
 							path: "/" + companyName + "/alarmSettings/alarmRuleSettings",
 							name: "alarmRuleSettings",
 							component: alarmRuleSettings
-						}
-						// 告警管理-->告警设置-->通知方式-->右键设置
+						},
+						{
+							// 告警管理-->告警设置-->通知方式-->邮件设置
+							path: "/" + companyName + "/alarmSettings/emailSettings",
+							name: "emailSettings",
+							component: emailSettings
+						},
 						// 告警管理-->告警设置-->通知方式-->短信设置
 						// 告警管理-->告警设置-->通知方式-->微信设置
 						// 告警管理-->告警设置-->通知方式-->Syslog设置
@@ -351,7 +360,10 @@ export default new Router({
 				// 资产管理-->机房机架
 				// 资产管理-->保修管理
 				// 资产管理-->变更管理
-
+				// 机房管理-->机房配置
+				{path: "/" + companyName + "/ComputerConfiguration", name: "ComputerConfiguration", component: ComputerConfiguration},
+			// 机房管理-->机柜配置
+				{path: "/" + companyName + "/RackConfiguration", name: "RackConfiguration", component: RackConfiguration},
 				//树形穿梭
 				{path: "/" + companyName + "/selectTree", name: "selectTree", component: selectTree},
 

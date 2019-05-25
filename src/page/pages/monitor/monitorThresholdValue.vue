@@ -125,7 +125,7 @@
                     <el-option v-for="(val,index) in monitorMainList" :key="index" :label="val.name"
                                :value="val.nodeClass"/>
                   </el-select>
-                  <span v-if="main.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="main.monitorClassStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-select
@@ -136,7 +136,7 @@
                     clearable>
                     <el-option v-for="(val,index) in resultArrList" :key="index" :label="val.label" :value="val.value"/>
                   </el-select>
-                  <span v-if="main.perfStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="main.perfStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-select
@@ -145,10 +145,13 @@
                     class="width170 marginRight6"
                     @change="changeSelect(main,'op')"
                     clearable>
-                    <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name"
-                               :value="val.type"/>
+                    <el-option
+											v-for="(val,index) in baseDataThresholdOp"
+											:key="index"
+											:label="val.name"
+											:value="val.type"/>
                   </el-select>
-                  <span v-if="main.opStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="main.opStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-input
@@ -157,7 +160,7 @@
                     class="width170 marginRight6"
                     @input="changeSelect(main,'threshold')"
                     clearable/>
-                  <span v-if="main.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="main.thresholdStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <el-button @click="addFromMonitor(mainIndex)" class="addEditBtn">
                   <span class="el-icon-plus"></span>
@@ -176,7 +179,7 @@
                     <el-option v-for="(value,index) in monitorMainList" :key="index" :label="value.name"
                                :value="value.nodeClass"/>
                   </el-select>
-                  <span v-if="item.monitorClassStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="item.monitorClassStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-select
@@ -188,7 +191,7 @@
                     <el-option v-for="(val,index) in item.resultArrList" :key="index" :label="val.label"
                                :value="val.value"/>
                   </el-select>
-                  <span v-if="item.perfStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="item.perfStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-select
@@ -200,7 +203,7 @@
                     <el-option v-for="(val,index) in baseDataThresholdOp" :key="index" :label="val.name"
                                :value="val.type"/>
                   </el-select>
-                  <span v-if="item.opStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="item.opStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <div class="positionRelative displayInlineBlock">
                   <el-input
@@ -209,7 +212,7 @@
                     class="width170 marginRight6"
                     @input="changeSelect(item,'threshold')"
                     clearable/>
-                  <span v-if="item.thresholdStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="item.thresholdStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <el-button @click="delFromMonitor(mainIndex,data)" class="addEditBtn"><span
                   class="el-icon-minus"></span></el-button>
@@ -225,23 +228,26 @@
                     clearable>
                     <el-option v-for="(val,index) in AlarmSeverity" :key="index" :label="val.name" :value="val.type"/>
                   </el-select>
-                  <span v-if="main.alarmLevelStatus === true" class="isNotNull">必填项不能为空</span>
+                  <span v-if="main.alarmLevelStatus === true" class="isNotNull">{{$t('public.isNotNull')}}</span>
                 </div>
                 <el-input :id="main.domId + '_alarmText'" v-model="main.alarmText" style="width: 530px;" clearable
                           :placeholder="$t('monitorThreshold.alarmPlaceholder')"/>
               </el-form-item>
-              <el-button type="danger" v-if="mainIndex !== 0" class="monitor-deleteBtn"
+              <el-button type="danger" class="monitor-deleteBtn"
                          @click="delMainMonitor(mainIndex)">
                 <span class="el-icon-delete"></span>
               </el-button>
             </div>
           </el-form>
-          <div class="textAlignCenter marginTop20">
-            <el-button class="middle marRight10" @click="addMainMonitor">
-              <span class="iconfont verticalAlignMiddle">&#xe64a;</span>
-              <span class="verticalAlignMiddle">{{$t('monitorThreshold.addMainMonitor')}}</span>
+          <div class="textAlignCenter marginTop20 marginBottom20">
+            <el-button class="marRight10" @click="addMainMonitor">
+							<span class="middle displayInlineBlock">
+								<span class="iconfont verticalAlignMiddle">&#xe6ae;</span>
+								<span class="verticalAlignMiddle fs14">{{$t('monitorThreshold.addMainMonitor')}}</span>
+							</span>
             </el-button>
             <el-button class="queryBtn" type="primary" @click="addMonitor">{{$t('public.save')}}</el-button>
+						<el-button class="queryBtn" type="default" @click="goBack">{{$t('public.goBack')}}</el-button>
           </div>
         </div>
       </div>
@@ -302,6 +308,11 @@
       }
     },
     methods: {
+    	// 返回上一级
+			goBack(){
+				var _t = this;
+				_t.$router.go(-1);
+			},
       // 下拉框数据改变的时候
       changeSelect(data, val) {
         if (val !== 'alarmLevel') {
@@ -338,7 +349,7 @@
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
-              _t.treeData = res.data.children;
+              _t.treeData = res.data.children === null ? [] : res.data.children;
               // 拿到树之后 取出第一个节点最细一级的元素节点
               _t.getDefaultTreeFirstData(_t.treeData);
               break;
@@ -416,7 +427,7 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              var monitorListArr = res.data;
+              var monitorListArr = res.data === null ? [] : res.data;
               monitorListArr.forEach((item) => {
                 // 转换 告警级别字段 类型
                 if (item.alarmLevel !== null) {
@@ -589,7 +600,8 @@
             case 200:
               _t.baseDataThresholdOp = res.data.ThresholdOp;
               var AlarmSeverity = new Array();
-              res.data.AlarmSeverity.forEach((item) => {
+              var AlarmSeverity = res.data.AlarmSeverity === null ? [] : res.data.AlarmSeverity;
+              AlarmSeverity.forEach((item) => {
                 if (item.type == 66 || item.type == 99) {
                   AlarmSeverity.push(item);
                 }
@@ -616,14 +628,15 @@
         _t.$api.get('monitor/deviceMonitor/all', {
           jsonString: JSON.stringify({
             deviceMonitor: {
-              nodeType: 1
+              nodeType: 1,
+							deviceId:_t.deviceId
             }
           })
         }, function (res) {
           _t.$store.commit('setLoading', false);
           switch (res.status) {
             case 200:
-              _t.monitorMainList = res.data;
+              _t.monitorMainList = res.data === null ? [] : res.data;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

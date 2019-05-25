@@ -54,41 +54,35 @@
       return {
         dataBaseName:'',
         dataBaseList:[
-          {
-            value:1,
-            label:'bmsDB'
-          },
-          {
-            value:2,
-            label:'bmsData'
-          },
+          {value:1, label:'bmsDB'},
+          {value:2, label:'bmsData'},
         ],
-        tableData:[
-          {},{}
-        ]
+        tableData:[]
       }
     },
     methods: {
       // 备份以下选中的表
       backUpAllTable(){
-        this.$confirm('请问是否确认备份当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+      	var _t = this;
+        _t.$confirm(_t.$t('dataBaseBackUp.dialogTip'),_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-          this.$alert('恭喜你,当前记录备份成功!',this.$t('public.resultTip'));
+					_t.$alert(_t.$t('dataBaseBackUp.dialogSuccessTip'),_t.$t('public.resultTip'));
         }).catch(()=>{
           return;
         });
       },
       // 备份当前选中的数据库
       backUpThisDataBase(){
-        this.$confirm('请问是否确认备份当前的记录?',this.$t('public.confirmTip'),{
-          confirmButtonText: this.$t('public.confirm'),
-          cancelButtonText: this.$t('public.close'),
+				var _t = this;
+				_t.$confirm(_t.$t('dataBaseBackUp.dialogTip'),_t.$t('public.confirmTip'),{
+          confirmButtonText: _t.$t('public.confirm'),
+          cancelButtonText: _t.$t('public.close'),
           type: 'warning'
         }).then(()=>{
-          this.$alert('恭喜你,当前记录备份成功!',this.$t('public.resultTip'));
+					_t.$alert(_t.$t('dataBaseBackUp.dialogSuccessTip'),_t.$t('public.resultTip'));
         }).catch(()=>{
           return;
         });

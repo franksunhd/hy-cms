@@ -14,10 +14,10 @@ export default {
   },
   mounted: function () {
     // 换肤
-    switch (this.skinColor) {
-      default:
-        break;
-    }
+    // switch (this.skinColor) {
+    //   default:
+    //     break;
+    // }
   },
   watch: {
     // 监听三级菜单 更换节点加减号

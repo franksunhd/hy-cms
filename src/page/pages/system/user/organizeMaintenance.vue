@@ -11,7 +11,9 @@
     <!--左侧导航-->
     <div class="borderRightColorGray organizationMenuBox">
       <p class="organizeMaintenance-title">
-        <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">{{treeMenuData.nodeName}}</a>
+        <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">
+					{{treeMenuData.nodeName}}
+				</a>
       </p>
       <el-tree
         class="organizeMaintenance-tree"
@@ -48,23 +50,23 @@
         <!--全局操作-->
         <div class="marBottom16">
           <el-button type="warning" class="queryBtn" @click="addDataBtn">
-            <i class="el-icon-circle-plus-outline"></i>
+						<span class="iconfont fs14">&#xe689;</span>
             {{$t('public.add')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-            <i class="el-icon-edit-outline"></i>
+						<span class="iconfont fs14">&#xe641;</span>
             {{$t('public.edit')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.enable" @click="enableData">
-            <i class="el-icon-circle-check-outline"></i>
+						<span class="iconfont fs14">&#xe645;</span>
             {{$t('public.enable')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.disable" @click="disableData">
-            <i class="el-icon-circle-close-outline"></i>
+						<span class="iconfont fs14">&#xe646;</span>
             {{$t('public.disable')}}
           </el-button>
           <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-            <i class="el-icon-delete"></i>
+						<span class="iconfont fs14">&#xe647;</span>
             {{$t('public.delete')}}
           </el-button>
         </div>
@@ -89,18 +91,21 @@
           <el-table-column prop="userCount" :label="$t('organizeMaintenance.userNum')" header-align="left" align="left"/>
           <el-table-column :label="$t('organizeMaintenance.sort')" header-align="left" align="left">
             <template slot-scope="scope">
-              <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">上移</el-button>
-              <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">下移
+              <el-button :disabled="scope.$index == 0" type="text" @click="moveUp(scope.row)">
+								{{$t('public.moveUp')}}
+							</el-button>
+              <el-button :disabled="scope.$index == tableData.length - 1" type="text" @click="moveDown(scope.row)">
+								{{$t('public.moveDown')}}
               </el-button>
             </template>
           </el-table-column>
           <el-table-column :label="$t('organizeMaintenance.status')" header-align="left" align="left">
             <template slot-scope="scope">
-              <span v-if="scope.row.enable === true">启用</span>
-              <span v-if="scope.row.enable === false" class="disabledStatusColor">禁用</span>
+              <span v-if="scope.row.enable === true">{{$t('public.enable')}}</span>
+              <span v-if="scope.row.enable === false" class="disabledStatusColor">{{$t('public.disable')}}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="createBy" :label="$t('organizeMaintenance.createName')" header-align="left"
+          <el-table-column prop="createByUser" :label="$t('organizeMaintenance.createName')" header-align="left"
                            align="left"/>
           <el-table-column width="160px" :label="$t('organizeMaintenance.createTime')" header-align="left" align="left">
             <template slot-scope="scope">
@@ -344,7 +349,7 @@
       // 启用
       enableData() {
         var _t = this;
-        _t.$confirm('请问是否确认启用当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('organizeMaintenance.confirmEnableTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -361,13 +366,13 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录启用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('organizeMaintenance.confirmEnableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
                   _t.getData();
                   _t.getTreeData();
-                  _t.resetFormData();
+									_t.$refs.table.clearSelection();
                 });
                 break;
               case 1003: // 无操作权限
@@ -391,7 +396,7 @@
       // 禁用
       disableData() {
         var _t = this;
-        _t.$confirm('请问是否确认禁用当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('organizeMaintenance.confirmDisableTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -408,13 +413,13 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('恭喜你,当前记录禁用成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('organizeMaintenance.confirmDisableSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
                   _t.getData();
                   _t.getTreeData();
-                  _t.resetFormData();
+									_t.$refs.table.clearSelection();
                 });
                 break;
               case 1003: // 无操作权限
@@ -438,7 +443,7 @@
       // 删除
       deleteData() {
         var _t = this;
-        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('organizeMaintenance.confirmDeleteTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           type: 'warning',
@@ -454,13 +459,13 @@
             _t.$store.commit('setLoading', false);
             switch (res.status) {
               case 200:
-                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('organizeMaintenance.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass: 'alertBtn'
                 }).then(() => {
                   _t.getData();
                   _t.getTreeData();
-                  _t.resetFormData();
+									_t.$refs.table.clearSelection();
                 });
                 break;
               case 1003: // 无操作权限
@@ -470,15 +475,6 @@
                 _t.exclude(_t, res.message);
                 break;
               case 2007: // 删除失败
-                _t.$alert(res.message, _t.$t('public.resultTip'), {
-                  confirmButtonText: _t.$t('public.confirm'),
-                  confirmButtonClass: 'alertBtn'
-                }).then(() => {
-                  _t.getData();
-                  _t.getTreeData();
-                  _t.resetFormData();
-                });
-                break;
               case 3005: // 数据关联不能删除
                 _t.$alert(res.message, _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
@@ -486,13 +482,13 @@
                 }).then(() => {
                   _t.getData();
                   _t.getTreeData();
-                  _t.resetFormData();
+									_t.$refs.table.clearSelection();
                 });
                 break;
               default:
                 _t.getData();
                 _t.getTreeData();
-                _t.resetFormData();
+								_t.$refs.table.clearSelection();
                 break;
             }
             _t.disableBtn.edit = true;
@@ -568,7 +564,7 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              _t.tableData = res.data.list;
+              _t.tableData = res.data.list === null ? [] : res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
@@ -592,7 +588,7 @@
         _t.$api.get('system/organization/all', {}, function (res) {
           switch (res.status) {
             case 200:
-              _t.organizationList = JSON.parse(res.data).children;
+              _t.organizationList = JSON.parse(res.data).children === null ? [] : JSON.parse(res.data).children;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

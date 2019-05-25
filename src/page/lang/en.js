@@ -1,21 +1,15 @@
 /*英文*/
 export default {
-	// 顶部 header
-	header: {
-		message: 'message',
-		document: 'document',
-		welcome: 'Welcome',
-		head: 'Modify the head',
-		pwd: 'Modify the password',
-		logOut: 'log out',
-		title: 'title'
-	},
 	// 公共
 	public: {
+		loading: '拼命加载中(英)',
+		networkTimeOut: '网络超时(英)',
 		confirm: 'confirm',
 		cancel: 'cancel',
 		close: 'close',
 		clickUpload: 'Click to upload',
+		pickUpFile: 'Pick Up File',
+		submitUpload: 'Start TO Upload',
 		save: 'save',
 		message: 'message letter station',
 		sms: 'short message',
@@ -32,6 +26,7 @@ export default {
 		query: 'query',
 		add: 'add',
 		edit: 'edit',
+		detail: 'detail',
 		enable: 'enable',
 		disable: 'disable',
 		lock: 'lock',
@@ -63,18 +58,24 @@ export default {
 		to: '-',
 		moveUp: 'Up',
 		moveDown: 'Down',
-		allChecked: 'allChecked'
+		allChecked: 'allChecked',
+		goBack: 'goBack',
+		emailFormatTip: '邮箱格式不正确(英)',
+		mobileFormatTip: '手机号格式不正确(英)',
+		ipFormatTip: 'IP格式不正确,请重新输入(英)',
+		formatTip: '格式不正确,请重新输入(英)',
+		isNumberFormat: '输入不正确只能输入数字(英)',
+		packUp:'收起(英)',
+		refresh:'刷新(英)'
 	},
 	// 系统设置模块 导航
 	system: {
-		systemSetting: 'system Settings',
-		systemMonitoring: 'system Monitoring',
-		alarmSettings: 'alarm Settings'
+		systemSetting: '系统设置(英)',
+		systemMonitoring: '系统监测(英)',
+		alarmSettings: '告警设置(英)'
 	},
 	// 面包屑
 	breadcrumb: {
-		//Home
-		ComputerRoomEquipment: 'ComputerRoomEquipment',
 		//系统管理-->系统设置
 		systemSetting: 'systemSettings',
 		license: 'License information maintenance',
@@ -126,6 +127,7 @@ export default {
 		rackTowerServer: 'rackTowerServer',
 		//监测管理
 		monitorManage: 'monitorManage',
+		MonitoringSummary: 'MonitoringSummary',
 		equipmentMonitoring: 'equipmentMonitoring',
 		monitorThreshold: 'monitorThreshold',
 		monitorStatusSearch: 'monitorStatusSearch',
@@ -138,10 +140,67 @@ export default {
 		//告警管理-->告警设置--基础设置
 		basicSettings: 'basicSettings',
 		alarmGroupSettings: 'alarmGroupSettings',
-		alarmRuleSettings:'alarmRuleSettings',
+		alarmRuleSettings: 'alarmRuleSettings',
+		//告警管理-->告警设置-->通知方式
+		noticeWaySettings:'通知方式(英)',
+		emailSettings:'邮件设置(英)',
 		//资产管理
 		assetManage: 'assetManage',
-		assetDevice: 'assetDevice'
+		assetDevice: 'assetDevice',
+		//机房管理
+		ComputerRoomManagement:'ComputerRoomManagement',
+		ComputerConfiguration:'ComputerConfiguration',
+		RackConfiguration:'RackConfiguration',
+	},
+	// 顶部 header
+	header: {
+		message: 'message',
+		document: 'document',
+		welcome: 'Welcome',
+		head: 'Modify the head',
+		pwd: 'Modify the password',
+		logOut: '退出登录(英)',
+		title: '智能硬件管理平台(英)',
+		logOutTip: '确认需要退出系统吗？(英)',
+		userName:'userName',
+		LoginAccount:'LoginAccount',
+		OldLoginPassword:'OldLoginPassword',
+		NewLoginPassword:'NewLoginPassword',
+		ConfirmTheNewLoginPassword:'ConfirmTheNewLoginPassword',
+		mobileNum: 'mobileNum',
+		emails: 'emails',
+		ModifyTheInformation:'ModifyTheInformation',
+		ModifyTheFailure:'ModifyTheFailure',
+		prompt:'prompt',
+		TheUserNameAlreadyExists:'TheUserNameAlreadyExists',
+		ThisMailboxAlreadyExists:'ThisMailboxAlreadyExists',
+		ThePhoneNumberAlreadyExists:'ThePhoneNumberAlreadyExists',
+		PasswordChangedSuccessfullyPleaseLoginAgain:'PasswordChangedSuccessfully,PleaseLoginAgain',
+	},
+	// 左侧导航
+	appSide: {
+		menuName: 'Menu List',
+		deleteTip: 'Delete',
+		dragTip: 'Drag Order',
+		menuIsNullTip: 'No Permissions',
+	},
+	// Home
+	homePage: {
+		formTitleText: 'Monitor Overview',
+		formComputerRoomEquipment: 'Devices Monitor Status',
+		formAllNumber: 'Total Number Of Devices',
+		formAlarmNumber: 'Alarm Number Of Devices',
+		formTodayAlarmNumber: 'Total Alarm Number Of Today',
+		formTodayReturnAlarmNumber: 'Total Restore Number Of Today',
+		formAssetUnit: '',
+		formAlarmUnit: '',
+		formThisAlarmList: 'Current Alarm Devices',
+		columnStatus: 'Devices Status',
+		columnName: 'Devices Name',
+		columnLastAlarmTime: 'The Last Alarm Time',
+		columnRoom: 'Room',
+		columnFrame: 'Frame',
+		columnPosition: 'Position'
 	},
 	// 系统管理-系统设置-许可证信息维护
 	license: {
@@ -186,7 +245,17 @@ export default {
 		translationName: 'translation Name',
 		descriptionAlert: 'description',
 		Order: 'Order',
-		isEnable: 'isEnable'
+		isEnable: 'isEnable',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)',
+		confirmSetDefaultTip: '请问是否确认将当前的记录设为默认?(英)',
+		confirmSetDefaultSuccessTip: '恭喜你,当前记录设置成功!(英)',
+		confirmImportMenuTip: '请问是否确认下载选中记录的相应文件?(英)',
+		confirmImportDataBaseTip: '请问是否确认下载选中记录的相应文件?(英)',
 	},
 	// 系统管理-系统设置-系统管理-数据字典管理
 	dataDictionary: {
@@ -202,7 +271,13 @@ export default {
 		statusAlert: 'status',
 		sort: 'sort',
 		createName: 'createName',
-		createTime: 'createTime'
+		createTime: 'createTime',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)',
 	},
 	// 系统管理-系统设置-系统管理-License到期通知
 	licenseNotice: {
@@ -236,7 +311,20 @@ export default {
 		statusAlert: 'statusAlert',
 		assignRole: 'assignRole',
 		placeSelectOrg: 'placeSelectOrg',
-		isNotRoleOnOrg: 'isNotRoleOnOrg'
+		isNotRoleOnOrg: 'isNotRoleOnOrg',
+		whetherOrNot: '不可以禁用、删除本人,重置本人密码!(英)',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)',
+		confirmResetPasswordTip: '请问是否将当前用户密码重置为系统默认密码?(英)',
+		confirmResetPasswordSuccessTip: '重置密码成功!(英)',
+		alertDisplayNameRepeatTip:'用户名称重复(英)',
+		alertUserNameRepeatTip:'登录账号重复(英)',
+		alertMobileRepeatTip:'手机号码重复(英)',
+		alertEmailsRepeatTip:'邮箱号码重复(英)',
 	},
 	// 系统管理-系统设置-用户管理-角色维护
 	roleMaintenance: {
@@ -272,7 +360,15 @@ export default {
 		username: 'username',
 		selectedDevice: 'selectedDevice',
 		stand: 'stand',
-		tip: 'enter text...'
+		tip: 'enter text...',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)',
+		confirmSaveSuccessTip:'保存成功(英)',
+		isNotDirectory:'未分配目录(英)'
 	},
 	// 系统管理-系统设置-用户管理-组织维护
 	organizeMaintenance: {
@@ -290,7 +386,13 @@ export default {
 		orderIndex: 'orderIndex',
 		isEnable: 'isEnable',
 		organizationDes: 'organizationDes',
-		sort: 'sort'
+		sort: 'sort',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)'
 	},
 	// 系统管理-系统设置-用户管理-功能菜单维护
 	functionMenuMaintenance: {
@@ -315,6 +417,15 @@ export default {
 		statusAlert: 'statusAlert',
 		selectUser: 'selectUser',
 		parentName: 'parentName',
+		goBack: '返回上一级(英)',
+		clickImport: '点击上传(英)',
+		className: 'Class 样式图标(英)',
+		confirmEnableTip: '请问是否确认启用当前的记录?(英)',
+		confirmEnableSuccessTip: '恭喜你,当前记录启用成功!(英)',
+		confirmDisableTip: '请问是否确认禁用当前的记录?(英)',
+		confirmDisableSuccessTip: '恭喜你,当前记录禁用成功!(英)',
+		confirmDeleteTip: '请问是否确认删除当前的记录?(英)',
+		confirmDeleteSuccessTip: '删除成功!(英)'
 	},
 	// 系统管理-系统设置-数据库管理-数据库备份
 	dataBaseBackUp: {
@@ -324,7 +435,9 @@ export default {
 		dataBaseName: 'dataBase Name',
 		backUpDirectory: 'backUp Directory',
 		tableName: 'table Name',
-		tableDes: 'table Description'
+		tableDes: 'table Description',
+		dialogTip:'请问是否确认备份当前的记录?(英)',
+		dialogSuccessTip: '恭喜你,当前记录备份成功!(英)',
 	},
 	// 系统管理-系统设置-数据库管理-备份定时器
 	backUpTimer: {
@@ -377,7 +490,12 @@ export default {
 		createTime: 'createTime',
 		createUpdateNode: 'createUpdateNode',
 		IPList: 'IPList',
-		note: 'note'
+		note: 'note',
+		tip: '注意：“网关IP”主要用于验证采集节点与带外IP段的通讯是否正常,一般填“网关”,若无网关情况下,选填一个有设备的带外网IP,如果采集节点与此IP通讯不正常则代表可能无法采集此IP段的相关设备!(英)',
+		ip: '网关IP(英)',
+		to: '至(英)',
+		dialogDeleteTipText: '请问是否确认删除当前的记录?(英)',
+		dialogDeleteTip: '删除成功!(英)'
 	},
 	// 系统管理-系统设置-设备采集设置-采集节点管理
 	acquisitionNodeManagement: {
@@ -405,7 +523,12 @@ export default {
 		detailNode: 'detailNode',
 		IPList: 'IPList',
 		gatewayIp: 'gatewayIp',
-		testPort: 'testPort'
+		testPort: 'testPort',
+		normal: '正常(英)',
+		abnormal: '异常(英)',
+		all: '全部(英)',
+		dialogDeleteTip: '删除成功!(英)',
+		dialogDeleteTipText: '请问是否确认删除当前的记录?(英)'
 	},
 	// 系统管理-系统设置-设备采集设置-采集任务分配
 	collectionTaskAssignment: {
@@ -429,6 +552,8 @@ export default {
 		ruleDes: 'ruleDes',
 		statusAlert: 'statusAlert',
 		monitoringTask: 'monitoring Task',
+		dialogRunningTip: '请问是否确认立即开始执行监测?(英)',
+		dialogStoppedTip: '请问是否确认要停止正在执行的监测?(英)',
 	},
 	// 系统管理-系统设置-设备采集设置-采集节点状态
 	acquisitionNodeState: {
@@ -450,7 +575,9 @@ export default {
 		banMonitoring: 'banMonitoring',
 		temporarilyIgnore: 'temporarilyIgnore',
 		cancelIgnore: 'cancelIgnore',
-		offLine: 'offLine'
+		offLine: 'offLine',
+		dialogRunningTip:'请问是否确认立即开始执行监测?(英)',
+		dialogStoppedTip:'请问是否确认要停止正在执行的监测?(英)'
 	},
 	// 系统管理-系统设置-日志管理-登录日志
 	loginLog: {
@@ -502,7 +629,90 @@ export default {
 		BrandModels: 'BrandModels',
 		FoundThatTheState: 'FoundThatTheState',
 		describe: 'describe',
-		ipAddress: 'ipAddress'
+		ipAddress: 'ipAddress',
+		showProcess: '发现队列中正在执行设备发现的进程(英)',
+		existing:'existing',
+		AddASuccess:'AddASuccess',
+		AddFailure:'AddFailure',
+	},
+	// 资产管理-资产汇总
+	// 资产管理-设备资产
+	assetDevice: {
+		leftCollapseMonitor: 'Monitor',
+		leftCollapseUnMonitor: 'UnMonitor',
+		formEquipmentNameInfo: 'DeviceName',
+		formEquipmentIp: 'IP',
+		formSerialNumber: 'SerialNumber',
+		btnTransferOfGrouping: 'TransferOfGrouping',
+		btnAddToMonitor: 'AddToMonitor',
+		btnImport: 'Import Excel',
+		btnExport: 'Export Excel',
+		columnAssetIp: 'IP',
+		columnManufacturer: 'Manufacturer',
+		columnDeviceName: 'DeviceName',
+		columnServicetag: 'ServiceTag',
+		columnAccessCode: 'AccessCode',
+		columnChargeBy: 'ChargeBy',
+		columnAssetType: 'AssetType',
+		columnRoomName: 'RoomName',
+		columnFrameName: 'FrameName',
+		columnFramePosition: 'FramePosition',
+		columnLastMonitorTime: 'LastMonitorTime',
+		columnOp: 'Operation',
+		//弹窗
+		dialog:{
+			//设备excel导入
+			import:{
+				dialogTitle:'Import Excel'
+			},
+			//excel的解析结果
+			excelAnalyzeResult:{
+				dialogTitle:'The Result Of Excel Analyze',
+				confirmBtn:'Import Of Excel Analyze',
+				downloadErrorBtn:'Download Error Data',
+				columnOrder:'Index',
+				columnVerify:'Verify',
+				columnTypeName:'DeviceType',
+				columnIP:'IP',
+				columnServicetag:'Servicetag',
+				columnDataCenter:'DataCenter',
+				columnRoomName:'RoomName',
+				columnFrameName:'FrameName',
+				columnFramePosition:'FramePosition',
+				columnProductIp:'ProductIP',
+				columnManufacturer:'Manufacturer',
+				columnModel:'Model',
+				columnAccessCode:'AccessCode',
+				columnChargeBy:'ChargeBy',
+				columnBusinessChargeBy:'BusinessChargeBy',
+				columnDeviceName:'DeviceName',
+				columnOs:'Os',
+				columnApp:'APP',
+				columnServiceAgent:'ServiceAgent',
+				columnServiceAgentUser:'ServiceAgentUser',
+				columnServiceAgentPhone:'ServiceAgentPhone',
+				columnWarrantyType:'WarrantyType',
+				columnPurchaseTime:'PurchaseTime',
+				columnExpireTime:'ExpireTime',
+				columnTypeModel:'TypeModel',
+				columnWarrantyLevel:'WarrantyLevel'
+			}
+		}
+	},
+	// 监测管理-监测汇总
+	MonitoringSummary: {
+		LatestAlarmEquipmentList: 'LatestAlarmEquipmentList',
+		columnStatus: 'columnstatus',
+		columnDeviceName: 'columnDeviceName',
+		columnLatestAlarmTime: 'columnLatestAlarmTime',
+		columnRoomName: 'columnRoomName',
+		columnFrameName: 'columnFrameName',
+		columnFramePosition: 'columnFramePosition',
+		EquipmentProportionRealTimeMonitoring: '设备占比实时监测(英)',
+		EquipmentAlarmLevelRealTimeMonitoring: '设备告警级别实时监测(英)',
+		eChartTipTitle: '设备发现进度(英)',
+		eChartTipTitleStatus: '当前状态(英)',
+		formAllName: '全部(英)',
 	},
 	// 监测管理-设备监测
 	EquipmentMonitoring: {
@@ -550,9 +760,42 @@ export default {
 		confirmation: 'confirmation',
 		Model: 'Model',
 		brand: 'brand',
-		ThePreviousPage:'ThePreviousPage',
-		state:'state',
-		ip:'ip',
+		ThePreviousPage: 'ThePreviousPage',
+		state: 'state',
+		ip: 'IP',
+		NewDeviceGrouping: 'NewDeviceGrouping',
+		PleaseEnterContent: 'PleaseEnterContent',
+		TheNameOfTheNode: 'TheNameOfTheNode',
+		AreYouSureYouWantToDeleteTheCurrentRecord: 'AreYouSureYouWantToDeleteTheCurrentRecord',
+		increase: 'increase',
+		TheEditor: 'TheEditor',
+		delete: 'delete',
+		AreYouSureYouWantToStartMonitoring: 'AreYouSureYouWantToStartMonitoring',
+		PleaseConfirmWhetherToSuspendTheMonitoring: 'PleaseConfirmWhetherToSuspendTheMonitoring',
+		AreYouSureYouWantTtoDeleteTheMonitor: 'AreYouSureYouWantTtoDeleteTheMonitor',
+		PleaseConfirmWhetherTheAlarmMonitoringShouldBeIgnored: 'PleaseConfirmWhetherTheAlarmMonitoringShouldBeIgnored',
+		AreYouSureYouWantToCancelTheIgnore: 'AreYouSureYouWantToCancelTheIgnore',
+		ModifyTheMonitorThreshold: 'ModifyTheMonitorThreshold',
+		ModifyMonitoringSettings: 'ModifyMonitoringSettings',
+		theIPAddress: 'theIPAddress',
+		RacktowerServer: 'RacktowerServer',
+		NetworkEquipment: 'NetworkEquipment',
+		minicomputer: 'minicomputer',
+		BladeToolCase: 'BladeToolCase',
+		TheStorageDevice: 'TheStorageDevice',
+		PleaseSelectA: 'PleaseSelectA',
+		PleaseEnterTheIpAddress: 'PleaseEnterTheIPAddress',
+		successful: 'successful',
+		failure: 'failure',
+		DevicesThatNeedToBeMigrated: 'DevicesThatNeedToBeMigrated',
+		TheTargetDirectory: 'TheTargetDirectory',
+		dialogAddMonitorTip:'请先选择需要添加监测的设备!(英)',
+		isNotDirectory:'未分配目录(英)',
+		an:'an',
+		PackUp:'PackUp',
+		TheBasicInformation:'TheBasicInformation',
+		HuaweiServerOptionalInformation:'HuaweiServerOptionalInformation',
+		DeviceNameSerialNumberIP:'DeviceNameSerialNumberIP',
 	},
 	// 监测管理-设备监测-监测阀值
 	monitorThreshold: {
@@ -561,7 +804,7 @@ export default {
 		equipmentMonitoring: 'Monitoring',
 		equipmentModel: 'Model',
 		equipmentType: 'Type',
-		ip: 'ip',
+		ip: 'IP',
 		roomName: 'roomName',
 		frameName: 'frameName',
 		monitorIndex: 'monitorIndex',
@@ -592,6 +835,7 @@ export default {
 		latestState: 'latestState',
 		updateTime: 'updateTime',
 		level: 'level',
+		alarmNo: 'alarmNo',
 		alarmStatus: 'alarmStatus',
 		happenTime: 'happenTime',
 		alarmObject: 'alarmObject',
@@ -601,7 +845,105 @@ export default {
 		locationInformation: 'locationInformation',
 		maintenanceInformation: 'maintenanceInformation',
 		changeInformation: 'changeInformation',
-		threshold: 'threshold'
+		threshold: 'threshold',
+		dialogEquipmentTitle: '设备状态信息(英)',
+		// 阀值弹出层
+		dialogThresholdTitle: '修改监测器监测阈值(英)',
+		dialogThresholdEquipmentName: '设备(英)',
+		dialogThresholdSerialNumber: '序列号(英)',
+		dialogThresholdMonitoring: '品牌(英)',
+		dialogThresholdModel: '型号(英)',
+		dialogThresholdEquipmentType: '设备类型(英)',
+		dialogThresholdEquipmentIp: '带外IP(英)',
+		dialogThresholdAddMain: '增加主阀值(英)',
+		// 告警事件页签
+		formAlarmCurrent: '当前告警(英)',
+		formAlarmHistory: '历史告警(英)',
+		// 硬件配置模块 => cpu
+		formHardwareCpuTab: 'CPU(英)',
+		formHardwareCpuType: '类型(英)',
+		formHardwareCpuFrequency: '频率(英)',
+		formHardwareCpuManufacturer: '厂商(英)',
+		formHardwareCpuPartNumber: '部件号(英)',
+		formHardwareCpuSerialNumber: '序列号(英)',
+		formHardwareCpuIndex: '槽位(英)',
+		// 硬件配置模块 => 内存
+		formHardwareMemoryTab: '内存(英)',
+		formHardwareMemoryType: '型号(英)',
+		formHardwareMemoryFrequency: '频率(英)',
+		formHardwareMemorySize: '大小(英)',
+		formHardwareMemoryManufacturer: '厂商(英)',
+		formHardwareMemoryVersion: '固件版本(英)',
+		formHardwareMemoryPartNumber: '部件号(英)',
+		formHardwareMemorySerialNumber: '序列号(英)',
+		formHardwareMemoryIndex: '槽位(英)',
+		// 硬件配置模块 => 磁盘
+		formHardwareDiskTab: '磁盘(英)',
+		formHardwareDiskModel: '型号(英)',
+		formHardwareDiskBus: '总线类型(英)',
+		formHardwareDiskMedia: '磁盘介质(英)',
+		formHardwareDiskSize: '大小(英)',
+		formHardwareDiskFactor: '尺寸(英)',
+		formHardwareDiskManufacturer: '厂商(英)',
+		formHardwareDiskPartNumber: '部件号(英)',
+		formHardwareDiskSerialNumber: '序列号(英)',
+		formHardwareDiskSpeed: '转速(英)',
+		formHardwareDiskVersion: '固件版本(英)',
+		formHardwareDiskIndex: '槽位(英)',
+		// 硬件配置 => 电源
+		formHardwareSupplyTab: '电源(英)',
+		formHardwareSupplyModel: '型号(英)',
+		formHardwareSupplyPower: '功率(英)',
+		formHardwareSupplyManufacturer: '厂商(英)',
+		formHardwareSupplyPartNumber: '部件号(英)',
+		formHardwareSupplySerialNumber: '序列号(英)',
+		formHardwareSupplyVersion: '固件版本(英)',
+		formHardwareSupplyIndex: '槽位(英)',
+		// 硬件配置 => 网卡
+		formHardwareNicTab: '网卡(英)',
+		formHardwareNicModel: '型号(英)',
+		formHardwareNicIp: 'IP(英)',
+		formHardwareNicMac: 'MAC(英)',
+		formHardwareNicManufacturer: '厂商(英)',
+		formHardwareNicVersion: '固件版本(英)',
+		formHardwareNicPartNumber: '部件号(英)',
+		formHardwareNicSerialNumber: '序列号(英)',
+		formHardwareNicSpeed: '速度(英)',
+		formHardwareNicIndex: '槽位(英)',
+		// 硬件配置 => 阵列卡
+		formHardwareRaidTab: '阵列卡(英)',
+		formHardwareRaidModel: '型号(英)',
+		formHardwareRaidCacheSize: '缓存大小(英)',
+		formHardwareRaidSpeed: '速度(英)',
+		formHardwareRaidManufacturer: '厂商(英)',
+		formHardwareRaidVersion: '固件版本(英)',
+		formHardwareRaidPartNumber: '部件号(英)',
+		formHardwareRaidSerialNumber: '序列号(英)',
+		formHardwareRaidIndex: '槽位(英)',
+		// 硬件配置 => 风扇
+		formHardwareFanTab: '风扇(英)',
+		formHardwareFanPartNumber: '部件号(英)',
+		formHardwareFanSerialNumber: '序列号(英)',
+		formHardwareFanIndex: '槽位(英)',
+		// 管理信息
+		formHardManageInformation: '基本信息(英)',
+		formHardManageInformationIndex: '资产编号(英)',
+		formHardManageInformationShutDown: '关机级别(英)',
+		formHardManageInformationEquip: '设备责任人(英)',
+		formHardManageInformationOrgName: '归属部门及用途(英)',
+		formHardManageInformationBusiness: '业务责任人(英)',
+		formHardManageInformationService: '外部服务(英)',
+		formHardManageInformationServiceName: '服务商(英)',
+		// 监测详情 表格对象
+		tableNum: '个(英)',
+		tableObjectNum: '个对象(英)',
+		tableObjectAllNum: '个对象全部正常(英)',
+		tableOneExpend: '单内容展开(英)',
+		formAllOperation: '批量操作(英)',
+		dialogSelectTip:'请勾选需要操作的行!(英)',
+		formMonitorSuccessTip:'请选择相应批量操作(英)',
+		formMonitorIgnoreTip:'该设备已忽略监测,不能进行相应批量操作!(英)',
+		formMonitorPauseTip:'该设备已暂停监测,不能进行相应批量操作!(英)',
 	},
 	// 监测管理-业务监测
 	// 监测管理-机房监测
@@ -614,6 +956,7 @@ export default {
 		formStatusType: 'StatusType',
 		formMonitorRate: 'MonitorRate',
 		formMonitorFun: 'MonitorFun',
+		formAllOperation: '批量操作(英)',
 		columnStatus: 'Status',
 		columnIp: 'IP',
 		columnType: 'Type',
@@ -623,10 +966,11 @@ export default {
 		columnMonitorRate: 'MonitorRate',
 		columnLastModifyTime: 'LastModifyTime',
 		columnOp: 'OP',
-		dialogBatchOperationTip:'Please confirm to batch operation ?',
-		dialogToSelectedLineTip:'Please check the need record operating table！',
-		dialogSuccessTip:'恭喜您操作成功！',
-		dialogFailedTip:'抱歉，操作失败，请稍后再次尝试！'
+		dialogTitle: '设备部件监测信息(英)',
+		dialogBatchOperationTip: 'Please confirm to batch operation ?',
+		dialogToSelectedLineTip: 'Please check the need record operating table！',
+		dialogSuccessTip: '恭喜您操作成功！(英)',
+		dialogFailedTip: '抱歉，操作失败，请稍后再次尝试！(英)'
 	},
 	// 告警管理-告警汇总
 	alarmManagement: {
@@ -664,7 +1008,9 @@ export default {
 		alarmDescription: 'alarmDescription',
 		AutoNegotiation: 'AutoNegotiation',
 		linkSpeed: 'linkSpeed',
-		currentStatus: 'currentStatus'
+		currentStatus: 'currentStatus',
+		eChartTipTitle: '设备告警级别占比(英)',
+		eChartTipTitleStatus: '设备告警级别实时数据(英)'
 	},
 	// 告警管理-当前告警
 	alarmCurrent: {
@@ -829,10 +1175,137 @@ export default {
 		importRole: '从角色中导入(英)',
 		selectedDevice: '已选设备(英)',
 		stand: '台(英)',
-		tip: '输入名称 过滤结果(英)'
+		tip: '输入名称 过滤结果(英)',
+		dialogDeleteTipText: '请问是否确认删除当前的记录?(英)',
+		dialogDeleteTip: '删除成功!(英)',
+		isNotDirectory:'未分配目录(英)'
 	},
 	// 告警管理-告警规则设置
-	alarmRuleSettings:{
-
+	alarmRuleSettings: {
+		formGroupName: '告警组名称(英)',
+		formIpName: '设备IP/名称(英)',
+		columnGroupName: '告警组名称(英)',
+		columnAlarmLevel: '告警级别(英)',
+		columnEmergency: '紧急(英)',
+		columnWarning: '警告(英)',
+		columnNoticeContent: '通知内容(英)',
+		columnAlarm: '告警(英)',
+		columnAlarmConfirmation: '告警确认(英)',
+		columnAlarmCommentary: '告警评注(英)',
+		columnAlarmService: '告警报修(英)',
+		columnAlarmClose: '告警关闭(英)',
+		columnNoticeWay: '通知方式(英)',
+		columnEmail: '邮件(英)',
+		columnSMS: '短信(英)',
+		columnWeChat: '微信(英)',
+		columnSound: '播放声音(英)',
+		columnDialog: '页面弹窗(英)',
+		columnSyslog: 'Syslog(英)',
+		columnNoticeUser: '通知值班人(英)',
+		columnDeviceUser: '通知设备责任人(英)',
+		columnBusinessUser: '通知业务责任人(英)',
+		columnUserCount: '通知用户数(英)',
+		columnCreateBy: '创建人(英)',
+		columnCreateTime: '创建时间(英)',
+		columnLastModifyBy: '更新人(英)',
+		columnLastModifyTime: '更新时间(英)',
+		dialogTitle: '新增/编辑告警规则(英)',
+		dialogGroupName: '告警组(英)',
+		dialogAlarmLevel: '告警级别(英)',
+		dialogNoticeContent: '通知内容(英)',
+		dialogNoticeWay: '通知方式(英)',
+		dialogContentFormat: '内容格式(英)',
+		dialogNoticeRule: '通知规则(英)',
+		dialogNoticeRuleFirst: '同一设备在第(英)',
+		dialogNoticeRuleFirstContent: '次告警时进行首次发送(英)',
+		dialogRuleTip: '必须大于0(英)',
+		dialogNoticeRuleSecond: '后续发送策略(英)',
+		dialogNotSend: '不发送(英)',
+		dialogEverySend: '每次发送(英)',
+		dialogEvery: '每隔(英)',
+		dialogEventTime: '次发送一次(英)',
+		dialogAlarmUpgrade: '告警升级(英)',
+		dialogDurationFirst: '发送次数超过(英)',
+		dialogDurationFirstContent: '次依然没有处理，则给下列人员发送告警(英)',
+		dialogEmailLabel: '邮箱地址(分号隔开)(英)',
+		dialogIsNotNull: '邮箱地址,短信号码,微信号码中至少一项不能为空(英)',
+		dialogEmailRuleText: '邮箱格式有误(英)',
+		dialogSMSLabel: '邮箱地址(分号隔开)(英)',
+		dialogSMSRuleText: '短信号码格式有误(英)',
+		dialogWeChatLabel: '微信号码(分号隔开)(英)',
+		dialogSendTime: '发送时间(英)',
+		dialogBeginTime: '开始时间(英)',
+		dialogEndTime: '结束时间(英)',
+		dialogUserObject: '通知用户对象(英)',
+		dialogAdditionalUsersToSend: '额外通知的用户(英)',
+		dialogSelectUser: '选择用户(英)',
+		dialogAdditionalEmail: '额外发送的邮箱(分号隔开)(英)',
+		dialogAdditionalSMS: '额外发送的短信号码(分号隔开)(英)',
+		dialogAdditionalWeChat: '额外发送的微信号码(分号隔开)(英)',
+		dialogSelectSoundTitle: '选择播放的声音(英)',
+		dialogAudioName: '音频文件(英)',
+		dialogOperation: '操作(英)',
+		dialogPlay: '试听(英)',
+		dialogPause: '暂停(英)',
+		dialogReturnDefault: '恢复(英)',
+		dialogDeleteTipText: '请问是否确认删除当前的记录?(英)',
+		dialogDeleteTip: '删除成功!(英)',
+	},
+	// 告警管理-通知方式-邮件设置
+	emailSettings: {
+		formSMTPServer: 'SMTP服务器(英)',
+		formUserAddress: '发送人邮件地址(英)',
+		formIsSSL: '是否使用SSL加密(英)',
+		formSSL: '加密(英)',
+		formPassword: '发件人密码/授权码(英)',
+		formSMTPPort: 'SMTP端口(英)',
+		formEmailUserName: '发件人邮件显示名称(英)',
+		formEmailSignature: '邮件签名(英)',
+		formBtnModify: '修改(英)',
+		formBtnTestSend: '测试发送(英)',
+		formBtnUserSettings: '检索未设置邮箱的用户(英)',
+		dialogModifyTitle: '编辑邮件设置(英)',
+		dialogSMTPServer: 'SMTP服务器(英)',
+		dialogUserAddress: '发送人邮件地址(英)',
+		dialogIsSSL: '是否使用SSL加密(英)',
+		dialogSSL: '加密(英)',
+		dialogPassword: '发件人密码/授权码(英)',
+		dialogSMTPPort: 'SMTP端口(英)',
+		dialogEmailUserName: '发件人邮件显示名称(英)',
+		dialogEmailSignature: '邮件签名(英)',
+		dialogTestTitle: '测试邮件发送(英)',
+		dialogUserEmailAddress: '接收测试邮件的邮件地址(英)',
+		dialogUserEmailContent: '测试发送的邮件内容(英)',
+		dialogConfirmSuccessTip:'恭喜您,邮件发送成功!(英)',
+		dialogConfirmErrorTip:'抱歉,邮件发送异常!(英)',
+		columnUserName: '用户名(英)',
+		columnLoginAccount: '登录账号(英)',
+		columnOrganization: '所属组织(英)',
+		columnUserRole: '用户角色(英)',
+		columnMobile: '手机(英)',
+		columnEmail: '邮箱(英)',
+		columnWeChat: '微信号(英)',
+		columnStatus: '状态(英)',
+		columnCreateBy: '创建人(英)',
+		columnCreateTime: '创建时间(英)',
+	},
+	//机房管理
+	ComputerRoomManagement:{
+		DataCenterDirectory:'DataCenterDirectory',
+		ThoseResponsible:'ThoseResponsible',
+		AddTheRoom:'AddTheRoom',
+		BulkImport:'BulkImport',
+		new:'new',
+		NewEditingRoom:'NewEditingRoom',
+		ComputerName:'ComputerName',
+		DataCenter:'DataCenter',
+		locationInformation:'locationInformation',
+		RatedPower:'RatedPower',
+		voltage:'voltage',
+		current:'current',
+		largestNumberOfLines:'largestNumberOfLines',
+		largestNumberOfColumns:'largestNumberOfColumns',
+		headOne:'headOne',
+		headTwo:'headTwo',
 	}
 }

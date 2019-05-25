@@ -8,107 +8,156 @@
 			</el-breadcrumb>
 		</div>
 		<el-row>
-			<el-col :span="5" style="position: fixed;top: 104px;left: 56px;bottom: 0;max-width: 350px;height: 100%;border-right: 1px solid #ccc;">
+			<el-col :span="5"
+							style="position: fixed;top: 104px;left: 56px;bottom: 0;max-width: 350px;height: 100%;border-right: 1px solid #ccc;">
 				<div class="DeviceManualDetection-box-left">
 					<div class="DeviceType">{{$t('breadcrumb.DeviceType')}}</div>
 					<div class="TreeControl">
-						<el-tree :data="treeData" :props="defaultProps" @node-click="handleNodeClick" highlight-current :expand-on-click-node="true" :default-expand-all="false">
+						<el-tree
+							class="deviceManualDetection-tree"
+							ref="tree"
+							:data="treeData"
+							:props="defaultProps"
+							node-key="nodeId"
+							@node-click="handleNodeClick"
+							highlight-current
+							:expand-on-click-node="true"
+							:default-expand-all="false">
 						</el-tree>
-
 					</div>
 				</div>
 			</el-col>
-
 			<el-col :span="19" style="float: right;">
 				<div class="DeviceManualDetection-box-right">
 					<div class="DeviceManualDetection-box-right-top">
 						<div class="rackTowerServer"><span>{{label}}</span></div>
-
 					</div>
 					<div class="DeviceManualDetection-button">
-						<div class="IncreaseTheSearchScope" @click='add'><i class="el-icon-circle-plus">&nbsp;&nbsp;{{$t('DeviceManualDetection.increaseRetrieve')}}</i></div>
-						<div class="BeganToSee" @click="BeganToSee">{{$t('DeviceManualDetection.BeganToSee')}}</div>
+						<div class="IncreaseTheSearchScope" @click='add'>
+							<span class="iconfont fs14">&#xe6a1;</span>
+							{{$t('DeviceManualDetection.increaseRetrieve')}}
+						</div>
+						<div class="BeganToSee" @click="BeganToSee">
+							<span class="iconfont fs14">&#xe6ac;</span>
+							{{$t('DeviceManualDetection.BeganToSee')}}
+						</div>
 						<div class="ListOfUncompletedDiscoveries" @click="UncompletedDiscoveryTask">
 							<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
 								<div class="ListOfUncompletedDiscoveries-process">
-									<h3>发现队列中正在执行设备发现的进程</h3>
+									<h3>{{$t('DeviceManualDetection.showProcess')}}</h3>
 									<ul v-for="(item,index) in process" :key="item.sn" @click="handClickprocess(item.sn)">
 										<li>{{item.id}}</li>
 										<li>{{item.date}}</li>
 										<li>{{item.name}}</li>
 									</ul>
 								</div>
-								<el-button slot="reference">{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}</el-button>
+								<!--未完成的发现任务-->
+								<el-button slot="reference">
+									<span class="iconfont fs14">&#xe6ad;</span>
+									{{$t('DeviceManualDetection.UncompletedDiscoveryTask')}}
+								</el-button>
 							</el-popover>
 						</div>
 					</div>
 					<el-form inline>
 						<div v-for="(list,index) in lists" class="DeviceManualDetection-box-right-bottom">
-							<el-button @click="del(index)" style="float: right;margin-top: 20px;margin-right: 20px;"><i class="el-icon-delete"></i></el-button>
+							<el-button v-if="index!==0" @click="del(index)" style="float: right;margin-top: 20px;margin-right: 20px;">
+								<span class="iconfont ">&#xe647;</span>
+							</el-button>
 							<el-form-item :label="$t('DeviceManualDetection.ipAddresses') + '：'" style="display: block;margin: 0;">
 								<el-button @click="addI(index)" style="float: right;margin-top: 1px;">+</el-button>
 								<template v-for="(val,i) in list.ip">
 									<el-input v-model="val.startIp" class="width200" style="margin-bottom: 20px;"></el-input>
 									<span>~</span>
-									<el-input v-model="val.endIp" class="width200" style="margin-bottom: 20px;"></el-input>
+									<el-input @focus="FocusStartIp(val)"  v-model="val.endIp" ref="input" class="width200" style="margin-bottom: 20px;"></el-input>
 									<el-button v-if="(i!==0)" @click="delI(index,i)" style="margin-bottom: 20px;">-</el-button>
 									<br/>
 								</template>
 							</el-form-item>
-
-							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.username') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
+														:label="$t('DeviceManualDetection.username') + '：'">
 								<el-input v-model="list.username" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.password') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
+														:label="$t('DeviceManualDetection.password') + '：'">
 								<el-input type="password" v-model="list.password" class="width200"></el-input>
 							</el-form-item>
-							<br/>
-							<el-form-item v-if="type == 1" :label="$t('DeviceManualDetection.port') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
+														:label="$t('DeviceManualDetection.port') + '：'">
 								<el-input v-model="list.port" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2" :label="$t('DeviceManualDetection.snmpVersion') + '：'">
-								<el-select v-model="list.snmpVersion" placeholder="请选择" class="width200">
-									<el-option v-for="item in version" :key="item.value" :label="item.label" :value="item.value">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1"
+														:label="$t('DeviceManualDetection.snmpVersion') + '：'">
+								<el-select
+									v-model="list.snmpVersion"
+									class="width200">
+									<el-option
+										v-for="item in version" :key="item.value"
+										:label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
-								<!--<el-input v-model="list.userName" class="width200"></el-input>-->
 							</el-form-item>
-							<el-form-item v-if="type == 2" :label="$t('DeviceManualDetection.snmpPort') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1" :label="$t('DeviceManualDetection.snmpPort') + '：'">
 								<el-input v-model="list.snmpPort" class="width200"></el-input>
 							</el-form-item>
 							<br/>
-							<el-form-item v-if="type == 2&&list.snmpVersion!=='3'" :label="$t('DeviceManualDetection.snmpCommunity') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion!=='3'"
+														:label="$t('DeviceManualDetection.snmpCommunity') + '：'">
 								<el-input type="password" v-model="list.snmpCommunity" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpUsername') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpUsername') + '：'">
 								<el-input v-model="list.snmpUsername" class="width200"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
-								<el-select v-model="list.snmpSecurityLevel" placeholder="请选择" class="width200" @change="selectsnmpSecurityLevel(list)">
-									<el-option v-for="item in SecurityLevel" :key="item.value" :label="item.label" :value="item.value">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
+								<el-select
+									v-model="list.snmpSecurityLevel"
+									class="width200"
+									@change="selectsnmpSecurityLevel(list)">
+									<el-option v-for="item in SecurityLevel"
+														 :key="item.value"
+														 :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
-								<!--str = val == "1"?"one":val=="2"?"two":"three"-->
-								<el-select v-model="list.snmpAuthAlgorithm" clearable placeholder="请选择" class="width200" :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false">
-									<el-option v-for="item in VerifyTheAlgorithm" :key="item.value" :label="item.label" :value="item.value">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
+								<el-select
+									v-model="list.snmpAuthAlgorithm" clearable
+									class="width200"
+									:disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false">
+									<el-option v-for="item in VerifyTheAlgorithm"
+														 :key="item.value" :label="item.label"
+														 :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
-								<el-input type="password" v-model="list.snmpAuthPassword" class="width200" clearable :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
+								<el-input type="password" v-model="list.snmpAuthPassword"
+													class="width200" clearable
+													:disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
-								<el-select v-model="list.snmpPrivacyAlgorithm" placeholder="请选择" class="width200" clearable :disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false">
-									<el-option v-for="item in PrivateVerificationAlgorithm " :key="item.value" :label="item.label" :value="item.value">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
+								<el-select
+									v-model="list.snmpPrivacyAlgorithm"
+									class="width200"
+									clearable
+									:disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false">
+									<el-option v-for="item in PrivateVerificationAlgorithm "
+														 :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpPrivacyPassword') + '：'">
-								<el-input type="password" v-model="list.snmpPrivacyPassword" class="width200" clearable :disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpPrivacyPassword') + '：'">
+								<el-input type="password" v-model="list.snmpPrivacyPassword" class="width200" clearable
+													:disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
-							<el-form-item v-if="type == 2&&list.snmpVersion==='3'" :label="$t('DeviceManualDetection.snmpContextName') + '：'">
+							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
+														:label="$t('DeviceManualDetection.snmpContextName') + '：'">
 								<el-input v-model="list.snmpContextName" class="width200"></el-input>
 							</el-form-item>
 						</div>
@@ -128,29 +177,16 @@
 		},
 		data() {
 			return {
-				/*//SNMP验证算法是否禁用
-				disabledSnmpAuthAlgorithm: true,
-				//SNMP验证密码是否禁用
-				disabledSnmpAuthPassword: true,
-				//SNMP私有验证算法是否禁用
-				disabledSnmpPrivacyAlgorithm: true,
-				//SNMP私有密码是否禁用
-				disabledsnmpPrivacyPassword: true,
+				nodeIdOne: '',
+				nodeIdTwo: '',
+				nodeIdThree: '',
+				nodeIdFour: '',
+				nodeIdFive: '',
 				//未完成的发现任务*/
 				visible2: false,
-				process: [{
-					id: 1,
-					date: '2019年3月23日13点45分13秒',
-					name: '机架/塔式服务器'
-				}, {
-					id: 2,
-					date: '2019年3月23日13点45分13秒',
-					name: '机架/塔式服务器'
-				}, {
-					id: 2,
-					date: '2019年3月23日13点45分13秒',
-					name: '机架/塔式服务器'
-				}],
+				//点击左侧树获取的id
+				Id: '',
+				process: [],
 				//树形控件
 				da: [],
 				//树形控件数据默认字段
@@ -164,12 +200,12 @@
 				tables: [],
 				lists: [{
 					ip: [{
-						"startIp": '192.168.0.2',
-						"endIp": '192.168.0.5'
+						startIp: '',
+						endIp: ''
 					}],
-					"username": "",
-					password: "",
-					port: "",
+					username: '',
+					password: '',
+					port: '',
 					snmpPort: '',
 					snmpCommunity: '',
 					//版本
@@ -202,9 +238,9 @@
 				}],
 				//安全级别
 				SecurityLevel: [{
-						value: 'noAuthNoPriv',
-						label: 'no auth, no priv'
-					},
+					value: 'noAuthNoPriv',
+					label: 'no auth, no priv'
+				},
 					{
 						value: 'authNoPriv',
 						label: 'auth, no priv'
@@ -216,9 +252,9 @@
 				],
 				//验证算法
 				VerifyTheAlgorithm: [{
-						value: 'MD5',
-						label: 'MD5'
-					},
+					value: 'MD5',
+					label: 'MD5'
+				},
 					{
 						value: 'SHA',
 						label: 'SHA'
@@ -226,9 +262,9 @@
 				],
 				//私有验证算法
 				PrivateVerificationAlgorithm: [{
-						value: 'DES',
-						label: 'DES'
-					},
+					value: 'DES',
+					label: 'DES'
+				},
 					{
 						value: '3DES',
 						label: '3DES'
@@ -246,11 +282,9 @@
 						label: 'AES256'
 					}
 				],
-
 				//版本对象
-				//versions:{},
 				type: '1',
-				label: '机架/塔式服务器（中）的信息',
+				label: '',
 				treeData: [],
 				// 表格数据字典
 				tableDataBase: {
@@ -259,6 +293,8 @@
 					AssetType: {},
 					DeviceMonitorStatus: {}
 				},
+				//左侧树nodeid值
+				nodeId:{},
 
 			}
 		},
@@ -271,10 +307,23 @@
 					"enable": true,
 					"languageMark": localStorage.getItem("hy-language")
 				})
-			}, function(res) {
-				switch(res.status) {
+			}, function (res) {
+				switch (res.status) {
 					case 200:
-						_t.treeData = res.data.treeNode.children[0].children;
+						var obj =new Object();
+						for(var i=0;i<res.data.treeNode.children[0].children.length;i++){
+							obj['nodeId'+i] = res.data.treeNode.children[0].children[i].nodeId;
+						}
+
+						_t.nodeId=obj;
+						_t.treeData = res.data.treeNode.children[0].children === null ? [] : res.data.treeNode.children[0].children;
+						// 获取treeData的第一个节点 并高亮选中
+						if (_t.treeData[0]) {
+							_t.$nextTick(function () {
+								_t.$refs.tree.setCurrentKey(_t.treeData[0]);
+								_t.handleNodeClick(_t.treeData[0])
+							});
+						}
 						break;
 					case 1003: // 无操作权限
 					case 1004: // 登录过期
@@ -285,21 +334,20 @@
 					default:
 						break;
 				}
-
 			});
 		},
 		methods: {
 			//安全级别筛选
 			selectsnmpSecurityLevel(val) {
-				if(val.snmpSecurityLevel === 'noAuthNoPriv') {
+				if (val.snmpSecurityLevel === 'noAuthNoPriv') {
 					val.snmpAuthAlgorithm = '';
 					val.snmpAuthPassword = '';
 					val.snmpPrivacyAlgorithm = '';
 					val.snmpPrivacyPassword = '';
-				} else if(val.snmpSecurityLevel === 'authNoPriv') {
+				} else if (val.snmpSecurityLevel === 'authNoPriv') {
 					val.snmpPrivacyAlgorithm = '';
 					val.snmpPrivacyPassword = '';
-				} else if(val.snmpSecurityLevel === 'authPriv') {
+				} else if (val.snmpSecurityLevel === 'authPriv') {
 				}
 			},
 			// 查询表格中状态对应的数据值
@@ -309,15 +357,15 @@
 				_t.$api.post('system/basedata/map', {
 					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity"],
 					languageMark: localStorage.getItem("hy-language")
-				}, function(res) {
+				}, function (res) {
 					_t.$store.commit('setLoading', false);
-					switch(res.status) {
+					switch (res.status) {
 						case 200:
 							// 获取对应的状态值
 							_t.tableDataBase = res.data;
 							var process = [];
 							var index = 0;
-							for(var key in resData) {
+							for (var key in resData) {
 								index++;
 								process.push({
 									"date": resData[key].time,
@@ -347,34 +395,10 @@
 			//未完成的发现任务
 			UncompletedDiscoveryTask() {
 				var _t = this;
-				_t.$api.post('/asset/discovery/history', {}, function(res) {
-					switch(res.status) {
+				_t.$api.post('/asset/discovery/history', {}, function (res) {
+					switch (res.status) {
 						case 200:
 							_t.getSnData(res.data);
-							/*var process = [];
-							for(var key in res.data) {
-								if(res.data[key].type === "1") {
-									res.data[key].type = "机架/塔式服务器（中）"
-								} else if(res.data[key].type === "2") {
-									res.data[key].type = "网络设备（中）"
-								}
-								process.push({
-									"dates": res.data[key].time,
-									"names": res.data[key].type,
-									"sns": key
-								})
-							}
-							var processa = [];
-
-							for(var i = 0; i < process.length; i++) {
-								processa.push({
-									"id": i + 1,
-									"date": process[i].dates,
-									"name": process[i].names,
-									'sn': process[i].sns
-								})
-							}
-							_t.process = processa;*/
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -401,15 +425,14 @@
 			//开始发现
 			BeganToSee() {
 				var _t = this;
-
 				_t.$api.post('/asset/discovery/start', {
 					param: _t.lists,
 					type: _t.type
-				}, function(response) {
-					switch(response.status) {
+				}, function (response) {
+					switch (response.status) {
 						case 200:
-							var res = response.data;
-							if(response.status == 200) {
+							var res = response.data=== null ? [] :response.data;
+							if (response.status == 200) {
 								_t.$router.push({
 									name: 'BeganToSee',
 									params: {
@@ -435,16 +458,18 @@
 			//点击树形控件拼接label
 			handleNodeClick(data) {
 				var _t = this;
-				this.label = data.nodeName;
-				this.type = data.orderNum;
-				/*if(this.type === 1) {
-					this.label = this.label + '的信息'
-				} else if(this.type === 2) {
-					this.label = '【' + this.label + '】' + '的检索范围'
-				}*/
+				_t.label = data.nodeName;
+				_t.type = data.nodeCode;
+				_t.Id = data.nodeId;
+			},
+			//ip地址段开始ip段获取
+			FocusStartIp(val){
+				var _t=this;
+					var ip = val.startIp;
+					val.endIp = ip;
 			},
 			//增加检索范围
-			add: function() {
+			add: function () {
 				let cope = {
 					ip: [{
 						startIp: "",
@@ -477,18 +502,17 @@
 				this.lists.push(cope);
 			},
 			//删除检索范围
-			del: function(index) {
+			del: function (index) {
 				this.lists.splice(index, 1);
 			},
 			//增加ip段
 			addI(index) {
+				var _t = this;
 				let copes = {
-					ip: [{
 						startIp: "",
 						endIp: ""
-					}]
-				}
-				this.lists[index].ip.push(copes)
+				};
+				_t.lists[index].ip.push(copes)
 			},
 			//删除ip段
 			delI(index, i) {
@@ -504,7 +528,7 @@
 		overflow: hidden;
 		padding: 20px 20px;
 	}
-	
+
 	.DeviceManualDetection-box-left {
 		padding: 20px;
 		background-color: #fff;
@@ -512,38 +536,39 @@
 		height: 100%;
 		overflow: hidden;
 	}
-	
+
 	.DeviceType {
 		font-size: 14px;
 		font-weight: 500;
 		margin-bottom: 5px;
 	}
-	
+
 	.TreeControl {
 		overflow: hidden;
 	}
-	
+
 	.DeviceManualDetection-box-right {
 		height: auto;
 		padding: 20px 40px;
 	}
-	
+
 	.DeviceManualDetection-box-right-top {
 		overflow: hidden;
 	}
-	
-	.rackTowerServer {}
-	
+
+	.rackTowerServer {
+	}
+
 	.rackTowerServer span {
 		font-weight: 600;
 		color: #3F81D0;
 	}
-	
+
 	.DeviceManualDetection-button {
 		overflow: hidden;
 		padding: 16px 0;
 	}
-	
+
 	.IncreaseTheSearchScope {
 		float: left;
 		width: 138px;
@@ -555,7 +580,7 @@
 		line-height: 30px;
 		cursor: pointer;
 	}
-	
+
 	.BeganToSee {
 		float: left;
 		width: 110px;
@@ -567,7 +592,7 @@
 		color: #fff;
 		margin-left: 20px;
 	}
-	
+
 	.ListOfUncompletedDiscoveries {
 		float: left;
 		height: 30px;
@@ -575,22 +600,22 @@
 		line-height: 30px;
 		margin-left: 20px;
 	}
-	
+
 	.ListOfUncompletedDiscoveries-process {
 		overflow: hidden;
 	}
-	
+
 	.ListOfUncompletedDiscoveries-process h3 {
 		font-size: 14px;
 		color: #252a2f;
 		padding-left: 10px;
 	}
-	
+
 	.ListOfUncompletedDiscoveries-process ul {
 		padding-left: 10px;
 		overflow: hidden;
 	}
-	
+
 	.ListOfUncompletedDiscoveries-process ul li {
 		float: left;
 		font-size: 14px;
@@ -598,18 +623,18 @@
 		padding-top: 10px;
 		cursor: pointer;
 	}
-	
+
 	.ListOfUncompletedDiscoveries-process ul li:first-child {
 		padding-left: 0;
 	}
-	
+
 	.DeviceManualDetection-box-right-bottom {
 		overflow: hidden;
 		padding-top: 10px;
 		margin-bottom: 20px;
 		background-color: #f6f9f9;
 	}
-	
+
 	.DeviceManualDetection-box-right-bottom:hover {
 		background-color: #eaeef2;
 	}
@@ -619,15 +644,20 @@
 		width: 156px;
 		font-size: 12px;
 	}
-	
+
 	.DeviceManualDetection-box-right .el-form--inline .el-form-item {
 		margin-right: 100px;
 	}
-	
+
 	.aaa {
 		background-color: #000000;
 		opacity: 0.8;
 		height: 350px;
 		overflow: auto
+	}
+
+	.deviceManualDetection-tree .el-tree-node__content {
+		height: 36px;
+		line-height: 36px;
 	}
 </style>

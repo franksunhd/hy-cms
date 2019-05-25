@@ -107,14 +107,9 @@
     },
     methods: {
       /*tabs*/
-      handleClick(tab, event) {
-        console.log(tab, event);
-      },
+      handleClick(tab, event) {},
       /*折叠面板*/
-      handleChange(val) {
-        console.log(val);
-      },
-
+      handleChange(val) {},
       drawLine() {
         /*基于准备好的DOM 初始化echarts*/
         let myChart = this.$echarts.init(document.getElementById("echart"))
@@ -280,11 +275,13 @@
     padding-left: 1%;
   }
 
-
+/*
+影响到监测管理-->设备资产左侧的导航
   .el-collapse-item__header {
     background-color: #ccc;
     margin: 20px 50px;
   }
+*/
 
   .dataSource {
     padding-top: 1%;

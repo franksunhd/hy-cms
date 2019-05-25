@@ -52,7 +52,7 @@
         }, function (res) {
           switch (res.status) {
             case 200:
-              var navBarArr = res.data.rootMenu;
+              var navBarArr = res.data.rootMenu === null ? [] : res.data.rootMenu;
               if (navBarArr) {
                 navBarArr.forEach(function (item) {
                   if (item.systemMenuAndLanguageRelationChildList.length === 0) {
@@ -77,6 +77,7 @@
           }
         });
       },
+			// 点击菜单的时候
       clickNode() {
         var node = document.querySelectorAll('#system-menu li.el-submenu');
         for (var i = 0; i < node.length; i++) {

@@ -12,15 +12,14 @@
         </h3>
 				<!-- 内容区 -->
 				<div class="transfer-main">
-					<!-- <slot name="from"></slot> -->
-					<el-select v-model="value" placeholder="请选择">
-                            <el-option
-                            v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                            </el-option>
-                        </el-select>
+					<el-select
+						v-model="value" placeholder="请选择">
+						<el-option
+							v-for="item in options"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value" />
+					</el-select>
 					<el-input v-if="filter" :placeholder="placeholder" v-model="filterFrom" size="small" class="filter-tree">
 					</el-input>
 					<el-tree ref="from-tree" :data="self_from_data" show-checkbox :node-key="node_key" @check="fromTreeChecked" :default-expanded-keys="from_expanded_keys" :props="defaultProps" :filter-node-method="filterNodeFrom" :default-expand-all="openAll" :render-content="renderContent" :default-checked-keys="defaultCheckedKeys">
@@ -32,21 +31,21 @@
 			<div class="transfer-center">
 				<template v-if="button_text">
 					<p class="transfer-center-item">
-						<el-button type="primary" @click="addToAims" :disabled="from_disabled">
+						<el-button class="alertBtn" type="primary" @click="addToAims" :disabled="from_disabled">
 							{{ fromButton || "添加" }}
 							<i class="el-icon-arrow-right"></i>
 						</el-button>
 					</p>
 					<p class="transfer-center-item">
-						<el-button type="primary" @click="removeToSource" :disabled="to_disabled" icon="el-icon-arrow-left">{{ toButton || "移除" }}</el-button>
+						<el-button class="alertBtn" type="primary" @click="removeToSource" :disabled="to_disabled" icon="el-icon-arrow-left">{{ toButton || "移除" }}</el-button>
 					</p>
 				</template>
 				<template v-else>
 					<p class="transfer-center-item">
-						<el-button type="primary" @click="addToAims" icon="el-icon-arrow-right" circle :disabled="from_disabled"></el-button>
+						<el-button type="primary" class="alertBtn" @click="addToAims" icon="el-icon-arrow-right" circle :disabled="from_disabled"></el-button>
 					</p>
 					<p class="transfer-center-item">
-						<el-button type="primary" @click="removeToSource" :disabled="to_disabled" icon="el-icon-arrow-left" circle></el-button>
+						<el-button type="primary" class="alertBtn" @click="removeToSource" :disabled="to_disabled" icon="el-icon-arrow-left" circle></el-button>
 					</p>
 				</template>
 			</div>
@@ -92,13 +91,13 @@
 			<!-- 穿梭区 按钮框 -->
 			<div class="transfer-center address-list-center">
 				<p class="transfer-center-item" v-show="!move_up">
-					<el-button type="primary" @click="addressListTransfer(0)" icon="el-icon-arrow-right" circle :disabled="from_disabled"></el-button>
+					<el-button type="primary" class="alertBtn" @click="addressListTransfer(0)" icon="el-icon-arrow-right" circle :disabled="from_disabled"></el-button>
 				</p>
 				<p class="transfer-center-item">
-					<el-button type="primary" @click="addressListTransfer(1)" :disabled="from_disabled" icon="el-icon-arrow-right" circle></el-button>
+					<el-button type="primary" class="alertBtn" @click="addressListTransfer(1)" :disabled="from_disabled" icon="el-icon-arrow-right" circle></el-button>
 				</p>
 				<p class="transfer-center-item" v-show="move_up">
-					<el-button type="primary" @click="addressListTransfer(2)" :disabled="from_disabled" icon="el-icon-arrow-right" circle></el-button>
+					<el-button type="primary" class="alertBtn" @click="addressListTransfer(2)" :disabled="from_disabled" icon="el-icon-arrow-right" circle></el-button>
 				</p>
 			</div>
 			<div class="transfer-right">

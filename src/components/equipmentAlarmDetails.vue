@@ -83,7 +83,7 @@
         <el-radio-group v-model="formItem.status" @change="changeDealWithStatus(formItem.status)">
           <el-radio :label="0">{{$t('public.confirmAlarm')}}</el-radio>
           <el-radio :label="1">{{$t('alarmCurrent.alarmDescription')}}</el-radio>
-          <el-radio :label="2">{{$t('alarmCurrent.alarmWarranty')}}</el-radio>
+<!--          <el-radio :label="2">{{$t('alarmCurrent.alarmWarranty')}}</el-radio>-->
           <el-radio :label="3">{{$t('alarmCurrent.alarmClose')}}</el-radio>
         </el-radio-group>
         <el-checkbox v-if="formItem.status == 3" v-model="formItem.checked" class="closeCheckBox">{{$t('alarmCurrent.alarmCloseIgnore')}}</el-checkbox>
@@ -273,7 +273,7 @@
         },function (res) {
           switch (res.status) {
             case 200:
-              var resData = res.data;
+              var resData = res.data === null ? [] : res.data;
               // 处理之后的评注列表数据
               var alarmDetailData = new Array();
               // 需要对比的时间
@@ -530,13 +530,5 @@
   .alarmCurrentBox-dialog .el-dialog {
     width: 930px;
     height: 560px;
-  }
-
-  .closeCheckBox {
-    margin-left: 30px;
-  }
-
-  .closeCheckBox .el-checkbox__label {
-    font-size: 12px;
   }
 </style>

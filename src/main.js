@@ -15,7 +15,9 @@ import * as custom from './assets/js/filters';
 import tagsview from './assets/js/tagsview';
 import getters from './assets/js/getters';
 import vueBus from 'vue-bus';
-import VueContextMenu from '@xunlei/vue-context-menu';
+
+import VueContextMenu from '@xunlei/vue-context-menu'
+
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css';
 import './assets/css/common.css';
@@ -23,19 +25,8 @@ import './assets/css/skin/base-default.css';
 import 'babel-polyfill';
 import './assets/css/fontStyle.css';
 import './assets/font/iconfont.css';
-// 富文本编辑器 ueditor
-import '../static/UEditor/ueditor.config';
-import '../static/UEditor/ueditor.all.min';
-import '../static/UEditor/lang/zh-cn/zh-cn';
-import '../static/UEditor/lang/en/en';
-import '../static/UEditor/ueditor.parse.min';
 
-// 富文本编辑器
-import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/mobile/theme';
-// import Editor from '@tinymce/tinymce-vue';
-
-// quill
+// quill 富文本编辑器
 import VueQuillEditor from 'vue-quill-editor';
 import './assets/quillEditor/quill.core';
 import './assets/quillEditor/quill';
@@ -43,15 +34,14 @@ import './assets/quillEditor/quill';
 import './assets/quillEditor/quill.core.css';
 import './assets/quillEditor/quill.snow.css';
 import './assets/quillEditor/quill.bubble.css';
-import './assets/css/quillEditor.css';
+import './assets/quillEditor/quillEditor.css';
 
-
+Vue.use(VueContextMenu);
 Vue.use(Vuex);
 Vue.use(VueDND);
 Vue.use(vueBus);
-Vue.use(VueContextMenu);
 Vue.use(ElementUI, {
-  i18n: (key, value) => i18n.t(key, value)
+	i18n: (key, value) => i18n.t(key, value)
 });
 Vue.use(VueQuillEditor);
 
@@ -64,27 +54,30 @@ Vue.prototype.$echarts = echarts;
 Vue.prototype.$md5 = md5;
 Vue.component('pages', pages);
 Object.keys(custom).forEach(key => {
-  Vue.filter(key, custom[key])
+	Vue.filter(key, custom[key])
 });
 
 // 用户过期
 Vue.prototype.exclude = (name, message) => {
 	var isReturn = document.body.getAttribute('data-return');
 	if (isReturn == 'false' || isReturn === null) {
-		document.body.setAttribute('data-return',true);
+		document.body.setAttribute('data-return', true);
 		name.$alert(message, name.$t('public.confirmTip'), {
 			confirmButtonText: name.$t('public.confirm'),
-			confirmButtonClass:'alertBtn',
+			confirmButtonClass: 'alertBtn',
 			type: 'warning',
 			callback: action => {
-				// name.$store.commit("setLoading", false);
-				// name.$router.push({name: 'Login'});
-				// localStorage.removeItem('hy-language');
-				// localStorage.removeItem('hy-menu-id');
-				// localStorage.removeItem('hy-organization-id');
-				// localStorage.removeItem('hy-token');
-				// localStorage.removeItem('hy-user-id');
-				// localStorage.removeItem('hy-user-name');
+				name.$store.commit("setLoading", false);
+				name.$router.push({name: 'Login'});
+				window.location.reload();
+				localStorage.removeItem('hy-language');
+				localStorage.removeItem('hy-menu-id');
+				localStorage.removeItem('hy-organization-id');
+				localStorage.removeItem('hy-token');
+				localStorage.removeItem('hy-user-id');
+				localStorage.removeItem('hy-user-name');
+				//销毁刷新频率字典避免多次挂载
+				localStorage.removeItem('RefreshRateMap');
 			}
 		});
 	}
@@ -92,69 +85,72 @@ Vue.prototype.exclude = (name, message) => {
 };
 
 const store = new Vuex.Store({
-  state: {
-    loading: false,
-  },
-  modules: {
-    tagsview
-  },
-  getters,
-  mutations: {
-    setLoading(state, value) {
-      state.loading = value;
-    }
-  }
+	state: {
+		loading: false,
+	},
+	modules: {
+		tagsview
+	},
+	getters,
+	mutations: {
+		setLoading(state, value) {
+			state.loading = value;
+		}
+	}
 });
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  i18n,
-  components: {App},
-  template: '<App/>',
-  watch: {
-    // "$route": 'checkLogin'
-  },
-  methods: {
-    // 检查是否登录
-    checkLogin() {
-      if (!localStorage.getItem('hy-token')) {
-        this.$store.commit("setLoading", false);
-        this.$router.push({name: 'Login'});
-        localStorage.removeItem('hy-language');
-        localStorage.removeItem('hy-menu-id');
-        localStorage.removeItem('hy-organization-id');
-        localStorage.removeItem('hy-token');
-        localStorage.removeItem('hy-user-id');
-        localStorage.removeItem('hy-user-name');
-      }
-    }
-  }
+	el: '#app',
+	router,
+	store,
+	i18n,
+	components: {App},
+	template: '<App/>',
+	watch: {
+		"$route": 'checkLogin'
+	},
+	methods: {
+		// 检查是否登录
+		checkLogin() {
+			if (!localStorage.getItem('hy-token')) {
+				this.$store.commit("setLoading", false);
+				this.$router.push({name: 'Login'});
+				window.location.reload();
+				localStorage.removeItem('hy-language');
+				localStorage.removeItem('hy-menu-id');
+				localStorage.removeItem('hy-organization-id');
+				localStorage.removeItem('hy-token');
+				localStorage.removeItem('hy-user-id');
+				localStorage.removeItem('hy-user-name');
+				//销毁刷新频率字典避免多次挂载
+				localStorage.removeItem('RefreshRateMap');
+			}
+		}
+	}
 });
 
 // 获取cookie
 function getCookie(name) {
-  var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-  if (arr = document.cookie.match(reg))
-    return unescape(arr[2]);
-  else
-    return null;
+	var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+	if (arr = document.cookie.match(reg))
+		return unescape(arr[2]);
+	else
+		return null;
 }
 
 // 设置cookie 有效期为30天
 function setCookie(name, value, days) {
-  var exp = new Date();
-  exp.setDate(exp.getDate() + days);
-  document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+	var exp = new Date();
+	exp.setDate(exp.getDate() + days);
+	document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
 }
 
 // 删除 cookie
 function delCookie(name) {
-  var exp = new Date();
-  exp.setTime(exp.getTime() - 1);
-  var cval = this.getCookie(name);
-  if (cval != null)
-    document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+	var exp = new Date();
+	exp.setTime(exp.getTime() - 1);
+	var cval = this.getCookie(name);
+	if (cval != null)
+		document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
 }

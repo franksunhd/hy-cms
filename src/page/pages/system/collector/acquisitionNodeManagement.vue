@@ -22,7 +22,7 @@
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeManagement.groupName') + '：'">
           <el-select class="width200" v-model="formItem.groupIp" clearable @change="formItem.groupIp = formItem.groupIp == '' ? '0':formItem.groupIp">
-            <el-option label="全部" value="0" />
+            <el-option :label="$t('acquisitionNodeManagement.all')" value="0" />
             <el-option v-for="(item,index) in groupIpList" :key="index" :label="item.groupName" :value="item.id" />
           </el-select>
         </el-form-item>
@@ -41,15 +41,15 @@
       <!--全局操作-->
       <div class="marBottom16">
         <el-button type="warning" class="queryBtn" @click="addDataBtn">
-          <i class="el-icon-circle-plus-outline"></i>
+					<span class="iconfont fs14">&#xe689;</span>
           {{$t('public.add')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.edit" @click="editDataBtn">
-          <i class="el-icon-edit-outline"></i>
+					<span class="iconfont fs14">&#xe641;</span>
           {{$t('public.edit')}}
         </el-button>
         <el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
-          <i class="el-icon-delete"></i>
+					<span class="iconfont fs14">&#xe647;</span>
           {{$t('public.delete')}}
         </el-button>
       </div>
@@ -67,8 +67,8 @@
         <el-table-column prop="port" :label="$t('acquisitionNodeManagement.port')" header-align="left" align="left"/>
         <el-table-column :label="$t('acquisitionNodeManagement.nodeRunStatus')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
-            <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
+            <span v-if="scope.row.status == 1" class="iconfontSuccess">{{$t('acquisitionNodeManagement.normal')}}</span>
+            <span v-if="scope.row.status == -1" class="iconfontError">{{$t('acquisitionNodeManagement.abnormal')}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="groupName" :label="$t('acquisitionNodeManagement.nodeGroup')" header-align="left" align="left"/>
@@ -76,12 +76,12 @@
         <el-table-column width="150px" :label="$t('acquisitionNodeManagement.detailNode')" header-align="left" align="left">
           <template slot-scope="scope">
             <a href="javascript:;" @click="clickSeeDetail(scope.row)" class="acquisitionNode-detail">
-              <span class="iconfontSuccess">正常</span>
-              <span class="iconfontError">异常</span>
+              <span class="iconfontSuccess">{{$t('acquisitionNodeManagement.normal')}}</span>
+              <span class="iconfontError">{{$t('acquisitionNodeManagement.abnormal')}}</span>
             </a>
           </template>
         </el-table-column>
-        <el-table-column prop="createBy" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
+        <el-table-column prop="createByUser" :label="$t('acquisitionNodeManagement.createName')" header-align="left" align="left"/>
         <el-table-column width="160px" :label="$t('acquisitionNodeManagement.createTime')" header-align="left" align="left">
           <template slot-scope="scope">
             <span>{{scope.row.createTime | dateFilter}}</span>
@@ -135,7 +135,7 @@
     <el-dialog
       append-to-body
       class="acquisitionNodeDetail-dialog"
-      :title="statusDetail.label + ' 的' + $t('acquisitionNodeManagement.detailNode')"
+      :title="statusDetail.label + ' ' + $t('acquisitionNodeManagement.detailNode')"
       :visible.sync="dialogVisibleDetail"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
@@ -150,8 +150,8 @@
         <el-table-column :label="$t('acquisitionNodeManagement.gatewayIp')" header-align="left" align="left" />
         <el-table-column :label="$t('acquisitionNodeManagement.status')" header-align="left" align="left">
           <template slot-scope="scope">
-            <span v-if="scope.row.status == 1" class="iconfontSuccess">正常</span>
-            <span v-if="scope.row.status == -1" class="iconfontError">异常</span>
+            <span v-if="scope.row.status == 1" class="iconfontSuccess">{{$t('acquisitionNodeManagement.normal')}}</span>
+            <span v-if="scope.row.status == -1" class="iconfontError">{{$t('acquisitionNodeManagement.abnormal')}}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -200,8 +200,8 @@
           more: true
         },
         statusList:[
-          {label:'正常',value:1},
-          {label:'异常',value:-1},
+			{label: this.$t('public.enable'), value: 1},
+			{label: this.$t('public.disable'), value: 0}
         ],
         tableData: [], // 表格数据集合
         checkListIds:[], // 选中的数据id集合
@@ -332,7 +332,7 @@
       // 删除
       deleteData() {
         var _t = this;
-        _t.$confirm('请问是否确认删除当前的记录?', _t.$t('public.confirmTip'), {
+        _t.$confirm(_t.$t('acquisitionNodeManagement.dialogDeleteTipText'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
           cancelButtonClass: "alertBtn",
@@ -350,7 +350,7 @@
             _t.$store.commit('setLoading',false);
             switch (res.status) {
               case 200:
-                _t.$alert('删除成功!', _t.$t('public.resultTip'), {
+                _t.$alert(_t.$t('acquisitionNodeManagement.dialogDeleteTip'), _t.$t('public.resultTip'), {
                   confirmButtonText: _t.$t('public.confirm'),
                   confirmButtonClass:'alertBtn'
                 });
@@ -402,7 +402,7 @@
           _t.$store.commit('setLoading',false);
           switch (res.status) {
             case 200:
-              _t.tableData = res.data.list;
+              _t.tableData = res.data.list === null ? [] : res.data.list;
               _t.options.currentPage = res.data.currentPage;
               _t.options.total = res.data.count;
               break;
@@ -552,7 +552,7 @@
         _t.$api.get('system/collectorGroup/all',{},function (res) {
           switch (res.status) {
             case 200:
-              _t.groupIpList = res.data.list;
+              _t.groupIpList = res.data.list === null ? [] : res.data.list;
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
