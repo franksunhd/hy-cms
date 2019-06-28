@@ -42,7 +42,7 @@
 							{{$t('DeviceManualDetection.BeganToSee')}}
 						</div>
 						<div class="ListOfUncompletedDiscoveries" @click="UncompletedDiscoveryTask">
-							<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="aaa">
+							<el-popover placement="bottom" width="400" v-model="visible2" trigger="click" popper-class="BeganToSee_unfinished">
 								<div class="ListOfUncompletedDiscoveries-process">
 									<h3>{{$t('DeviceManualDetection.showProcess')}}</h3>
 									<ul v-for="(item,index) in process" :key="item.sn" @click="handClickprocess(item.sn)">
@@ -75,19 +75,19 @@
 								</template>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
-														:label="$t('DeviceManualDetection.username') + '：'">
+										  :label="$t('DeviceManualDetection.username') + '：'">
 								<el-input v-model="list.username" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
-														:label="$t('DeviceManualDetection.password') + '：'">
+										  :label="$t('DeviceManualDetection.password') + '：'">
 								<el-input type="password" v-model="list.password" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId0)!=-1"
-														:label="$t('DeviceManualDetection.port') + '：'">
+										  :label="$t('DeviceManualDetection.port') + '：'">
 								<el-input v-model="list.port" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1"
-														:label="$t('DeviceManualDetection.snmpVersion') + '：'">
+										  :label="$t('DeviceManualDetection.snmpVersion') + '：'">
 								<el-select
 									v-model="list.snmpVersion"
 									class="width200">
@@ -102,52 +102,52 @@
 							</el-form-item>
 							<br/>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion!=='3'"
-														:label="$t('DeviceManualDetection.snmpCommunity') + '：'">
+										  :label="$t('DeviceManualDetection.snmpCommunity') + '：'">
 								<el-input type="password" v-model="list.snmpCommunity" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
-														:label="$t('DeviceManualDetection.snmpUsername') + '：'">
+										  :label="$t('DeviceManualDetection.snmpUsername') + '：'">
 								<el-input v-model="list.snmpUsername" class="width200"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
-														:label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
+										  :label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
 								<el-select
 									v-model="list.snmpSecurityLevel"
 									class="width200"
 									@change="selectsnmpSecurityLevel(list)">
 									<el-option v-for="item in SecurityLevel"
-														 :key="item.value"
-														 :label="item.label" :value="item.value">
+											   :key="item.value"
+											   :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
-														:label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
+										  :label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
 								<el-select
 									v-model="list.snmpAuthAlgorithm" clearable
 									class="width200"
 									:disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false">
 									<el-option v-for="item in VerifyTheAlgorithm"
-														 :key="item.value" :label="item.label"
-														 :value="item.value">
+											   :key="item.value" :label="item.label"
+											   :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
-														:label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
+										  :label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
 								<el-input type="password" v-model="list.snmpAuthPassword"
-													class="width200" clearable
-													:disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
+										  class="width200" clearable
+										  :disabled="list.snmpSecurityLevel==='noAuthNoPriv' ? true:(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 							</el-form-item>
 							<el-form-item v-if="Id.indexOf(nodeId.nodeId1)!=-1&&list.snmpVersion==='3'"
-														:label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
+										  :label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
 								<el-select
 									v-model="list.snmpPrivacyAlgorithm"
 									class="width200"
 									clearable
 									:disabled="(list.snmpSecurityLevel==='authNoPriv'||list.snmpSecurityLevel==='noAuthNoPriv')? true:(list.snmpSecurityLevel==='authPriv') ? false:false">
 									<el-option v-for="item in PrivateVerificationAlgorithm "
-														 :key="item.value" :label="item.label" :value="item.value">
+											   :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</el-form-item>
@@ -169,7 +169,7 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	export default {
 		name: 'DeviceManualDetection',
 		components: {
@@ -522,13 +522,7 @@
 
 	}
 </script>
-
 <style scoped>
-	.DeviceManualDetection-box {
-		overflow: hidden;
-		padding: 20px 20px;
-	}
-
 	.DeviceManualDetection-box-left {
 		padding: 20px;
 		background-color: #fff;
@@ -649,7 +643,7 @@
 		margin-right: 100px;
 	}
 
-	.aaa {
+	.BeganToSee_unfinished {
 		background-color: #000000;
 		opacity: 0.8;
 		height: 350px;

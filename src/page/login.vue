@@ -8,8 +8,8 @@
 		</el-carousel>
 		<!--header-->
 		<div class="login-header">
-			<img class="login-logo" src="../assets/img/logo_login.png" alt="logo">
-			<span class="login-logoText">智能硬件管理平台</span>
+			<img class="login-logo" :src="logoLoginImg" onerror="javascript:this.src='./static/sys/logo/logo_login.png';" alt="logo">
+			<span class="login-logoText">| &nbsp;智能硬件管理平台</span>
 		</div>
 		<!--main-->
 		<div class="login-form">
@@ -75,6 +75,7 @@
 		name: "login",
 		data() {
 			return {
+				logoLoginImg: this.$api.root() + '/static/sys/logo/logo_login.png',
 				loginImg: [{}, {}, {}],
 				username: '',
 				password: '',
@@ -112,7 +113,7 @@
 				var _t = this;
 				_t.$api.post('login', {
 					username: _t.username.trim(),
-					password: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.password.trim())),
+					password: _t.$md5(_t.$api.passwordRule() + _t.$md5(_t.password.trim())),
 					code: _t.code,
 					sn: _t.code_SN
 				}, function (res) {
@@ -147,10 +148,36 @@
 							break;
 					}
 				});
+			},
+			// 登录页的特殊之处 先获取license
+			getLicense(){
+				var _t = this;
+				_t.$api.get('system/license/statusInfo', {}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (res.data.status === true) {
+								localStorage.setItem('hy-license',true);
+								// 获取验证码
+								_t.getCode();
+							} else {
+								localStorage.setItem('hy-license',false);
+								_t.$router.push({name:'licenseExpired'});
+							}
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				});
 			}
 		},
 		created() {
-			this.getCode();
+			this.getLicense();
 		}
 	}
 </script>
@@ -166,18 +193,20 @@
 		top: 20px;
 		left: 30px;
 		right: 0;
-		height: 60px;
+		height: 50px;
 		z-index: 1000;
 	}
 
 	.login-logo {
-		width: 50px;
 		height: 50px;
 	}
 
 	.login-logoText {
-		font-size: 14px;
-		margin-left: 14px;
+		font-size: 22px;
+		margin-left: 8px;
+		display: inline-block;
+		vertical-align: bottom;
+		padding-bottom: 7px;
 	}
 
 	.login-footer {

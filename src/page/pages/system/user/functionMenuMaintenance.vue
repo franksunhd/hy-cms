@@ -27,7 +27,7 @@
         <!--表单-->
         <el-form inline :model="formItem">
           <el-form-item :label="$t('functionMenuMaintenance.dictionaryName') + '：'">
-            <el-input class="width200" v-model="formItem.dictionaryName" clearable />
+            <el-input class="width200" v-model="formItem.dictionaryName" @keyup.enter.native="getData()" clearable />
           </el-form-item>
           <el-form-item :label="$t('functionMenuMaintenance.status') + '：'">
             <el-select v-model="formItem.status" class="width200" clearable>
@@ -105,7 +105,7 @@
                 <span>{{scope.row.menuTarget}}</span>
               </el-tooltip>
             </template>
-          </el-table-column>	
+          </el-table-column>
           <el-table-column prop="menuLevel" :label="$t('functionMenuMaintenance.modelLevel')" header-align="left"
                            align="left"/>
           <el-table-column :label="$t('functionMenuMaintenance.sort')" header-align="left" align="left">
@@ -262,7 +262,7 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
+  import Box from '../../../../components/common/Box';
   import {isNotNull,isMenuHref} from "../../../../assets/js/validator";
   import {queryOrgWithRole,returnObjectById} from "../../../../assets/js/recursive";
   import {dateFilter} from "../../../../assets/js/filters";
@@ -465,7 +465,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 新增语言之后刷新左侧导航的数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -493,7 +493,7 @@
          * 弹出层形式
          	_t.ifAdd = true;
         	_t.dialogVisible = true;
-        	_t.getLanguage(); 
+        	_t.getLanguage();
          */
         _t.$router.push({name:'functionMenuDetail',params:{
         		functionIsAdd:true,
@@ -514,7 +514,7 @@
         	_t.addEdit.id = _t.checkValueList.id;
         	_t.getEditData(_t.addEdit.id);
         	_t.getEditRoleData(_t.addEdit.id);
-         */ 
+         */
         _t.$router.push({name:'functionMenuDetail',params:{
         		functionIsAdd:false,
         		functionMenuId:_t.checkValueList.id,
@@ -671,7 +671,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 编辑成功后刷新左侧导航的数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                   break;
                 case 1003: // 无操作权限
                 case 1004: // 登录过期
@@ -786,7 +786,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 启用成功之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                 });
                 break;
               case 1003: // 无操作权限
@@ -834,8 +834,10 @@
                   // 刷新当前组件列表数据
                   _t.getMenuData();
                   _t.getData();
-                  // 刷新左侧导航列表数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$nextTick(()=>{
+										// 刷新左侧导航列表数据
+										_t.$bus.emit('getMenuData', true);
+									});
                 });
                 break;
               case 1003: // 无操作权限
@@ -882,7 +884,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 删除之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                 });
 
                 break;
@@ -900,7 +902,7 @@
                   _t.getMenuData();
                   _t.getData();
                   // 删除失败之后刷新左侧导航数据
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                 });
                 break;
               case 3005: // 菜单关联其他菜单
@@ -910,7 +912,7 @@
                 }).then(() => {
                   _t.getMenuData();
                   _t.getData();
-                  _t.$bus.emit('getMenu', true);
+                  _t.$bus.emit('getMenuData', true);
                 });
                 break;
               default:
@@ -984,7 +986,7 @@
       // 获取左侧功能菜单列表
       getMenuData() {
         var _t = this;
-        _t.$api.get('system/menu/', {
+        _t.$api.get('system/menu/getSystemMenuByMarkTree', {
           jsonString: JSON.stringify({
             menuLevel: '1_2_3_4',
             languageMark: localStorage.getItem('hy-language')
@@ -1090,7 +1092,7 @@
               _t.getData();
               _t.getMenuData();
               // 列表数据上移之后刷新左侧导航菜单
-              _t.$bus.emit('getMenu', true);
+              _t.$bus.emit('getMenuData', true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期
@@ -1127,7 +1129,7 @@
               _t.getData();
               _t.getMenuData();
               // 数据下移之后刷新左侧导航菜单
-              _t.$bus.emit('getMenu', true);
+              _t.$bus.emit('getMenuData', true);
               break;
             case 1003: // 无操作权限
             case 1004: // 登录过期

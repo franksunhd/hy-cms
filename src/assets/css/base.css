@@ -365,10 +365,6 @@ del {
   text-decoration: line-through
 }
 
-em {
-  font-style: normal
-}
-
 button::-moz-focus-inner,
 input[type=reset]::-moz-focus-inner,
 input[type=button]::-moz-focus-inner,

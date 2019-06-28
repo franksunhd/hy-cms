@@ -65,17 +65,8 @@
 				<div class="borderBottomForm">
 					<!--表单-->
 					<el-form :model="formItem" inline>
-						<!--设备名称/资产信息-->
-						<el-form-item :label="$t('assetDevice.formEquipmentNameInfo') + '：'">
-							<el-input v-model="formItem.equipmentName" class="width200" clearable/>
-						</el-form-item>
-						<!--IP-->
-						<el-form-item :label="$t('assetDevice.formEquipmentIp') + '：'">
-							<el-input v-model="formItem.equipmentIp" class="width200" clearable/>
-						</el-form-item>
-						<!--序列号-->
-						<el-form-item :label="$t('assetDevice.formSerialNumber') + '：'">
-							<el-input v-model="formItem.serialNumber" class="width200" clearable/>
+						<el-form-item :label="$t('assetDevice.formEquipmentNameInfo') + ' / ' + $t('assetDevice.formSerialNumber') + ' / ' + $t('assetDevice.formEquipmentIp') + '：'">
+							<el-input v-model="formItem.searchStr" class="width200" @keyup.enter.native="getData()" clearable/>
 						</el-form-item>
 						<el-form-item>
 							<el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
@@ -97,14 +88,12 @@
 						</el-button>
 						<!--导入-->
 						<el-button @click="toImportData">
-							<span class="iconfont fs14">&#xe68a; </span>{{$t('assetDevice.btnImport')}}
+							<span class="iconfont fs14">&#xe6af; </span>{{$t('assetDevice.btnImport')}}
 						</el-button>
 						<!--导出-->
-						<!--
 						<el-button @click="toDownloadData">
 							<span class="iconfont fs14">&#xe6a8; </span>{{$t('assetDevice.btnExport')}}
 						</el-button>
-						-->
 					</div>
 					<!--表格-->
 					<el-table border :data="tableData" stripe @cell-click="clickCellOfTable" @selection-change="selectTableLine">
@@ -161,8 +150,9 @@
 							</template>
 						</el-table-column>
 						<!--设备类型-->
-						<el-table-column width="170px" :label="$t('assetDevice.columnAssetType')" header-align="center"
-														 align="left">
+						<el-table-column
+							width="170px" :label="$t('assetDevice.columnAssetType')"
+							header-align="center" align="left">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark" :content="dictionaryMap.AssetType[scope.row.type]" placement="left-start">
 									<span>{{dictionaryMap.AssetType[scope.row.type]}}</span>
@@ -172,38 +162,39 @@
 						<!--机房-->
 						<el-table-column :label="$t('assetDevice.columnRoomName')" header-align="center" align="left">
 							<template slot-scope="scope">
-								<el-tooltip effect="dark" :content="scope.row.roomName" placement="top-start">
+								<el-tooltip effect="dark" placement="top-start">
+									<div slot="content">
+										{{scope.row.roomName == null? 'N/A' : (scope.row.roomName == '' ? 'N/A' : scope.row.roomName)}}
+									</div>
 									<span>{{scope.row.roomName == null? 'N/A' : (scope.row.roomName == '' ? 'N/A' : scope.row.roomName)}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
 						<!--机柜-->
-						<el-table-column :label="$t('assetDevice.columnFrameName')" header-align="center" align="left">
+						<el-table-column :label="$t('assetDevice.columnRackName')" header-align="center" align="left">
 							<template slot-scope="scope">
-								<el-tooltip effect="dark" :content="scope.row.frameName" placement="top-start">
-									<span>{{scope.row.frameName == null? 'N/A' : (scope.row.frameName == '' ? 'N/A' : scope.row.frameName)}}</span>
+								<el-tooltip effect="dark" placement="top-start">
+									<div slot="content">
+										{{scope.row.rackName == null? 'N/A' : (scope.row.rackName == '' ? 'N/A' : scope.row.rackName)}}
+									</div>
+									<span>{{scope.row.rackName == null? 'N/A' : (scope.row.rackName == '' ? 'N/A' : scope.row.rackName)}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
 						<!--位置-->
-						<el-table-column :label="$t('assetDevice.columnFramePosition')" header-align="center" align="left">
+						<el-table-column :label="$t('assetDevice.columnRackPosition')" header-align="center" align="left">
 							<template slot-scope="scope">
-								<span>{{scope.row.framePosition == null ? 'N/A' : (scope.row.framePosition == '' ? 'N/A' : scope.row.framePosition + 'U')}}</span>
+								<span>{{scope.row.rackPosition == null ? 'N/A' : (scope.row.rackPosition == '' ? 'N/A' : scope.row.rackPosition + 'U')}}</span>
 							</template>
 						</el-table-column>
 						<!--更新时间-->
-						<el-table-column width="150px" :label="$t('assetDevice.columnLastMonitorTime')" header-align="center"
-														 align="center">
+						<el-table-column
+							width="150px" :label="$t('assetDevice.columnLastMonitorTime')"
+							header-align="center" align="center">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter" placement="top-start">
 									<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
 								</el-tooltip>
-							</template>
-						</el-table-column>
-						<!--操作-->
-						<el-table-column width="70px" :label="$t('public.operation')" header-align="center" align="center">
-							<template slot-scope="scope">
-								<el-button type="text">{{$t('public.detail')}}</el-button>
 							</template>
 						</el-table-column>
 						<el-table-column type="selection" header-align="center" align="center" width="55"/>
@@ -213,17 +204,11 @@
 						:total='options.total'
 						:currentPage='options.currentPage'
 						:page-size="options.pageSize"
+						@handleSizeChangeSub="handleSizeChangeSub"
 						@handleCurrentChangeSub="handleCurrentChange"/>
 				</div>
 			</div>
 		</div>
-		<!--标签页-->
-		<AdministrationTags
-			@changePageDeviceId="changePageDeviceId"
-			@refreshSetInterval="refreshSetInterval"
-			@clearSetInterval="clearSetInterval"
-			:page-device-name="pageDeviceName"
-			:page-device-id="pageDeviceId" />
 		<!-- 导入Excel -->
 		<el-dialog
 			class="assetDeviceImport-dialog"
@@ -240,34 +225,38 @@
 				:auto-upload="false"
 				:multiple="false"
 				:limit="1"
+				:file-list="fileList"
 				:on-exceed="onExceedHandle"
 				:on-remove="onRemoveHandle"
 				:before-upload="beforeUploadHandle"
 				:on-success="uploadSuccessHandle"
 				:on-error="uploadErrorHandle"
 				:action="rootUrl + '/asset/assetDevice/toImportExcel'">
-				<el-button size="small" type="primary">{{$t('public.pickUpFile')}}</el-button>
+				<el-button class="alertBtn" type="primary">{{$t('public.pickUpFile')}}</el-button>
 			</el-upload>
-			<span slot="footer" class="dialog-footer">
-				<el-button
-					type="primary"
-					@click="submitUpload"
-					:disabled="submitUploadButtonDisabled"
-					size="small">{{$t('public.submitUpload')}}</el-button>
-			</span>
+			<div slot="footer" class="dialog-footer">
+				<el-button class="alertBtn" type="primary" @click="submitUpload" :disabled="submitUploadButtonDisabled">{{$t('public.submitUpload')}}</el-button>
+			</div>
 		</el-dialog>
 		<!-- 展示Excel内容 -->
 		<el-dialog
 			class="showExcelContent-dialog"
-			:title="$t('assetDevice.dialog.excelAnalyzeResult.dialogTitle')"
+			:title="showExcelContent_dialogTitle"
 			append-to-body
 			:visible.sync="excelAnalyzeResultDialogVisible"
 			:close-on-click-modal="false"
 			:close-on-press-escape="false">
-			<el-table :data="excelAnalyzeResultDataList" class="excelAnalyzeResult" border height="455">
+			<el-table
+				:data="excelAnalyzeResultDataList"
+				class="excelAnalyzeResult" border height="455"
+				v-loading="saveExcelContent_loading"
+				:element-loading-text="saveExcelContent_loadingText"
+				element-loading-spinner="el-icon-loading"
+				element-loading-background="rgba(0, 0, 0, 0.8)">
 				<!-- 序号 -->
-				<el-table-column width="50px" :label="$t('assetDevice.dialog.excelAnalyzeResult.columnOrder')" align="center"
-												 fixed="left">
+				<el-table-column
+					width="50px" align="center" fixed="left"
+					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnOrder')">
 					<template slot-scope="scope">
 						<span>
 							{{scope.$index+1}}
@@ -288,14 +277,15 @@
 					width="120px" align="left" fixed="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnTypeName')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.typeNameVerify"
-												:content="scope.row.typeName"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.typeNameVerify"
+							:content="scope.row.typeName" type="dark" placement="left">
 							<span>{{scope.row.typeName}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.typeNameVerify"
-												:content="scope.row.typeNameVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.typeNameVerify"
+							:content="scope.row.typeNameVerifyMsg"
+							placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.typeName}}</span>
 						</el-tooltip>
 					</template>
@@ -305,14 +295,14 @@
 					width="120px" align="center" fixed="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnIP')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.ipVerify"
-												:content="scope.row.ip"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.ipVerify"
+							:content="scope.row.ip" type="dark" placement="left">
 							<span>{{scope.row.ip}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.ipVerify"
-												:content="scope.row.ipVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.ipVerify"
+							:content="scope.row.ipVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.ip}}</span>
 						</el-tooltip>
 					</template>
@@ -322,14 +312,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnServicetag')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.servicetagVerify"
-												:content="scope.row.servicetag"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.servicetagVerify"
+							:content="scope.row.servicetag" type="dark" placement="left">
 							<span>{{scope.row.servicetag}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.servicetagVerify"
-												:content="scope.row.servicetagVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.servicetagVerify"
+							:content="scope.row.servicetagVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.servicetag}}</span>
 						</el-tooltip>
 					</template>
@@ -339,14 +329,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnDataCenter')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.dataCenterVerify"
-												:content="scope.row.dataCenter"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.dataCenterVerify"
+							:content="scope.row.dataCenter" type="dark" placement="left">
 							<span>{{scope.row.dataCenter}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.dataCenterVerify"
-												:content="scope.row.dataCenterVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.dataCenterVerify"
+							:content="scope.row.dataCenterVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.dataCenter}}</span>
 						</el-tooltip>
 					</template>
@@ -356,14 +346,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnRoomName')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.roomNameVerify"
-												:content="scope.row.roomName"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.roomNameVerify"
+							:content="scope.row.roomName" type="dark" placement="left">
 							<span>{{scope.row.roomName}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.roomNameVerify"
-												:content="scope.row.roomNameVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.roomNameVerify"
+							:content="scope.row.roomNameVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.roomName}}</span>
 						</el-tooltip>
 					</template>
@@ -371,34 +361,34 @@
 				<!-- 机柜 -->
 				<el-table-column
 					width="150px" header-align="center" align="left"
-					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnFrameName')">
+					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnRackName')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.frameNameVerify"
-												:content="scope.row.frameName"
-												type="dark" placement="left">
-							<span>{{scope.row.frameName}}</span>
+						<el-tooltip
+							v-if="scope.row.rackNameVerify"
+							:content="scope.row.rackName" type="dark" placement="left">
+							<span>{{scope.row.rackName}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.frameNameVerify"
-												:content="scope.row.frameNameVerifyMsg"
-												placement="left" popper-class="errorTip">
-							<span style="color:red;">{{scope.row.frameName}}</span>
+						<el-tooltip
+							v-if="!scope.row.rackNameVerify"
+							:content="scope.row.rackNameVerifyMsg" placement="left" popper-class="errorTip">
+							<span style="color:red;">{{scope.row.rackName}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
 				<!-- 机架U位 -->
 				<el-table-column
 					width="150px" header-align="center" align="left"
-					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnFramePosition')">
+					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnRackPosition')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.framePositionVerify"
-												:content="scope.row.framePosition"
-												type="dark" placement="left">
-							<span>{{scope.row.framePosition}}</span>
+						<el-tooltip
+							v-if="scope.row.rackPositionVerify"
+							:content="scope.row.rackPosition" type="dark" placement="left">
+							<span>{{scope.row.rackPosition}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.framePositionVerify"
-												:content="scope.row.framePositionVerifyMsg"
-												placement="left" popper-class="errorTip">
-							<span style="color:red;">{{scope.row.framePosition}}</span>
+						<el-tooltip
+							v-if="!scope.row.rackPositionVerify"
+							:content="scope.row.rackPositionVerifyMsg" placement="left" popper-class="errorTip">
+							<span style="color:red;">{{scope.row.rackPosition}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
@@ -407,14 +397,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnProductIp')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.productIpVerify"
-												:content="scope.row.productIp"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.productIpVerify"
+							:content="scope.row.productIp" type="dark" placement="left">
 							<span>{{scope.row.productIp}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.productIpVerify"
-												:content="scope.row.productIpVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.productIpVerify"
+							:content="scope.row.productIpVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.productIp}}</span>
 						</el-tooltip>
 					</template>
@@ -424,14 +414,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnManufacturer')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.manufacturerVerify"
-												:content="scope.row.manufacturer"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.manufacturerVerify"
+							:content="scope.row.manufacturer" type="dark" placement="left">
 							<span>{{scope.row.manufacturer}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.manufacturerVerify"
-												:content="scope.row.manufacturerVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.manufacturerVerify"
+							:content="scope.row.manufacturerVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.manufacturer}}</span>
 						</el-tooltip>
 					</template>
@@ -441,14 +431,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnModel')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.modelVerify"
-												:content="scope.row.model"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.modelVerify"
+							:content="scope.row.model" type="dark" placement="left">
 							<span>{{scope.row.model}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.modelVerify"
-												:content="scope.row.modelVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.modelVerify"
+							:content="scope.row.modelVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.model}}</span>
 						</el-tooltip>
 					</template>
@@ -458,14 +448,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnAccessCode')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.accessCodeVerify"
-												:content="scope.row.accessCode"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.accessCodeVerify"
+							:content="scope.row.accessCode" type="dark" placement="left">
 							<span>{{scope.row.accessCode}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.accessCodeVerify"
-												:content="scope.row.accessCodeVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.accessCodeVerify"
+							:content="scope.row.accessCodeVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.accessCode}}</span>
 						</el-tooltip>
 					</template>
@@ -475,14 +465,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnChargeBy')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.chargeByVerify"
-												:content="scope.row.chargeBy"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.chargeByVerify"
+							:content="scope.row.chargeBy" type="dark" placement="left">
 							<span>{{scope.row.chargeBy}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.chargeByVerify"
-												:content="scope.row.chargeByVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.chargeByVerify"
+							:content="scope.row.chargeByVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.chargeBy}}</span>
 						</el-tooltip>
 					</template>
@@ -492,14 +482,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnBusinessChargeBy')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.businessChargeByVerify"
-												:content="scope.row.businessChargeBy"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.businessChargeByVerify"
+							:content="scope.row.businessChargeBy" type="dark" placement="left">
 							<span>{{scope.row.businessChargeBy}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.businessChargeByVerify"
-												:content="scope.row.businessChargeByVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.businessChargeByVerify"
+							:content="scope.row.businessChargeByVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.businessChargeBy}}</span>
 						</el-tooltip>
 					</template>
@@ -509,14 +499,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnDeviceName')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.deviceNameVerify"
-												:content="scope.row.deviceName"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.deviceNameVerify"
+							:content="scope.row.deviceName" type="dark" placement="left">
 							<span>{{scope.row.deviceName}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.deviceNameVerify"
-												:content="scope.row.deviceNameVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.deviceNameVerify"
+							:content="scope.row.deviceNameVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.deviceName}}</span>
 						</el-tooltip>
 					</template>
@@ -526,14 +516,14 @@
 					width="200px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnOs')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.osVerify"
-												:content="scope.row.os"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.osVerify"
+							:content="scope.row.os" type="dark" placement="left">
 							<span>{{scope.row.os}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.osVerify"
-												:content="scope.row.osVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.osVerify"
+							:content="scope.row.osVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.os}}</span>
 						</el-tooltip>
 					</template>
@@ -543,14 +533,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnApp')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.appVerify"
-												:content="scope.row.app"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.appVerify"
+							:content="scope.row.app" type="dark" placement="left">
 							<span>{{scope.row.app}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.appVerify"
-												:content="scope.row.appVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.appVerify"
+							:content="scope.row.appVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.app}}</span>
 						</el-tooltip>
 					</template>
@@ -560,14 +550,14 @@
 					width="180px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnServiceAgent')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.serviceAgentVerify"
-												:content="scope.row.serviceAgent"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.serviceAgentVerify"
+							:content="scope.row.serviceAgent" type="dark" placement="left">
 							<span>{{scope.row.serviceAgent}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.serviceAgentVerify"
-												:content="scope.row.serviceAgentVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.serviceAgentVerify"
+							:content="scope.row.serviceAgentVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.serviceAgent}}</span>
 						</el-tooltip>
 					</template>
@@ -577,14 +567,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnServiceAgentUser')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.serviceAgentUserVerify"
-												:content="scope.row.serviceAgentUser"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.serviceAgentUserVerify"
+							:content="scope.row.serviceAgentUser" type="dark" placement="left">
 							<span>{{scope.row.serviceAgentUser}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.serviceAgentUserVerify"
-												:content="scope.row.serviceAgentUserVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.serviceAgentUserVerify"
+							:content="scope.row.serviceAgentUserVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.serviceAgentUser}}</span>
 						</el-tooltip>
 					</template>
@@ -594,14 +584,14 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnServiceAgentPhone')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.serviceAgentPhoneVerify"
-												:content="scope.row.serviceAgentPhone"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.serviceAgentPhoneVerify"
+							:content="scope.row.serviceAgentPhone" type="dark" placement="left">
 							<span>{{scope.row.serviceAgentPhone}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.serviceAgentPhoneVerify"
-												:content="scope.row.serviceAgentPhoneVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.serviceAgentPhoneVerify"
+							:content="scope.row.serviceAgentPhoneVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.serviceAgentPhone}}</span>
 						</el-tooltip>
 					</template>
@@ -611,14 +601,14 @@
 					width="120px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnWarrantyType')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.warrantyTypeVerify"
-												:content="scope.row.warrantyType"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.warrantyTypeVerify"
+							:content="scope.row.warrantyType" type="dark" placement="left">
 							<span>{{scope.row.warrantyType}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.warrantyTypeVerify"
-												:content="scope.row.warrantyTypeVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.warrantyTypeVerify"
+							:content="scope.row.warrantyTypeVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.warrantyType}}</span>
 						</el-tooltip>
 					</template>
@@ -628,14 +618,14 @@
 					width="130px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnPurchaseTime')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.purchaseTimeVerify"
-												:content="scope.row.purchaseTime"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.purchaseTimeVerify"
+							:content="scope.row.purchaseTime" type="dark" placement="left">
 							<span>{{scope.row.purchaseTime}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.purchaseTimeVerify"
-												:content="scope.row.purchaseTimeVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.purchaseTimeVerify"
+							:content="scope.row.purchaseTimeVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.purchaseTime}}</span>
 						</el-tooltip>
 					</template>
@@ -645,14 +635,14 @@
 					width="130px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnExpireTime')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.expireTimeVerify"
-												:content="scope.row.expireTime"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.expireTimeVerify"
+							:content="scope.row.expireTime" type="dark" placement="left">
 							<span>{{scope.row.expireTime}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.expireTimeVerify"
-												:content="scope.row.expireTimeVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.expireTimeVerify"
+							:content="scope.row.expireTimeVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.expireTime}}</span>
 						</el-tooltip>
 					</template>
@@ -662,14 +652,14 @@
 					width="150px" header-align="center" align="left"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnTypeModel')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.typeModelVerify"
-												:content="scope.row.typeModel"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.typeModelVerify"
+							:content="scope.row.typeModel" type="dark" placement="left">
 							<span>{{scope.row.typeModel}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.typeModelVerify"
-												:content="scope.row.typeModelVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.typeModelVerify"
+							:content="scope.row.typeModelVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.typeModel}}</span>
 						</el-tooltip>
 					</template>
@@ -679,27 +669,39 @@
 					width="150px" header-align="center" align="center"
 					:label="$t('assetDevice.dialog.excelAnalyzeResult.columnWarrantyLevel')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.warrantyLevelVerify"
-												:content="scope.row.warrantyLevel"
-												type="dark" placement="left">
+						<el-tooltip
+							v-if="scope.row.warrantyLevelVerify"
+							:content="scope.row.warrantyLevel" type="dark" placement="left">
 							<span>{{scope.row.warrantyLevel}}</span>
 						</el-tooltip>
-						<el-tooltip v-if="!scope.row.warrantyLevelVerify"
-												:content="scope.row.warrantyLevelVerifyMsg"
-												placement="left" popper-class="errorTip">
+						<el-tooltip
+							v-if="!scope.row.warrantyLevelVerify"
+							:content="scope.row.warrantyLevelVerifyMsg" placement="left" popper-class="errorTip">
 							<span style="color:red;">{{scope.row.warrantyLevel}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
 			</el-table>
 			<span slot="footer">
+				<div style="float:left; margin-right: 280px; height: 29px; line-height: 29px;">
+					<span style="color: green;">{{validateCorrectNumber}}</span>
+					<span style="color: red; padding-left: 30px;">{{validateErrorNumber}}</span>
+				</div>
 				<el-button type="danger" plain class="analyzeResultBtn"
-									 v-if="excelAnalyzeResultFilePathForError != null"
-									 @click="downloadErrorData">{{$t('assetDevice.dialog.excelAnalyzeResult.downloadErrorBtn')}}</el-button>
-				<el-button type="primary" class="analyzeResultBtn"
-									 @click="excelAnalyzeResultDialogVisible = false">{{$t('assetDevice.dialog.excelAnalyzeResult.confirmBtn')}}</el-button>
+					v-if="excelAnalyzeResultFilePathForError != null" @click="downloadErrorData">
+					{{$t('assetDevice.dialog.excelAnalyzeResult.downloadErrorBtn')}}
+				</el-button>
+				<el-button
+					type="primary" class="analyzeResultBtn"
+					@click="toSaveExcelData" :disabled="saveExcelContentBtn_disable">
+					<template>
+						<el-tooltip :content="$t('assetDevice.dialog.excelAnalyzeResult.confirmBtnTip')" placement="top" type="dark">
+						<span>{{$t('assetDevice.dialog.excelAnalyzeResult.confirmBtn')}}</span>
+					  </el-tooltip>
+					</template>
+				</el-button>
 				<el-button type="default" class="alertBtn"
-									 @click="excelAnalyzeResultDialogVisible = false">{{$t('public.cancel')}}</el-button>
+					@click="closeExcelAnalyzeContentDialog">{{showExcelContent_closeBtn}}</el-button>
 			</span>
 		</el-dialog>
 		<!-- 转移分组 -->
@@ -720,14 +722,18 @@
 		<div v-show="menuVisible">
 			<ul id="menu" class="menu">
 				<li class="menu__item cursorPointer" @click="appendDevice">
-					<i class="el-icon-share"> {{$t('EquipmentMonitoring.increase')}}</i></li>
+					<i class="el-icon-share"> {{$t('EquipmentMonitoring.increase')}}</i>
+				</li>
 				<li class="menu__item cursorPointer" @click="EditDevice">
-					<i class="el-icon-edit"> {{$t('EquipmentMonitoring.TheEditor')}}</i></li>
-				<li class="menu__item cursorPointer" @click="remove" v-if="showVisible"><i
-					class="el-icon-delete"> {{$t('EquipmentMonitoring.delete')}}</i></li>
+					<i class="el-icon-edit"> {{$t('EquipmentMonitoring.TheEditor')}}</i>
+				</li>
+				<li class="menu__item cursorPointer" @click="remove" v-if="showVisible">
+					<i class="el-icon-delete"> {{$t('EquipmentMonitoring.delete')}}</i>
+				</li>
 			</ul>
 		</div>
-		<RightClickTheControl
+		<!--右键监测-->
+		<RightCatalog
 			@dialogGrouping="dialogGroupingFun"
 			:dialog-grouping="dialogGrouping"
 			@dialogGroupingBj="dialogGroupingBjFun"
@@ -738,23 +744,32 @@
 			:deleteId="deleteId"
 			@delete-id="deleteIdFun"
 			ref="myControl"/>
+		<!--编辑信息标签页-->
+		<editAdministrationTabs
+			@changePageDeviceId="changePageDeviceId"
+			@refreshSetInterval="refreshSetInterval"
+			@clearSetInterval="clearSetInterval"
+			:page-device-name="pageDeviceName"
+			:page-device-id="pageDeviceId"/>
 	</Box>
 </template>
 
 <script>
-	import RightClickTheControl from "../../../components/RightClickTheControl";
-	import Box from '../../../components/Box';
-	//设备详细信息浮窗
-	import AdministrationTags from '../../../components/AdministrationTabs';
+	import Box from '../../../components/common/Box';
+	// 设备详细信息编辑浮窗
+	import editAdministrationTabs from '../../../components/asset/editAdministrationTabs';
 	//转移分组
-	import TransferOfGrouping from '../../../components/TransferOfGrouping';
+	import TransferOfGrouping from '../../../components/monitor/TransferOfGrouping';
 	//添加监测
-	import AddTheMonitor from '../../../components/AddTheMonitor';
-	import {dateFilterDay, dateFilter, dateFilterDayCN} from "../../../assets/js/filters";
+	import AddTheMonitor from '../../../components/monitor/AddTheMonitor';
+	// 右键
+	import RightCatalog from "../../../components/monitor/RightCatalog";
+	// 日期时间过滤器
+	import {dateFilter} from "../../../assets/js/filters";
 
 	export default {
 		name: "assetDeviceMaintenance",
-		components: {Box, AdministrationTags, TransferOfGrouping, AddTheMonitor, RightClickTheControl},
+		components: {Box, editAdministrationTabs, TransferOfGrouping, AddTheMonitor, RightCatalog},
 		data() {
 			return {
 				rootUrl: this.$api.root(),
@@ -777,7 +792,9 @@
 					catalogPath: null,
 					equipmentName: null,
 					equipmentIp: null,
-					serialNumber: null
+					serialNumber: null,
+					/*设备名称/序列号/IP*/
+					searchStr: null
 				},
 				//左侧tree
 				leftTreeProps: {
@@ -797,12 +814,23 @@
 				//导入excel弹窗是否显示
 				assetDeviceImportDialogVisible: false,
 				submitUploadButtonDisabled: false,
+				fileList: [],
+				showExcelContent_dialogTitle: this.$t('assetDevice.dialog.excelAnalyzeResult.dialogTitle'),
+				showExcelContent_closeBtn: this.$t('public.cancel'),
 				//Excel的解析结果弹窗是否显示
 				excelAnalyzeResultDialogVisible: false,
 				//excel解析后的数据列表
 				excelAnalyzeResultDataList: [],
-				//置空解析接口返回的错误数据的文件路径
+				//解析接口返回的错误数据的文件路径
 				excelAnalyzeResultFilePathForError: null,
+				//解析接口返回的文件校验的key
+				excelAnalyzeResultValidateKey: null,
+				saveExcelContent_loading:false,
+				saveExcelContent_loadingText:"拼命加载中",
+				saveExcelContentBtn_disable:false,
+				//校验通过与错误的数量
+				validateCorrectNumber:"格式校验正确数：0",
+				validateErrorNumber:"错误数：0",
 
 				//页面刷新频率map
 				RefreshRateMap: {},
@@ -839,8 +867,8 @@
 				menuVisible: false, //控制tree右键弹出框
 				lastTime: new Date().getTime(), //记录上次定时器的执行时间
 				timer: null, //记录定时器
-				pageDeviceId:'',
-				pageDeviceName: '',
+				pageDeviceId:'', // 设备id
+				pageDeviceName: '', // 设备名称
 			}
 		},
 		methods: {
@@ -855,9 +883,16 @@
 				_t.formItem.catalogPath = null;
 				//设备名称
 				_t.formItem.equipmentName = null;
+				//IP
 				_t.formItem.equipmentIp = null;
 				//序列号
 				_t.formItem.serialNumber = null;
+				/*设备名称/序列号/IP*/
+				_t.formItem.searchStr = null;
+
+				_t.options.currentPage=1;
+				_t.options.pageSize=10;
+				_t.getData();
 			},
 			// 收缩
 			clickInset() {
@@ -947,6 +982,8 @@
 							ip: _t.formItem.equipmentIp == null ? null : (_t.formItem.equipmentIp == '' ? null : _t.formItem.equipmentIp.trim()),
 							//序列号
 							servicetag: _t.formItem.serialNumber == null ? null : (_t.formItem.serialNumber == '' ? null : _t.formItem.serialNumber.trim()),
+							/*设备名称/序列号/IP*/
+							searchStr:_t.formItem.searchStr ==null ? null : (_t.formItem.searchStr.trim() == '' ? null : _t.formItem.searchStr.trim()),
 							//监测状态(0:未监测，1：已监测)
 							monitorStatus: _t.collapseActiveName
 						},
@@ -961,7 +998,6 @@
 							_t.tableData = resData.list === null ? [] : resData.list;
 							_t.options.currentPage = resData.currentPage;
 							_t.options.total = resData.count;
-
 							_t.tableDataAll = _t.tableData;
 							_t.disableBtn.more = true;
 							break;
@@ -1063,7 +1099,12 @@
 			// 打开导入excel窗口
 			toImportData() {
 				var _t = this;
+				//打开上传窗口
 				_t.assetDeviceImportDialogVisible = true;
+				//清空上传列表，以防有文件残留
+				_t.fileList = [];
+				//将上传按钮先置为启用
+				_t.submitUploadButtonDisabled = false;
 			},
 			//选择导入文件
 			importHandleChange(file, fileList) {
@@ -1082,8 +1123,6 @@
 			//删除文件列表中的文件时触发
 			onRemoveHandle(file, fileList) {
 				var _t = this;
-				//删除当前选中的文件
-				//_t.$refs.upload.handleRemove(file);
 				//将上传按钮先置为启用
 				_t.submitUploadButtonDisabled = false;
 			},
@@ -1124,17 +1163,46 @@
 			uploadSuccessHandle(res, file, fileList) {
 				var _t = this;
 				if (res.status === 200) {
+					_t.showExcelContent_dialogTitle = _t.$t('assetDevice.dialog.excelAnalyzeResult.dialogTitle');
+					_t.showExcelContent_closeBtn = _t.$t('public.cancel');
 					//先置空原有表格的数据
 					_t.excelAnalyzeResultDataList = [];
 					//置空解析文件的错误数据集合的下载路径
 					_t.excelAnalyzeResultFilePathForError = null;
-					if (null != res.data && null != res.data.list) {
-						_t.assetDeviceImportDialogVisible = false;
-						_t.excelAnalyzeResultDialogVisible = true;
-						_t.excelAnalyzeResultDataList = res.data.list;
-					}
-					if (null != res.data && null != res.data.errorFilePath) {
-						_t.excelAnalyzeResultFilePathForError = res.data.errorFilePath;
+					//解析文件的文件校验Key
+					_t.excelAnalyzeResultValidateKey = null;
+					_t.saveExcelContent_loading = false;
+					_t.saveExcelContentBtn_disable = false;
+
+					if (null != res.data) {
+						if (null != res.data.list) {
+							//清空上传列表
+							_t.$refs.upload.clearFiles();
+							//关闭上传窗口
+							_t.assetDeviceImportDialogVisible = false;
+							//打开解析解雇窗口
+							_t.excelAnalyzeResultDialogVisible = true;
+							_t.excelAnalyzeResultDataList = res.data.list;
+						}
+						if (null != res.data.errorFilePath) {
+							_t.excelAnalyzeResultFilePathForError = _t.rootUrl + res.data.errorFilePath;
+						}
+						if (null != res.data.validateKey) {
+							_t.excelAnalyzeResultValidateKey = res.data.validateKey;
+						}
+						if (null != res.data.correctNumber) {
+							_t.validateCorrectNumber = "格式校验正确数：" + res.data.correctNumber;
+
+							if(res.data.correctNumber === 0 || res.data.correctNumber === '0'){
+								_t.saveExcelContentBtn_disable = true;
+							}else{
+								//去后台开启与数据库校验
+								_t.toStartValidateData();
+							}
+						}
+						if (null != res.data.errorNumber) {
+							_t.validateErrorNumber = "错误数：" + res.data.errorNumber;
+						}
 					}
 					_t.$message({
 						message: '上传成功！',
@@ -1186,6 +1254,83 @@
 					window.location.href = _t.excelAnalyzeResultFilePathForError;
 				}
 			},
+			//去后台开启与数据库校验
+			toStartValidateData() {
+				var _t = this;
+
+				_t.$api.get('asset/assetDevice/toStartValidateData', {
+					jsonString: JSON.stringify({
+						validateKey: _t.excelAnalyzeResultValidateKey
+					})
+				}, function (res) {
+
+				});
+			},
+			//保存正常解析的数据
+			toSaveExcelData() {
+				var _t = this;
+				_t.saveExcelContent_loading = true;
+				_t.saveExcelContentBtn_disable = true;
+				_t.saveExcelContent_loadingText = "拼命加载中";
+
+				// 定时器防止密集访问
+				var validateTimer = setInterval(() => {
+					_t.$api.get('asset/assetDevice/toSaveExcelData', {
+						jsonString: JSON.stringify({
+							validateKey: _t.excelAnalyzeResultValidateKey
+						})
+					}, function (res) {
+						switch (res.status) {
+							case 200:
+								if(null != res.data && undefined != res.data){
+									_t.showExcelContent_dialogTitle = _t.$t('assetDevice.dialog.excelAnalyzeResult.dialogSaveResultTitle');
+									_t.showExcelContent_closeBtn = _t.$t('public.close');
+									var resData = res.data;
+									if(0 === resData.validatedNumber){
+										_t.saveExcelContent_loadingText = "数据准备中";
+									}else if(resData.validatedNumber === resData.totalNumber){
+										_t.excelAnalyzeResultDataList = resData.list;
+										_t.validateCorrectNumber = "已更新记录数：" + resData.correctNumber;
+										_t.validateErrorNumber = "错误数：" + resData.errorNumber;
+										if (null != res.data.errorFilePath) {
+											_t.excelAnalyzeResultFilePathForError = _t.rootUrl + res.data.errorFilePath;
+										}else{
+											_t.excelAnalyzeResultFilePathForError = null;
+										}
+										_t.saveExcelContent_loading = false;
+										//销毁定时器
+										clearInterval(validateTimer);
+									}else{
+										_t.saveExcelContent_loadingText = "（已处理记录）" + resData.validatedNumber + "   /   " + resData.totalNumber + "（总记录数）";
+									}
+								}
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								_t.tableData = [];
+								_t.options.currentPage = 1;
+								_t.options.total = 0;
+								_t.disableBtn.more = true;
+								break;
+						}
+					});
+				}, 1000);
+			},
+			//关闭excel解析结果展示窗口
+			closeExcelAnalyzeContentDialog(){
+				var _t = this;
+
+				//关掉窗口
+				_t.excelAnalyzeResultDialogVisible = false;
+
+				//重新分页查询表格数据
+				_t.getData();
+			},
 			// 导出excel数据
 			toDownloadData() {
 				var _t = this;
@@ -1202,13 +1347,14 @@
 							servicetag: _t.formItem.serialNumber == null ? null : (_t.formItem.serialNumber == '' ? null : _t.formItem.serialNumber.trim()),
 							//监测状态(0:未监测，1：已监测)
 							monitorStatus: _t.collapseActiveName
-						}
+						},
+						deviceIds: _t.checkValueList.join(",")
 					})
 				}, function (res) {
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							window.location.href = res.data.filePath;
+							window.location.href = _t.rootUrl + res.data.filePath;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -1291,6 +1437,7 @@
 			refreshSetInterval(val){
 				var _t = this;
 				if (val) {
+					_t.getData();
 					_t.refreshPage();
 				}
 			},
@@ -1583,18 +1730,15 @@
 		max-height: 455px;
 	}
 
-	.showExcelContent-dialog .excelAnalyzeResult tr td {
-		height: 30px !important;
-		line-height: 30px !important;
+	.showExcelContent-dialog .excelAnalyzeResult tr td,
+	.showExcelContent-dialog .excelAnalyzeResult thead tr th {
+		height: 35px !important;
+		line-height: 35px !important;
 	}
 
-	.showExcelContent-dialog .excelAnalyzeResult .el-table__fixed {
-
-	}
-
-	.showExcelContent-dialog .excelAnalyzeResult .el-table__body-wrapper::-webkit-scrollbar {
-		width: 15px !important;
-		height: 15px !important;
+	.showExcelContent-dialog .excelAnalyzeResult .el-loading-spinner .el-loading-text {
+		font-size: 16px;
+		color: white;
 	}
 
 	.analyzeResultBtn .el-dialog {

@@ -171,9 +171,9 @@
 </template>
 
 <script>
-  import Box from '../../../components/Box';
+  import Box from '../../../components/common/Box';
   import {dateFilterSeconds, dateFilter} from "../../../assets/js/filters";
-  import AdministrationTags from '../../../components/AdministrationTabs';
+  import AdministrationTags from '../../../components/monitor/AdministrationTabs';
 
   export default {
     name: "alarmManagement",

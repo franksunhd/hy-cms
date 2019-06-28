@@ -4,17 +4,17 @@
 		<div class="app-header clearfix">
 			<div class="app-header-logo middle fl">
 				<div class="displayInlineBlock logo-box">
-					<img src="../assets/img/logo.png" alt="logo"/>
+					<img :src="logoImg" onerror="javascript:this.src='./static/sys/logo/logo.png';" alt="logo"/>
 				</div>
 				<span @click="homePage" style="cursor: pointer;margin-left: 10px;">{{$t('header.title')}}</span>
 			</div>
-			<ul class="app-header-navBar fr">
+			<ul class="app-header-navBar clearfix fr">
+				<!--
 				<li>
 					<el-badge :value="messageNum">
-						<a href="javascript:;">{{$t('header.message')}}</a>
+						<a href="javascript:;" @click="toCurrentAlarmPage">{{$t('header.message')}}</a>
 					</el-badge>
 				</li>
-				<!--
 				<li>
 					<a href="javascript:;">{{$t('header.document')}}</a>
 				</li>
@@ -27,12 +27,11 @@
 							:value="item.languageCode"/>
 					</el-select>
 				</li>
-				<li>
-					<!--<span>{{$t('header.welcome')}}:</span>-->
-					<span class="userName-span" v-if="displayName==''||displayName==null">{{username}}</span>
+				<li class="clearfix">
+					<span class="userName-span" v-if="displayName === ''|| displayName === null">{{queryInfo.userName}}</span>
 					<span class="userName-span" v-else>{{displayName}}</span>
-					<el-dropdown class="el-app-header-dropDown" @command="handleCommand">
-						<span style="display: inline-block;">
+					<el-dropdown class="el-app-header-dropDown fr" @command="handleCommand">
+						<span class="displayInlineBlock">
 							<img class="el-app-header-icon" style="border-radius: 50%;overflow: hidden;"
 									 src="../assets/img/avatars.png">
 						</span>
@@ -57,24 +56,28 @@
 			append-to-body
 			:title="$t('header.ModifyTheInformation')"
 			:before-close="getInformationClose"
-			:visible.sync="dialogVisible">
-			<el-form :model="query" ref="queryData" :rules="rules" label-position="right" align="left" label-width="140px">
-				<el-form-item :label="$t('header.userName')+'：'">
-					<el-input v-model="query.displayName" id="inputName" class="width200" style="position: relative"/>
-					<span v-if="msg.displayName=='0'" style="position: absolute;top:28px; left: 10px; color: #ff2222;">{{$t('header.TheUserNameAlreadyExists')}}</span>
+			:visible.sync="dialogVisible"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
+			<el-form :model="queryInfo" label-position="right" label-width="140px">
+				<el-form-item class="star" :label="$t('header.userName')+'：'">
+					<el-input @blur="ruleDisplayName(queryInfo.displayName)" v-model="queryInfo.displayName" id="inputName"
+										class="width200"/>
+					<span class="isNotNull" v-if="queryInfo.displayNameFlag">{{queryInfo.displayNameFlagTip}}</span>
 				</el-form-item>
-				<el-form-item :label="$t('header.mobileNum')+'：'" prop="mobile">
-					<el-input v-model="query.mobile" id="inputMobile" class="width200" style="position: relative"/>
-					<span v-if="msg.mobile=='0'" style="position: absolute;top:28px; left: 10px; color: #ff2222;">{{$t('header.ThePhoneNumberAlreadyExists')}}</span>
+				<el-form-item :label="$t('header.mobileNum')+'：'">
+					<el-input maxlength="11" @blur="ruleMobile(queryInfo.mobile)" v-model="queryInfo.mobile" id="inputMobile"
+										class="width200"/>
+					<span class="isNotNull" v-if="queryInfo.mobileFlag">{{queryInfo.mobileFlagTip}}</span>
 				</el-form-item>
-				<el-form-item :label="$t('header.emails')+'：'" prop="email">
-					<el-input v-model="query.email" id="inputEmail" class="width200" style="position: relative"/>
-					<span v-if="msg.email=='0'" style="position: absolute;top:28px; left: 10px; color: #ff2222;">{{$t('header.ThisMailboxAlreadyExists')}}</span>
+				<el-form-item :label="$t('header.emails')+'：'">
+					<el-input @blur="ruleEmail(queryInfo.email)" v-model="queryInfo.email" id="inputEmail" class="width200"/>
+					<span class="isNotNull" v-if="queryInfo.emailsFlag">{{queryInfo.emailsFlagTip}}</span>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="getInformationSub('queryData')" size="small">{{$t('public.confirm')}}</el-button>
-				<el-button @click="getInformationClose" size="small">{{$t('public.close')}}</el-button>
+				<el-button class="alertBtn" type="primary" @click="getInformationSub">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="getInformationClose">{{$t('public.close')}}</el-button>
 			</span>
 		</el-dialog>
 		<!--修改密码弹出层-->
@@ -82,9 +85,10 @@
 			class="userHeader-password-box"
 			append-to-body
 			:title="$t('header.pwd')"
-			:before-close="getCatchPassWord"
+			:before-close="resetCatchPassWord"
+			:visible.sync="dialogVisiblePassWord"
 			:close-on-click-modal="false"
-			:visible.sync="dialogVisiblePassWord">
+			:close-on-press-escape="false">
 			<el-form :model="formItem" label-width="150px">
 				<!--用户名-->
 				<el-form-item :label="$t('header.userName')+'：'">
@@ -95,28 +99,28 @@
 					<span>{{formItem.username}}</span>
 				</el-form-item>
 				<!--旧登录密码-->
-				<el-form-item :label="$t('header.OldLoginPassword')+'：'">
-					<el-input style="position: relative" v-focus ref="input"
-										@blur="getPassWord"
-										type="password"
-										class="width200"
-										v-model="formItem.oldPassword">
-					</el-input>
-					<span v-if="formItem.message!='success'" style="color: #ff2222;position: absolute;top:30px;left:0;">{{formItem.message}}</span>
+				<el-form-item class="star" :label="$t('header.OldLoginPassword')+'：'">
+					<el-input @blur="getPassWord(formItem.oldPassword)" v-model="formItem.oldPassword" type="password"
+										class="width200" id="form_oldPassword"/>
+					<span class="isNotNull" v-if="formItem.oldPasswordFlag">{{formItem.oldPasswordFlagTip}}</span>
+					<span></span>
 				</el-form-item>
 				<!--新登录密码-->
-				<el-form-item :label="$t('header.NewLoginPassword')+'：'" prop="newPassword">
-					<el-input type="password" class="width200" v-model="formItem.newPassword"></el-input>
+				<el-form-item class="star" :label="$t('header.NewLoginPassword')+'：'">
+					<el-input @blur="rulePassword('new')" type="password" id="form_newPassword" class="width200"
+										v-model="formItem.newPassword"/>
+					<span class="isNotNull" v-if="formItem.newPasswordFlag">{{formItem.newPasswordFlagTip}}</span>
 				</el-form-item>
 				<!--确认新登录密码-->
-				<el-form-item :label="$t('header.ConfirmTheNewLoginPassword')+'：'" prop="affirmPassword">
-					<el-input type="password" class="width200" v-model="formItem.affirmPassword">></el-input>
+				<el-form-item class="star" :label="$t('header.ConfirmTheNewLoginPassword')+'：'">
+					<el-input @blur="rulePassword('affirm')" type="password" id="form_affirmPassword" class="width200"
+										v-model="formItem.affirmPassword"/>
+					<span class="isNotNull" v-if="formItem.affirmPasswordFlag">{{formItem.affirmPasswordFlagTip}}</span>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" class="queryBtn" @click="getSubPassWord"
-									 size="small">{{$t('public.confirm')}}</el-button>
-				<el-button class="queryBtn" @click="getCatchPassWord" size="small">{{$t('public.close')}}</el-button>
+				<el-button type="primary" class="alertBtn" @click="getSubPassWord">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="resetCatchPassWord">{{$t('public.close')}}</el-button>
 			</span>
 		</el-dialog>
 		<!--声音告警的播放器定义-->
@@ -151,9 +155,9 @@
 </template>
 
 <script>
-	import appSide from '../components/appSide';
+	import appSide from '../components/common/appSide';
 	import {dateFilter, dateFilterChangeHour} from "../assets/js/filters";
-	import {isNotNull, isMobilePhone, isEmail} from "../assets/js/validator";
+	import {isMobilePhone, isEmail, isNotNull} from "../assets/js/validator";
 
 	export default {
 		name: "index",
@@ -161,30 +165,44 @@
 		data() {
 			return {
 				rootUrl: this.$api.root(),
-				defaultLang: localStorage.getItem('hy-language'),
-				username: '',
-				displayName: '',
-				messageNum: '0',
+				logoImg: this.$api.root() + '/static/sys/logo/logo.png',
+				defaultLang: localStorage.getItem('hy-language'), // 默认语言
+				displayName: '', // 显示的用户名
+				messageNum: '0', // 消息提示
+				// 修改密码 表单
+				formItem: {
+					displayName: '', // 用户名称
+					username: '', // 登录账号
+					oldPassword: '', // 旧登录密码
+					oldPasswordFlag: false, // 旧密码校验标识
+					oldPasswordFlagTip: '', // 旧密码校验提示
+					newPassword: '', // 新登录密码
+					newPasswordFlag: false, // 新密码校验标识
+					newPasswordFlagTip: '', // 新密码校验提示
+					affirmPassword: '', // 确认新登录密码
+					affirmPasswordFlag: false, // 确认新密码校验标识
+					affirmPasswordFlagTip: '', // 确认新密码校验提示
+				},
+				// 修改信息 表单
+				queryInfo: {
+					displayName: '', // 用户名称
+					displayNameFlag: false, // 用户名称校验标识
+					displayNameFlagTip: '', // 用户名称错误提示
+					userName: '', // 登录账号
+					mobile: '', // 手机号
+					mobileFlag: false, // 手机号码校验标识
+					mobileFlagTip: '', // 手机号码错误提示
+					email: '', // 电子邮箱
+					emailsFlag: false, // 电子邮箱校验标识
+					emailsFlagTip: '',
+				},
 				//修改头像弹出层
 				dialogVisible: false,
 				//修改密码弹出层
 				dialogVisiblePassWord: false,
-				formItem: {
-					displayName: '',
-					username: '',
-					OldLoginPassword: '',
-					NewLoginPassword: '',
-					ConfirmTheNewLoginPassword: '',
-					message: '',
-				},
-				query: {
-					displayName: '',
-					mobile: '',
-					email: '',
-				},
 				isCollapse: true,
-				languageList: [],
-				refreshRateMap: {},
+				languageList: [], // 语言列表
+				refreshRateMap: {}, // 刷新评率字典
 				lastTime: new Date().getTime(),
 				//记录登录后已做出提示的信息的map集合，用于判断是否已经提示过
 				messagePromptedMap: {},
@@ -196,28 +214,6 @@
 				headMessagePopuWinDataList: [],
 				notifyMap: {}, //记录通知的notification集合
 				timer: null,
-				//校验
-				rules:{
-					mobile: [
-						{validator: isMobilePhone, trigger: ['blur']}
-					],
-					email: [
-						{validator: isEmail, trigger: ['blur']}
-					],
-				},
-				msg:{
-					displayName:null,
-					mobile:null,
-					email:null,
-				},
-			}
-		},
-		directives: {
-			focus: {
-				// 指令的定义
-				inserted: function (el) {
-					el.focus()
-				}
 			}
 		},
 		methods: {
@@ -227,15 +223,9 @@
 				switch (command) {
 					case 'head': // 修改信息
 						_t.getInformation();
-						_t.dialogVisible = true;
 						break;
 					case 'pwd': // 修改密码
 						_t.getQueryData();
-						_t.$nextTick(() => {
-							_t.$refs.input.focus()
-						});
-
-						_t.dialogVisiblePassWord = true;
 						break;
 					case 'exit': // 退出登录
 						_t.$confirm(_t.$t('header.logOutTip'), _t.$t('public.confirmTip'), {
@@ -264,245 +254,437 @@
 						break;
 				}
 			},
-			//修改信息
+			/**
+			 * 修改信息
+			 */
+			// 获取修改信息
 			getInformation() {
 				var _t = this;
-				var id = localStorage.getItem('hy-user-id');
-				_t.$api.get('system/user/' + id, {}, function (res) {
+				_t.dialogVisible = true;
+				var userId = localStorage.getItem('hy-user-id');
+				_t.$api.get('system/user/' + userId, {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var displayName = res.data.displayName;
-							var mobile = res.data.mobile;
-							var email = res.data.email;
-							_t.query.displayName = displayName;
-							_t.query.mobile = mobile;
-							_t.query.email = email;
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
+							if (res.data && res.data !== null) {
+								_t.queryInfo.displayName = res.data.displayName; // 用户名称
+								_t.queryInfo.userName = res.data.username; // 登录账号
+								_t.queryInfo.mobile = res.data.mobile; // 手机号码
+								_t.queryInfo.email = res.data.email; // 电子邮箱
+							}
 							break;
 						default:
 							break;
 					}
 				})
 			},
-			//关闭修改信息弹出层
-			getInformationClose(){
-				var _t =this;
+			// 校验用户名称字段
+			ruleDisplayName(value) {
+				var _t = this;
+				if (value === null || value.trim() === '') {
+					_t.queryInfo.displayNameFlag = true;
+					_t.queryInfo.displayNameFlagTip = _t.$t('public.isNotNull');
+					document.getElementById('inputName').style.borderColor = '#fb6041';
+				} else {
+					_t.queryInfo.displayNameFlag = false;
+					_t.queryInfo.displayNameFlagTip = '';
+					document.getElementById('inputName').style.borderColor = '#DCDFE6';
+				}
+			},
+			// 校验手机号字段
+			ruleMobile(value) {
+				var _t = this;
+				// 可以为空 有值时需要校验格式
+				if (value !== null && value.trim() !== '') {
+					if (!value.toString().match(_t.$api.mobileRegular())) {
+						_t.queryInfo.mobileFlag = true;
+						_t.queryInfo.mobileFlagTip = _t.$t('public.mobileFormatTip');
+						document.getElementById('inputMobile').style.borderColor = '#fb6041';
+					} else {
+						_t.queryInfo.mobileFlag = false;
+						_t.queryInfo.mobileFlagTip = '';
+						document.getElementById('inputMobile').style.borderColor = '#DCDFE6';
+					}
+				} else {
+					_t.queryInfo.mobileFlag = false;
+					_t.queryInfo.mobileFlagTip = '';
+					document.getElementById('inputMobile').style.borderColor = '#DCDFE6';
+				}
+			},
+			// 校验邮箱字段
+			ruleEmail(value) {
+				var _t = this;
+				// 可以为空 有值时需要校验格式
+				if (value !== null && value.trim() !== '') {
+					if (_t.$api.emailRegular().test(value.trim()) === false) {
+						_t.queryInfo.emailsFlag = true;
+						_t.queryInfo.emailsFlagTip = _t.$t('public.emailFormatTip');
+						document.getElementById('inputEmail').style.borderColor = '#fb6041';
+					} else {
+						_t.queryInfo.emailsFlag = false;
+						_t.queryInfo.emailsFlagTip = '';
+						document.getElementById('inputEmail').style.borderColor = '#DCDFE6';
+					}
+				} else {
+					_t.queryInfo.emailsFlag = false;
+					_t.queryInfo.emailsFlagTip = '';
+					document.getElementById('inputEmail').style.borderColor = '#DCDFE6';
+				}
+			},
+			// 重置关闭修改 弹出层
+			getInformationClose() {
+				var _t = this;
 				_t.dialogVisible = false;
-				var msgClassName=document.querySelector('#inputName');
-				var msgClassMobile=document.querySelector('#inputMobile');
-				var msgClassEmail=document.querySelector('#inputEmail');
-				msgClassName.style.border="1px solid #DCDFE6";
-				msgClassMobile.style.border="1px solid #DCDFE6";
-				msgClassEmail.style.border="1px solid #DCDFE6";
-				_t.msg.displayName=null;
-				_t.msg.mobile=null;
-				_t.msg.email=null;
+				_t.queryInfo.displayName = ''; // 用户名称
+				_t.queryInfo.displayNameFlag = false; // 用户名称校验标识
+				_t.queryInfo.displayNameFlagTip = ''; // 用户名称错误提示
+				_t.queryInfo.mobile = ''; // 手机号
+				_t.queryInfo.mobileFlag = false; // 手机号码校验标识
+				_t.queryInfo.mobileFlagTip = ''; // 手机号码错误提示
+				_t.queryInfo.email = ''; // 电子邮箱
+				_t.queryInfo.emailsFlag = false; // 电子邮箱校验标识
+				_t.queryInfo.emailsFlagTip = '';
+				document.getElementById('inputName').style.borderColor = '#DCDFE6';
+				document.getElementById('inputMobile').style.borderColor = '#DCDFE6';
+				document.getElementById('inputEmail').style.borderColor = '#DCDFE6';
 			},
 			//确认修改信息提交
-			getInformationSub(formNames) {
+			getInformationSub() {
 				var _t = this;
-				_t.$refs[formNames].validate((valid) => {
-					if (valid) {
-						_t.$api.put('system/user/updateUserInfo', {
-							systemUser: {
-								id: localStorage.getItem('hy-user-id'),
-								displayName: _t.query.displayName,
-								email: _t.query.email,
-								mobile: _t.query.mobile,
-								languageMark: localStorage.getItem('hy-language'),
+				// 校验用户名称
+				_t.ruleDisplayName(_t.queryInfo.displayName);
+				// 校验手机号
+				_t.ruleMobile(_t.queryInfo.mobile);
+				// 校验邮箱
+				_t.ruleEmail(_t.queryInfo.email);
+				if (_t.queryInfo.displayNameFlag === false
+					&& _t.queryInfo.mobileFlag === false
+					&& _t.queryInfo.emailsFlag === false) {
+					_t.$api.put('system/user/updateUserInfo', {
+						systemUser: {
+							id: localStorage.getItem('hy-user-id'),
+							displayName: _t.queryInfo.displayName === null ? null : (_t.queryInfo.displayName.trim() === '' ? null : _t.queryInfo.displayName.trim()),
+							email: _t.queryInfo.email === null ? null : (_t.queryInfo.email.trim() === '' ? null : _t.queryInfo.email.trim()),
+							mobile: _t.queryInfo.mobile === null ? null : (_t.queryInfo.mobile.trim() === '' ? null : _t.queryInfo.mobile.trim()),
+							languageMark: localStorage.getItem('hy-language'),
+						}
+					}, function (res) {
+						switch (res.status) {
+							case 200:
+								_t.displayName = _t.queryInfo.displayName;
+								localStorage.setItem('hy-user-name', _t.queryInfo.displayName);
+								_t.getInformationClose();
+								break;
+							case 2006: //修改失败
+								_t.$alert(_t.$t('header.ModifyTheFailure'), _t.$t('public.resultTip'), {
+									confirmButtonText: _t.$t('public.confirm'),
+									confirmButtonClass: 'alertBtn'
+								}).then(() => {
+									_t.getInformationClose();
+								}).catch(() => {
+									_t.getInformationClose();
+								});
+								break;
+							case 2100: // 已存在修改内容
+								var msg = JSON.parse(res.message);
+								// 判断用户名称
+								if (msg.displayName && msg.displayName == 0) {
+									_t.queryInfo.displayNameFlag = true;
+									_t.queryInfo.displayNameFlagTip = _t.$t('header.TheUserNameAlreadyExists');
+									document.getElementById('inputName').style.borderColor = '#fb6041';
+								}
+								// 判断手机号码重复
+								if (msg.mobile && msg.mobile == 0) {
+									_t.queryInfo.mobileFlag = true;
+									_t.queryInfo.mobileFlagTip = _t.$t('header.ThePhoneNumberAlreadyExists');
+									document.getElementById('inputMobile').style.borderColor = '#fb6041';
+								}
+								// 判读邮箱重复
+								if (msg.email && msg.email == 0) {
+									_t.queryInfo.emailsFlag = true;
+									_t.queryInfo.emailsFlagTip = _t.$t('header.ThisMailboxAlreadyExists');
+									document.getElementById('inputEmail').style.borderColor = '#fb6041';
+								}
+								break;
+							default:
+								break;
+						}
+					});
+				}
+			},
+			/**
+			 * 修改密码
+			 */
+			// 修改密码 用户信息回显
+			getQueryData() {
+				var _t = this;
+				_t.dialogVisiblePassWord = true;
+				var userId = localStorage.getItem('hy-user-id');
+				_t.$api.get('system/user/' + userId, {}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (res.data && res.data !== null) {
+								_t.formItem.displayName = res.data.displayName;
+								_t.formItem.username = res.data.username;
 							}
-						}, function (res) {
-							switch (res.status) {
-								case 200:
-									_t.dialogVisible = false;
-									localStorage.setItem('hy-user-name',_t.query.displayName);
-									_t.username = _t.query.username;
-									_t.displayName = _t.query.displayName;
-									var msgClassName=document.querySelector('#inputName');
-									var msgClassMobile=document.querySelector('#inputMobile');
-									var msgClassEmail=document.querySelector('#inputEmail');
-									msgClassName.style.border="1px solid #DCDFE6";
-									msgClassMobile.style.border="1px solid #DCDFE6";
-									msgClassEmail.style.border="1px solid #DCDFE6";
-									_t.msg.displayName=null;
-									_t.msg.mobile=null;
-									_t.msg.email=null;
-									break;
-								case 1003: // 无操作权限
-								case 1004: // 登录过期
-								case 1005: // token过期
-								case 1006: // token不通过
-									_t.exclude(_t, res.message);
-									break;
-								case 2101: //密码校验
-									var message = res.message;
-									_t.formItem.message = message;
-									break;
-								case 2006://修改失败
-									_t.$alert(_t.$t('header.ModifyTheFailure')+'!',_t.$t('header.prompt')+'!');
-									break;
-								case 2100://已存在修改内容
-									var msg =JSON.parse(res.message);
-									_t.msg.displayName=msg.displayName;
-									_t.msg.mobile=msg.mobile;
-									_t.msg.email=msg.email;
-									var msgClassName=document.querySelector('#inputName');
-									var msgClassMobile=document.querySelector('#inputMobile');
-									var msgClassEmail=document.querySelector('#inputEmail');
-									if(msg.displayName==0&&msg.mobile!=0&&msg.email!=0){
-										msgClassName.style.border="1px solid #f22";
-									}else if(msg.mobile==0&&msg.displayName!=0&&msg.email!=0){
-										msgClassMobile.style.border="1px solid #f22";
-									}else if(msg.email==0&&msg.mobile!=0&&msg.displayName!=0){
-										msgClassEmail.style.border="1px solid #f22";
-									}else if(msg.displayName==0&&msg.mobile==0&&msg.email==0){
-										msgClassName.style.border="1px solid #f22";
-										msgClassMobile.style.border="1px solid #f22";
-										msgClassEmail.style.border="1px solid #f22";
-									}else if(msg.displayName==0&&msg.mobile==0&&msg.email!=0){
-										msgClassName.style.border="1px solid #f22";
-										msgClassMobile.style.border="1px solid #f22";
-									}else if(msg.displayName==0&&msg.mobile!=0&&msg.email==0){
-										msgClassName.style.border="1px solid #f22";
-										msgClassEmail.style.border="1px solid #f22";
-									}else if(msg.displayName!=0&&msg.mobile==0&&msg.email==0){
-										msgClassMobile.style.border="1px solid #f22";
-										msgClassEmail.style.border="1px solid #f22";
-									}
-								default:
-									break;
-							}
-						})
+							break;
+						default:
+							break;
 					}
-				});
-
+				})
 			},
 			//修改密码校验
-			getPassWord() {
+			getPassWord(val) {
 				var _t = this;
-				if (_t.formItem.oldPassword != null || _t.formItem.oldPassword != '') {
+				if (val !== null && val.trim() !== '') {
 					_t.$api.get('system/user/judgeOldPassword', {
 						jsonString: JSON.stringify({
 							systemUser: {
 								id: localStorage.getItem('hy-user-id'),
-								oldPassword: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.formItem.oldPassword.trim())),
+								oldPassword: _t.$md5(_t.$api.passwordRule() + _t.$md5(val.trim())),
 							}
 						})
 					}, function (res) {
 						switch (res.status) {
 							case 200:
-								_t.formItem.message = res.message;
-								break;
-							case 1003: // 无操作权限
-							case 1004: // 登录过期
-							case 1005: // token过期
-							case 1006: // token不通过
-								_t.exclude(_t, res.message);
+								// 返回成功 通过 取消全部校验信息
+								_t.formItem.oldPasswordFlag = false; // 旧密码校验标识
+								document.getElementById('form_oldPassword').style.borderColor = '#DCDFE6';
 								break;
 							case 2101: //密码校验
-								var message = res.message;
-								_t.formItem.message = message;
+								_t.formItem.oldPasswordFlag = true;
+								_t.formItem.oldPasswordFlagTip = res.message;
+								document.getElementById('form_oldPassword').style.borderColor = '#fb6041';
 								break;
 							default:
+								_t.resetCatchPassWord();
 								break;
 						}
-
-					})
+					});
+				} else {
+					_t.formItem.oldPasswordFlag = true;
+					_t.formItem.oldPasswordFlagTip = _t.$t('public.isNotNull');
+					document.getElementById('form_oldPassword').style.borderColor = '#fb6041';
 				}
-
 			},
-			//根据用户ID查询数据
-			getQueryData() {
-				var _t = this;
-				var id = localStorage.getItem('hy-user-id');
-				_t.$api.get('system/user/' + id, {}, function (res) {
-					switch (res.status) {
-						case 200:
-							var username = res.data.username;
-							var displayName = res.data.displayName;
-							_t.formItem.displayName = displayName;
-							_t.formItem.username = username;
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
-			},
-			//点击取消修改密码
-			getCatchPassWord() {
+			// 重置修改密码
+			resetCatchPassWord() {
 				var _t = this;
 				_t.dialogVisiblePassWord = false;
-				_t.formItem.oldPassword = null;
-				_t.formItem.newPassword = null;
-				_t.formItem.affirmPassword = null;
+				_t.formItem.displayName = ''; // 用户名称
+				_t.formItem.username = ''; // 登录账号
+				_t.formItem.oldPassword = ''; // 旧登录密码
+				_t.formItem.oldPasswordFlag = false; // 旧密码校验标识
+				_t.formItem.oldPasswordFlagTip = ''; // 旧密码校验提示
+				_t.formItem.newPassword = ''; // 新登录密码
+				_t.formItem.newPasswordFlag = false; // 新密码校验标识
+				_t.formItem.newPasswordFlagTip = ''; // 新密码校验提示
+				_t.formItem.affirmPassword = ''; // 确认新登录密码
+				_t.formItem.affirmPasswordFlag = false; // 确认新密码校验标识
+				_t.formItem.affirmPasswordFlagTip = ''; // 确认新密码校验提示
+				document.getElementById('form_oldPassword').style.borderColor = '#DCDFE6';
+				document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+				document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+			},
+			// 新密码失去焦点时校验
+			rulePassword(item) {
+				var _t = this;
+				if (item === 'new') {
+					// 新密码 为空
+					if (_t.formItem.newPassword === null || _t.formItem.newPassword.trim() === '') {
+						_t.formItem.newPasswordFlag = true;
+						_t.formItem.newPasswordFlagTip = _t.$t('public.isNotNull');
+						document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+					} else {
+						// 不为空
+						if (_t.formItem.newPassword.trim() === _t.formItem.oldPassword.trim()) {
+							// 新密码和旧密码一致
+							_t.formItem.newPasswordFlag = true;
+							_t.formItem.newPasswordFlagTip = _t.$t('header.changeDiffWithNewPassword');
+							document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+						} else {
+							// 新密码和确认新密码不一致
+							if (_t.formItem.newPassword.trim() !== _t.formItem.affirmPassword.trim() && _t.formItem.affirmPassword.trim() !== '') {
+								_t.formItem.newPasswordFlag = true;
+								_t.formItem.newPasswordFlagTip = _t.$t('header.changeDiff');
+								document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+							} else {
+								// 新密码和确认新密码一致
+								_t.formItem.newPasswordFlag = false;
+								_t.formItem.newPasswordFlagTip = '';
+								document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+								_t.formItem.affirmPasswordFlag = false;
+								_t.formItem.affirmPasswordFlagTip = '';
+								document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+							}
+						}
+					}
+				} else if (item === 'affirm') {
+					if (_t.formItem.affirmPassword === null || _t.formItem.affirmPassword.trim() === '') {
+						// 确认新密码 为空
+						_t.formItem.affirmPasswordFlag = true;
+						_t.formItem.affirmPasswordFlagTip = _t.$t('public.isNotNull');
+						document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+					} else {
+						// 确认新密码 不为空
+						if (_t.formItem.affirmPassword.trim() === _t.formItem.oldPassword.trim()) {
+							// 确认新密码和旧密码一致
+							_t.formItem.affirmPasswordFlag = true;
+							_t.formItem.affirmPasswordFlagTip = _t.$t('public.isNotNull');
+							document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+						} else {
+							// 确认新密码和旧密码不一致
+							if (_t.formItem.newPassword.trim() !== _t.formItem.affirmPassword.trim() && _t.formItem.newPassword.trim() !== '') {
+								_t.formItem.affirmPasswordFlag = true;
+								_t.formItem.affirmPasswordFlagTip = _t.$t('header.changeDiff');
+								document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+							} else {
+								// 确认新密码和旧密码 一致
+								_t.formItem.newPasswordFlag = false;
+								_t.formItem.newPasswordFlagTip = '';
+								document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+								_t.formItem.affirmPasswordFlag = false;
+								_t.formItem.affirmPasswordFlagTip = '';
+								document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+							}
+						}
+					}
+				}
 			},
 			//点击确认修改密码
 			getSubPassWord() {
 				var _t = this;
-				_t.$api.put('system/user/updateUserPassword', {
-					systemUser: {
-						id: localStorage.getItem('hy-user-id'),
-						oldPassword: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.formItem.oldPassword.trim())),
-						newPassword: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.formItem.newPassword.trim())),
-						affirmPassword: _t.$md5('begin1$2%3=4#5$6end' + _t.$md5(_t.formItem.affirmPassword.trim())),
+				// 密码校验
+				// 旧密码不能为空
+				if (_t.formItem.oldPassword === null || _t.formItem.oldPassword.trim() === '') {
+					_t.formItem.oldPasswordFlag = true;
+					_t.formItem.oldPasswordFlagTip = _t.$t('public.isNotNull');
+					document.getElementById('form_oldPassword').style.borderColor = '#fb6041';
+				} else {
+					_t.formItem.oldPasswordFlag = false;
+					_t.formItem.oldPasswordFlagTip = '';
+					document.getElementById('form_oldPassword').style.borderColor = '#DCDFE6';
+				}
+				// 新密码
+				if (_t.formItem.newPassword === null || _t.formItem.newPassword.trim() === '') {
+					_t.formItem.newPasswordFlag = true;
+					_t.formItem.newPasswordFlagTip = _t.$t('public.isNotNull');
+					document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+				} else {
+					_t.formItem.newPasswordFlag = false;
+					_t.formItem.newPasswordFlagTip = '';
+					document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+				}
+				// 确认新密码
+				if (_t.formItem.affirmPassword === null || _t.formItem.affirmPassword.trim() === '') {
+					_t.formItem.affirmPasswordFlag = true;
+					_t.formItem.affirmPasswordFlagTip = _t.$t('public.isNotNull');
+					document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+				} else {
+					_t.formItem.affirmPasswordFlag = false;
+					_t.formItem.affirmPasswordFlagTip = '';
+					document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+				}
+				// 三项均不为空 校验格式
+				if (_t.formItem.newPassword.trim() !== '' && _t.formItem.oldPassword.trim() !== '' && _t.formItem.affirmPassword.trim() !== '') {
+					// 校验新密码不能和旧密码一致
+					if (_t.formItem.newPassword.trim() === _t.formItem.oldPassword.trim()) {
+						// 新密码和旧密码一致
+						_t.formItem.newPasswordFlag = true;
+						_t.formItem.newPasswordFlagTip = _t.$t('header.changeDiffWithNewPassword');
+						document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+					} else {
+						// 新密码和旧密码不一致
+						_t.formItem.newPasswordFlag = false;
+						_t.formItem.newPasswordFlagTip = '';
+						document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+						// 校验确认新密码不能和就密码一致
+						if (_t.formItem.affirmPassword.trim() === _t.formItem.oldPassword.trim()) {
+							// 确认新密码和旧密码一致
+							_t.formItem.affirmPasswordFlag = true;
+							_t.formItem.affirmPasswordFlagTip = _t.$t('header.changeDiffWithNewPassword');
+							document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+						} else {
+							// 确认新密码和旧密码不一致
+							_t.formItem.affirmPasswordFlag = false;
+							_t.formItem.affirmPasswordFlagTip = '';
+							document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+							// 判断新密码和确认新密码是否一致
+							if (_t.formItem.newPassword.trim() !== _t.formItem.affirmPassword.trim()) {
+								// 校验新密码和确认密码一致问题
+								_t.formItem.newPasswordFlag = true;
+								_t.formItem.newPasswordFlagTip = _t.$t('header.changeDiff');
+								_t.formItem.affirmPasswordFlag = true;
+								_t.formItem.affirmPasswordFlagTip = _t.$t('header.changeDiff');
+								document.getElementById('form_newPassword').style.borderColor = '#fb6041';
+								document.getElementById('form_affirmPassword').style.borderColor = '#fb6041';
+							} else {
+								_t.formItem.newPasswordFlag = false;
+								_t.formItem.newPasswordFlagTip = '';
+								document.getElementById('form_newPassword').style.borderColor = '#DCDFE6';
+								_t.formItem.affirmPasswordFlag = false;
+								_t.formItem.affirmPasswordFlagTip = '';
+								document.getElementById('form_affirmPassword').style.borderColor = '#DCDFE6';
+							}
+						}
 					}
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.dialogVisiblePassWord = false;
-							_t.$confirm(_t.$t('header.PasswordChangedSuccessfullyPleaseLoginAgain')+'!', _t.$t('header.prompt')+'!', {
-								confirmButtonText: _t.$t('public.confirm'),
-								cancelButtonText: _t.$t('public.close'),
-								type: 'warning'
-							}).then(() => {
-								_t.$store.commit("setLoading", false);
-								_t.$router.push({name: 'login'});
-								window.location.reload();
-								localStorage.removeItem('hy-language');
-								localStorage.removeItem('hy-menu-id');
-								localStorage.removeItem('hy-organization-id');
-								localStorage.removeItem('hy-token');
-								localStorage.removeItem('hy-user-id');
-								localStorage.removeItem('hy-user-name');
-								//销毁刷新频率字典避免多次挂载
-								localStorage.removeItem('RefreshRateMap');
-							}).catch(() => {
-								_t.$router.push({name: 'login'});
-								window.location.reload();
-								localStorage.removeItem('hy-language');
-								localStorage.removeItem('hy-menu-id');
-								localStorage.removeItem('hy-organization-id');
-								localStorage.removeItem('hy-token');
-								localStorage.removeItem('hy-user-id');
-								localStorage.removeItem('hy-user-name');
-								//销毁刷新频率字典避免多次挂载
-								localStorage.removeItem('RefreshRateMap');
-							});
-							break;
-						case  2101://您输入的旧密码与原密码不一致
-
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
+					// 校验通过 可以提交
+					if (_t.formItem.oldPasswordFlag === false
+						&& _t.formItem.newPasswordFlag === false
+						&& _t.formItem.affirmPasswordFlag === false) {
+						_t.$api.put('system/user/updateUserPassword', {
+							systemUser: {
+								id: localStorage.getItem('hy-user-id'),
+								oldPassword: _t.$md5(_t.$api.passwordRule() + _t.$md5(_t.formItem.oldPassword.trim())),
+								newPassword: _t.$md5(_t.$api.passwordRule() + _t.$md5(_t.formItem.newPassword.trim())),
+								affirmPassword: _t.$md5(_t.$api.passwordRule() + _t.$md5(_t.formItem.affirmPassword.trim())),
+							}
+						}, function (res) {
+							switch (res.status) {
+								case 200:
+									// 密码修改成功 推出重新登录
+									_t.$confirm(_t.$t('header.changePasswordSuccess') + '!', _t.$t('public.confirmTip'), {
+										confirmButtonText: _t.$t('public.confirm'),
+										cancelButtonText: _t.$t('public.close'),
+										type: 'warning',
+										confirmButtonClass: 'alertBtn',
+										cancelButtonClass: 'alertBtn'
+									}).then(() => {
+										_t.$store.commit("setLoading", false);
+										_t.$router.push({name: 'login'});
+										window.location.reload();
+										localStorage.removeItem('hy-language');
+										localStorage.removeItem('hy-menu-id');
+										localStorage.removeItem('hy-organization-id');
+										localStorage.removeItem('hy-token');
+										localStorage.removeItem('hy-user-id');
+										localStorage.removeItem('hy-user-name');
+										//销毁刷新频率字典避免多次挂载
+										localStorage.removeItem('RefreshRateMap');
+									}).catch(() => {
+										_t.$router.push({name: 'login'});
+										window.location.reload();
+										localStorage.removeItem('hy-language');
+										localStorage.removeItem('hy-menu-id');
+										localStorage.removeItem('hy-organization-id');
+										localStorage.removeItem('hy-token');
+										localStorage.removeItem('hy-user-id');
+										localStorage.removeItem('hy-user-name');
+										//销毁刷新频率字典避免多次挂载
+										localStorage.removeItem('RefreshRateMap');
+									});
+									break;
+								case  2101: //您输入的旧密码与原密码不一致
+									_t.formItem.oldPasswordFlag = true;
+									_t.formItem.oldPasswordFlagTip = res.message;
+									document.getElementById('form_oldPassword').style.borderColor = '#fb6041';
+									break;
+								default:
+									_t.resetCatchPassWord();
+									break;
+							}
+						});
 					}
-				})
+				}
 			},
 			// 切换语言
 			changeLanguage(val) {
@@ -531,6 +713,10 @@
 			homePage() {
 				this.$router.push({name: 'Home'});
 			},
+			//跳转到当前告警页面
+			toCurrentAlarmPage() {
+				this.$router.push({name: 'alarmCurrent'});
+			},
 			// 获取用户信息
 			getData() {
 				var _t = this;
@@ -541,9 +727,14 @@
 							localStorage.setItem('hy-language', res.data.languageMark);
 							localStorage.setItem('hy-organization-id', res.data.organizationId);
 							localStorage.setItem('hy-user-id', res.data.id);
-							_t.username = res.data.username;
+							_t.queryInfo.userName = res.data.username;
 							_t.displayName = res.data.displayName;
 							_t.defaultLang = res.data.languageMark;
+							//用户信息拿回来之后开始获取刷新频率进行页面定时器的设置
+							_t.getRefreshRateMap();
+							// 拿到用户信息之后组件传值 调取便捷菜案
+							_t.$bus.emit('getMenu', true);
+							_t.$bus.emit('getMenuData', true);
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -607,7 +798,6 @@
 			// 消息定时获取
 			messageInterval() {
 				var _t = this;
-
 				//获取设备发现接口的频率
 				var rate = 5 * 60; //默认5分钟
 				if (null != _t.refreshRateMap && undefined != _t.refreshRateMap) {
@@ -619,7 +809,6 @@
 						}
 					}
 				}
-
 				// 定时器防止密集访问
 				_t.timer = setInterval(() => {
 					var nowTime = new Date().getTime();
@@ -644,7 +833,7 @@
 							//读取状态【0待读取，1已读取】
 							readStatus: 0,
 							//设置查询的开始时间为当前时间之前的2个小时
-							createTimeStart: dateFilterChangeHour(new Date().getTime(), -9),
+							createTimeStart: dateFilterChangeHour(new Date().getTime(), -2),
 							//设置查询的结束时间为当前时间
 							createTimeEnd: dateFilter(new Date().getTime())
 						},
@@ -696,31 +885,31 @@
 										//展示页面弹窗的告警信息
 										_t.showAlarmContent(message.id);
 										/*
-										var notify = _t.$notify({
-											title: '警告',
-											message: "<a id='message_" + message.id + "' href='javascript:;' title='点击查看“" +message.alarmAbstract + "”'>" +message.alarmAbstract + "</a>",
-											dangerouslyUseHTMLString: true,
-											position: 'bottom-right',
-											type: 'warning',
-											offset: 50,
-											duration: 0
-										});
+                                        var notify = _t.$notify({
+                                            title: '警告',
+                                            message: "<a id='message_" + message.id + "' href='javascript:;' title='点击查看“" +message.alarmAbstract + "”'>" +message.alarmAbstract + "</a>",
+                                            dangerouslyUseHTMLString: true,
+                                            position: 'bottom-right',
+                                            type: 'warning',
+                                            offset: 50,
+                                            duration: 0
+                                        });
 
-										_t.notifyMap[message.id] = notify;
+                                        _t.notifyMap[message.id] = notify;
 
-										document.getElementById("message_"+message.id).onclick = function () {
-											var domId = this.id;
-											var messageId = domId.substring(domId.indexOf('_')+1);
+                                        document.getElementById("message_"+message.id).onclick = function () {
+                                            var domId = this.id;
+                                            var messageId = domId.substring(domId.indexOf('_')+1);
 
-											//展示页面弹窗的告警信息
-											_t.showAlarmContent(messageId);
+                                            //展示页面弹窗的告警信息
+                                            _t.showAlarmContent(messageId);
 
-											//关掉本notification的弹窗
-											_t.notifyMap[messageId].close();
+                                            //关掉本notification的弹窗
+                                            _t.notifyMap[messageId].close();
 
-											_t.setMessageReadStatus(null, messageId);
-										}
-										*/
+                                            _t.setMessageReadStatus(null, messageId);
+                                        }
+                                        */
 									}
 								}
 								if (null != soundList && soundList.length > 0) {
@@ -761,11 +950,11 @@
 					switch (res.status) {
 						case 200:
 							/*
-							_t.$message({
-								message: '告警提示信息已经成功设置为已读！',
-								type: 'success'
-							});
-							*/
+                            _t.$message({
+                                message: '告警提示信息已经成功设置为已读！',
+                                type: 'success'
+                            });
+                            */
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -870,14 +1059,13 @@
 					return 'highlight-row';
 				}
 				return 'common-row';
-			}
+			},
 		},
 		created() {
 			var _t = this;
 			_t.$store.commit('setLoading', true);
 			_t.getData();
 			_t.getLanguage();
-			_t.getRefreshRateMap();
 			// 系统支持语言改变之后重新获取语言列表
 			_t.$bus.on('getLanguage', (val) => {
 				if (val) {
@@ -887,6 +1075,7 @@
 		},
 		beforeDestroy() {
 			var _t = this;
+			// 销毁定时器
 			clearInterval(_t.timer);
 			_t.timer = null;
 		}
@@ -898,6 +1087,7 @@
 		height: 50px;
 		line-height: 50px;
 		display: inline-block;
+		min-width: 30px;
 	}
 </style>
 <style>
@@ -912,13 +1102,11 @@
 	}
 
 	.app-header-logo > .logo-box {
-		width: 56px;
 		height: 52px;
 		padding: 4px 6px;
 	}
 
 	.app-header-logo > .logo-box img {
-		width: 100%;
 		height: 100%;
 	}
 
@@ -934,10 +1122,11 @@
 	.app-header-navBar li {
 		float: left;
 		margin-right: 20px;
+		max-height: 52px;
 	}
 
 	.app-header-navBar li:first-child {
-		margin-right: 50px;
+		margin-right: 10px;
 	}
 
 	.el-app-header-select {

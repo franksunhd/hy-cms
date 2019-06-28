@@ -73,7 +73,7 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
+  import Box from '../../../../components/common/Box';
 
   export default {
     name: "lisence-notice",

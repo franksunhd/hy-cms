@@ -12,7 +12,7 @@
 			<!--表单-->
 			<el-form inline v-model="formItem">
 				<el-form-item :label="$t('roleMaintenance.roleName') + '：'">
-					<el-input v-model="formItem.roleName" class="width200" clearable/>
+					<el-input v-model="formItem.roleName" class="width200" @keyup.enter.native="getData()" clearable/>
 				</el-form-item>
 				<el-form-item :label="$t('roleMaintenance.roleDate') + '：'">
 					<el-date-picker
@@ -47,14 +47,20 @@
 				<el-button class="queryBtn" :disabled="disableBtn.more" @click="deleteData">
 					<span class="iconfont fs14">&#xe647;</span> {{$t('public.delete')}}
 				</el-button>
-				<el-button :disabled="disableBtn.edit" @click="authorizationData">
+				<el-button :disabled="disableBtn.one" @click="authorizationData">
 					<span class="iconfont fs14">&#xe652;</span> {{$t('roleMaintenance.userAuthorization')}}
 				</el-button>
-				<el-button :disabled="disableBtn.edit" @click="functionData">
+				<el-button :disabled="disableBtn.one" @click="functionData">
 					<span class="iconfont fs14">&#xe658;</span> {{$t('roleMaintenance.functionLimit')}}
 				</el-button>
 				<el-button :disabled="disableBtn.edit" @click="infoData">
 					<span class="iconfont fs14">&#xe654;</span> {{$t('roleMaintenance.dataLimit')}}
+				</el-button>
+				<el-button :disabled="disableBtn.edit" @click="infoKvm">
+					<span class="iconfont fs14">&#xe654;</span> {{$t('roleMaintenance.kvmLimit')}}
+				</el-button>
+				<el-button :disabled="disableBtn.edit" @click="businessLimitBtn">
+					<span class="iconfont fs14">&#xe654;</span> {{$t('roleMaintenance.businessLimit')}}
 				</el-button>
 			</div>
 			<!--表格-->
@@ -133,10 +139,10 @@
 				</el-form-item>
 			</el-form>
 			<span slot="footer">
-        <el-button class="alertBtn" type="primary" v-if="ifAdd === true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" type="primary" v-if="ifAdd === false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
-      </span>
+				<el-button class="alertBtn" type="primary" v-if="ifAdd === true" @click="addRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" type="primary" v-if="ifAdd === false" @click="editRoleData('ruleForm')">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="resetFormData">{{$t('public.cancel')}}</el-button>
+			</span>
 		</el-dialog>
 		<!--用户授权-->
 		<el-dialog
@@ -198,7 +204,8 @@
 					<el-button class="queryBtn" @click="resetUserLimit">{{$t('public.reset')}}</el-button>
 				</el-form-item>
 			</el-form>
-			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" border stripe @select="selectHandle" @select-all="selectHandleAll">
+			<el-table ref="tableUser" :data="innerTableData" :row-key="getRowKeys" border stripe @select="selectHandle"
+								@select-all="selectHandleAll">
 				<el-table-column :reserve-selection="true" type="selection" fixed header-align="left" align="left"/>
 				<el-table-column prop="displayName" :label="$t('public.name')" header-align="left" align="left"/>
 				<el-table-column prop="username" :label="$t('roleMaintenance.account')" header-align="left" align="left"/>
@@ -229,12 +236,14 @@
 			:close-on-click-modal="false"
 			:close-on-press-escape="false">
 			<el-form>
+				<!--				:default-checked-keys="defaultCheckedMenuKeys"-->
 				<el-form-item>
 					<el-tree
 						:data="selectArr"
-						node-key="id"
+						node-key="nodeId"
 						show-checkbox
 						ref="tree"
+
 						@check-change="currentChangeMenuTree"
 						:props="menuProps"/>
 				</el-form-item>
@@ -286,11 +295,16 @@
 						:data="dataInfoResourceTree"
 						:props="dataInfoTreeProps"
 						show-checkbox
-						:check-strictly="true"
 						:default-expanded-keys="['tree_other']"
 						@check-change="currentChangeTree"
 						:filter-node-method="filterNode"
-						ref="vueTree"/>
+						ref="vueTree">
+						<div slot-scope="{node,data}" :class="data.orderNum == 2 ? 'treeBox activeColor' : 'treeBox'">
+							<span v-if="data.orderNum === 2" class="iconfont">&#xe663;</span>
+							<span>{{data.nodeName}}</span>
+							<span v-if="data.orderNum === 2">({{data.ip}})</span>
+						</div>
+					</el-tree>
 					<p class="iconfontError">
 						<span>{{$t('roleMaintenance.selectedDevice')}}</span>
 						<span>{{resourceForm.isSelectNum}}</span>
@@ -303,23 +317,83 @@
 				<el-button class="alertBtn" @click="resetDataLimit">{{$t('public.cancel')}}</el-button>
 			</div>
 		</el-dialog>
+		<!--KVM授权-->
+		<el-dialog
+			class="kvmPermissions-dialog"
+			:title="$t('roleMaintenance.dialog.kvmPermissions.windowTitle')"
+			append-to-body
+			:visible.sync="dialogVisibleKvm"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
+			<el-form :model="kvmLimit" label-width="180px">
+				<el-form-item class="star" :label="$t('roleMaintenance.dialog.kvmPermissions.formRoleName') +'：'">
+					<el-input v-model="kvmLimit.roleName" class="width200" disabled/>
+				</el-form-item>
+				<el-form-item :label="$t('roleMaintenance.dialog.kvmPermissions.formKvmPermissions') +'：'">
+					<div>
+						<el-checkbox v-model="kvmLimit.RemoteConsole">
+							{{$t('roleMaintenance.dialog.kvmPermissions.formRemoteConsole')}}
+						</el-checkbox>
+					</div>
+					<div>
+						<el-checkbox v-model="kvmLimit.PowerConsole">
+							{{$t('roleMaintenance.dialog.kvmPermissions.formPowerConsole')}}
+						</el-checkbox>
+					</div>
+					<div>
+						<el-checkbox v-model="kvmLimit.WebOutOfBand">
+							{{$t('roleMaintenance.dialog.kvmPermissions.formWebOutOfBand')}}
+						</el-checkbox>
+					</div>
+					<div>
+						<el-checkbox v-model="kvmLimit.RemoteTerminal">
+							{{$t('roleMaintenance.dialog.kvmPermissions.formRemoteTerminal')}}
+						</el-checkbox>
+					</div>
+				</el-form-item>
+			</el-form>
+			<span slot="footer">
+				<el-button class="alertBtn" type="primary" @click="saveKvmLimit">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="resetKvmLimit">{{$t('public.cancel')}}</el-button>
+			</span>
+		</el-dialog>
+		<!--业务权限-->
+		<el-dialog
+			class="role-setBusiness-dialog"
+			append-to-body
+			:before-close="resetBusinessData"
+			:title="$t('roleMaintenance.dialog.businessLimit.windowTitle')"
+			:visible.sync="dialogVisibleData_Business"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false">
+			<el-tree
+				:data="businessLimitTree"
+				node-key="nodeId"
+				show-checkbox
+				ref="businessLimitTree"
+				:default-expanded-keys="defaultExpandedBusinessKeys"
+				@check-change="checkChangeBusinessTree"
+				:props="dataInfoTreeProps"/>
+			<div slot="footer" class="clearfix">
+				<div class="fl lineHeightBusiness">
+					<el-checkbox
+						@change="businessLimitAllChecked(allCheckedBusiness)"
+						class="allCheckedMenu"
+						v-model="allCheckedBusiness">{{$t('public.allChecked')}}
+					</el-checkbox>
+				</div>
+				<el-button class="alertBtn" type="primary" @click="saveBusinessData">{{$t('public.confirm')}}</el-button>
+				<el-button class="alertBtn" @click="resetBusinessData">{{$t('public.cancel')}}</el-button>
+			</div>
+		</el-dialog>
 	</Box>
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {isNotNull} from "../../../../assets/js/validator";
 	import {dateFilter} from '../../../../assets/js/filters';
-	import {
-		orgBreadcrumb,
-		getMenuWithParentIdByMenuId,
-		getParent,
-		uniqArr,
-		getChildren,
-		unique,
-		returnIsNotData,
-		getObjectById
-	} from "../../../../assets/js/recursive";
+	import {returnIsNotData, getObjectById} from "../../../../assets/js/recursive";
 
 	export default {
 		name: "role-maintenance",
@@ -352,13 +426,23 @@
 					status: 1,
 					isSelectNum: 0
 				},
+				// Kvm授权表单
+				kvmLimit: {
+					id: '',
+					roleName: '',
+					RemoteConsole: false,
+					PowerConsole: true,
+					WebOutOfBand: true,
+					RemoteTerminal: false
+				},
 				filterText: '', // 数据权限前端过滤
 				// 全局按钮 是否禁用
 				disableBtn: {
 					edit: true,
 					enable: true,
 					disable: true,
-					more: true
+					more: true,
+					one: true,
 				},
 				// 判断视图下全选按钮 是否选中
 				checked: false,
@@ -372,6 +456,10 @@
 				dialogVisibleFunction: false,
 				// 数据权限
 				dialogVisibleData: false,
+				// KVM权限
+				dialogVisibleKvm: false,
+				// 业务权限 弹出层
+				dialogVisibleData_Business: false,
 				// 所属组织下拉框
 				isShowEditPopover: false,
 				// 是否新增
@@ -384,14 +472,18 @@
 				allCheckedMenu: false,
 				// 数据权限全选
 				allcheckedData: false,
+				// 业务权限全选
+				allCheckedBusiness: false,
 				// 表格数据
 				tableData: [],
 				// 内层表格数据
 				innerTableData: [],
 				// 组织结构名
 				organizationName: [],
-				menuExpanded: [], // 功能菜单授权数据回显 展开树
-				keys: [],
+				menuExpanded: [], // 功能权限
+				defaultCheckedMenuKeys: [], // 默认勾选的功能权限
+				businessLimitTree: [],// 业务权限树
+				defaultExpandedBusinessKeys: [], // 业务权限树默认展开节点
 				dataInfoResourceTree: [], // 资源视图树
 				deviceListArr: [], // 资源视图全选数据集合
 				// 外层分页
@@ -416,45 +508,36 @@
 					children: 'children', // 子级
 				},
 				menuProps: {
-					label: 'menuName',
-					children: 'systemMenuAndLanguageRelationChildList'
+					label: 'nodeName',
+					children: 'children'
 				},
 				dataInfoTreeProps: {
 					label: 'nodeName',
-					children: 'children',
-					disabled: function (data, node) {
-						if (data.orderNum === 1) {
-							return true;
-						}
-					}
+					children: 'children'
 				},
 				// 所属组织列表
 				organizationList: [],
 				checkListIds: [], // 选中表格的数据id集合
 				checkListOrg: [], // 选中表格的数据组织id集合
 				selectArr: [], // 功能菜单集合
+				cacheMenuList: [], // 缓存没有勾选的菜单集合 id
 				editDataList: {}, // 编辑选中的集合
 				rules: {
-					organization: [{
-						validator: isNotNull,
-						trigger: ['blur', 'change']
-					}],
-					roleName: [{
-						validator: isNotNull,
-						trigger: ['blur']
-					}],
-					status: [{
-						validator: isNotNull,
-						trigger: ['blur']
-					}],
-					description: [{
-						validator: isNotNull,
-						trigger: ['blur']
-					}],
-					tags: [{
-						validator: isNotNull,
-						trigger: ['blur']
-					}]
+					organization: [
+						{validator: isNotNull, trigger: ['blur', 'change']}
+					],
+					roleName: [
+						{validator: isNotNull, trigger: ['blur']}
+					],
+					status: [
+						{validator: isNotNull, trigger: ['blur']}
+					],
+					description: [
+						{validator: isNotNull, trigger: ['blur']}
+					],
+					tags: [
+						{validator: isNotNull, trigger: ['blur']}
+					]
 				},
 			}
 		},
@@ -465,12 +548,84 @@
 			}
 		},
 		methods: {
-			// 重置用户授权
-			resetUserLimit() {
+			/**
+			 * 功能权限
+			 */
+			// 点击功能权限按钮获取
+			functionData() {
 				var _t = this;
-				_t.userLimit.organization = _t.$t('public.all'); // 所属组织名
-				_t.userLimit.organizationId = null; // 所属组织id
-				_t.userLimit.username = ''; // 姓名
+				_t.dialogVisibleFunction = true;
+				_t.getFunctionDataByRoleId(_t.checkListIds.join(','))
+			},
+			// 获取已授权的功能权限菜单
+			getFunctionDataByRoleId(val) {
+				var _t = this;
+				_t.$api.get('system/menu/getImpowerMenuById', {
+					jsonString: JSON.stringify({
+						systemRole: {
+							id: val
+						},
+						languageMark: localStorage.getItem('hy-language')
+					})
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (res.data && res.data !== null) {
+								// 本用户具有的角色权限
+								if (res.data.menuListjsonString && res.data.menuListjsonString !== null) {
+									var menuListData = JSON.parse(res.data.menuListjsonString);
+									if (menuListData.children && menuListData.children !== null) {
+										// 赋值渲染树形展示
+										_t.selectArr = menuListData.children;
+										// 勾选已授权的菜单
+										if (res.data.menuIdList && res.data.menuIdList !== null) {
+											// 页面渲染完毕利用树节点判断树上有没有本节点
+											// _t.defaultCheckedMenuKeys = menuIdList;
+
+											_t.$nextTick(function () {
+												var menuIdList = res.data.menuIdList;
+												_t.$refs.tree.setCheckedKeys(menuIdList);
+												var canNotSelectMenuList = new Array(); // 找不到对应的菜单id集合
+												menuIdList.forEach((item) => {
+													var isSelectMenu = _t.$refs.tree.getNode(item);
+													if (isSelectMenu === null) {
+														canNotSelectMenuList.push(item);
+													}
+												});
+												// 判断是否全选 获取选中的节点数组
+												var firstArr = _t.$refs.tree.getCheckedKeys();
+												var number = 0; // 计数
+												firstArr.forEach((val) => {
+													_t.selectArr.forEach((t) => {
+														if (val === t.nodeId) {
+															number += 1; // 第一层选中计数加1
+														}
+													});
+												});
+												// 计数的值和树节点上第一级的数量一样 全选勾选
+												if (number === _t.selectArr.length) {
+													_t.allCheckedMenu = true;
+												} else {
+													// 取消勾选
+													_t.allCheckedMenu = false;
+												}
+												_t.cacheMenuList = canNotSelectMenuList; // 缓存没有勾选的菜单集合
+											});
+										}
+									}
+								}
+							}
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				});
 			},
 			// 功能权限菜单改变的时候
 			currentChangeMenuTree() {
@@ -479,7 +634,7 @@
 				var number = 0; // 计数
 				firstArr.forEach((val) => {
 					_t.selectArr.forEach((t) => {
-						if (val === t.id) {
+						if (val === t.nodeId) {
 							number += 1; // 第一层选中计数加1
 						}
 					});
@@ -492,10 +647,238 @@
 					_t.allCheckedMenu = false;
 				}
 			},
+			// 功能菜单权限全选功能
+			changeMenuTree(val) {
+				var _t = this;
+				if (val) {
+					// 全选
+					_t.$refs.tree.setCheckedNodes(_t.selectArr);
+				} else {
+					// 取消全选
+					_t.$refs.tree.setCheckedKeys([]);
+				}
+			},
+			// 提交授权菜单
+			commitMenuData() {
+				var _t = this;
+				var selectMenuList = new Array();
+				var getCheckedArr = _t.$refs.tree.getCheckedKeys();
+				var getHalfCheckedArr = _t.$refs.tree.getHalfCheckedKeys();
+				getCheckedArr.forEach((item) => {
+					var obj = new Object();
+					obj.menuId = item;
+					obj.isChecked = true;
+					selectMenuList.push(obj);
+				});
+				getHalfCheckedArr.forEach((item) => {
+					var obj = new Object();
+					obj.menuId = item;
+					obj.isChecked = false;
+					selectMenuList.push(obj);
+				});
+				// 补充过滤出来没有选中的数据
+				if (_t.cacheMenuList.length !== 0) {
+					_t.cacheMenuList.forEach((item) => {
+						var obj = new Object();
+						obj.menuId = item;
+						obj.isChecked = true;
+						selectMenuList.push(obj);
+					});
+				}
+				_t.$api.post('system/role/impowerRoleByMenu', {
+					systemRole: {
+						id: _t.checkListIds.join(',')
+					},
+					menuList: selectMenuList
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							_t.dialogVisibleFunction = false;
+							_t.$refs.tree.setCheckedKeys([]);
+							_t.$bus.emit('getMenuData', true);
+							_t.$refs.table.clearSelection();
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				});
+			},
+			/**
+			 * 业务权限
+			 */
+			// 业务权限全选和取消全选
+			businessLimitAllChecked(val) {
+				var _t = this;
+				if (val) {
+					// 全选
+					_t.$refs.businessLimitTree.setCheckedNodes(_t.businessLimitTree);
+				} else {
+					// 取消全选
+					_t.$refs.businessLimitTree.setCheckedKeys([]);
+				}
+			},
+			// 改变业务权限树单个复选框触发
+			checkChangeBusinessTree() {
+				var _t = this;
+				var firstArr = _t.$refs.businessLimitTree.getCheckedKeys();
+				var number = 0; // 计数
+				firstArr.forEach((val) => {
+					_t.businessLimitTree.forEach((t) => {
+						if (val === t.nodeId) {
+							number += 1; // 第一层选中计数加1
+						}
+					});
+				});
+				// 计数的值和树节点上第一级的数量一样 全选勾选
+				if (number === _t.businessLimitTree.length) {
+					_t.allCheckedBusiness = true;
+				} else {
+					// 取消勾选
+					_t.allCheckedBusiness = false;
+				}
+			},
+			// 点击业务权限按钮
+			businessLimitBtn() {
+				var _t = this;
+				_t.dialogVisibleData_Business = true;
+				_t.getBusinessTreeData();
+			},
+			// 获取业务权限树目录
+			getBusinessTreeData() {
+				var _t = this;
+				_t.$api.get('asset/assetBusiness/all', {
+					jsonString: JSON.stringify({
+						isTree: true
+					})
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (res.data && res.data !== null) {
+								_t.businessLimitTree = res.data.children;
+							} else {
+								_t.businessLimitTree = [];
+							}
+							_t.getRoleLimitBusiness(_t.editDataList.id);
+							break;
+						default:
+							break;
+					}
+				});
+			},
+			// 获取角色关联的业务权限
+			getRoleLimitBusiness(val) {
+				var _t = this;
+				_t.$api.get('system/roleBusiness/all', {
+					jsonString: JSON.stringify({
+						onlyBusinessIdList: true,
+						systemRoleBusiness: {
+							roleId: val
+						}
+					})
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (res.data && res.data !== null) {
+								if (res.data.list && res.data.list !== null) {
+									var listData = res.data.list;
+									_t.$nextTick(function () {
+										_t.$refs.businessLimitTree.setCheckedKeys(listData);
+										_t.defaultExpandedBusinessKeys = listData;
+									});
+								}
+							}
+							break;
+						default:
+							break;
+					}
+				});
+			},
+			// 保存业务权限
+			saveBusinessData() {
+				var _t = this;
+				var selectMenuList = new Array(); // 全部需要传的数据
+				var getCheckedArr = _t.$refs.businessLimitTree.getCheckedKeys(); // 全选节点
+				var getHalfCheckedArr = _t.$refs.businessLimitTree.getHalfCheckedKeys(); // 半选节点
+				// 给全选节点添加选中状态
+				getCheckedArr.forEach((item) => {
+					var obj = new Object();
+					obj.businessId = item;
+					obj.isChecked = true;
+					selectMenuList.push(obj);
+				});
+				// 给半选中节点添加未选中状态
+				getHalfCheckedArr.forEach((item) => {
+					var obj = new Object();
+					obj.businessId = item;
+					obj.isChecked = false;
+					selectMenuList.push(obj);
+				});
+				_t.$api.post('system/roleBusiness/', {
+					roleId: _t.editDataList.id,
+					systemRoleBusinessList: selectMenuList
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							_t.$alert(_t.$t('roleMaintenance.confirmSaveSuccessTip'), _t.$t('public.resultTip'), {
+								confirmButtonText: _t.$t('public.confirm'),
+								confirmButtonClass: 'alertBtn'
+							}).then(() => {
+								//重新加载列表数据
+								_t.getData();
+								_t.resetBusinessData();
+							}).catch(() => {
+								//重新加载列表数据
+								_t.getData();
+								_t.resetBusinessData();
+							});
+							break;
+						case 2006: // 修改失败
+							_t.$message.error({
+								message: res.message,
+								duration: 3000
+							});
+							break;
+						default:
+							//重新加载列表数据
+							_t.getData();
+							_t.resetBusinessData();
+							break;
+					}
+				});
+			},
+			// 重置业务权限
+			resetBusinessData() {
+				var _t = this;
+				_t.dialogVisibleData_Business = false;
+				_t.$refs.businessLimitTree.setCheckedKeys([]);
+				_t.businessLimitTree = [];
+				_t.defaultExpandedBusinessKeys = [];
+				_t.cacheMenuList = [];
+				_t.allCheckedBusiness = false;
+			},
+			// 重置用户授权
+			resetUserLimit() {
+				var _t = this;
+				_t.userLimit.organization = _t.$t('public.all'); // 所属组织名
+				_t.userLimit.organizationId = null; // 所属组织id
+				_t.userLimit.username = ''; // 姓名
+			},
 			// 保存数据权限
 			addDataLimit() {
 				var _t = this;
-				var deviceIdArr = _t.$refs.vueTree.getCheckedKeys();
+				var deviceIdArrList = _t.$refs.vueTree.getCheckedNodes();
+				var deviceIdArr = new Array();
+				deviceIdArrList.forEach((item) => {
+					if (item.orderNum === 2) {
+						deviceIdArr.push(item.nodeId);
+					}
+				});
 				_t.$api.post('system/systemRoleDevice/', {
 					systemRoleDevice: {
 						roleId: _t.checkListIds.join(','),
@@ -544,13 +927,38 @@
 				_t.$refs.vueTree.setCheckedKeys([]);
 				_t.dialogVisibleData = false;
 				_t.allcheckedData = false;
+				_t.dialogVisibleKvm = false;
 			},
 			// 树节点状态改变的时候 判断是否勾选全选按钮
 			currentChangeTree() {
 				var _t = this;
-				var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
-				_t.resourceForm.isSelectNum = selectTreeList.length;
-				if (selectTreeList.length === _t.deviceListArr.length) {
+				var selectTreeList = _t.$refs.vueTree.getCheckedNodes();
+				var selectTreeArr = new Array();
+				var selectFirstLevel = new Array();
+				selectTreeList.forEach((t) => {
+					if (t.orderNum === 2) {
+						selectTreeArr.push(t.nodeId);
+					}
+					// 获取选中目录集合
+					if (t.orderNum === 1) {
+						selectFirstLevel.push(t.nodeId);
+					}
+				});
+				// 给选中多少台设备赋值
+				_t.resourceForm.isSelectNum = selectTreeArr.length;
+				// 判断树节点是否全部勾选 一级的节点全部选中 代表全选
+				var firstLevelNum = 0;
+				if (_t.dataInfoResourceTree !== null) {
+					_t.dataInfoResourceTree.forEach((item) => {
+						selectFirstLevel.forEach((val) => {
+							if (item.nodeId === val) {
+								firstLevelNum++;
+							}
+						})
+					});
+				}
+				// 判断 一级节点个数不为0 并且
+				if (firstLevelNum !== 0 && firstLevelNum === _t.dataInfoResourceTree.length) {
 					_t.allcheckedData = true;
 				} else {
 					_t.allcheckedData = false;
@@ -561,12 +969,9 @@
 				var _t = this;
 				if (_t.allcheckedData) {
 					// 全选
-					_t.$refs.vueTree.setCheckedNodes(_t.deviceListArr);
-					var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
-					_t.resourceForm.isSelectNum = selectTreeList.length;
+					_t.$refs.vueTree.setCheckedNodes(_t.dataInfoResourceTree);
 				} else {
 					// 取消全选
-					_t.resourceForm.isSelectNum = 0;
 					_t.$refs.vueTree.setCheckedKeys([]);
 				}
 			},
@@ -580,6 +985,99 @@
 				var _t = this;
 				_t.dialogVisibleData = true;
 				_t.getInfoDataTree();
+			},
+			/**
+			 * KVM权限
+			 */
+			// KVM权限按钮
+			infoKvm() {
+				var _t = this;
+				_t.dialogVisibleKvm = true;
+				_t.kvmLimit.id = _t.editDataList.id;
+				_t.$api.get('system/role/' + _t.kvmLimit.id, {}, function (res) {
+					switch (res.status) {
+						case 200:
+							if (null != res.data && undefined != res.data) {
+								_t.kvmLimit.id = res.data.id;
+								_t.kvmLimit.roleName = res.data.roleName;
+								var kvmPermissions = res.data.kvmPermissions;
+								if (null != kvmPermissions && undefined != kvmPermissions) {
+									var kvmPermissionsJson = JSON.parse(kvmPermissions);
+									_t.kvmLimit.RemoteConsole = kvmPermissionsJson.RemoteConsole;
+									_t.kvmLimit.PowerConsole = kvmPermissionsJson.PowerConsole;
+									_t.kvmLimit.WebOutOfBand = kvmPermissionsJson.WebOutOfBand;
+									_t.kvmLimit.RemoteTerminal = kvmPermissionsJson.RemoteTerminal;
+								}
+							}
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							break;
+					}
+				});
+			},
+			// 保存Kvm权限
+			saveKvmLimit() {
+				var _t = this;
+				_t.$api.put('system/role/updateKvmPermissions', {
+					roleId: _t.kvmLimit.id,
+					kvmPermissions: {
+						RemoteConsole: _t.kvmLimit.RemoteConsole,
+						PowerConsole: _t.kvmLimit.PowerConsole,
+						WebOutOfBand: _t.kvmLimit.WebOutOfBand,
+						RemoteTerminal: _t.kvmLimit.RemoteTerminal
+					}
+				}, function (res) {
+					switch (res.status) {
+						case 200:
+							_t.$alert(_t.$t('roleMaintenance.confirmSaveSuccessTip'), _t.$t('public.resultTip'), {
+								confirmButtonText: _t.$t('public.confirm'),
+								confirmButtonClass: 'alertBtn'
+							}).then(() => {
+								//重新加载列表数据
+								_t.getData();
+								_t.resetKvmLimit();
+							});
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						case 2006: // 修改失败
+							_t.$message.error({
+								message: res.message,
+								duration: 3000
+							});
+							break;
+						default:
+							break;
+					}
+					_t.$refs.table.clearSelection();
+					_t.disableBtn.enable = true;
+					_t.disableBtn.disabled = true;
+					_t.disableBtn.edit = true;
+					_t.disableBtn.more = true;
+					_t.disableBtn.one = true;
+				});
+			},
+			// 重置Kvm权限表单
+			resetKvmLimit() {
+				var _t = this;
+				_t.kvmLimit.id = '';
+				_t.kvmLimit.roleName = '';
+				_t.kvmLimit.RemoteConsole = false;
+				_t.kvmLimit.PowerConsole = false;
+				_t.kvmLimit.WebOutOfBand = false;
+				_t.kvmLimit.RemoteTerminal = false;
+				//隐藏弹窗
+				_t.dialogVisibleKvm = false;
 			},
 			// 获取数据权限 监测目录树
 			getInfoDataTree() {
@@ -612,7 +1110,9 @@
 				var _t = this;
 				_t.$api.get('asset/assetDevice/getDeviceList', {
 					jsonString: JSON.stringify({
-						assetDevice: {}
+						assetDevice: {
+							monitorStatus: 1
+						}
 					})
 				}, function (res) {
 					switch (res.status) {
@@ -724,151 +1224,12 @@
 				_t.tagsLength = false;
 				_t.resetUserLimit();
 			},
-			// 功能菜单权限全选功能
-			changeMenuTree(val) {
-				var _t = this;
-				if (val) {
-					// 全选
-					_t.$refs.tree.setCheckedNodes(_t.selectArr);
-				} else {
-					// 取消全选
-					_t.$refs.tree.setCheckedKeys([]);
-				}
-			},
 			// 重置筛选表单
 			resetData() {
 				var _t = this;
 				_t.formItem.roleName = null;
 				_t.formItem.dateTime = null;
 				_t.getData();
-			},
-			// 树节点的点击
-			currentChange(node, status) {
-				var _t = this;
-				var nodeChildrenArr = [];
-				var keys = new Array();
-				var uniqArrKeys = new Array();
-				if (status) {
-					var parent = getParent(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList', 'parentId');
-					parent.forEach(function (item) {
-						keys.push(item.id);
-					});
-					uniqArrKeys = uniqArr(keys);
-					_t.keys = uniqArrKeys;
-				} else {
-					_t.keys.forEach(function (item, index) {
-						if (item === node.id) {
-							_t.keys.splice(index, 1);
-						}
-					});
-					// 获取勾选带子级的节点
-					nodeChildrenArr = getChildren(_t.selectArr, node.id, 'id', 'systemMenuAndLanguageRelationChildList');
-					// 循环设置取消勾选节点子集的所有节点
-					nodeChildrenArr.forEach(function (item) {
-						// item key值, false: 不勾选
-						_t.$refs.tree.setChecked(item, false, true);
-					});
-				}
-			},
-			// 功能权限
-			functionData() {
-				var _t = this;
-				_t.dialogVisibleFunction = true;
-				_t.getFunctionDataByRoleId(_t.checkListIds.join(','))
-			},
-			// 获取已授权的功能权限菜单
-			getFunctionDataByRoleId(val) {
-				var _t = this;
-				_t.$api.get('system/menu/getImpowerMenuById', {
-					jsonString: JSON.stringify({
-						systemRole: {
-							id: val
-						},
-						languageMark: localStorage.getItem('hy-language')
-					})
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.$refs.tree.setCheckedKeys(res.data);
-							// 判断是否全选 获取选中的节点数组
-							var firstArr = _t.$refs.tree.getCheckedKeys();
-							var number = 0; // 计数
-							firstArr.forEach((val) => {
-								_t.selectArr.forEach((t) => {
-									if (val === t.id) {
-										number += 1; // 第一层选中计数加1
-									}
-								});
-							});
-							// 计数的值和树节点上第一级的数量一样 全选勾选
-							if (number === _t.selectArr.length) {
-								_t.allCheckedMenu = true;
-							} else {
-								// 取消勾选
-								_t.allCheckedMenu = false;
-							}
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				});
-			},
-			// 提交授权菜单
-			commitMenuData() {
-				var _t = this;
-				var selectMenuArr = new Array();
-				var selectMenuList = new Array();
-				var getCheckedArr = _t.$refs.tree.getCheckedKeys();
-				selectMenuArr = getMenuWithParentIdByMenuId(_t.selectArr, getCheckedArr);
-				var parentIdArr = new Array();
-				parentIdArr = unique(selectMenuArr, getCheckedArr);
-				selectMenuArr.forEach((item) => {
-					getCheckedArr.forEach((val) => {
-						var obj = new Object();
-						if (item === val) {
-							obj.menuId = val;
-							obj.isChecked = true;
-							selectMenuList.push(obj);
-						}
-					});
-				});
-				parentIdArr.forEach((data) => {
-					var obj = new Object();
-					obj.menuId = data;
-					obj.isChecked = false;
-					selectMenuList.push(obj);
-				});
-				if (selectMenuList.length !== 0) {
-					_t.$api.post('system/role/impowerRoleByMenu', {
-						systemRole: {
-							id: _t.checkListIds.join(',')
-						},
-						menuList: selectMenuList
-					}, function (res) {
-						switch (res.status) {
-							case 200:
-								_t.dialogVisibleFunction = false;
-								_t.$refs.tree.setCheckedKeys([]);
-								_t.$bus.emit('getMenu', true);
-								_t.$refs.table.clearSelection();
-								break;
-							case 1003: // 无操作权限
-							case 1004: // 登录过期
-							case 1005: // token过期
-							case 1006: // token不通过
-								_t.exclude(_t, res.message);
-								break;
-							default:
-								break;
-						}
-					});
-				}
 			},
 			// 重置表单
 			resetFormData() {
@@ -1103,6 +1464,7 @@
 							_t.disableBtn.enable = true;
 							_t.disableBtn.disable = true;
 							_t.disableBtn.more = true;
+							_t.disableBtn.one = true;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -1118,6 +1480,7 @@
 							_t.disableBtn.enable = true;
 							_t.disableBtn.disable = true;
 							_t.disableBtn.more = true;
+							_t.disableBtn.one = true;
 							break;
 					}
 				});
@@ -1192,11 +1555,17 @@
 									_t.$refs.table.clearSelection();
 								});
 								break;
-							case 1003: // 无操作权限
-							case 1004: // 登录过期
-							case 1005: // token过期
-							case 1006: // token不通过
-								_t.exclude(_t, res.message);
+							case 3006: // 不能禁用本用户所属角色
+								_t.$alert(_t.$t('roleMaintenance.confirmDisabledTip'), _t.$t('public.resultTip'), {
+									confirmButtonText: _t.$t('public.confirm'),
+									confirmButtonClass: 'alertBtn'
+								}).then(() => {
+									_t.getData();
+									_t.$refs.table.clearSelection();
+								}).catch(()=>{
+									_t.getData();
+									_t.$refs.table.clearSelection();
+								});
 								break;
 							default:
 								break;
@@ -1215,10 +1584,12 @@
 						_t.disableBtn.edit = true;
 						_t.disableBtn.enable = true;
 						_t.disableBtn.more = true;
+						_t.disableBtn.one = true;
 						break;
 					case 1: // 单选
 						_t.disableBtn.edit = false;
 						_t.disableBtn.more = false;
+						_t.disableBtn.one = false;
 						var checkListIds = new Array();
 						var checkListOrg = new Array();
 						data.forEach(function (item) {
@@ -1232,19 +1603,28 @@
 							// 获取选中的 id
 							checkListIds.push(item.id);
 							checkListOrg.push(item.organizationId);
+							if (item.id === "role_admin") {
+								_t.disableBtn.edit = true;
+								_t.disableBtn.more = true;
+								_t.disableBtn.disable = true;
+							}
 						});
 						_t.checkListIds = checkListIds;
 						_t.checkListOrg = checkListOrg;
 						break;
 					default: // 多选
 						_t.disableBtn.edit = true;
+						_t.disableBtn.one = true;
 						_t.disableBtn.more = false;
 						_t.editDataList = {};
-						var disableFlag = 0,
-							enableFlag = 0;
+						var disableFlag = 0, enableFlag = 0;
 						var checkListIds = new Array();
 						var checkListOrg = new Array();
+						var isHasAdmin = false;
 						for (var i = 0; i < data.length; i++) {
+							if (data[i].id === 'role_admin') {
+								isHasAdmin = true;
+							}
 							// 根据选中条数中的状态值判断 启用禁用数量
 							if (data[i].enable === false) {
 								disableFlag++;
@@ -1258,12 +1638,27 @@
 						_t.checkListIds = checkListIds;
 						_t.checkListOrg = checkListOrg;
 						if (disableFlag > 0 && enableFlag > 0) {
+							// 有禁用 有启用
 							_t.disableBtn.enable = true;
 							_t.disableBtn.disable = true;
+							if (isHasAdmin === true) {
+								_t.disableBtn.more = true;
+							} else {
+								_t.disableBtn.more = false;
+							}
 						} else if (disableFlag === 0 && enableFlag > 0) {
+							// 只有启用
 							_t.disableBtn.enable = true;
-							_t.disableBtn.disable = false;
+							if (isHasAdmin === true) {
+								// 有admin
+								_t.disableBtn.disable = true;
+								_t.disableBtn.more = true;
+							} else {
+								_t.disableBtn.disable = false;
+								_t.disableBtn.more = false;
+							}
 						} else if (disableFlag > 0 && enableFlag === 0) {
+							// 只有禁用
 							_t.disableBtn.enable = false;
 							_t.disableBtn.disable = true;
 						}
@@ -1293,60 +1688,6 @@
 				var _t = this;
 				_t.innerOptions.pageSize = val;
 				_t.selectRole();
-			},
-			// 删除
-			deleteData() {
-				var _t = this;
-				_t.$confirm(_t.$t('roleMaintenance.confirmDeleteTip'), _t.$t('public.confirmTip'), {
-					confirmButtonText: _t.$t('public.confirm'),
-					cancelButtonText: _t.$t('public.close'),
-					type: 'warning',
-					confirmButtonClass: 'alertBtn',
-					cancelButtonClass: 'alertBtn'
-				}).then(() => {
-					_t.$api.delete('system/role/', {
-						jsonString: JSON.stringify({
-							roleId: _t.checkListIds.join(',')
-						})
-					}, function (res) {
-						switch (res.status) {
-							case 200:
-								_t.$alert(_t.$t('roleMaintenance.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
-									confirmButtonText: _t.$t('public.confirm'),
-									confirmButtonClass: 'alertBtn'
-								}).then(() => {
-									_t.getData();
-									_t.$refs.table.clearSelection();
-								});
-								break;
-							case 1003: // 无操作权限
-							case 1004: // 登录过期
-							case 1005: // token过期
-							case 1006: // token不通过
-								_t.exclude(_t, res.message);
-								break;
-							case 2007: // 删除失败
-							case 3005: // 角色关联用户不能删除
-								_t.$alert(res.message, _t.$t('public.resultTip'), {
-									confirmButtonText: _t.$t('public.confirm'),
-									confirmButtonClass: 'alertBtn'
-								}).then(() => {
-									_t.getData();
-									_t.$refs.table.clearSelection();
-								});
-								break;
-							default:
-								_t.getData();
-								break;
-						}
-						_t.disableBtn.edit = true;
-						_t.disableBtn.enable = true;
-						_t.disableBtn.disable = true;
-						_t.disableBtn.more = true;
-					});
-				}).catch(() => {
-					return;
-				});
 			},
 			// 用户授权 数据回显
 			authorizationData() {
@@ -1404,6 +1745,9 @@
 					}
 				});
 			},
+			/**
+			 * 新增、编辑、删除角色
+			 */
 			// 新增角色按钮
 			addRoleDataBtn() {
 				var _t = this;
@@ -1543,47 +1887,85 @@
 					}
 				});
 			},
-			// 请求菜单数据
-			getMenuData() {
+			// 删除
+			deleteData() {
 				var _t = this;
-				_t.$api.get('system/menu/getMenuTree', {
-					jsonString: JSON.stringify({
-						languageMark: localStorage.getItem('hy-language')
-					})
-				}, function (res) {
-					switch (res.status) {
-						case 200: // 查询成功
-							var navBarArr = res.data.rootMenu === null ? [] : res.data.rootMenu;
-							if (navBarArr) {
-								navBarArr.forEach(function (item) {
-									if (item.systemMenuAndLanguageRelationChildList.length === 0) {
-										item.systemMenuAndLanguageRelationChildList = null;
-									}
+				_t.$confirm(_t.$t('roleMaintenance.confirmDeleteTip'), _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$api.delete('system/role/', {
+						jsonString: JSON.stringify({
+							roleId: _t.checkListIds.join(',')
+						})
+					}, function (res) {
+						switch (res.status) {
+							case 200:
+								_t.$alert(_t.$t('roleMaintenance.confirmDeleteSuccessTip'), _t.$t('public.resultTip'), {
+									confirmButtonText: _t.$t('public.confirm'),
+									confirmButtonClass: 'alertBtn'
+								}).then(() => {
+									_t.getData();
+									_t.$refs.table.clearSelection();
 								});
-								_t.selectArr = navBarArr;
-							}
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							_t.selectArr = [];
-							break;
-					}
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							case 2007: // 删除失败
+							case 3005: // 角色关联用户不能删除
+								_t.$alert(res.message, _t.$t('public.resultTip'), {
+									confirmButtonText: _t.$t('public.confirm'),
+									confirmButtonClass: 'alertBtn'
+								}).then(() => {
+									_t.getData();
+									_t.$refs.table.clearSelection();
+								});
+								break;
+							case 3006: // 不能删除本用户所属角色
+								_t.$alert(_t.$t('roleMaintenance.confirmDeletedTip'), _t.$t('public.resultTip'), {
+									confirmButtonText: _t.$t('public.confirm'),
+									confirmButtonClass: 'alertBtn'
+								}).then(() => {
+									_t.getData();
+									_t.$refs.table.clearSelection();
+								}).catch(()=>{
+									_t.getData();
+									_t.$refs.table.clearSelection();
+								});
+								break;
+							default:
+								break;
+						}
+						_t.disableBtn.edit = true;
+						_t.disableBtn.enable = true;
+						_t.disableBtn.disable = true;
+						_t.disableBtn.more = true;
+						_t.disableBtn.one = true;
+					});
+				}).catch(() => {
+					return;
 				});
 			},
 		},
 		created() {
 			this.$store.commit('setLoading', true);
 			this.getData();
-			this.getMenuData();
 		},
 	}
 </script>
 
+<style scoped>
+	.lineHeightBusiness {
+		line-height: 30px;
+	}
+</style>
 <style>
 	.roleMaintenance-dialog .el-dialog {
 		width: 600px;
@@ -1605,6 +1987,11 @@
 		height: 450px;
 	}
 
+	.role-setBusiness-dialog .el-dialog {
+		width: 600px;
+		height: 400px;
+	}
+
 	.role-setDateLimit-dialog-checkout .el-checkbox__label {
 		font-size: 12px;
 	}
@@ -1622,15 +2009,16 @@
 		border-bottom: 1px solid #eaedf1;
 	}
 
+	.kvmPermissions-dialog .el-dialog {
+		width: 600px;
+		height: 400px;
+	}
+
 	.role-input-search .el-input__inner {
 		height: 32px;
 	}
 
 	.allCheckedMenu .el-checkbox__label {
 		font-size: 12px;
-	}
-
-	#dataLimit-box .el-checkbox.is-disabled {
-		display: none;
 	}
 </style>

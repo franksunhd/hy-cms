@@ -2,12 +2,11 @@
 	<Box>
 		<!--左侧导航-->
 		<div id="EquipmentMonitoring_left" v-show="isShow" class="systemSettings-navBar">
-			<!--<div class="borderRightColorGray">-->
 			<div class="dataDictionary-title">
 				<div class="dataDictionary-title_text" @click="clickNode">
 					{{$t('EquipmentMonitoring.EquipmentGroup')}}
 				</div>
-				<div class="dataDictionary-title_button" @click="appendDevice">
+				<div class="dataDictionary-title_button" @click="appendDevice('1')">
 					<span class="iconfont dataDictionary-title_tb">&#xe689;</span>
 					<span class="dataDictionary-title_xz">{{$t('EquipmentMonitoring.news')}}</span>
 				</div>
@@ -30,7 +29,7 @@
 			</el-tree>
 			<div v-show="menuVisible">
 				<ul id="menu" class="menu">
-					<li class="menu__item cursorPointer" @click="appendDevice">
+					<li class="menu__item cursorPointer" @click="appendDevice('0')">
 						<i class="el-icon-share"> {{$t('EquipmentMonitoring.increase')}}</i></li>
 					<li class="menu__item cursorPointer" @click="EditDevice">
 						<i class="el-icon-edit"> {{$t('EquipmentMonitoring.TheEditor')}}</i></li>
@@ -38,7 +37,7 @@
 						class="el-icon-delete"> {{$t('EquipmentMonitoring.delete')}}</i></li>
 				</ul>
 			</div>
-			<!--</div>-->
+			<!--收起-->
 			<a href="javascript:;" @click="clickInset" id="EquipmentMonitoring-navBar-inSet">
 				<span class="iconfont">&#xe68b;</span>
 			</a>
@@ -63,89 +62,34 @@
 					<!--设备分类/类型-->
 					<el-form-item :label="$t('alarmCurrent.equipmentTypeInfo') + '：'">
 						<el-popover trigger="click" placement="bottom-start" v-model="isShowTypePopover"
-												ref="popover">
+									ref="popover">
 							<el-tree :data="equipmentTypeList" highlight-current :expand-on-click-node="false"
-											 @node-click="clickTypeNode" :props="defaultProps"/>
+									 @node-click="clickTypeNode" :props="defaultProps"/>
 							<el-input v-model="formItem.equipmentType" class="width180"
-												suffix-icon="el-icon-arrow-down" readonly slot="reference"/>
+									  suffix-icon="el-icon-arrow-down"
+									  readonly clearable slot="reference"/>
 						</el-popover>
 					</el-form-item>
 					<!--设备名称/序列号/IP-->
 					<el-form-item :label="$t('EquipmentMonitoring.DeviceNameSerialNumberIP') + '：'">
-						<el-input v-model="formItem.searchStr" class="width180"/>
+						<el-input v-model="formItem.searchStr" class="width180" @keyup.enter.native="getData()" clearable/>
 					</el-form-item>
 					<!--设备状态-->
 					<el-form-item :label="$t('alarmCurrent.equipmentStatus') + '：'">
-						<el-select v-model="formItem.equipmentStatus" class="width180" clearable>
+						<el-select v-model="formItem.equipmentStatus" class="width180" @change="getData" clearable>
 							<el-option v-for="(item,index) in formBaseData.AlarmSeverity" :key="index"
-												 :label="item.name" :value="item.type"/>
+									   :label="item.name" :value="item.type"/>
 						</el-select>
 					</el-form-item>
-					<!--
-					设备名称
-					<el-form-item :label="$t('EquipmentMonitoring.DeviceNameSerialNumberIP') + '：'">
-						<el-input v-model="formItem.equipmentName" class="width180"/>
-					</el-form-item>
-					序列号
-					<el-form-item :label="$t('alarmCurrent.serialNumber') + '：'">
-						<el-input v-model="formItem.serialNumber" class="width180"/>
-					</el-form-item>
-					<el-form-item>
-						<el-button class="queryBtn" v-if="one==='1'" @click="ClickOne('2')">
-							{{$t('EquipmentMonitoring.an')}}
-							<span class="iconfont fs14">&#xe686;</span>
-						</el-button>
-						<el-button class="queryBtn" v-if="one==='2'" @click="ClickOne('1')">
-							{{$t('EquipmentMonitoring.PackUp')}}
-							<span class="iconfont fs14">&#xe685;</span>
-						</el-button>
-					</el-form-item>
-					&lt;!&ndash;机房&ndash;&gt;
-					<el-form-item v-if="one==='2'" style="display: block; margin: 0;padding: 0;">
-						<el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
-							<el-select v-model="formItem.computerRoomId" @change="changeRoom(formItem.computerRoomId)"
-												 class="width180">
-								<el-option v-for="(item,index) in computerRoomList" :key="index" :label="item.name"
-													 :value="item.id"/>
-							</el-select>
-						</el-form-item>
-						&lt;!&ndash;机架/机柜&ndash;&gt;
-						<el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
-							<el-select v-model="formItem.rackNameId" class="width180" clearable>
-								<el-option v-for="(item,index) in rackNameList" :key="index" :label="item.name"
-													 :value="item.id"/>
-							</el-select>
-						</el-form-item>
-						&lt;!&ndash;关联业务&ndash;&gt;
-						<el-form-item :label="$t('alarmCurrent.relateBusiness') + '：'">
-							<el-popover trigger="click" placement="bottom-start" v-model="isShowBusinessPopover"
-													ref="popover">
-								<el-tree :data="businessTreeData" highlight-current :expand-on-click-node="false"
-												 @node-click="clickBusinessNode" :props="defaultPropsBusiness"/>
-								<el-input v-model="formItem.businessName" readonly class="width180"
-													suffix-icon="el-icon-arrow-down" slot="reference"/>
-							</el-popover>
-						</el-form-item>
-
-						&lt;!&ndash;厂商  manufacturer&ndash;&gt;
-						<el-form-item :label="$t('EquipmentMonitoring.manufacturer')+ '：'">
-							<el-select v-model="formItem.manufacturer" class="width180">
-								<el-option v-for="(item,index) in manufacturerList" :key="index" :label="item.name"
-													 :value="item.value"/>
-							</el-select>
-						</el-form-item>
-					</el-form-item>-->
 					<!--查询按钮-->
 					<el-form-item>
 						<el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}
 						</el-button>
-						<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
 					</el-form-item>
 					<!--重置按钮-->
 					<el-form-item>
 						<el-button class="queryBtn" type="reset" @click="formReset">{{$t('public.reset')}}
 						</el-button>
-						<!--<el-button type="primary" @click="downloadData">{{$t('alarmCurrent.exportExcel')}}</el-button>-->
 					</el-form-item>
 				</el-form>
 			</div>
@@ -164,84 +108,31 @@
 						{{$t('EquipmentMonitoring.AddTheMonitor')}}
 					</el-button>
 					<!--启动监测-->
-					<el-button @click="StartMonitoring" class="fontsize14">
+					<el-button @click="StartMonitoring" class="fontsize14" :disabled="ischeck">
 						<span class="iconfont iconfont_color">&#xe68d; </span>{{$t('EquipmentMonitoring.StartTheMonitoring')}}
 					</el-button>
-					<el-dialog class="StartTheMonitoring" :close-on-click-modal="false"
-										 :close-on-press-escape="false" append-to-body
-										 :title="$t('EquipmentMonitoring.confirmation')" :visible.sync="StartTheMonitoringBg">
-						<span>{{$t('EquipmentMonitoring.AreYouSureYouWantToStartMonitoring')}}?</span>
-						<span slot="footer" class="dialog-footer">
-								<el-button type="primary"
-													 @click="getStartTheMonitoring">{{$t('EquipmentMonitoring.determine')}}</el-button>
-                                <el-button
-																	@click="StartTheMonitoringBg = false">{{$t('EquipmentMonitoring.cancel')}}</el-button>
-                            </span>
-					</el-dialog>
 					<!--暂停监测-->
-					<el-button @click="SuspendMonitoring" class="fontsize14">
+					<el-button @click="SuspendMonitoring" class="fontsize14" :disabled="ischeck">
 						<span class="iconfont iconfont_color">&#xe64b; </span>{{$t('EquipmentMonitoring.SuspendMonitoring')}}
 					</el-button>
-					<el-dialog class="StartTheMonitoring" :close-on-click-modal="false"
-										 :close-on-press-escape="false" append-to-body
-										 :title="$t('EquipmentMonitoring.confirmation')" :visible.sync="SuspendMonitoringBg">
-						<span>{{$t('EquipmentMonitoring.PleaseConfirmWhetherToSuspendTheMonitoring')}}?</span>
-						<span slot="footer" class="dialog-footer">
-								<el-button type="primary" class="fontsize14"
-													 @click="getSuspendMonitoring">{{$t('EquipmentMonitoring.determine')}}</el-button>
-                                <el-button
-																	@click="SuspendMonitoringBg = false">{{$t('EquipmentMonitoring.cancel')}}</el-button>
-                            </span>
-					</el-dialog>
 					<!--删除监测-->
-					<el-button @click="DeleteTheMonitoring" class="fontsize14">
-						<span class="iconfont iconfont_color">&#xe650; </span>{{$t('EquipmentMonitoring.DeleteTheMonitoring')}}
+					<el-button @click="DeleteTheMonitoring" class="fontsize14" :disabled="ischeck">
+						<span class="iconfont iconfont_color">&#xe650; </span>
+						{{$t('EquipmentMonitoring.DeleteTheMonitoring')}}
 					</el-button>
-					<el-dialog class="StartTheMonitoring" :close-on-click-modal="false"
-										 :close-on-press-escape="false" append-to-body
-										 :title="$t('EquipmentMonitoring.confirmation')"
-										 :visible.sync="DeleteTheMonitoringBg">
-						<span>{{$t('EquipmentMonitoring.AreYouSureYouWantTtoDeleteTheMonitor')}}?</span>
-						<span slot="footer" class="dialog-footer">
-								<el-button type="primary"
-													 @click="getDeleteTheMonitoring">{{$t('EquipmentMonitoring.determine')}}</el-button>
-                                <el-button
-																	@click="DeleteTheMonitoringBg = false">{{$t('EquipmentMonitoring.cancel')}}</el-button>
-                            </span>
-					</el-dialog>
 					<!--忽略告警-->
-					<el-button @click="IgnoreTheAlarm" class="fontsize14">
+					<el-button @click="IgnoreTheAlarm" class="fontsize14" :disabled="ischeck">
 						<span class="iconfont iconfont_color">&#xe68e; </span>{{$t('EquipmentMonitoring.IgnoreTheAlarm')}}
 					</el-button>
-					<el-dialog class="StartTheMonitoring" :close-on-click-modal="false"
-										 :close-on-press-escape="false" append-to-body
-										 :title="$t('EquipmentMonitoring.confirmation')" :visible.sync="IgnoreTheAlarmBg">
-						<span>{{$t('EquipmentMonitoring.PleaseConfirmWhetherTheAlarmMonitoringShouldBeIgnored')}}?</span>
-						<span slot="footer" class="dialog-footer">
-								<el-button class="fontsize14" type="primary" @click="getIgnoreTheAlarm">{{$t('EquipmentMonitoring.determine')}}</el-button>
-                                <el-button class="fontsize14"
-																					 @click="IgnoreTheAlarmBg = false">{{$t('EquipmentMonitoring.cancel')}}</el-button>
-                            </span>
-					</el-dialog>
 					<!--取消忽略-->
-					<el-button @click="CancelToIgnore" class="fontsize14">
+					<el-button @click="CancelToIgnore" class="fontsize14" :disabled="ischeck">
 						<span class="iconfont iconfont_color">&#xe64e; </span>{{$t('EquipmentMonitoring.CancelToIgnore')}}
 					</el-button>
-					<el-dialog class="StartTheMonitoring" :close-on-click-modal="false"
-										 :close-on-press-escape="false" append-to-body
-										 :title="$t('EquipmentMonitoring.confirmation')" :visible.sync="CancelToIgnoreBg">
-						<span>{{$t('EquipmentMonitoring.AreYouSureYouWantToCancelTheIgnore')}}?</span>
-						<span slot="footer" class="dialog-footer">
-								<el-button class="fontsize14" type="primary" @click="getCancelToIgnore">{{$t('EquipmentMonitoring.determine')}}</el-button>
-                                <el-button
-																	@click="CancelToIgnoreBg = false">{{$t('EquipmentMonitoring.cancel')}}</el-button>
-                            </span>
-					</el-dialog>
 					<!--离线设备-->
-					<el-button>
+					<!--<el-button>
 						<span class="iconfont iconfont_color">&#xe6a9;</span>
 						{{$t('EquipmentMonitoring.OfflineEquipment')}}
-					</el-button>
+					</el-button>-->
 				</div>
 				<!--表格-->
 				<el-table
@@ -256,16 +147,15 @@
 						header-align="center" align="center" width="55">
 					</el-table-column>
 					<!--序号-->
-					<el-table-column width="60px" :label="$t('public.index')" header-align="center" align="center">
+					<el-table-column width="60px"
+									 :label="$t('public.index')" header-align="center" align="center">
 						<template slot-scope="scope">
-								<span>
-              {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-            </span>
+							<span>{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}</span>
 						</template>
 					</el-table-column>
 					<!--监测状态-->
 					<el-table-column
-						width="160px"
+						width="120px"
 						:label="$t('EquipmentMonitoring.workStatus')"
 						prop="workStatus"
 						header-align="left" align="left">
@@ -273,46 +163,41 @@
 							<div class="displayNone" @mouseover="displayInlineBlock(scope.row)"
 									 @mouseout="displayNone(scope.row)">
 								<el-tooltip effect="dark"
-														:content="tableDataBase.DeviceMonitorStatus[scope.row.workStatus]"
-														placement="top-start">
+											:content="tableDataBase.DeviceMonitorStatus[scope.row.workStatus]"
+											placement="top-start">
 									<span>{{tableDataBase.DeviceMonitorStatus[scope.row.workStatus]}}</span>
 								</el-tooltip>
 								<div v-show="scope.row.InlineBlock" class="displayInlineBlock">
 									<el-tooltip v-if="scope.row.workStatus ==11" effect="dark"
-															:content="$t('EquipmentMonitoring.StartTheMonitoring')"
-															placement="top-start">
+												:content="$t('EquipmentMonitoring.StartTheMonitoring')"
+												placement="top-start">
 											<span @click="StartMonitoring(scope.row.id)"
-														class="iconfont StartMonitoringTb">&#xe68d;</span>
-										<!--iconfontDisable-->
+												  class="iconfont StartMonitoringTb">&#xe68d;</span>
 									</el-tooltip>
 									<el-tooltip v-if="scope.row.workStatus == 33||scope.row.workStatus == 23"
-															effect="dark" :content="$t('EquipmentMonitoring.SuspendMonitoring')"
-															placement="top-start">
+												effect="dark" :content="$t('EquipmentMonitoring.SuspendMonitoring')"
+												placement="top-start">
 											<span @click="SuspendMonitoring(scope.row.id)"
-														class="iconfont StartMonitoringTb">&#xe64b;</span>
-										<!--iconfontDisable-->
+												  class="iconfont StartMonitoringTb">&#xe64b;</span>
 									</el-tooltip>
 									<el-tooltip
 										v-if="scope.row.workStatus == 11||scope.row.workStatus == 22||scope.row.workStatus == 23||scope.row.workStatus == 33"
 										effect="dark" :content="$t('EquipmentMonitoring.DeleteTheMonitoring')"
 										placement="top-start">
 											<span @click="DeleteTheMonitoring(scope.row.id)"
-														class="iconfont StartMonitoringTb">&#xe650;</span>
-										<!--iconfontError-->
+												  class="iconfont StartMonitoringTb">&#xe650;</span>
 									</el-tooltip>
 									<el-tooltip v-if="scope.row.workStatus == 23||scope.row.workStatus == 33"
-															effect="dark" :content="$t('EquipmentMonitoring.IgnoreTheAlarm')"
-															placement="top-start">
+												effect="dark" :content="$t('EquipmentMonitoring.IgnoreTheAlarm')"
+												placement="top-start">
 											<span @click="IgnoreTheAlarm(scope.row.id)"
-														class="iconfont StartMonitoringTb">&#xe68e;</span>
-										<!--iconfontDisable-->
+												  class="iconfont StartMonitoringTb">&#xe68e;</span>
 									</el-tooltip>
 									<el-tooltip v-if="scope.row.workStatus == 22" effect="dark"
-															:content="$t('EquipmentMonitoring.CancelToIgnore')"
-															placement="top-start">
+												:content="$t('EquipmentMonitoring.CancelToIgnore')"
+												placement="top-start">
 											<span @click="CancelToIgnore(scope.row.id)"
-														class="iconfont StartMonitoringTb">&#xe64e;</span>
-										<!--iconfontWarn-->
+												  class="iconfont StartMonitoringTb">&#xe64e;</span>
 									</el-tooltip>
 								</div>
 							</div>
@@ -326,45 +211,45 @@
 						header-align="center" align="center">
 						<template slot-scope="scope">
 							<el-tooltip v-if="scope.row.status == 99" effect="dark"
-													:content="tableDataBase.AlarmSeverity[scope.row.status]"
-													placement="top-start">
+										:content="tableDataBase.AlarmSeverity[scope.row.status]"
+										placement="top-start">
 								<span class="iconfont iconfontError">&#xe64a;</span>
 							</el-tooltip>
 							<el-tooltip v-if="scope.row.status == 66" effect="dark"
-													:content="tableDataBase.AlarmSeverity[scope.row.status]"
-													placement="top-start">
+										:content="tableDataBase.AlarmSeverity[scope.row.status]"
+										placement="top-start">
 								<span class="iconfont iconfontWarn">&#xe649;</span>
 							</el-tooltip>
 							<el-tooltip v-if="scope.row.status == 22" effect="dark"
-													:content="tableDataBase.AlarmSeverity[scope.row.status]"
-													placement="top-start">
+										:content="tableDataBase.AlarmSeverity[scope.row.status]"
+										placement="top-start">
 								<span class="iconfont iconfontLightBlue">&#xe64f;</span>
 							</el-tooltip>
 							<el-tooltip v-if="scope.row.status == 11" effect="dark"
-													:content="tableDataBase.AlarmSeverity[scope.row.status]"
-													placement="top-start">
+										:content="tableDataBase.AlarmSeverity[scope.row.status]"
+										placement="top-start">
 								<span class="iconfont iconfontDisable">&#xe64b;</span>
 							</el-tooltip>
 							<el-tooltip v-if="scope.row.status == 33" effect="dark"
-													:content="tableDataBase.AlarmSeverity[scope.row.status]"
-													placement="top-start">
+										:content="tableDataBase.AlarmSeverity[scope.row.status]"
+										placement="top-start">
 								<span class="iconfont iconfontSuccess">&#xe648;</span>
 							</el-tooltip>
 						</template>
 					</el-table-column>
-					<!--资产信息-->
-					<el-table-column :label="$t('EquipmentMonitoring.AssetInformation')" header-align="center"
-													 align="left">
+					<!--设备信息-->
+					<el-table-column :label="$t('EquipmentMonitoring.AssetInformation')" header-align="left"
+									 align="left">
 						<template slot-scope="scope">
 							<el-tooltip effect="dark" :content="scope.row.deviceName+','+scope.row.ip"
-													placement="top-start">
+										placement="top-start">
 								<span>{{scope.row.deviceName}}【{{scope.row.ip}}】</span>
 							</el-tooltip>
 						</template>
 					</el-table-column>
 					<!--序列号-->
 					<el-table-column :label="$t('EquipmentMonitoring.servicetag')" header-align="left"
-													 align="left">
+									 align="left">
 						<template slot-scope="scope">
 							<el-tooltip effect="dark" :content="scope.row.servicetag" placement="top-start">
 								<span>{{scope.row.servicetag}}</span>
@@ -373,10 +258,10 @@
 					</el-table-column>
 					<!--厂商型号-->
 					<el-table-column :label="$t('EquipmentMonitoring.ManufacturersModel')" header-align="left"
-													 align="left">
+									 align="left">
 						<template slot-scope="scope">
 							<el-tooltip effect="dark" :content="scope.row.manufacturer+','+scope.row.model"
-													placement="top-start">
+										placement="top-start">
 								<span>{{scope.row.manufacturer}},{{scope.row.model}}</span>
 							</el-tooltip>
 						</template>
@@ -385,34 +270,38 @@
 					<el-table-column :label="$t('EquipmentMonitoring.type')" header-align="left" align="left">
 						<template slot-scope="scope">
 							<el-tooltip effect="dark" :content="tableDataBase.AssetType[scope.row.type]"
-													placement="top-start">
+										placement="top-start">
 								<span>{{tableDataBase.AssetType[scope.row.type]}}</span>
 							</el-tooltip>
 						</template>
 					</el-table-column>
 					<!--更新时间-->
-					<el-table-column width="160px" :label="$t('EquipmentMonitoring.lastMonitorTime')"
-													 header-align="left" align="left">
+					<el-table-column width="140px" :label="$t('EquipmentMonitoring.lastMonitorTime')"
+									 header-align="left" align="left">
 						<template slot-scope="scope">
 							<el-tooltip effect="dark" :content="scope.row.lastMonitorTime | dateFilter"
-													placement="top-start">
+										placement="top-start">
 								<span>{{scope.row.lastMonitorTime | dateFilter}}</span>
 							</el-tooltip>
 						</template>
 					</el-table-column>
 					<!--操作-->
-					<el-table-column prop="operation" width="70px" :label="$t('EquipmentMonitoring.operation')"
-													 header-align="left" align="left">
+					<el-table-column prop="operation" width="70px"
+									 :label="$t('EquipmentMonitoring.operation')"
+									 header-align="left" align="left">
 						<template slot-scope="scope">
-							<el-tooltip effect="dark" :content="$t('EquipmentMonitoring.ModifyTheMonitorThreshold')"
-													placement="top-start">
+							<el-tooltip effect="dark"
+										:content="$t('EquipmentMonitoring.ModifyTheMonitorThreshold')"
+										placement="top-start">
 									<span class="iconfont iconfontError iconfont_font cursorPointer"
-												@click="monitorThreshold(scope.row)">&#xe655;</span>
+										  @click="monitorThreshold(scope.row)">&#xe655;</span>
 							</el-tooltip>
-							<el-tooltip effect="dark" :content="$t('EquipmentMonitoring.ModifyMonitoringSettings')"
-													placement="top-start">
-									<span style="padding-left: 10px;" class="iconfont iconfontError iconfont_font cursorPointer"
-												@click="ModifyMonitoringSettings(scope.row)">&#xe656;</span>
+							<el-tooltip effect="dark"
+										:content="$t('EquipmentMonitoring.ModifyMonitoringSettings')"
+										placement="top-start">
+									<span style="padding-left: 10px;"
+										  class="iconfont iconfontError iconfont_font cursorPointer"
+										  @click="ModifyMonitoringSettings(scope.row)">&#xe656;</span>
 							</el-tooltip>
 						</template>
 					</el-table-column>
@@ -426,14 +315,6 @@
 					@handleCurrentChangeSub="handleCurrentChange"/>
 			</div>
 		</div>
-		<!--设备告警详情弹出层-->
-		<equipmentAlarmDetails
-			ref="alarmDialog"
-			:dialogVisible="dialogVisible"
-			:AssetType="tableDataBase.AssetType"
-			:AlarmSeverity="tableDataBase.AlarmSeverity"
-			:AlarmHandleStatus="tableDataBase.AlarmHandleStatus"
-			@dialogVisibleStatus="dialogVisibleStatus"/>
 		<!--标签页-->
 		<AdministrationTags
 			@changePageDeviceId="changePageDeviceId"
@@ -443,10 +324,10 @@
 			:page-device-id="pageDeviceId"/>
 		<!--修改监测设置弹出层-->
 		<el-dialog class="ModifyMonitoringSettings" :close-on-click-modal="false"
-							 :close-on-press-escape="false" append-to-body
-							 :before-close="getModifyMonitoringSettingsQx"
-							 :title="$t('EquipmentMonitoring.ModifyMonitoringSettings')"
-							 :visible.sync="ModifyMonitoringSettingsBg">
+				   :close-on-press-escape="false" append-to-body
+				   :before-close="getModifyMonitoringSettingsQx"
+				   :title="$t('EquipmentMonitoring.ModifyMonitoringSettings')"
+				   :visible.sync="ModifyMonitoringSettingsBg">
 			<el-form inline :model="forItemss">
 				<el-form-item :label="$t('EquipmentMonitoring.DeviceName') +'：'">
 					<span>{{forItemss.deviceName}}</span>
@@ -473,54 +354,57 @@
 			</el-form>
 			<el-form inline :model="forItem">
 				<el-form-item v-if="forItemss.type== 1 || forItemss.manufacturer.toLowerCase()=='huawei'"
-											:label="$t('DeviceManualDetection.username') + '：'">
+							  :label="$t('DeviceManualDetection.username') + '：'">
 					<el-input v-model="forItem.username" class="width200" clearable></el-input>
 				</el-form-item>
 				<el-form-item v-if="forItemss.type == 1 || forItemss.manufacturer.toLowerCase()=='huawei'"
-											:label="$t('DeviceManualDetection.password') + '：'">
+							  :label="$t('DeviceManualDetection.password') + '：'">
 					<el-input type="password" v-model="forItem.password" class="width200"
-										clearable></el-input>
+							  clearable></el-input>
 				</el-form-item>
 				<br/>
 				<el-form-item v-if="forItemss.type == 1 || forItemss.manufacturer.toLowerCase()=='huawei'"
-											:label="$t('DeviceManualDetection.port') + '：'">
+							  :label="$t('DeviceManualDetection.port') + '：'">
 					<el-input v-model="forItem.port" class="width200" clearable></el-input>
 				</el-form-item>
 				<el-form-item v-if="forItemss.type == 2 || forItemss.manufacturer.toLowerCase()=='huawei'"
-											:label="$t('DeviceManualDetection.snmpVersion') + '：'">
+							  :label="$t('DeviceManualDetection.snmpVersion') + '：'">
 					<el-select v-model="forItem.snmpVersion"
-										 :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
-										 class="width200"
-										 clearable>
+							   :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
+							   class="width200"
+							   clearable>
 						<el-option v-for="item in version" :key="item.value" :label="item.label"
-											 :value="item.value">
+								   :value="item.value">
 						</el-option>
 					</el-select>
 
 				</el-form-item>
 				<el-form-item v-if="forItemss.type == 2 || forItemss.manufacturer.toLowerCase()=='huawei'"
-											:label="$t('DeviceManualDetection.snmpPort') + '：'">
+							  :label="$t('DeviceManualDetection.snmpPort') + '：'">
 					<el-input v-model="forItem.snmpPort" class="width200" clearable></el-input>
 				</el-form-item>
 				<el-form-item
 					v-if="(forItemss.type == 2&&forItem.snmpVersion!=='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion!=='3')"
 					:label="$t('DeviceManualDetection.snmpCommunity') + '：'">
-					<el-input type="password" v-model="forItem.snmpCommunity" class="width200"
-										clearable></el-input>
+					<el-input type="password"
+							  v-model="forItem.snmpCommunity" class="width200"
+							  clearable></el-input>
 				</el-form-item>
 				<el-form-item
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpUsername') + '：'">
-					<el-input v-model="forItem.snmpUsername" class="width200" clearable></el-input>
+					<el-input v-model="forItem.snmpUsername"
+							  class="width200"
+							  clearable></el-input>
 				</el-form-item>
 				<el-form-item
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpSecurityLevel') + '：'">
 					<el-select v-model="forItem.snmpSecurityLevel"
-										 :placeholder="$t('EquipmentMonitoring.PleaseSelectA')" clearable
-										 class="width200" @change="selectsnmpSecurityLevel(forItem)">
+							   :placeholder="$t('EquipmentMonitoring.PleaseSelectA')" clearable
+							   class="width200" @change="selectsnmpSecurityLevel(forItem)">
 						<el-option v-for="item in SecurityLevel" :key="item.value"
-											 :label="item.label" :value="item.value">
+								   :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -528,11 +412,11 @@
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpAuthAlgorithm') + '：'">
 					<el-select v-model="forItem.snmpAuthAlgorithm" clearable
-										 :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
-										 class="width200"
-										 :disabled="forItem.snmpSecurityLevel==='noAuthNoPriv' ? true:(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='authPriv') ? false:false">
+							   :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
+							   class="width200"
+							   :disabled="forItem.snmpSecurityLevel==='noAuthNoPriv' ? true:(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='authPriv') ? false:false">
 						<el-option v-for="item in VerifyTheAlgorithm" :key="item.value"
-											 :label="item.label" :value="item.value">
+								   :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -540,18 +424,19 @@
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpAuthPassword') + '：'">
 					<el-input type="password" v-model="forItem.snmpAuthPassword" class="width200"
-										clearable
-										:disabled="forItem.snmpSecurityLevel==='noAuthNoPriv' ? true:(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
+							  clearable
+							  :disabled="forItem.snmpSecurityLevel==='noAuthNoPriv' ? true:(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 				</el-form-item>
 				<el-form-item
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpPrivacyAlgorithm') + '：'">
 					<el-select v-model="forItem.snmpPrivacyAlgorithm"
-										 :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
-										 class="width200" clearable
-										 :disabled="(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='noAuthNoPriv')? true:(forItem.snmpSecurityLevel==='authPriv') ? false:false">
+							   :placeholder="$t('EquipmentMonitoring.PleaseSelectA')"
+							   class="width200"
+							   clearable
+							   :disabled="(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='noAuthNoPriv')? true:(forItem.snmpSecurityLevel==='authPriv') ? false:false">
 						<el-option v-for="item in PrivateVerificationAlgorithm " :key="item.value"
-											 :label="item.label" :value="item.value">
+								   :label="item.label" :value="item.value">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -559,25 +444,27 @@
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpPrivacyPassword') + '：'">
 					<el-input type="password" v-model="forItem.snmpPrivacyPassword" class="width200"
-										clearable
-										:disabled="(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='noAuthNoPriv')? true:(forItem.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
+							  clearable
+							  :disabled="(forItem.snmpSecurityLevel==='authNoPriv'||forItem.snmpSecurityLevel==='noAuthNoPriv')? true:(forItem.snmpSecurityLevel==='authPriv') ? false:false"></el-input>
 				</el-form-item>
 				<el-form-item
 					v-if="(forItemss.type == 2&&forItem.snmpVersion==='3')||(forItemss.manufacturer.toLowerCase()=='huawei'&&forItem.snmpVersion==='3')"
 					:label="$t('DeviceManualDetection.snmpContextName') + '：'">
-					<el-input v-model="forItem.snmpContextName" class="width200"
-										clearable></el-input>
+					<el-input v-model="forItem.snmpContextName"
+							  class="width200"
+							  clearable></el-input>
 				</el-form-item>
 				<el-form-item :label="$t('EquipmentMonitoring.MonitoringOfTheInterval') + '：'">
 					<el-select v-model="forItem.monitorInterval" class="width200" clearable
-										 :placeholder="$t('EquipmentMonitoring.PleaseSelectA')">
+							   :placeholder="$t('EquipmentMonitoring.PleaseSelectA')">
 						<el-option v-for="item in monitorIntervalList" :key="item.type"
-											 :label="item.name" :value="item.type"></el-option>
+								   :label="item.name" :value="item.type"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" class="fontsize14 alertBtn" @click="getModifyMonitoringSettings">
+				<el-button type="primary" class="fontsize14 alertBtn"
+						   @click="getModifyMonitoringSettings">
 					{{$t('EquipmentMonitoring.determine')}}
 				</el-button>
 				<el-button class="fontsize14 alertBtn" @click="getModifyMonitoringSettingsQx">
@@ -599,7 +486,7 @@
 			:add-device-monitoring-next-bg="AddDeviceMonitoringNextBg"
 			ref="myChildTwe"/>
 		<!--右键-->
-		<RightClickTheControl
+		<RightCatalog
 			@dialogGrouping="dialogGroupingFun"
 			:dialog-grouping="dialogGrouping"
 			@dialogGroupingBj="dialogGroupingBjFun"
@@ -613,29 +500,25 @@
 	</Box>
 </template>
 <script>
-	let idd = 1000;
-	import {isNotNull, isIpNumber, isIpNumbers} from "../../../assets/js/validator";
-	import {getObjectById} from "../../../assets/js/recursive";
 	import {dateFilter} from "../../../assets/js/filters";
-	import Box from '../../../components/Box';
-	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
-	import AdministrationTags from '../../../components/AdministrationTabs';
-	import TransferOfGrouping from '../../../components/TransferOfGrouping';
-	import AddTheMonitor from '../../../components/AddTheMonitor';
-	import RightClickTheControl from "../../../components/RightClickTheControl";
-
+	import Box from '../../../components/common/Box';
+	import AdministrationTags from '../../../components/monitor/AdministrationTabs';
+	import TransferOfGrouping from '../../../components/monitor/TransferOfGrouping';
+	import AddTheMonitor from '../../../components/monitor/AddTheMonitor';
+	import RightCatalog from "../../../components/monitor/RightCatalog";
 	export default {
 		name: "EquipmentMonitoring",
 		components: {
-			RightClickTheControl,
+			RightCatalog,
 			Box,
 			AdministrationTags,
-			equipmentAlarmDetails,
 			TransferOfGrouping,
 			AddTheMonitor,
 		},
 		data() {
 			return {
+				//按钮禁用
+				ischeck:true,
 				defaultExpandedKeys: [],
 				/*右键获值*/
 				object: {},
@@ -693,24 +576,6 @@
 				addEdit: {
 					id: ''
 				},
-				rules: {
-					catalogName: [{
-						validator: isNotNull,
-						trigger: ['blur']
-					}],
-					ips: [{
-						validator: isIpNumber,
-						trigger: ['blur']
-					}],
-					ip: [{
-						validator: isIpNumbers,
-						trigger: ['blur']
-					}],
-					ipp: [{
-						validator: isIpNumbers,
-						trigger: ['blur']
-					}]
-				},
 				addEdits: {
 					nodeName: '',
 					nodeId: '',
@@ -734,17 +599,8 @@
 				dataInfoResourceTree: [], // 资源视图树
 				/*编辑分组 父级节点*/
 				computerRoomListFj: [],
-				// 机架下拉框数据
-				rackNameList: [],
-				framesData: [],
 				// 设备状态下拉框
 				equipmentStatusList: [],
-				// 关联业务树形下拉框集合
-				businessTreeData: [],
-				//关联业务下拉框数据
-				businessList: [],
-				//厂商下拉框数据
-				manufacturerList: [],
 				// 表格数据
 				tableData: [],
 				/*表格选中后的集合*/
@@ -758,21 +614,14 @@
 				menuVisible: false, //控制tree右键弹出框
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowBusinessPopover: false, // 关联业务树形下拉框显示隐藏
-				dialogVisible: false, // 设备详情信息弹出层
 				dialogGrouping: false, //新增设备分组弹出层
 				dialogGroupingBj: false, //编辑设备分组弹出层
 				dialogGroupingSc: false, //删除设备分组弹出层
 				TransferOfGroupingBg: false, //转移设备分组弹出层
 				AddDeviceMonitoringBg: false, //添加设备监测弹出层
 				AddDeviceMonitoringNextBg: false, //添加设备监测第二级弹出层
-				StartTheMonitoringBg: false, //启动设备监测弹出层
-				SuspendMonitoringBg: false, //暂停设备监测弹出层
-				DeleteTheMonitoringBg: false, //删除设备监测弹出层
-				IgnoreTheAlarmBg: false, //忽略告警弹出层
-				CancelToIgnoreBg: false, //取消忽略弹出层
 				ModifyMonitoringSettingsBg: false, //修改监测设置弹出层
 				isShowAddDeviceMonitoringtree: false, //控制添加设备监测弹出层右侧树形下拉框显示隐藏
-				/*isShowTransferOfGroupingtree: false,//控制转移分组弹出层左侧侧树形下拉框显示隐藏*/
 				dialogVisibleOwnerInfo: false, // 业务责任人信息弹出层
 				// 分页
 				options: {
@@ -797,20 +646,7 @@
 					children: 'children',
 					label: 'nodeName'
 				},
-				/*机房tree*/
-				defaultPropss: {
-					children: 'children',
-					label: 'nodeName'
-				},
-				dataInfoTreeProps: {
-					// label: 'nodeName',
-					children: 'children',
-					disabled: function (data, node) {
-						if (data.orderNum === 1) {
-							return true;
-						}
-					}
-				},
+
 				/*左侧数tree*/
 				defaultPropssss: {
 					parentId: 'parentNodeId', // 父级唯一标识
@@ -818,14 +654,8 @@
 					label: 'nodeName', // 标签显示
 					children: 'children', // 子级
 				},
-				/*关联业务*/
-				defaultPropsBusiness: {
-					label: 'nodeName',
-					children: 'children'
-				},
-				selectlistRow: [],
+
 				parentNode: '',
-				/*gridDatas: '',*/
 				parentNodeList: [{
 					value: '1',
 					label: '11'
@@ -994,7 +824,6 @@
 				var clientWidth = document.body.clientWidth - 308;
 				var num = clientWidth / n;
 			},
-			/*deleteId*/
 			deleteIdFun(val) {
 				var _t = this;
 				_t.deleteId = val;
@@ -1039,38 +868,15 @@
 				});
 				localStorage.setItem('hy-deviceId', val.id);
 			},
-			// 接受弹出层关闭的参数
-			dialogVisibleStatus(val) {
-				this.dialogVisible = val;
-			},
 			// 点击设备类型下拉框节点
 			clickTypeNode(val) {
 				var _t = this;
 				_t.formItem.equipmentType = val.nodeName;
 				_t.formItem.equipmentTypeId = val.nodeCode;
 				_t.isShowTypePopover = false;
+				_t.options.currentPage=1;
+				_t.options.pageSize=10;
 				_t.getData();
-			},
-			// 点击关联业务下拉框节点
-			clickBusinessNode(val) {
-				var _t = this;
-				_t.formItem.businessId = val.nodeId;
-				_t.formItem.businessName = val.nodeName;
-				_t.isShowBusinessPopover = false;
-			},
-			// 改变表单的机房时加载机柜的数据
-			changeRoom(val) {
-				var _t = this;
-				if (_t.formItem.computerRoomId !== null) {
-					_t.framesData.forEach(function (item) {
-						if (item.roomId == val) {
-							_t.rackNameList = item.frame;
-						}
-					});
-				} else {
-					_t.rackNameList = [];
-				}
-				_t.formItem.rackNameId = '';
 			},
 			//点击删除按钮
 			remove() {
@@ -1078,10 +884,15 @@
 				_t.dialogGroupingSc = true;
 			},
 			//点击新增按钮弹出框
-			appendDevice() {
+			appendDevice(val) {
 				var _t = this;
-				_t.$refs.myControl.getDataTree();
-				_t.$refs.myControl.getBjtree();
+				if(val==1){
+					_t.$refs.myControl.getXztree();
+					_t.$refs.myControl.getDataTree();
+				}else if(val==0){
+					_t.$refs.myControl.getDataTree();
+					_t.$refs.myControl.getBjtree();
+				}
 				_t.dialogGrouping = true;
 			},
 			//点击编辑设备按钮弹出层
@@ -1090,7 +901,6 @@
 				_t.dialogGroupingBj = true;
 				_t.$refs.myControl.getBjtree();
 				_t.$refs.myControl.getDataTree();
-				/*_t.getBjtree();*/
 			},
 			// 查询表格数据
 			getData() {
@@ -1099,26 +909,14 @@
 				_t.$api.get('/asset/assetDevice/pagelist', {
 					jsonString: JSON.stringify({
 						assetDevice: {
-							/*设备名称/资产信息*/
-							deviceName: _t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
+							/*目录路径*/
+							catalogPath: _t.formItem.catalogPath == null ? null : (_t.formItem.catalogPath.trim() == '' ? null : _t.formItem.catalogPath.trim()),
 							/*设备类型*/
 							type: _t.formItem.equipmentTypeId == null ? null : _t.formItem.equipmentTypeId,
-							/*序列号*/
-							servicetag: _t.formItem.serialNumber == null ? null : (_t.formItem.serialNumber.trim() == '' ? null : _t.formItem.serialNumber.trim()),
-							/*机房ID*/
-							roomId: _t.formItem.computerRoomId == null ? null : (_t.formItem.computerRoomId.trim() == '' ? null : _t.formItem.computerRoomId.trim()),
-							/*机架Id*/
-							frameId: _t.formItem.rackNameId == null ? null : (_t.formItem.rackNameId.trim() == '' ? null : _t.formItem.rackNameId.trim()),
+							/*设备名称/序列号/IP*/
+							searchStr:_t.formItem.searchStr ==null ? null : (_t.formItem.searchStr.trim() == '' ? null : _t.formItem.searchStr.trim()),
 							/*设备状态*/
 							status: _t.formItem.equipmentStatus == null ? null : (_t.formItem.equipmentStatus.trim() == '' ? null : _t.formItem.equipmentStatus.trim()),
-							/*业务ID*/
-							business: _t.formItem.businessId == null ? null : (_t.formItem.businessId.trim() == '' ? null : _t.formItem.businessId.trim()),
-							/*厂商*/
-							manufacturer: _t.formItem.manufacturer == null ? null : _t.formItem.manufacturer,
-							/*目录ID*/
-							catalogPath: _t.formItem.catalogPath == null ? null : _t.formItem.catalogPath,
-							/*设备名称/序列号/IP*/
-							searchStr:_t.formItem.searchStr ==null ? null : _t.formItem.searchStr,
 							monitorStatus: 1,
 						},
 						currentPage: _t.options.currentPage,
@@ -1128,7 +926,15 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.getTableDataValue(res.data);
+							if(res.data!==null){
+								var tableData = res.data.list === null ? [] : res.data.list;
+								tableData.forEach((item) => {
+									item.InlineBlock = false;
+								});
+								_t.tableData = tableData;
+								_t.options.currentPage = res.data.currentPage;
+								_t.options.total = res.data.count;
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -1140,9 +946,6 @@
 							break;
 					}
 				});
-			},
-			// 导出excel数据
-			downloadData() {
 			},
 			// 改变当前页码
 			handleCurrentChange(val) {
@@ -1189,21 +992,11 @@
 				var left = document.getElementById("EquipmentMonitoring_left");
 				var resize = document.getElementById("resize-navBar");
 				var right = document.getElementById("EquipmentMonitoring_right");
-				//var box = document.getElementById("box-all");
-
-				/*//设置左侧导航折叠面板打开后面板内容的最大高度
-				var collapseItems = document.querySelectorAll(".systemSettings-navBar");
-				collapseItems.forEach((item) => {
-					// 目前有两个折叠项，每个高度 49，内容区底部有个margin-bottom 25
-					item.style.maxHeight = (left.clientHeight -28) + "px";
-				});*/
-
 				resize.onmousedown = function (e) {
 					var startX = e.clientX;
 					resize.left = resize.offsetLeft;
 					document.onmousemove = function (e) {
 						var endX = e.clientX;
-
 						var moveLen = resize.left + (endX - startX);
 						//var maxT = box.clientWidth - resize.offsetWidth;
 						//设置左侧导航最小宽度
@@ -1211,7 +1004,6 @@
 						//设置左侧导航最大宽度
 						//if(moveLen>maxT-200) moveLen = maxT-200;
 						if (moveLen > 370) moveLen = 370;
-
 						//左侧菜单导航宽度56px,小图标自身宽度14
 						inSet.style.left = (moveLen + 56 - 14) + "px";
 						//左侧内容区宽度
@@ -1263,6 +1055,8 @@
 				_t.formItem.catalogPath = data.nodeCode;
 				_t.formItem.catalogId = data.nodeId;
 				_t.formItem.catalogName = data.nodeName;
+				_t.options.currentPage=1;
+				_t.options.pageSize=10;
 				_t.getData();
 			},
 			// 点击系统功能菜单节点
@@ -1273,7 +1067,7 @@
 				_t.getData();
 			},
 			// 查询表格中状态对应的数据值
-			getTableDataValue(resData) {
+			getTableDataValue() {
 				var _t = this;
 				_t.$store.commit('setLoading', true);
 				_t.$api.post('system/basedata/map', {
@@ -1284,14 +1078,7 @@
 					switch (res.status) {
 						case 200:
 							// 获取表格对应的状态值
-							var tableData = resData.list === null ? [] : resData.list;
 							_t.tableDataBase = res.data;
-							tableData.forEach((item) => {
-								item.InlineBlock = false;
-							});
-							_t.tableData = tableData;
-							_t.options.currentPage = resData.currentPage;
-							_t.options.total = resData.count;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -1301,9 +1088,6 @@
 							break;
 						default:
 							_t.tableDataBase = {};
-							_t.tableData = [];
-							_t.options.currentPage = 1;
-							_t.options.total = 0;
 							break;
 					}
 				});
@@ -1346,63 +1130,6 @@
 					}
 				});
 			},
-			// 查找关联业务树形列表
-			getBusinessTreeData() {
-				var _t = this;
-				_t.$store.commit('setLoading', true);
-				_t.$api.get('asset/assetBusiness/all', {
-					jsonString: JSON.stringify({
-						isTree: true
-					})
-				}, function (res) {
-					_t.$store.commit('setLoading', false);
-					switch (res.status) {
-						case 200:
-							_t.businessTreeData = res.data.children;
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							_t.businessTreeData = [];
-							break;
-					}
-				});
-			},
-			// 表单部分机房机架下拉框数据
-			getFormData() {
-				var _t = this;
-				_t.$store.commit('setLoading', true);
-				_t.$api.get('asset/serverRoom/maplist', {}, function (res) {
-					_t.$store.commit('setLoading', false);
-					switch (res.status) {
-						case 200:
-							var computerRoomList = res.data.rooms;
-							_t.framesData = res.data.frames;
-							computerRoomList.unshift({
-								name: _t.$t('public.all'),
-								id: null
-							});
-							_t.computerRoomList = computerRoomList;
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							_t.computerRoomList = [{
-								name: '-所有纳管的设备-',
-								id: null
-							}];
-							break;
-					}
-				});
-			},
 			// 查询字典集合
 			getBaseDataList() {
 				var _t = this;
@@ -1430,40 +1157,12 @@
 					}
 				});
 			},
-			//厂商下拉框数据获取
-			getManufacturer() {
-				var _t = this;
-				_t.$store.commit('setLoading', true);
-				_t.$api.get('/asset/assetDevice/manufacture', {}, function (res) {
-					_t.$store.commit('setLoading', false);
-					switch (res.status) {
-						case 200:
-							var Income1 = [];
-							for (var key in res.data) {
-								Income1.push({
-									'name': res.data[key],
-									'value': res.data[key],
-								})
-							}
-							_t.manufacturerList = Income1;
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				});
-			},
 			//表单重置按钮
 			formReset() {
 				var _t = this;
 				_t.formItem = {
 					/*设备类型*/
-					equipmentType: 'ALL',
+					equipmentType: _t.$t('public.all'),
 					equipmentTypeId: null,
 					/*设备名称/资产信息*/
 					equipmentName: null,
@@ -1484,6 +1183,8 @@
 					/*目录ID 左侧树形控件*/
 					catalogId: null,
 				};
+				_t.options.currentPage=1;
+				_t.options.pageSize=10;
 				_t.getData();
 			},
 			//右键左侧树
@@ -1533,35 +1234,41 @@
 				var _t = this;
 				var StartTheIds = [];
 				StartTheIds.push(ids);
-				_t.StartTheMonitoringBg = true;
 				if (_t.multipleSelection.length === 0) {
 					_t.multipleSelection = StartTheIds
 				}
-			},
-			//启动监测弹出层里点击确定按钮
-			getStartTheMonitoring() {
-				var _t = this;
-				_t.$api.post('/monitor/deviceMonitorAttr/execute', {
-					option: 33,
-					isDevice: true,
-					ids: _t.multipleSelection,
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.StartTheMonitoringBg = false;
-							_t.multipleSelection = [];
-							_t.getData();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
+				_t.$confirm(_t.$t('EquipmentMonitoring.AreYouSureYouWantToStartMonitoring')+' ！', _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$store.commit('setLoading', true);
+					_t.$api.post('/monitor/deviceMonitorAttr/execute', {
+						option: 33,
+						isDevice: true,
+						ids: _t.multipleSelection,
+					}, function (res) {
+						_t.$store.commit('setLoading', false);
+						switch (res.status) {
+							case 200:
+								_t.multipleSelection = [];
+								_t.getData();
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								break;
+						}
+					})
+				}).catch(() => {
+					return;
+				});
 			},
 			//点击暂停监测按钮弹出层
 			SuspendMonitoring(ids) {
@@ -1571,32 +1278,38 @@
 				if (_t.multipleSelection.length === 0) {
 					_t.multipleSelection = suspendedIds
 				}
-				_t.SuspendMonitoringBg = true;
-			},
-			//暂停监测弹出层里点击确定按钮
-			getSuspendMonitoring() {
-				var _t = this;
-				_t.$api.post('/monitor/deviceMonitorAttr/execute', {
-					option: 11,
-					isDevice: true,
-					ids: _t.multipleSelection
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.SuspendMonitoringBg = false;
-							_t.multipleSelection = [];
-							_t.getData();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
+				_t.$confirm(_t.$t('EquipmentMonitoring.PleaseConfirmWhetherToSuspendTheMonitoring')+' ！', _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$store.commit('setLoading', true);
+					_t.$api.post('/monitor/deviceMonitorAttr/execute', {
+						option: 11,
+						isDevice: true,
+						ids: _t.multipleSelection
+					}, function (res) {
+						_t.$store.commit('setLoading', false);
+						switch (res.status) {
+							case 200:
+								_t.multipleSelection = [];
+								_t.getData();
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								break;
+						}
+					})
+				}).catch(() => {
+					return;
+				});
 			},
 			//点击删除监测按钮弹出层
 			DeleteTheMonitoring(ids) {
@@ -1606,32 +1319,38 @@
 				if (_t.multipleSelection.length === 0) {
 					_t.multipleSelection = DeleteTheIds
 				}
-				_t.DeleteTheMonitoringBg = true;
-			},
-			//删除监测弹出层里点击确定按钮
-			getDeleteTheMonitoring() {
-				var _t = this;
-				_t.$api.post('/monitor/deviceMonitorAttr/execute', {
-					option: 37,
-					isDevice: true,
-					ids: _t.multipleSelection
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.DeleteTheMonitoringBg = false;
-							_t.multipleSelection = [];
-							_t.getData();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
+				_t.$confirm(_t.$t('EquipmentMonitoring.AreYouSureYouWantTtoDeleteTheMonitor')+' ！', _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$store.commit('setLoading', true);
+					_t.$api.post('/monitor/deviceMonitorAttr/execute', {
+						option: 37,
+						isDevice: true,
+						ids: _t.multipleSelection
+					}, function (res) {
+						_t.$store.commit('setLoading', false);
+						switch (res.status) {
+							case 200:
+								_t.multipleSelection = [];
+								_t.getData();
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								break;
+						}
+					})
+				}).catch(() => {
+					return;
+				});
 			},
 			//点击忽略告警按钮弹出层
 			IgnoreTheAlarm(ids) {
@@ -1641,32 +1360,38 @@
 				if (_t.multipleSelection.length === 0) {
 					_t.multipleSelection = IgnoreTheIds
 				}
-				_t.IgnoreTheAlarmBg = true;
-			},
-			//忽略告警弹出层里点击确定按钮
-			getIgnoreTheAlarm() {
-				var _t = this;
-				_t.$api.post('/monitor/deviceMonitorAttr/execute', {
-					option: 22,
-					isDevice: true,
-					ids: _t.multipleSelection
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.IgnoreTheAlarmBg = false;
-							_t.multipleSelection = [];
-							_t.getData();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
+				_t.$confirm(_t.$t('EquipmentMonitoring.PleaseConfirmWhetherTheAlarmMonitoringShouldBeIgnored')+' ！', _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$store.commit('setLoading', true);
+					_t.$api.post('/monitor/deviceMonitorAttr/execute', {
+						option: 22,
+						isDevice: true,
+						ids: _t.multipleSelection
+					}, function (res) {
+						_t.$store.commit('setLoading', false);
+						switch (res.status) {
+							case 200:
+								_t.multipleSelection = [];
+								_t.getData();
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								break;
+						}
+					})
+				}).catch(() => {
+					return;
+				});
 			},
 			//点击取消忽略按钮弹出层
 			CancelToIgnore(ids) {
@@ -1676,32 +1401,38 @@
 				if (_t.multipleSelection.length === 0) {
 					_t.multipleSelection = CancelToIds
 				}
-				_t.CancelToIgnoreBg = true;
-			},
-			//取消忽略弹出层里点击确定按钮
-			getCancelToIgnore() {
-				var _t = this;
-				_t.$api.post('/monitor/deviceMonitorAttr/execute', {
-					option: 23,
-					isDevice: true,
-					ids: _t.multipleSelection
-				}, function (res) {
-					switch (res.status) {
-						case 200:
-							_t.CancelToIgnoreBg = false;
-							_t.multipleSelection = [];
-							_t.getData();
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				})
+				_t.$confirm(_t.$t('EquipmentMonitoring.AreYouSureYouWantToCancelTheIgnore')+' ！', _t.$t('public.confirmTip'), {
+					confirmButtonText: _t.$t('public.confirm'),
+					cancelButtonText: _t.$t('public.close'),
+					type: 'warning',
+					confirmButtonClass: 'alertBtn',
+					cancelButtonClass: 'alertBtn'
+				}).then(() => {
+					_t.$store.commit('setLoading', true);
+					_t.$api.post('/monitor/deviceMonitorAttr/execute', {
+						option: 23,
+						isDevice: true,
+						ids: _t.multipleSelection
+					}, function (res) {
+						_t.$store.commit('setLoading', false);
+						switch (res.status) {
+							case 200:
+								_t.multipleSelection = [];
+								_t.getData();
+								break;
+							case 1003: // 无操作权限
+							case 1004: // 登录过期
+							case 1005: // token过期
+							case 1006: // token不通过
+								_t.exclude(_t, res.message);
+								break;
+							default:
+								break;
+						}
+					})
+				}).catch(() => {
+					return;
+				});
 			},
 			/*获取表格选中的Id*/
 			handleSelectionChange(val) {
@@ -1711,6 +1442,11 @@
 					multipleSelection.push(val[i].id)
 				}
 				_t.multipleSelection = multipleSelection;
+				if(val.length!==0){
+					_t.ischeck=false;
+				}else {
+					_t.ischeck=true;
+				}
 			},
 			//鼠标移入出现监测状态的图标
 			displayInlineBlock(val) {
@@ -1743,7 +1479,6 @@
 						default:
 							break;
 					}
-
 				})
 			},
 			//点击修改监测设置按钮
@@ -1946,19 +1681,18 @@
 		},
 		mounted() {
 			var _t = this;
+			_t.getTableDataValue();
 			_t.getDataTree();
-			_t.getManufacturer();
 			_t.getData();
-			_t.getFormData();
 			_t.getBaseData();
-			_t.getBusinessTreeData();
 			_t.getBaseDataList();
 			_t.BrowserWidth();
 			//调整左侧树形区宽度
 			_t.reSizeWin();
 			_t.$bus.on('getDeviceTreeData', (val) => {
 				if (val) {
-					_t.getDataTree();
+					_t.getData();
+					/*_t.getDataTree();*/
 				}
 			});
 			/*新增设备分组后刷新treeData数据*/
@@ -2139,13 +1873,9 @@
 		line-height: 40px;
 		margin-right: 10px;
 		color: #3F81D0;
-		/*vertical-align: middle;*/
 	}
 
-	.dataDictionary-title_tb {
-		vertical-align: middle;
-	}
-
+	.dataDictionary-title_tb,
 	.dataDictionary-title_xz {
 		vertical-align: middle;
 	}

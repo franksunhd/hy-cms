@@ -12,7 +12,7 @@
     <el-row style="padding: 10px 20px 0;">
       <el-col :span="2" style="max-width: 100px;">
       	<div class="displayInlineBlock logoBox">
-      	  <img v-if="equipmentInfoData.manufacturerIcon !== null" class="logo-img" :src="deviceLogo + '/static/asset/logo/' + equipmentInfoData.manufacturerIcon + '.png'"/>      		
+      	  <img v-if="equipmentInfoData.manufacturerIcon !== null" class="logo-img" :src="deviceLogo + '/static/asset/logo/' + equipmentInfoData.manufacturerIcon + '.png'"/>
       	</div>
       </el-col>
       <el-col :span="22">
@@ -29,9 +29,9 @@
           </el-form-item>
           <el-form-item :label="$t('monitorThreshold.ip') + '：'">{{equipmentInfoData.ip}}</el-form-item>
           <el-form-item :label="$t('monitorThreshold.roomName') + '：'">{{equipmentInfoData.roomName}}</el-form-item>
-          <el-form-item :label="$t('monitorThreshold.frameName') + '：'">
-            <span>{{equipmentInfoData.frameName}}</span>
-            <span v-if="equipmentInfoData.framePosition !== null">,{{equipmentInfoData.framePosition}}U</span>
+          <el-form-item :label="$t('monitorThreshold.rackName') + '：'">
+            <span>{{equipmentInfoData.rackName}}</span>
+            <span v-if="equipmentInfoData.rackPosition !== null">,{{equipmentInfoData.rackPosition}}U</span>
           </el-form-item>
         </el-form>
       </el-col>
@@ -256,7 +256,7 @@
 </template>
 
 <script>
-  import Box from '../../../components/Box';
+  import Box from '../../../components/common/Box';
   import {getLastNewData} from "../../../assets/js/recursive";
 
   export default {
@@ -275,8 +275,8 @@
           type: null,
           roomName: null,
           ip: null,
-          frameName: null,
-          framePosition: null
+          rackName: null,
+          rackPosition: null
         },
         deviceId: null, // 设备id
         AssetType: {}, // 设备类型字典集合
@@ -853,12 +853,12 @@
 		height: 90px;
 		border: 1px solid #e1e1e1;
 	}
-	
+
 	.logoBox .logo-img {
 		width: 100%;
 		height: 100%;
 	}
-	
+
   .monitorThreshold-title {
     height: 30px;
     line-height: 30px;

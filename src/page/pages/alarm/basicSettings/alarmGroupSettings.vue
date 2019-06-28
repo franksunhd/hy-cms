@@ -117,11 +117,16 @@
 						:data="dataInfoResourceTree"
 						:props="dataInfoTreeProps"
 						show-checkbox
-						:check-strictly="true"
 						:default-expanded-keys="['tree_other']"
 						@check-change="currentChangeTree"
 						:filter-node-method="filterNode"
-						ref="vueTree"/>
+						ref="vueTree">
+						<div slot-scope="{node,data}" :class="data.orderNum == 2 ? 'treeBox activeColor' : 'treeBox'">
+							<span v-if="data.orderNum === 2" class="iconfont">&#xe663;</span>
+							<span>{{data.nodeName}}</span>
+							<span v-if="data.orderNum === 2">({{data.ip}})</span>
+						</div>
+					</el-tree>
 					<p class="iconfontError">
 						<span>{{$t('alarmGroupSettings.selectedDevice')}}</span>
 						<span>{{addEdit.isSelectNum}}</span>
@@ -165,7 +170,7 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {dateFilter} from "../../../../assets/js/filters";
 	import {getObjectById,uniqArr} from "../../../../assets/js/recursive";
 	import {isNotNull} from "../../../../assets/js/validator";
@@ -212,12 +217,7 @@
 				// 资源视图树
 				dataInfoTreeProps: {
 					label: 'nodeName',
-					children: 'children',
-					disabled: function (data) {
-						if (data.orderNum === 1) {
-							return true;
-						}
-					}
+					children: 'children'
 				},
 				// 从角色导入树
 				orgRoleListProps: {
@@ -305,14 +305,7 @@
 							});
 							isSelectedArr = uniqArr(isSelectedArr).length === 0 ? [] : uniqArr(isSelectedArr);
 							_t.$refs.vueTree.setCheckedKeys(isSelectedArr);
-							var selectKeys = _t.$refs.vueTree.getCheckedKeys();
-							if (selectKeys.length === _t.deviceListArr.length) {
-								_t.allcheckedData = true;
-							} else {
-								_t.allcheckedData = false;
-							}
-							_t.addEdit.isSelectNum = selectKeys.length;
-							_t.checkListRole = [];
+							_t.resetRoleGroup();
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -321,18 +314,41 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
-							_t.checkListRole = [];
+							_t.resetRoleGroup();
 							break;
 					}
 				});
-				_t.dialogVisibleInner = false;
 			},
 			// 树节点状态改变的时候 判断是否勾选全选按钮
 			currentChangeTree() {
 				var _t = this;
-				var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
-				_t.addEdit.isSelectNum = selectTreeList.length;
-				if (selectTreeList.length === _t.deviceListArr.length) {
+				var selectTreeList = _t.$refs.vueTree.getCheckedNodes();
+				var selectTreeArr = new Array();
+				var selectFirstLevel = new Array();
+				selectTreeList.forEach((t)=>{
+					if (t.orderNum === 2) {
+						selectTreeArr.push(t.nodeId);
+					}
+					// 获取选中目录集合
+					if (t.orderNum === 1) {
+						selectFirstLevel.push(t.nodeId);
+					}
+				});
+				// 给选中多少台设备赋值
+				_t.addEdit.isSelectNum = selectTreeArr.length;
+				// 判断树节点是否全部勾选 一级的节点全部选中 代表全选
+				var firstLevelNum = 0;
+				if (_t.dataInfoResourceTree !== null) {
+					_t.dataInfoResourceTree.forEach((item)=>{
+						selectFirstLevel.forEach((val)=>{
+							if (item.nodeId === val) {
+								firstLevelNum++;
+							}
+						})
+					});
+				}
+				// 判断 一级节点个数不为0 并且
+				if (firstLevelNum !== 0 && firstLevelNum === _t.dataInfoResourceTree.length) {
 					_t.allcheckedData = true;
 				} else {
 					_t.allcheckedData = false;
@@ -343,12 +359,9 @@
 				var _t = this;
 				if (_t.allcheckedData) {
 					// 全选
-					_t.$refs.vueTree.setCheckedNodes(_t.deviceListArr);
-					var selectTreeList = _t.$refs.vueTree.getCheckedKeys();
-					_t.addEdit.isSelectNum = selectTreeList.length;
+					_t.$refs.vueTree.setCheckedNodes(_t.dataInfoResourceTree);
 				} else {
 					// 取消全选
-					_t.addEdit.isSelectNum = 0;
 					_t.$refs.vueTree.setCheckedKeys([]);
 				}
 			},
@@ -367,7 +380,13 @@
 			// 新增提交
 			addData(formName) {
 				var _t = this;
-				var selectTreeKeys = _t.$refs.vueTree.getCheckedKeys();
+				var deviceIdArrList = _t.$refs.vueTree.getCheckedNodes();
+				var selectTreeKeys = new Array();
+				deviceIdArrList.forEach((item)=>{
+					if (item.orderNum === 2) {
+						selectTreeKeys.push(item.nodeId);
+					}
+				});
 				_t.$refs[formName].validate((valid) => {
 					if (valid && selectTreeKeys.length !== 0) {
 						_t.$api.post('alarm/noticeGroup/',{
@@ -399,7 +418,13 @@
 			// 编辑提交
 			editData(formName){
 				var _t = this;
-				var selectTreeKeys = _t.$refs.vueTree.getCheckedKeys();
+				var deviceIdArrList = _t.$refs.vueTree.getCheckedNodes();
+				var selectTreeKeys = new Array();
+				deviceIdArrList.forEach((item)=>{
+					if (item.orderNum === 2) {
+						selectTreeKeys.push(item.nodeId);
+					}
+				});
 				_t.$refs[formName].validate((valid) => {
 					if (valid && selectTreeKeys.length !== 0) {
 						_t.$api.put('alarm/noticeGroup/',{
@@ -595,7 +620,9 @@
 				_t.$store.commit('setLoading', true);
 				_t.$api.get('asset/assetDevice/getDeviceList', {
 					jsonString: JSON.stringify({
-						assetDevice: {}
+						assetDevice: {
+							monitorStatus:1
+						}
 					})
 				}, function (res) {
 					_t.$store.commit('setLoading', false);
@@ -678,7 +705,9 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.orgRoleList = res.data.list === null ? [] : res.data.list;
+							if (res.data !== null) {
+								_t.orgRoleList = res.data.list === null ? [] : res.data.list;
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -772,12 +801,4 @@
 		height: 1px;
 		border-bottom: 1px solid #eaedf1;
 	}
-
-	#alarmGroup-box .el-checkbox.is-disabled {
-		display: none;
-	}
-
-	/*#alarmGroup-tree .el-tree-node.is-focusable .el-icon-caret-right:before {*/
-	/*	display: none;*/
-	/*}*/
 </style>

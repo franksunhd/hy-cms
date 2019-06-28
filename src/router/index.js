@@ -4,6 +4,8 @@ import Router from "vue-router";
 import Index from "@/page/Index";
 // 登录页
 import Login from "@/page/login";
+// license到期通知
+import licenseExpired from '@/page/licenseExpired';
 // 404页面
 import Page404 from "@/page/page404";
 // error异常页面
@@ -13,7 +15,7 @@ const Home = () => import ("@/page/pages/Home");
 //树形穿梭框
 const selectTree = () => import ("@/components/selectTree");
 // 系统管理-->系统设置
-const systemSettings = () => import ("@/components/systemSettings");
+const systemSettings = () => import ("@/components/common/systemSettings");
 // 系统管理-->系统设置-->许可证信息管理
 const licenseInformation = () => import ("@/page/pages/system/system/licenseInformation");
 // 系统管理-->系统设置-->系统管理-->平台信息设置
@@ -61,7 +63,7 @@ const notificationLog = () => import ("@/page/pages/system/log/notificationLog")
 // 系统管理-->系统设置-->日志管理-->检测日志
 const monitorLog = () => import ("@/page/pages/system/log/monitorLog");
 // 系统管理-->系统监测
-const systemSettingsMonitoring = () => import ("@/components/systemSettingsMonitoring");
+const systemSettingsMonitoring = () => import ("@/components/common/systemSettingsMonitoring");
 // 系统管理-->系统监测-->WEB应用
 const WebApplication = () => import ("@/page/pages/system/monitor/WebApplication");
 // 系统管理-->系统监测-->数据库应用
@@ -85,6 +87,10 @@ const EquipmentMonitoring = () => import ("@/page/pages/monitor/EquipmentMonitor
 const monitorThresholdValue = () => import ("@/page/pages/monitor/monitorThresholdValue");
 // 监测管理-->监测状态搜索
 const monitorStatusSearch = () => import ("@/page/pages/monitor/monitorStatusSearch");
+// 监测管理-->业务监测
+const BusinessMonitoring = () => import ("@/page/pages/monitor/BusinessMonitoring");
+// 监测管理-->大屏展示
+const giantScreen = () => import ("@/page/pages/monitor/giantScreen");
 // 告警管理-->告警汇总
 const alarmManagement = () => import ("@/page/pages/alarm/alarmManagement");
 // 告警管理-->当前告警
@@ -92,7 +98,7 @@ const alarmCurrent = () => import ("@/page/pages/alarm/alarmCurrent");
 // 告警管理-->历史告警
 const alarmHistory = () => import ("@/page/pages/alarm/alarmHistory");
 // 告警管理-->告警设置
-const alarmSettings = () => import ("@/components/alarmSettings");
+const alarmSettings = () => import ("@/components/common/alarmSettings");
 // 告警管理-->告警设置-->基础设置-->告警组设置
 const alarmGroupSettings = () => import ("@/page/pages/alarm/basicSettings/alarmGroupSettings");
 // 告警管理-->告警设置-->基础设置-->告警规则设置
@@ -114,9 +120,13 @@ const assetDeviceMaintenance = () => import ("@/page/pages/asset/assetDeviceMain
 // 资产管理-->保修管理
 // 资产管理-->变更管理
 // 机房管理-->机房配置
-const ComputerConfiguration = () => import ("@/page/pages/serverRoom/ComputerConfiguration");
+const ComputerConfiguration = () => import ("@/page/pages/space/serverRoom/ComputerConfiguration");
+// 机房管理-->机房配置--->机柜分布
+const rackRoomDistribution = () => import ("@/page/pages/space/serverRoom/rackRoomDistribution");
+// 机房管理-->机房配置--->机柜分布--->设备分布
+const equipmentDistribution = () => import ("@/page/pages/space/serverRoom/equipmentDistribution");
 // 机房管理-->机柜配置
-const RackConfiguration = () => import ("@/page/pages/rack/RackConfiguration");
+const RackConfiguration = () => import ("@/page/pages/space/rack/RackConfiguration");
 Vue.use(Router);
 var companyName = "YUser";
 export default new Router({
@@ -127,6 +137,12 @@ export default new Router({
 		{path: "/", redirect: "/" + companyName + "/index"},
 		// 登录页
 		{path: "/login", name: "Login", component: Login},
+		// license 到期
+		{path: "/licenseExpired",name:'licenseExpired',component:licenseExpired},
+		// 监测管理 --> 大屏展示
+		{path: "/giantScreen", name:'giantScreen',component:giantScreen},
+		//测试大屏第二页
+		{path: "/selectTree", name: "selectTree", component: selectTree},
 		// Home页
 		{path: "/" + companyName, redirect: "/" + companyName + "/index"},
 		{
@@ -312,6 +328,8 @@ export default new Router({
 				{path: "/" + companyName + "/monitorThresholdValue", name: "monitorThresholdValue", component: monitorThresholdValue},
 				// 监测管理-->监测状态搜索
 				{path: "/" + companyName + "/monitorStatusSearch", name: "monitorStatusSearch", component: monitorStatusSearch},
+				// 监测管理-->业务监测
+				{path: "/" + companyName + "/BusinessMonitoring", name: "BusinessMonitoring", component: BusinessMonitoring},
 				// 告警管理-->告警汇总
 				{path: "/" + companyName + "/alarmManagement", name: "alarmManagement", component: alarmManagement},
 				// 告警管理-->当前告警
@@ -362,11 +380,12 @@ export default new Router({
 				// 资产管理-->变更管理
 				// 机房管理-->机房配置
 				{path: "/" + companyName + "/ComputerConfiguration", name: "ComputerConfiguration", component: ComputerConfiguration},
-			// 机房管理-->机柜配置
+				// 机房管理-->机房配置--->机柜分布
+				{path: "/" + companyName + "/rackRoomDistribution", name: "rackRoomDistribution", component: rackRoomDistribution},
+				// 机房管理-->机房配置--->机柜分布--->设备分布
+				{path: "/" + companyName + "/equipmentDistribution", name: "equipmentDistribution", component: equipmentDistribution},
+				// 机房管理-->机柜配置
 				{path: "/" + companyName + "/RackConfiguration", name: "RackConfiguration", component: RackConfiguration},
-				//树形穿梭
-				{path: "/" + companyName + "/selectTree", name: "selectTree", component: selectTree},
-
 				// error异常页
 				{path: "/" + companyName + "/pageError", name: "PageError", component: PageError},
 				// 404页

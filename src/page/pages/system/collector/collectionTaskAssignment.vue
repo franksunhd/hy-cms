@@ -138,7 +138,7 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
+  import Box from '../../../../components/common/Box';
 
   export default {
     name: "collectionTaskAssignment",
@@ -218,7 +218,8 @@
 				_t.$confirm(_t.$t('collectionTaskAssignment.dialogRunningTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
+					cancelButtonClass: 'alertBtn',
+					confirmButtonClass: 'alertBtn',
           type: 'warning',
         }).then(() => {
 
@@ -232,7 +233,8 @@
 				_t.$confirm(_t.$t('collectionTaskAssignment.dialogStoppedTip'), _t.$t('public.confirmTip'), {
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
+					cancelButtonClass: 'alertBtn',
+					confirmButtonClass: 'alertBtn',
           type: 'warning',
         }).then(() => {
 

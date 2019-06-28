@@ -265,7 +265,8 @@
 								@change="handleCheckAllChange(item)">
 								{{$t('public.allChecked')}}
 							</el-checkbox>
-							<el-button class="NoticeFormat-returnDefault" v-if="item.checkAll === true" type="text" @click="returnDefault(item)">
+							<el-button class="NoticeFormat-returnDefault" v-if="item.checkAll === true" type="text"
+												 @click="returnDefault(item)">
 								{{$t('alarmRuleSettings.dialogReturnDefault')}}
 							</el-button>
 							<el-checkbox-group v-model="item.contentData">
@@ -325,6 +326,23 @@
 										</span>
 									</div>
 									<span>{{$t('alarmRuleSettings.dialogEventTime')}}</span>
+								</el-radio>
+								<el-radio label="3">
+									<span>{{$t('alarmRuleSettings.dialogEveryTimeHour')}}</span>
+									<div class="positionRelative displayInlineBlock">
+										<el-input
+											id="noticeRuleNextTime"
+											v-model="addEdit.noticeRuleNextTime"
+											@input="changeInputDoubleNumber(1,addEdit.noticeRuleNextTime)"
+											@keyup.native="inputDoubleNumber(1,addEdit.noticeRuleNextTime)"
+											class="width50 contentCenter"/>
+										<span
+											v-if="errorTip.noticeRuleNextTime"
+											class="isNotNull width200">
+											{{$t('alarmRuleSettings.dialogRuleTimeTip')}}
+										</span>
+									</div>
+									<span>{{$t('alarmRuleSettings.dialogEventHour')}}</span>
 								</el-radio>
 							</el-radio-group>
 						</div>
@@ -588,7 +606,7 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {dateFilter} from "../../../../assets/js/filters";
 	import {isNotNull} from "../../../../assets/js/validator";
 	import {unique} from "../../../../assets/js/recursive";
@@ -610,11 +628,12 @@
 					alarmLevel: ['99'], // 告警级别
 					NoticeContent: ['0'], // 通知内容
 					NoticeFun: [], // 通知方式
-					DayOfWeek: ['1'], // 发送时间 周
+					DayOfWeek: ['0', '1', '2', '3', '4', '5', '6'], // 发送时间 周
 					noticeObject: ['0'], // 通知用户对象
 					noticeRuleFirst: 1, // 同一设备告警次数
 					noticeRuleNextType: '1', // 后续发送策略
 					noticeRuleNextEvery: 1, // 每隔次数
+					noticeRuleNextTime: 0.5, // 每隔小时
 					alarmNotconfirmDuration: 10, // 超出次数
 					isAlarmUpgrade: false, // 告警升级
 					upgradeNoticeEmail: '', // 升级邮箱地址
@@ -640,6 +659,7 @@
 					noticeObject: false, // 通知用户对象
 					noticeRuleFirst: false, // 首次发送
 					noticeRuleNextEvery: false, // 每隔几次
+					noticeRuleNextTime: false, // 每隔小时
 					alarmNotconfirmDuration: false, // 超出几次
 					isNotAllNull: false, // 三项不能全部为空
 					upgradeNoticeEmail: false, // 告警升级邮箱地址
@@ -694,25 +714,24 @@
 				dialogVisible: false, // 新增编辑弹出层
 				dialogVisibleSound: false, // 播放声音弹出层
 				dialogVisibleUser: false, // 选择用户弹出层
-				showContentFormat:false, // 是否显示 内容格式
-				isShowSoundDialog:false, // 判断是否显示播放声音弹出层
+				showContentFormat: false, // 是否显示 内容格式
+				isShowSoundDialog: false, // 判断是否显示播放声音弹出层
 				// 校验
 				rules: {
 					groupId: [
 						{validator: isNotNull, trigger: ['blur', 'change']}
 					],
-
 				}
 			}
 		},
 		methods: {
 			// 内容格式标签页改变的时候
-			tabClick(){
+			tabClick() {
 				var _t = this;
 				var indexNum = -1;
 				// 缓存当前标签页对应的集合
 				var editableTabs = new Object();
-				_t.addEdit.editableTabs.forEach((t,index)=>{
+				_t.addEdit.editableTabs.forEach((t, index) => {
 					// 根据当前标签页编号 查到标签页集合
 					if (t.name === _t.addEdit.editableTabsValue) {
 						indexNum = index;
@@ -721,7 +740,7 @@
 				});
 				// 根据是否只有一个选中项判断 是否禁用
 				if (editableTabs.contentData && editableTabs.contentData.length === 1) {
-					editableTabs.content.forEach((val)=>{
+					editableTabs.content.forEach((val) => {
 						if (val.type === editableTabs.contentData[0]) {
 							val.disabled = true;
 						} else {
@@ -729,13 +748,13 @@
 						}
 					});
 				} else {
-					editableTabs.content.forEach((val)=>{
+					editableTabs.content.forEach((val) => {
 						val.disabled = false;
 					});
 				}
 			},
 			// 内容格式 恢复默认按钮
-			returnDefault(item){
+			returnDefault(item) {
 				var _t = this;
 				// 赋值默认数据
 				item.contentData = item.contentDefault;
@@ -746,7 +765,7 @@
 				// 判断默认是否一个
 				if (item.contentData.length === 1) {
 					// 一个禁用
-					item.content.forEach((t)=>{
+					item.content.forEach((t) => {
 						if (t.type === item.contentData[0]) {
 							t.disabled = true;
 						} else {
@@ -755,16 +774,16 @@
 					});
 				} else {
 					// 大于一个 取消全部禁用
-					item.content.forEach((t)=>{
+					item.content.forEach((t) => {
 						t.disabled = false;
 					});
 				}
 			},
 			// 改变通知方式选中项
-			changeItem(val,changeData){
+			changeItem(val, changeData) {
 				var _t = this;
 				if (val.type !== '3') {
-					if(_t.addEdit.NoticeFun.indexOf(val.type) !== -1){
+					if (_t.addEdit.NoticeFun.indexOf(val.type) !== -1) {
 						// 选中
 						var childrenData = null;
 						if (changeData) {
@@ -774,7 +793,7 @@
 						}
 						_t.showContentFormat = true;
 						// 添加标签页
-						_t.addTabs(val.name,val.type);
+						_t.addTabs(val.name, val.type);
 						// 新增获取默认
 						if (childrenData === null) {
 							_t.getDefaultChecked(val.type);
@@ -794,10 +813,10 @@
 						}
 
 						// 取消选中
-						_t.addEdit.editableTabs.forEach((value,i)=>{
-							if(value.nodeId === val.type) {
+						_t.addEdit.editableTabs.forEach((value, i) => {
+							if (value.nodeId === val.type) {
 								// 删除取消勾选的项
-								_t.addEdit.editableTabs.splice(i,1);
+								_t.addEdit.editableTabs.splice(i, 1);
 								// 取消勾选后 判断标签页是不是还有 有的话选中最后一个
 								if (_t.addEdit.editableTabs.length !== 0) {
 									// 获取最后一个
@@ -827,22 +846,22 @@
 				}
 			},
 			// 获取默认勾选项
-			getDefaultChecked(type){
+			getDefaultChecked(type) {
 				var _t = this;
-				_t.$api.get('alarm/noticeContent/all',{
-					jsonString:JSON.stringify({
-						alarmNoticeContent:{
-							contentSources:'default',
-							noticeRuleId:null,
-							noticeWay:type
+				_t.$api.get('alarm/noticeContent/all', {
+					jsonString: JSON.stringify({
+						alarmNoticeContent: {
+							contentSources: 'default',
+							noticeRuleId: null,
+							noticeWay: type
 						}
 					})
-				},function (res) {
+				}, function (res) {
 					switch (res.status) {
 						case 200:
-							_t.addEdit.editableTabs.forEach((item)=>{
+							_t.addEdit.editableTabs.forEach((item) => {
 								if (item.nodeId === type) {
-									if(res.data.list[0]) {
+									if (res.data.list[0]) {
 										var content = JSON.parse(res.data.list[0].noticeContents);
 										item.contentData = content;
 										item.contentDefault = content;
@@ -851,7 +870,7 @@
 										item.contentDefault = [];
 									}
 									// 单个复选框改变选中状态
-									_t.handleCheckedCitiesChange(item.contentData,item);
+									_t.handleCheckedCitiesChange(item.contentData, item);
 								}
 							});
 							break;
@@ -867,22 +886,22 @@
 				});
 			},
 			// 获取默认勾选项
-			getUserDefaultChecked(type){
+			getUserDefaultChecked(type) {
 				var _t = this;
-				_t.$api.get('alarm/noticeContent/all',{
-					jsonString:JSON.stringify({
-						alarmNoticeContent:{
-							contentSources:'userDefined',
-							noticeRuleId:_t.checkIdsList.join(','),
-							noticeWay:type
+				_t.$api.get('alarm/noticeContent/all', {
+					jsonString: JSON.stringify({
+						alarmNoticeContent: {
+							contentSources: 'userDefined',
+							noticeRuleId: _t.checkIdsList.join(','),
+							noticeWay: type
 						}
 					})
-				},function (res) {
+				}, function (res) {
 					switch (res.status) {
 						case 200:
-							_t.addEdit.editableTabs.forEach((item)=>{
+							_t.addEdit.editableTabs.forEach((item) => {
 								if (item.nodeId === type) {
-									if(res.data.list[0]) {
+									if (res.data.list[0]) {
 										var content = JSON.parse(res.data.list[0].noticeContents);
 										item.contentData = content;
 										item.contentDefault = content;
@@ -891,7 +910,7 @@
 										item.contentDefault = [];
 									}
 									// 单个复选框改变选中状态
-									_t.handleCheckedCitiesChange(item.contentData,item);
+									_t.handleCheckedCitiesChange(item.contentData, item);
 								}
 							});
 							break;
@@ -907,11 +926,11 @@
 				});
 			},
 			// 内容格式全选
-			handleCheckAllChange(item){
-				if(item.checkAll) {
+			handleCheckAllChange(item) {
+				if (item.checkAll) {
 					// 全选
 					var contentArr = new Array();
-					item.content.forEach((val)=>{
+					item.content.forEach((val) => {
 						val.disabled = false;
 						contentArr.push(val.type);
 					});
@@ -921,17 +940,17 @@
 				}
 			},
 			// 内容格式单个改变
-			handleCheckedCitiesChange(value,item){
+			handleCheckedCitiesChange(value, item) {
 				var checkedCount = value.length;
 				if (checkedCount > 1) {
-					item.content.forEach((t)=>{
-						t.disabled =  t.disabled === true ? false : false;
+					item.content.forEach((t) => {
+						t.disabled = t.disabled === true ? false : false;
 					});
 					item.checkAll = checkedCount === item.content.length;
 					item.isIndeterminate = checkedCount > 0 && checkedCount < item.content.length;
 				} else {
 					// 只有一个
-					item.content.forEach((t)=>{
+					item.content.forEach((t) => {
 						if (t.type === value[0] && value.length === 1) {
 							t.disabled = true;
 						} else {
@@ -964,7 +983,7 @@
 				}
 			},
 			// 内容格式添加页签
-			addTabs(title,id) {
+			addTabs(title, id) {
 				var _t = this;
 				var noticeContentFormat = _t.noticeContentFormat;
 				var newTabName = ++_t.addEdit.tabIndex + '';
@@ -972,11 +991,11 @@
 					title: title, // 标签标题
 					name: newTabName, // 标签名
 					content: noticeContentFormat, // 内容渲染区域
-					checkAll:false, // 是否全选
-					nodeId:id, // id
-					contentData:[], // 选中的数组
-					contentDefault:[], // 恢复默认数据
-					isIndeterminate:false, // 是否半选
+					checkAll: false, // 是否全选
+					nodeId: id, // id
+					contentData: [], // 选中的数组
+					contentDefault: [], // 恢复默认数据
+					isIndeterminate: false, // 是否半选
 				});
 				_t.addEdit.editableTabsValue = newTabName;
 			},
@@ -1015,6 +1034,8 @@
 				// 校验后续发送策略数字
 				if (_t.addEdit.noticeRuleNextType === '2') {
 					_t.changeInputNumber(2, _t.addEdit.noticeRuleNextEvery);
+				} else if (_t.addEdit.noticeRuleNextType === '3') {
+					_t.changeInputDoubleNumber(1, _t.addEdit.noticeRuleNextTime);
 				}
 				// 勾选了告警升级
 				if (_t.addEdit.isAlarmUpgrade === true) {
@@ -1042,6 +1063,7 @@
 					&& _t.errorTip.DayOfWeek === false
 					&& _t.errorTip.noticeObject === false
 					&& _t.errorTip.noticeRuleNextEvery === false
+					&& _t.errorTip.noticeRuleNextTime === false
 					&& _t.errorTip.alarmNotconfirmDuration === false
 					&& _t.errorTip.isNotAllNull === false
 					&& _t.errorTip.upgradeNoticeEmail === false
@@ -1130,12 +1152,20 @@
 						alarmNoticeContent.contentSources = 'userDefined';
 						alarmNoticeContent.noticeRuleId = null;
 						alarmNoticeContent.noticeContentsList = [];
-						editableTabs.forEach((t)=>{
+						editableTabs.forEach((t) => {
 							var obj = new Object();
 							obj.noticeWay = t.nodeId;
 							obj.noticeContents = t.contentData;
 							alarmNoticeContent.noticeContentsList.push(obj);
 						});
+						// 增加后续发送策略 每隔小时
+						var noticeRuleNextValue = '';
+						if (_t.addEdit.noticeRuleNextType == '2') {
+							noticeRuleNextValue = _t.addEdit.noticeRuleNextEvery;
+						} else if (_t.addEdit.noticeRuleNextType == '3') {
+							noticeRuleNextValue = _t.addEdit.noticeRuleNextTime;
+						}
+						noticeRuleNextValue = Number(noticeRuleNextValue);
 						_t.$api.post('alarm/noticeRule/', {
 							alarmNoticeRule: {
 								groupId: _t.addEdit.groupId, // 告警组
@@ -1144,7 +1174,7 @@
 								noticeWay: _t.addEdit.NoticeFun.join(','), // 通知方式
 								noticeRuleFirst: _t.addEdit.noticeRuleFirst, // 首次发送次数
 								noticeRuleNextType: _t.addEdit.noticeRuleNextType, // 后续发送类型
-								noticeRuleNextEvery: _t.addEdit.noticeRuleNextEvery, // 每隔次数
+								noticeRuleNextEvery: noticeRuleNextValue, // type:2 每隔次数 type:3 每隔小时
 								isAlarmUpgrade: _t.addEdit.isAlarmUpgrade, // 是否升级
 								alarmNotconfirmDuration: _t.addEdit.alarmNotconfirmDuration, // 超出次数
 								upgradeNoticeEmail: upgradeNoticeEmailArr.join(';'), // 告警升级邮件
@@ -1160,7 +1190,7 @@
 								noticeOtherMobile: noticeOtherMobileArr.join(';'),
 								noticeOtherWeixin: noticeOtherWeixinArr.join(';'),
 								alarmSound: _t.addEdit.alarmSound === null ? null : (_t.addEdit.alarmSound === '' ? null : _t.addEdit.alarmSound),
-								alarmNoticeContent:alarmNoticeContent
+								alarmNoticeContent: alarmNoticeContent
 							}
 						}, function (res) {
 							switch (res.status) {
@@ -1203,6 +1233,8 @@
 				// 校验后续发送策略数字
 				if (_t.addEdit.noticeRuleNextType === '2') {
 					_t.changeInputNumber(2, _t.addEdit.noticeRuleNextEvery);
+				} else if (_t.addEdit.noticeRuleNextType === '3') {
+					_t.changeInputDoubleNumber(1, _t.addEdit.noticeRuleNextTime);
 				}
 				// 勾选了告警升级
 				if (_t.addEdit.isAlarmUpgrade === true) {
@@ -1230,6 +1262,7 @@
 					&& _t.errorTip.DayOfWeek === false
 					&& _t.errorTip.noticeObject === false
 					&& _t.errorTip.noticeRuleNextEvery === false
+					&& _t.errorTip.noticeRuleNextTime === false
 					&& _t.errorTip.alarmNotconfirmDuration === false
 					&& _t.errorTip.isNotAllNull === false
 					&& _t.errorTip.upgradeNoticeEmail === false
@@ -1318,12 +1351,20 @@
 						alarmNoticeContent.contentSources = 'userDefined';
 						alarmNoticeContent.noticeRuleId = _t.checkIdsList.join(',');
 						alarmNoticeContent.noticeContentsList = [];
-						editableTabs.forEach((t)=>{
+						editableTabs.forEach((t) => {
 							var obj = new Object();
 							obj.noticeWay = t.nodeId;
 							obj.noticeContents = t.contentData;
 							alarmNoticeContent.noticeContentsList.push(obj);
 						});
+						// 增加后续发送策略 每隔小时
+						var noticeRuleNextValue = '';
+						if (_t.addEdit.noticeRuleNextType == '2') {
+							noticeRuleNextValue = _t.addEdit.noticeRuleNextEvery;
+						} else if (_t.addEdit.noticeRuleNextType == '3') {
+							noticeRuleNextValue = _t.addEdit.noticeRuleNextTime;
+						}
+						noticeRuleNextValue = Number(noticeRuleNextValue);
 						_t.$api.put('alarm/noticeRule/', {
 							alarmNoticeRule: {
 								id: _t.checkIdsList.join(','), // id
@@ -1333,7 +1374,7 @@
 								noticeWay: _t.addEdit.NoticeFun.join(','), // 通知方式
 								noticeRuleFirst: _t.addEdit.noticeRuleFirst, // 首次发送次数
 								noticeRuleNextType: _t.addEdit.noticeRuleNextType, // 后续发送类型
-								noticeRuleNextEvery: _t.addEdit.noticeRuleNextEvery, // 每隔次数
+								noticeRuleNextEvery: noticeRuleNextValue, // type:2 每隔次数 type:3 每隔小时
 								isAlarmUpgrade: _t.addEdit.isAlarmUpgrade, // 是否升级
 								alarmNotconfirmDuration: _t.addEdit.alarmNotconfirmDuration, // 超出次数
 								upgradeNoticeEmail: upgradeNoticeEmailArr.join(';'), // 告警升级邮件
@@ -1349,7 +1390,7 @@
 								noticeOtherMobile: noticeOtherMobileArr.join(';'),
 								noticeOtherWeixin: noticeOtherWeixinArr.join(';'),
 								alarmSound: _t.addEdit.alarmSound === null ? null : (_t.addEdit.alarmSound === '' ? null : _t.addEdit.alarmSound),
-								alarmNoticeContent:alarmNoticeContent
+								alarmNoticeContent: alarmNoticeContent
 							}
 						}, function (res) {
 							switch (res.status) {
@@ -1435,7 +1476,24 @@
 			changeNoticeRuleNextType(data) {
 				var _t = this;
 				// 没有选中 每隔次数项 该项取消校验 置为0
-				if (data !== '2') {
+				if (data === '0' || data === '1') {
+					// type 2 部分
+					_t.addEdit.noticeRuleNextEvery = 1;
+					_t.errorTip.noticeRuleNextEvery = false;
+					document.getElementById('noticeRuleNextEvery').style.borderColor = '#DCDFE6';
+					// type 3 部分
+					_t.addEdit.noticeRuleNextTime = 0.5;
+					_t.errorTip.noticeRuleNextTime = false;
+					document.getElementById('noticeRuleNextTime').style.borderColor = '#DCDFE6';
+				} else if (data === '2') {
+					// 每隔次数
+					// type 3 部分
+					_t.addEdit.noticeRuleNextTime = 0.5;
+					_t.errorTip.noticeRuleNextTime = false;
+					document.getElementById('noticeRuleNextTime').style.borderColor = '#DCDFE6';
+				} else if (data === '3') {
+					// 每隔小时
+					// type 2 部分
 					_t.addEdit.noticeRuleNextEvery = 1;
 					_t.errorTip.noticeRuleNextEvery = false;
 					document.getElementById('noticeRuleNextEvery').style.borderColor = '#DCDFE6';
@@ -1491,6 +1549,21 @@
 					}
 				}
 			},
+			// 改变double类型的数据校验
+			changeInputDoubleNumber(val, data) {
+				var _t = this;
+				// val 1 后续发送策略 每隔几小时
+				if (val === 1) {
+					var reg = _t.$api.isDouble();
+					if (reg.test(data.toString().trim()) === false) {
+						_t.errorTip.noticeRuleNextTime = true;
+						document.getElementById('noticeRuleNextTime').style.borderColor = '#fb6041';
+					} else {
+						_t.errorTip.noticeRuleNextTime = false;
+						document.getElementById('noticeRuleNextTime').style.borderColor = '#DCDFE6';
+					}
+				}
+			},
 			// 选择用户按钮
 			selectUserBtn() {
 				var _t = this;
@@ -1528,6 +1601,14 @@
 					_t.addEdit.noticeRuleNextEvery = _t.addEdit.noticeRuleNextEvery.replace(/[^\d]/g, '');
 				} else {
 					_t.addEdit.alarmNotconfirmDuration = _t.addEdit.alarmNotconfirmDuration.replace(/[^\d]/g, '');
+				}
+			},
+			// 输入数字校验 只能输入double类型的
+			inputDoubleNumber(val, data) {
+				var _t = this;
+				// val:1 后续发送策略 -> 每隔几小时
+				if (val === 1) {
+					_t.addEdit.noticeRuleNextTime = data.replace(/[^\d.]/g, '');
 				}
 			},
 			// 校验邮箱 格式是否正确
@@ -1647,11 +1728,12 @@
 				_t.addEdit.alarmLevel = ['99']; // 告警级别
 				_t.addEdit.NoticeContent = ['0']; // 通知内容
 				_t.addEdit.NoticeFun = []; // 通知方式
-				_t.addEdit.DayOfWeek = ['1']; // 发送时间 周
+				_t.addEdit.DayOfWeek = ['0', '1', '2', '3', '4', '5', '6']; // 发送时间 周
 				_t.addEdit.noticeObject = ['0']; // 通知用户对象
 				_t.addEdit.noticeRuleFirst = 1; // 同一设备告警次数
 				_t.addEdit.noticeRuleNextType = '1'; // 后续发送策略
 				_t.addEdit.noticeRuleNextEvery = 1; // 每隔次数
+				_t.addEdit.noticeRuleNextTime = 0.5; // 每隔小时
 				_t.addEdit.alarmNotconfirmDuration = 10; // 超出次数
 				_t.addEdit.isAlarmUpgrade = false; // 告警升级
 				_t.addEdit.upgradeNoticeEmail = ''; // 升级邮箱地址
@@ -1671,6 +1753,7 @@
 				// 重置校验提示
 				_t.errorTip.noticeRuleFirst = false; // 首次发送
 				_t.errorTip.noticeRuleNextEvery = false; // 每隔几次
+				_t.errorTip.noticeRuleNextTime = false; // 每隔几小时
 				_t.errorTip.alarmNotconfirmDuration = false; // 超出几次
 				_t.errorTip.isNotAllNull = false; // 三项不能全部为空
 				_t.errorTip.upgradeNoticeEmail = false; // 告警升级邮箱地址
@@ -1906,7 +1989,7 @@
 			getBaseData() {
 				var _t = this;
 				_t.$api.post('system/basedata/maplist', {
-					dictionaryTypes: ['AlarmSeverity', 'NoticeContent', 'NoticeFun', 'DayOfWeek','NoticeUserObj' ,'NoticeFormat'],
+					dictionaryTypes: ['AlarmSeverity', 'NoticeContent', 'NoticeFun', 'DayOfWeek', 'NoticeUserObj', 'NoticeFormat'],
 					languageMark: localStorage.getItem('hy-language')
 				}, function (res) {
 					switch (res.status) {
@@ -1926,7 +2009,7 @@
 							// 内容格式
 							var NoticeFormat = res.data.NoticeFormat;
 							NoticeFormat = NoticeFormat === null ? [] : NoticeFormat;
-							NoticeFormat.forEach((t)=>{
+							NoticeFormat.forEach((t) => {
 								t.disabled = false;
 							});
 							_t.noticeContentFormat = NoticeFormat;
@@ -2099,7 +2182,12 @@
 							_t.addEdit.NoticeFun = resData.noticeWay.split(','); // 通知方式
 							_t.addEdit.noticeRuleFirst = resData.noticeRuleFirst; // 首次告警次数
 							_t.addEdit.noticeRuleNextType = resData.noticeRuleNextType.toString(); // 后续发送策略
-							_t.addEdit.noticeRuleNextEvery = resData.noticeRuleNextEvery.toString(); // 每隔次数
+							// 每隔次数 和每隔小时 根据 type判断
+							if (_t.addEdit.noticeRuleNextType == '2') {
+								_t.addEdit.noticeRuleNextEvery = resData.noticeRuleNextEvery.toString(); // 每隔次数
+							} else if (_t.addEdit.noticeRuleNextType == '3') {
+								_t.addEdit.noticeRuleNextTime = resData.noticeRuleNextEvery.toString(); // 每隔小时
+							}
 							_t.addEdit.isAlarmUpgrade = resData.isAlarmUpgrade; // 是否告警升级
 							_t.addEdit.alarmNotconfirmDuration = resData.alarmNotconfirmDuration.toString(); // 超出次数
 							_t.addEdit.upgradeNoticeEmail = resData.upgradeNoticeEmail; // 告警升级邮件
@@ -2121,7 +2209,7 @@
 							});
 							_t.addEdit.noticeUserIds = noticeUserIdsArr;
 
-							if(_t.addEdit.NoticeFun.indexOf('3') !== -1) {
+							if (_t.addEdit.NoticeFun.indexOf('3') !== -1) {
 								// 数据回显中 有播放声音
 								_t.isShowSoundDialog = true;
 							} else {
@@ -2131,10 +2219,10 @@
 
 							// 内容格式
 							_t.NoticeFun = _t.NoticeFun === null ? [] : _t.NoticeFun;
-							_t.NoticeFun.forEach((t)=>{
-								_t.addEdit.NoticeFun.forEach((m)=>{
+							_t.NoticeFun.forEach((t) => {
+								_t.addEdit.NoticeFun.forEach((m) => {
 									if (t.type === m) {
-										_t.changeItem(t,'edit');
+										_t.changeItem(t, 'edit');
 									}
 								});
 							});

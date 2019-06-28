@@ -13,7 +13,10 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
 	? require('../config/test.env')
-	: require('../config/prod.env')
+	: require('../config/prod.env');
+
+//获取当前时间处理页面缓存
+const Version = new Date().getTime();
 
 const webpackConfig = merge(baseWebpackConfig, {
 	module: {
@@ -27,8 +30,8 @@ const webpackConfig = merge(baseWebpackConfig, {
 	output: {
 		// publicPath:'./',
 		path: config.build.assetsRoot,
-		filename: utils.assetsPath('js/[name].[chunkhash].js'),
-		chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')
+		filename: utils.assetsPath('js/[name].[chunkhash].' + Version + '.js'),
+		chunkFilename: utils.assetsPath('js/[id].[chunkhash].' + Version + '.js')
 	},
 	plugins: [
 		// http://vuejs.github.io/vue-loader/en/workflow/production.html
@@ -65,6 +68,7 @@ const webpackConfig = merge(baseWebpackConfig, {
 			filename: process.env.NODE_ENV === 'testing' ? 'index.html' : config.build.index,
 			template: 'index.html',
 			inject: true,
+			hash: Version,
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,

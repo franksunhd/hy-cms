@@ -4,38 +4,48 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import Vuex from 'vuex';
+// 配置接口
 import api from './config/api.js';
+// 引入elementUI框架
 import ElementUI from 'element-ui';
+// 引入国际化语言
 import i18n from './page/lang/index';
-import pages from './components/pages';
+// 引入分页
+import pages from './components/common/pages';
+// 左侧导航拖拽
 import VueDND from 'awe-dnd';
+// 引入echarts
 import echarts from 'echarts';
+// 引入md5加密
 import md5 from 'js-md5';
+// 引入过滤器
 import * as custom from './assets/js/filters';
-import tagsview from './assets/js/tagsview';
-import getters from './assets/js/getters';
+// bus传值
 import vueBus from 'vue-bus';
-
+// 设备监测 --> 右键组件 (暂时不用)
 import VueContextMenu from '@xunlei/vue-context-menu'
-
+// elementUI css样式
 import 'element-ui/lib/theme-chalk/index.css';
+// 全局格式化css样式
 import './assets/css/base.css';
+// 全局公用的css样式
 import './assets/css/common.css';
+// 默认皮肤
 import './assets/css/skin/base-default.css';
+// 解决vue ie兼容
 import 'babel-polyfill';
+// 字体图标库 字体编码引用
 import './assets/css/fontStyle.css';
+// 字体图标库 类名方式引用
 import './assets/font/iconfont.css';
 
-// quill 富文本编辑器
-import VueQuillEditor from 'vue-quill-editor';
-import './assets/quillEditor/quill.core';
-import './assets/quillEditor/quill';
+// 富文本编辑器
+import '../static/UE/ueditor.config.js'
+import '../static/UE/ueditor.all.js'
+import '../static/UE/lang/zh-cn/zh-cn.js'
+import '../static/UE/ueditor.parse.min.js'
 
-import './assets/quillEditor/quill.core.css';
-import './assets/quillEditor/quill.snow.css';
-import './assets/quillEditor/quill.bubble.css';
-import './assets/quillEditor/quillEditor.css';
-
+// 使用
 Vue.use(VueContextMenu);
 Vue.use(Vuex);
 Vue.use(VueDND);
@@ -43,7 +53,6 @@ Vue.use(vueBus);
 Vue.use(ElementUI, {
 	i18n: (key, value) => i18n.t(key, value)
 });
-Vue.use(VueQuillEditor);
 
 Vue.config.productionTip = false;
 Vue.prototype.getCookie = getCookie;
@@ -84,14 +93,11 @@ Vue.prototype.exclude = (name, message) => {
 
 };
 
+// vuex
 const store = new Vuex.Store({
 	state: {
 		loading: false,
 	},
-	modules: {
-		tagsview
-	},
-	getters,
 	mutations: {
 		setLoading(state, value) {
 			state.loading = value;
@@ -108,7 +114,7 @@ new Vue({
 	components: {App},
 	template: '<App/>',
 	watch: {
-		"$route": 'checkLogin'
+		"$route": 'checkLicense'
 	},
 	methods: {
 		// 检查是否登录
@@ -126,9 +132,28 @@ new Vue({
 				//销毁刷新频率字典避免多次挂载
 				localStorage.removeItem('RefreshRateMap');
 			}
+		},
+		// 检查license
+		checkLicense() {
+			var _t = this;
+			if (localStorage.getItem('hy-license') === null
+				|| localStorage.getItem('hy-license') === 'null'
+				|| localStorage.getItem('hy-license') === false
+				|| localStorage.getItem('hy-license') === 'false') {
+				_t.$router.push({name: 'licenseExpired'});
+			} else if (localStorage.getItem('hy-license') === true || localStorage.getItem('hy-license') === 'true') {
+				_t.checkLogin();
+			}
 		}
 	}
 });
+
+// 导出store对象 在api.js axios 中调用
+export default {
+	store:function () {
+		return store;
+	}
+}
 
 // 获取cookie
 function getCookie(name) {

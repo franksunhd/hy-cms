@@ -10,17 +10,17 @@
 		<!--echarts区域-->
 		<el-row :gutter="10">
 			<el-col :span="12">
-				<div style="padding: 10px 0 10px 10px">
-					<div id="echartText" class="whiteBg" style="width: 100%; height:440px"></div>
+				<div class="equipmentList_eCharts_left">
+					<div id="eChartsText" class="whiteBg" style="width: 100%; height:440px"></div>
 				</div>
 			</el-col>
 			<el-col :span="12">
-				<div style="padding: 10px 10px 10px 0">
-					<div id="echart" class="whiteBg" style="width: 100%; height:440px"></div>
+				<div class="equipmentList_eCharts_right">
+					<div id="eChart_monitor" class="whiteBg" style="width: 100%; height:440px"></div>
 				</div>
 			</el-col>
 		</el-row>
-		<div class="equipmentList clearfix">
+		<div class="equipmentList">
 			<ul class="clearfix">
 				<li><span>{{$t('MonitoringSummary.LatestAlarmEquipmentList')}}</span></li>
 				<!--设备类型-->
@@ -44,7 +44,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class="equipmentList clearfix marBottom50">
+		<div class="equipmentList marBottom50" style="padding-bottom: 20px">
 			<el-table border :data="tableData" class="indexTableBox" stripe @cell-click="cellClickColumn">
 				<el-table-column width="90px" :label="$t('public.index')" header-align="left" align="left">
 					<template slot-scope="scope">
@@ -107,24 +107,24 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="frameName" :label="$t('MonitoringSummary.columnFrameName')" header-align="left"
+				<el-table-column prop="rackName" :label="$t('MonitoringSummary.columnRackName')" header-align="left"
 												 align="left">
 					<template slot-scope="scope">
-						<el-tooltip effect="dark" :content="scope.row.frameName" placement="top-start">
+						<el-tooltip effect="dark" :content="scope.row.rackName" placement="top-start">
 							<div slot="content">
-								<span>{{scope.row.frameName == null ? 'N/A' : scope.row.frameName}}</span>
+								<span>{{scope.row.rackName == null ? 'N/A' : scope.row.rackName}}</span>
 							</div>
-							<span>{{scope.row.frameName == null ? 'N/A' : scope.row.frameName}}</span>
+							<span>{{scope.row.rackName == null ? 'N/A' : scope.row.rackName}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="framePosition" :label="$t('MonitoringSummary.columnFramePosition')" header-align="left"
+				<el-table-column prop="rackPosition" :label="$t('MonitoringSummary.columnRackPosition')" header-align="left"
 												 align="left">
 					<template slot-scope="scope">
-						<el-tooltip effect="dark" :content="(scope.row.framePosition)==null ? 'N/A' : (scope.row.framePosition)+'U'"
+						<el-tooltip effect="dark" :content="(scope.row.rackPosition)==null ? 'N/A' : (scope.row.rackPosition)+'U'"
 												placement="top-start">
-							<span v-if="scope.row.framePosition==null">N/A</span>
-							<span>{{scope.row.framePosition}}</span>
+							<span v-if="scope.row.rackPosition==null">N/A</span>
+							<span>{{scope.row.rackPosition}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
@@ -137,14 +137,6 @@
 				@handleSizeChangeSub="handleSizeChangeSub"
 				@handleCurrentChangeSub="handleCurrentChange"/>
 		</div>
-		<!--设备告警详情弹出层-->
-		<equipmentAlarmDetails
-			ref="alarmDialog"
-			:dialogVisible="dialogVisible"
-			:AssetType="tableDataBase.AssetType"
-			:AlarmSeverity="tableDataBase.AlarmSeverity"
-			:AlarmHandleStatus="tableDataBase.AlarmHandleStatus"
-			@dialogVisibleStatus="dialogVisibleStatus"/>
 		<!--标签页-->
 		<AdministrationTags
 			@changePageDeviceId="changePageDeviceId"
@@ -156,16 +148,14 @@
 </template>
 <script>
 	import {dateFilter} from "../../../assets/js/filters";
-	import Box from '../../../components/Box';
-	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
-	import AdministrationTags from '../../../components/AdministrationTabs';
+	import Box from '../../../components/common/Box';
+	import AdministrationTags from '../../../components/monitor/AdministrationTabs';
 
 	export default {
 		name: 'monitoringAndControl',
 		components: {
 			Box,
 			AdministrationTags,
-			equipmentAlarmDetails,
 			dateFilter
 		},
 		data() {
@@ -197,17 +187,8 @@
 				equipmentTypeList: [],
 				isShowTypePopover: false, // 控制设备类型下拉框的显示隐藏
 				isShowEditPopover: false, // 控制树形下拉框的显示隐藏
-				dialogVisible: false, // 设备告警详情弹出层
 				organizationList: [], // 树形下拉框的数据
 				equipmentData: {}, // 设备告警详情
-				/*设备类型占比图数据*/
-				Dincome: [],
-				/*设备类型占比图时间*/
-				Income1: '',
-				/*设备告警级别占比图时间*/
-				income1: '',
-				/*设备告警级别占比图数据*/
-				Dincome1: '',
 				// 表格数据字典
 				tableDataBase: {
 					AlarmHandleStatus: {},
@@ -219,14 +200,133 @@
 				timer: null, //记录定时器
 				pageDeviceId: '',
 				pageDeviceName: '',
+				// 柱形图 option
+				barChartsOption: {
+					// 标题相关配置
+					title: {
+						text: this.$t('MonitoringSummary.assetCount'), // 主标题
+						top: 5, // 距离顶部
+						left: 20, // 左侧距离
+						textStyle: { // 主标题属性
+							fontSize: 12,
+							color: '#333'
+						},
+						subtextStyle: { // 副标题属性
+							fontSize: 12,
+							color: '#444'
+						},
+						itemGap: 10, // 主标题与副标题 上下间距
+					},
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: { // 坐标轴指示器，坐标轴触发有效
+							type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+						}
+					},
+					// 工具栏
+					toolbox: {
+						show: true,
+						top: 10,
+						right: 30,
+						feature: {
+							// 还原
+							restore: {
+								show: true,
+								title: this.$t('MonitoringSummary.restore')
+							},
+							// 下载
+							saveAsImage: {
+								show: true,
+								title: this.$t('MonitoringSummary.download')
+							}
+						}
+					},
+					// 柱状图 距离顶部距离
+					grid: {
+						top: 80,
+						right: 20,
+						left: 80,
+						bottom: 40
+					},
+					// 图例数据
+					legend: {
+						top: 10,
+						data: []
+					},
+					xAxis: [],
+					// y轴配置
+					yAxis: [
+						{
+							type: 'value',
+							label: {
+								normal: {
+									show: true,
+									position: 'top',
+									formatter: '{c}'
+								}
+							}
+						}
+					],
+					// 数据集合
+					series: []
+				},
+				// 饼图 option
+				pieChartsOption: {
+					// 标题相关设置
+					title: {
+						text: this.$t('MonitoringSummary.alarmLevel'), // 主标题
+						subtext: '', // 副标题
+						top: 5, // 标题顶部距离
+						left: 20, // 标题左侧距离
+						// 主标题文字颜色
+						textStyle: {
+							fontSize: 12,
+							color: '#333'
+						},
+						// 副标题文字颜色
+						subtextStyle: {
+							fontSize: 12,
+							color: '#444'
+						},
+						// 主副标题 间距
+						itemGap: 10
+					},
+					// 鼠标移上去
+					tooltip: {
+						trigger: 'item',
+						formatter: "{a} <br/>{b} : {c} ({d}%)"
+					},
+					// 图例
+					legend: {
+						orient: 'vertical', // 纵向排列
+						right: 20,
+						y: 'center',
+						data: []
+					},
+					icon: ['circle'], // 图例为圆
+					color: ['#fb6140', '#fdbb41', '#5bd25d', '#24b4c5', '#999999'], // 设置饼图颜色
+					// 工具栏
+					toolbox: {
+						show: true, // 显示工具栏
+						top: 10, // 工具栏 顶部位置
+						right: 30, // 工具栏 右侧位置
+						feature: {
+							restore: {
+								show: true,
+								title: this.$t('MonitoringSummary.restore')
+							},
+							saveAsImage: {
+								show: true,
+								title: this.$t('MonitoringSummary.download')
+							}
+						}
+					},
+					// 千层饼数据
+					series: []
+				},
 			}
 		},
 		methods: {
-			// 接受弹出层关闭的参数
-			dialogVisibleStatus(val) {
-				var _t = this;
-				_t.dialogVisible = val;
-			},
 			// 查询表格数据
 			getData() {
 				var _t = this;
@@ -244,32 +344,7 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.getTableDataValue(res.data);
-							break;
-						case 1003: // 无操作权限
-						case 1004: // 登录过期
-						case 1005: // token过期
-						case 1006: // token不通过
-							_t.exclude(_t, res.message);
-							break;
-						default:
-							break;
-					}
-				});
-			},
-			// 查询表格中状态对应的数据值
-			getTableDataValue(resData) {
-				var _t = this;
-				_t.$store.commit('setLoading', true);
-				_t.$api.post('system/basedata/map', {
-					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity", "DeviceMonitorStatus"],
-					languageMark: localStorage.getItem("hy-language")
-				}, function (res) {
-					_t.$store.commit('setLoading', false);
-					switch (res.status) {
-						case 200:
-							// 获取表格对应的状态值
-							_t.tableDataBase = res.data;
+							var resData = res.data;
 							_t.tableData = resData.list === null ? [] : resData.list;
 							_t.options.currentPage = resData.currentPage;
 							_t.options.total = resData.count;
@@ -281,10 +356,35 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
-							_t.tableDataBase = {};
 							_t.tableData = [];
 							_t.options.currentPage = 1;
 							_t.options.total = 0;
+							break;
+					}
+				});
+			},
+			// 查询表格中状态对应的数据值
+			getTableDataValue() {
+				var _t = this;
+				_t.$store.commit('setLoading', true);
+				_t.$api.post('system/basedata/map', {
+					dictionaryTypes: ["AlarmHandleStatus", "AssetType", "AlarmSeverity", "DeviceMonitorStatus"],
+					languageMark: localStorage.getItem("hy-language")
+				}, function (res) {
+					_t.$store.commit('setLoading', false);
+					switch (res.status) {
+						case 200:
+							// 获取表格对应的状态值
+							_t.tableDataBase = res.data;
+							break;
+						case 1003: // 无操作权限
+						case 1004: // 登录过期
+						case 1005: // token过期
+						case 1006: // token不通过
+							_t.exclude(_t, res.message);
+							break;
+						default:
+							_t.tableDataBase = {};
 							break;
 					}
 				});
@@ -295,25 +395,58 @@
 				//_t.addEdit.organizationId = val.id;
 				_t.isShowEditPopover = false;
 			},
+			// 设备占比实时监测 左侧柱形图数据
 			refresh2() {
 				var _t = this;
 				_t.$api.get('/asset/assetDevice/devicetype', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var Income2 = res.data === null ? [] : res.data;
-							var Income1 = dateFilter(res.requesttime);
-							_t.Income1 = Income1;
-							var Income = [];
-							for (var i = 0; i < Income2.length; i++) {
-								if (Income2[i].name !== null) {
-									Income.push({
-										value: Income2[i].count,
-										name: Income2[i].name
-									})
-								}
+							if (res.data && res.data !== null) {
+								var resData = res.data;
+								var legendArr = new Array(); // 图例数组
+								var dataArr = new Array();
+								// 差分数据 用于图例和数据显示
+								// 设置柱形颜色
+								var colorArr = ['','#f96563','#27afcd','#359dfb','#8170f5','#4f5e6c','#60d162','#f4bd5b','#6e84bc','#e471e5'];
+								resData.forEach((item) => {
+									legendArr.push(item.name);
+									// 设置Y轴数据
+									var val  = new Object();
+									// 给y轴单个柱状设值
+									val.value = item.count;
+									// 给y轴单个柱状设颜色
+									val.itemStyle = {
+										color: colorArr[item.type]
+									};
+									dataArr.push(val);
+								});
+								// x轴对象
+								var xAxis = new Object();
+								xAxis.type = 'category';
+								xAxis.data = legendArr;
+								// y轴对象
+								var yAxis = new Object();
+								yAxis.type = 'bar';
+								yAxis.name = _t.$t('MonitoringSummary.eChartsXAisName');
+								yAxis.data = dataArr;
+								yAxis.label = {
+									normal: {
+										show: true,
+										position: 'top',
+										formatter: '{c}'
+									}
+								};
+								yAxis.barMaxWidth = 50;
+								// 动态设置副标题
+								_t.barChartsOption.title.subtext = dateFilter(res.requesttime);
+								// 设置x轴数据
+								_t.barChartsOption.xAxis[0] = xAxis;
+								// 设置y轴数据
+								_t.barChartsOption.series[0] = yAxis;
+								var myChart2 = _t.$echarts.init(document.getElementById("eChartsText"));
+								// 使用刚指定的配置项和数据显示图表。
+								myChart2.setOption(_t.barChartsOption);
 							}
-							_t.Dincome = Income;
-							_t.drawLine2();
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -326,109 +459,49 @@
 					}
 				});
 			},
-			drawLine2() {
-				var _t = this;
-				var myChart2 = this.$echarts.init(document.getElementById("echartText"));
-				var option = {
-					color: ['#fde33f', '#32cc35', '#fb6041', '#975de1', '#40a8ff'],
-					title: {
-						text: _t.$t('MonitoringSummary.EquipmentProportionRealTimeMonitoring'),
-						subtext: _t.Income1,
-						top: 5,
-						left: 20,
-						textStyle: {
-							fontSize: 12,
-							color: '#333'
-						},
-						subtextStyle: {
-							fontSize: 12,
-							color: '#444'
-						},
-						itemGap: 20
-					},
-					tooltip: {
-						trigger: 'item',
-						formatter: "{a} <br/>{b}: {c} ({d}%)"
-					},
-					legend: {
-						orient: 'horizontal',
-						x: 'center',
-						y: 'bottom',
-						/*left: 400,*/
-						/*top: 30,*/
-						data: _t.Dincome,
-					},
-					toolbox: {
-						show: true,
-						feature: {
-							mark: {
-								show: true
-							},
-							magicType: {
-								show: true,
-								type: ['pie', 'funnel']
-							},
-							restore: {
-								show: true
-							},
-							saveAsImage: {
-								show: true
-							}
-						}
-					},
-					calculable: true,
-					series: [{
-						name: _t.$t('MonitoringSummary.eChartTipTitle'),
-						type: 'pie',
-						radius: '55%',
-						center: ['50%', '50%'],
-						avoidLabelOverlap: true,
-						label: {
-							normal: {
-								show: true,
-								position: 'right',
-								color: '#333',
-							},
-							emphasis: {
-								show: true,
-								textStyle: {}
-							}
-						},
-						labelLine: {
-							normal: {
-								show: true,
-								smooth: 0.1,
-								length: 20,
-								length2: 10,
-							}
-						},
-						data: _t.Dincome,
-					}]
-				};
-				// 使用刚指定的配置项和数据显示图表。
-				myChart2.setOption(option);
-			},
-
 			/*设备告警级别占比图*/
 			refresh() {
 				var _t = this;
 				_t.$api.get('/alarm/alarm/dev', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var Income2 = res.data === null ? [] : res.data;
-							var Income1 = dateFilter(res.requesttime);
-							_t.income1 = Income1;
-							var Income = [];
-							for (var i = 0; i < Income2.length; i++) {
-								if (Income2[i].name !== null) {
-									Income.push({
-										value: Income2[i].count,
-										name: Income2[i].name
+							if (res.data && res.data !== null) {
+								var resData = res.data === null ? [] : res.data;
+								var legendArr = new Array();
+								// 将count 转为 饼图需要的 value
+								resData.forEach((item) => {
+									legendArr.push(item.name);
+									if (item.name !== null) {
+										item.value = item.count;
+									} else {
+										item.value = '';
+									}
+								});
+								_t.pieChartsOption.title.subtext = dateFilter(res.requesttime); // 设置副标题
+								_t.pieChartsOption.legend.data = legendArr; // 设置 图例数据
+								// 设置千层饼
+								var series = [];
+								for (var i = 0; i < 30; i++) {
+									series.push({
+										name: _t.$t('MonitoringSummary.eChartTipTitleStatus'),
+										type: 'pie',
+										itemStyle: {
+											normal: {
+												label: {show: i > 28},
+												labelLine: {
+													show: i > 28,
+													length: 20
+												}
+											}
+										},
+										radius: [i * 3 + 40, i * 3 + 43], //图形大小角度 层级
+										data: resData,
 									})
 								}
+								_t.pieChartsOption.series = series;
+								var myChart = _t.$echarts.init(document.getElementById("eChart_monitor"));
+								myChart.setOption(_t.pieChartsOption);
 							}
-							_t.Dincome1 = Income;
-							_t.drawLine();
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -439,83 +512,7 @@
 						default:
 							break;
 					}
-
 				})
-			},
-			drawLine() {
-				var _t = this;
-				let myChart = this.$echarts.init(document.getElementById("echart"));
-				var option = {
-					title: {
-						text: _t.$t('MonitoringSummary.EquipmentAlarmLevelRealTimeMonitoring'),
-						subtext: _t.income1,
-						top: 5,
-						left: 20,
-						textStyle: {
-							fontSize: 12,
-							color: '#333'
-						},
-						subtextStyle: {
-							fontSize: 12,
-							color: '#444'
-						},
-						itemGap: 20
-					},
-					tooltip: {
-						trigger: 'item',
-						formatter: "{a} <br/>{b} : {c} ({d}%)"
-					},
-					legend: {
-						orient: 'horizontal',
-						x: 'center',
-						y: 'bottom',
-						data: _t.Dincome1
-					},
-					toolbox: {
-						show: true,
-						feature: {
-							mark: {
-								show: true
-							},
-							magicType: {
-								show: true,
-								type: ['pie', 'funnel']
-							},
-							restore: {
-								show: true
-							},
-							saveAsImage: {
-								show: true
-							}
-						}
-					},
-					calculable: false,
-					series: (function () {
-						var series = [];
-						for (var i = 0; i < 30; i++) {
-							series.push({
-								name: _t.$t('MonitoringSummary.eChartTipTitleStatus'),
-								type: 'pie',
-								itemStyle: {
-									normal: {
-										label: {
-											show: i > 28
-										},
-										labelLine: {
-											show: i > 28,
-											length: 20
-										}
-									}
-								},
-								radius: [i * 3 + 40, i * 3 + 43], //图形大小角度 层级
-								data: _t.Dincome1,
-
-							})
-						}
-						return series;
-					})()
-				};
-				myChart.setOption(option);
 			},
 			// 改变当前页码
 			handleCurrentChange(val) {
@@ -645,6 +642,7 @@
 			this.refresh2();
 			this.getData();
 			this.getBaseData();
+			this.getTableDataValue();
 		},
 		mounted() {
 			var _t = this;
@@ -692,5 +690,13 @@
 	.equipmentList ul li:last-child {
 		float: right;
 		margin-right: 10px;
+	}
+
+	.equipmentList_eCharts_left {
+		padding: 10px 0 10px 10px;
+	}
+
+	.equipmentList_eCharts_right {
+		padding: 10px 10px 10px 0;
 	}
 </style>

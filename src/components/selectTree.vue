@@ -1,288 +1,258 @@
-<!-- 树状选择器 -->
 <template>
-	<Box>
-		<div class="box">
-      <!-- <tree-transfer :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' :render-content="renderContent"> -->
-       <!--:title="title"-->
-        <!--@addBtn="add"
-       @removeBtn="remove"-->
-      <transferExtend
-        :from_data="fromData"
-        :to_data="toData"
-        :defaultProps="{ label: 'name', children: 'children' }"
-        :defaultCheckedKeys="defaultCheckedKeys"
-        :mode="mode"
-        filter
-        open-all
-        default-transfer
-        height="540px"
-        node_key="id"
-        @left-check-change="leftCheckChange"
-        @right-check-change="rightCheckChange">
-        <span
-          slot="title-right"
-          class="my-title-right"
-          @click="handleTitleRight">自定义内容</span>
-      </transferExtend>
-    </div>
-	</Box>
+	<!--<div class="bigBox">
+        <div class="bigBox_top">
+            <el-carousel :interval="4000" type="card" height="50px" width="200px">
+                <el-carousel-item v-for="(item,index) in roomList" :key="index">
+                    <h3 class="medium">{{item.room_name}}</h3>
+                </el-carousel-item>
+            </el-carousel>
+        </div>
+        <div class="bigBox_bottom">
+            <div class="bigBox_bottom_left"></div>
+            <div class="bigBox_bottom_right"></div>
+        </div>
+    </div>-->
+	<div class="bigBox">
+		<div class="bigBox_top">
+			<div class="bigBox_top_left"></div>
+			<div class="bigBox_top_bigWidth">
+				<ul class="bigBox_top_ul" id="bigBox">
+					<li v-for="(item,index) in roomlist" :key="index">{{item.room_name}}</li>
+				</ul>
+			</div>
+			<div class="bigBox_top_right"></div>
+			<div class="bigBox_top_left_lt" >
+				<img @click="ltClick" src="/static/img/top-nab-previous.png" alt="">
+			</div>
+			<div class="bigBox_top_right_gt" >
+				<img @click="gtClick" src="/static/img/top-nab-next.png" alt="">
+			</div>
+		</div>
+		<div class="bigBox_bottom">
+			<el-row :gutter="20">
+				<el-col :span="4">
+					<div class="bigBox_bottom_left">
+						<div class="bigBox_bottom_left_top"></div>
+						<div class="bigBox_bottom_bigWidth">
+							<ul id="maxRow_ul">
+								<li v-for="(item,index) in currentRoomMapRow" :key="index">{{item}}</li>
+							</ul>
+						</div>
+						<div class="bigBox_bottom_left_bottom"></div>
+						<div class="bigBox_bottom_left_TopImg"><img src="" alt=""></div>
+						<div class="bigBox_bottom_left_BottomImg"><img src="" alt=""></div>
+					</div>
+				</el-col>
+				<el-col :span="20">
+					<div class="bigBox_bottom_right"></div>
+				</el-col>
+			</el-row>
+
+
+		</div>
+	</div>
 
 </template>
-
 <script>
-	import transferExtend from './transferExtend';
-	import Box from './Box';
 	export default {
 		name: 'selectTree',
-		components: {
-			Box,
-			transferExtend
-		},
 		data() {
 			return {
-				mode: "transfer", // transfer addressList
-      fromData: [
-        {
-          id: 1,
-          pid: 0,
-          name: "测试左侧",
-          children: [
-            {
-              id: 2,
-              pid: 1,
-              name: "水电费是打发斯蒂芬斯蒂芬gas噶水电费噶地方死光光",
-              // disabled: true,
-              children: []
-            },
-            {
-              id: 3,
-              pid: 1,
-              name: "11-3",
-              children: []
-            }
-            /*    {
-              id: 4,
-              pid: 1,
-              name: "11-4",
-              children: [
-                {
-                  id: 5,
-                  pid: 4,
-                  name: "11-5",
-                  children: [
-                    {
-                      id: 111,
-                      pid: 5,
-                      name: "11-111"
-                    }
-                  ]
-                },
-                {
-                  id: 6,
-                  pid: 4,
-                  name: "11-6",
-                  children: []
-                }
-              ]
-            } */
-          ]
-        },
-        {
-          id: 7127,
-          pid: 0,
-          name: "debug",
-          children: [
-            {
-              id: 71272,
-              pid: 7127,
-              name: "debug22",
-              // disabled: true,
-              children: []
-            },
-            {
-              id: 71273,
-              pid: 7127,
-              name: "debug11",
-              children: []
-            }
-          ]
-        }
-      ], // 穿梭框 - 源数据 - 树形
-      toData: [
-        /*  {
-          id: 1,
-          pid: 0,
-          name: "测试左侧",
-          children: [
-            {
-              id: 2,
-              pid: 1,
-              name: "水电费是打发斯蒂芬斯蒂芬gas噶水电费噶地方死光光",
-              children: [
-                {
-                  id: 22222222,
-                  pid: 2,
-                  name: "2222222222"
-                }
-              ]
-            }
-          ]
-        } */
-      ], // 穿梭框 - 目标数据 - 树形
-      fromArray: [
-        {
-          id: "1",
-          name: "1",
-          pid: "0"
-        },
-        {
-          id: "2",
-          name: "2",
-          pid: "0"
-        },
-        {
-          id: "1-1",
-          name: "1-1",
-          pid: "1"
-        },
-        {
-          id: "1-2",
-          name: "1-2",
-          pid: "1"
-        },
-        {
-          id: "1-1-1",
-          name: "1-1-1",
-          pid: "1-1"
-        },
-        {
-          id: "1-1-1-1",
-          name: "1-1-1-1",
-          pid: "1-1-1"
-        },
-        {
-          id: "2-1",
-          name: "2-1",
-          pid: "2"
-        },
-        {
-          id: "2-2",
-          name: "2-2",
-          pid: "2"
-        }
-      ],
-      toArray: [],
-      defaultCheckedKeys: [] // 左侧默认选中数据
-			};
+				//机房数据集合
+				roomlist:[],
+				//机房ID
+				roomId:'',
+				//最大行
+				maxRow:'',
+				num:0,
+				currentRoomMap:{},
+				currentRoomMapRow:0,
+			}
 		},
+		created(){
+			var _t=this;
+			_t.getRoom();
+		},
+		mounted(){
+			var _t=this;
+		},
+		methods:{
+			getRoom(){
+				var _t=this;
+				_t.$api.get('monitor/giantScreen/serverRoom/all',{},function(res){
+					switch (res.status){
+						case 200:
+							var roomList = res.data.list === null ? [] : res.data.list;
+							_t.roomlist = roomList;
+							var ul = document.querySelector('.bigBox_top_ul');
+							ul.style.width=150*(_t.roomlist.length)+'px';
+							// 默认选中第一个节点
+							if (_t.roomlist.length !== 0 ) {
+								// 记住当前的 当前的机房map
+								_t.currentRoomMap = _t.roomlist[0];
+								// 根据map值 是不是有 渲染行数
+								_t.$nextTick(function () {
+									document.querySelector('#bigBox li:nth-child('+ 3 +')').className = 'is-active';
+								});
 
-		methods: {
-			// 左侧源数据选中事件
-    leftCheckChange(nodeObj, treeObj) {},
-    // 右侧目标数据选中事件
-    rightCheckChange(nodeObj, treeObj) {},
-    // 自定义节点 仅树形结构支持
-    renderContent(h, { node, data, store }) {
-      return (
-        <span class="custom-tree-node">
-          <span>{node.label}</span>
-          <span>
-            <el-button
-              size="mini"
-              type="text"
-              on-click={() => this.append(data)}>
-              Append
-            </el-button>
-            <el-button size="mini" type="text" on-click={() => this.remove(node, data)}>
-              Delete
-            </el-button>
-          </span>
-        </span>
-      );
-    },
-    // 标题自定义区点击事件
-    handleTitleRight() {
-      alert("标题自定义区点击事件");
-    }
-		},
-		computed: {
- 
-  
- },
-		created() {
-			this.fromData = [
-      {
-        id: 1,
-        pid: 0,
-        name: "关键字",
-        children: [
-          {
-            id: 11,
-            pid: 1,
-            name: "财务报表",
-            disabled: true   //是否禁用
-          },
-          {
-            id: 12,
-            pid: 1,
-            name: "工资奖金"
-          },
-          {
-            id: 13,
-            pid: 1,
-            name: "会议纪要"
-          }
-        ]
-      },
-      {
-        id: 2,
-        pid: 0,
-        name: "正则",
-        children: [
-          {
-            id: 22,
-            pid: 2,
-            name: "Email地址"
-          },
-          {
-            id: 23,
-            pid: 2,
-            name: "MAC地址"
-          },
-          {
-            id: 24,
-            pid: 2,
-            name: "IPv6地址"
-          }
-        ]
-      },
-      {
-        id: 3,
-        pid: 0,
-        name: "标识符",
-        children: [
-          {
-            id: 32,
-            pid: 3,
-            name: "包含确切数据过滤器模板"
-          },
-          {
-            id: 33,
-            pid: 3,
-            name: "包含前缀过滤器模板"
-          },
-          {
-            id: 34,
-            pid: 3,
-            name: "包含后缀过滤器模板"
-          }
-        ]
-      }
-    ];
+
+
+
+
+								// 渲染行
+								if (_t.currentRoomMap.max_row && _t.currentRoomMap.max_row !== 0) {
+									_t.currentRoomMapRow = _t.currentRoomMap.max_row;
+									//默认给第一行选中状态
+									_t.$nextTick(function () {
+										console.log(document.querySelector('#maxRow_ul li:nth-child('+ 1 +')'))
+										document.querySelector('#maxRow_ul li:nth-child('+ 1 +')').className = 'is-active';
+									});
+									// 调取机柜数据
+									// room :  _t.currentRoomMapRow.room_id  row : 1;
+
+								} else {
+									_t.currentRoomMapRow = 0
+								}
+							} else {
+								// 没有机房
+							}
+							break;
+						default:
+							break;
+					}
+				})
+			},
+			//点击左箭头
+			ltClick(){
+				var _t = this;
+				_t.num++;
+				if(_t.num > _t.roomList.length){
+					//重新拿数据
+					_t.getRoom();
+					_t.num=0;
+				}else{
+					//
+				}
+				var obj = document.querySelector('.bigBox_top ul');
+				obj.style.transform = 'translateX('+(-150)*(_t.num)+'px)';
+				_t.$nextTick(function () {
+					document.querySelector('#bigBox li:nth-child('+3+')').className = 'is-active';
+					console.log(document.querySelector('#bigBox li:nth-child'+(_t.num)));
+				});
+
+			},
+			//点击右箭头
+			gtClick(){
+				var _t = this;
+				_t.num--;
+				if(_t.num<0){
+					_t.num=_t.roomlist.length-1;
+				}
+				var obj = document.querySelector('.bigBox_top ul');
+				obj.style.transform = 'translateX('+(-150)*(_t.num)+'px)';
+
+			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
+	.isactive{
+		font-size: 18px;
+		color: #ff9900;
+	}
+	.bigBox{
+		overflow: hidden;
+		height: 100%;
+		background: url("/static/img/bg.jpg") ;
+	}
+	.bigBox_top{
+		width: 1000px;
+		margin: 0 auto;
+		/*background-color: #f22;*/
+		position: relative;
+		overflow: hidden;
+	}
+	.bigBox_top_bigWidth{
+		width: 900px;
+		float: left;
+		overflow: hidden;
+		border-bottom: #0000cc solid 2px;
+	}
+	.bigBox_top ul{
+		overflow: hidden;
+	}
+	.bigBox_top ul li{
+		float: left;
+		width: 150px;
+		height: 44px;
+		font-size: 14px;
+		line-height: 44px;
+		text-align: center;
+		color: #a7f3ff;
+		cursor: pointer;
+	}
 
+	.bigBox_top ul {
+		/*transform: translateX(-200px);*/
+	}
+	.bigBox_top_left{
+		float: left;
+		width: 50px;
+		height: 44px;
+		background: url("/static/img/top-line-left.png") no-repeat;
+	}
+	.bigBox_top_right{
+		float: right;
+		width: 50px;
+		height: 44px;
+		background:url("/static/img/top-line-right.png") no-repeat;
+	}
+	.bigBox_top_left_lt{
+		position: absolute;
+		top:12px;
+		left:50px;
+		cursor: pointer;
+	}
+	.bigBox_top_right_gt{
+		position: absolute;
+		top:12px;
+		right:50px;
+		cursor: pointer;
+	}
+	.bigBox_bottom{
+		width: 100%;
+		height: 100%;
+		background-color: #ff9900;
+	}
+	.bigBox_bottom_left{
+		width: 100%;
+		height: 100%;
+		background-color: #f22;
+
+	}
+	.bigBox_bottom_bigWidth ul{
+
+	}
+	.bigBox_bottom_bigWidth ul li {
+		width: 100px;
+		height: 50px;
+		border:1px solid #2D64B3;
+	}
+	.bigBox_bottom_right{
+		width: 100%;
+		height: 100%;
+		background-color: #4c97f0;
+	}
+</style>
+<style>
+	#maxRow_ul li.is-active {
+		font-size: 22px;
+		color: orange;
+	}
+
+	#bigBox li.is-active {
+		color: orangered;
+		font-size: 30px;
+	}
 </style>

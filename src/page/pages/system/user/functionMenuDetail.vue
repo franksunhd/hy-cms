@@ -8,13 +8,16 @@
 				<el-breadcrumb-item>{{$t('breadcrumb.functionMenuMaintenance')}}</el-breadcrumb-item>
 			</el-breadcrumb>
 		</div>
+		<!--返回上一级-->
 		<div class="padding20">
 			<div class="grayBg functionMenuDetail-title systemBlue" @click="goBack">
 				<span class="iconfont">&#xe691;</span>
 				<span>{{$t('functionMenuMaintenance.goBack')}}</span>
 			</div>
 		</div>
+		<!--表单-->
 		<el-form label-width="150px" :model="addEdit" :rules="rules" ref="roleName">
+			<!--父级菜单-->
 			<el-form-item :label="$t('functionMenuMaintenance.parentName') + '：'">
 				<el-popover
 					trigger="click"
@@ -37,6 +40,7 @@
 						slot="reference"/>
 				</el-popover>
 			</el-form-item>
+			<!--菜单名称-->
 			<el-form-item class="star" :label="$t('functionMenuMaintenance.menuName') + '：'" style="margin-bottom: 0;">
 				<div class="positionRelative" v-for="(item,index) in languageList">
 					<el-input :id="item.id" @input="menuNameInput(item)" v-model="item.menuName" style="margin-bottom: 20px;"
@@ -45,16 +49,35 @@
 								v-if="item.flag == true && item.menuName.trim() == ''">{{$t('public.isNotNull')}}</span>
 				</div>
 			</el-form-item>
+			<!--菜单图标-->
 			<el-form-item :label="$t('functionMenuMaintenance.menuIcon') + '：'">
-				<el-input v-model="addEdit.menuClass" :placeholder="$t('functionMenuMaintenance.className')" class="width200 marBottom10"/>
-				<el-upload action="">
-					<el-button size="small" type="primary">{{$t('functionMenuMaintenance.clickImport')}}</el-button>
-				</el-upload>
-				<el-input v-if="false" v-model="addEdit.menuIcon"/>
+				<el-radio-group v-model="menuIconShow">
+					<el-radio :label="0">{{$t('functionMenuMaintenance.formMenuClass')}}</el-radio>
+					<el-radio :label="1">{{$t('functionMenuMaintenance.formMenuIcon')}}</el-radio>
+				</el-radio-group>
+				<!--字体图标输入-->
+				<div class="marginTop10" v-if="menuIconShow === 0">
+					<el-input
+						v-model="addEdit.menuClass"
+						:placeholder="$t('functionMenuMaintenance.className')"
+						class="width200 marginRight20"/>
+					<!--查看系统字体图标库-->
+<!--					<el-button type="text" @click="showIconfont">{{$t('functionMenuMaintenance.showIconFont')}}</el-button>-->
+				</div>
+				<!--图片上传-->
+				<div class="marginTop10" v-else>
+					<el-upload :disabled="true" action="">
+						<el-button :disabled="true" size="small" type="primary">{{$t('functionMenuMaintenance.clickImport')}}
+						</el-button>
+					</el-upload>
+					<el-input v-if="false" v-model="addEdit.menuIcon"/>
+				</div>
 			</el-form-item>
+			<!--菜单url-->
 			<el-form-item :label="$t('functionMenuMaintenance.menuUrl') + '：'">
 				<el-input v-model="addEdit.menuHref" class="width200"/>
 			</el-form-item>
+			<!--跳转方式-->
 			<el-form-item :label="$t('functionMenuMaintenance.jumpType') + '：'">
 				<el-radio-group v-model="addEdit.jumpType">
 					<el-radio label="_blank">_blank</el-radio>
@@ -66,61 +89,65 @@
 					</el-radio>
 				</el-radio-group>
 			</el-form-item>
+			<!--角色授权-->
 			<el-form-item class="star" :label="$t('functionMenuMaintenance.roleMenu') + '：'">
 				<el-button class="queryBtn" type="primary" @click="selectRoleBtn">
 					<span class="fs12">{{$t('functionMenuMaintenance.selectUser')}}</span>
 				</el-button>
-				<el-radio class="systemUser-box" v-model="checked" :label="true" disabled>系统超级管理员</el-radio>
-				<!--展示选择的用户数据-->
-				<div v-for="(item,index) in listData" :key="index">
-					<!--标题部分循环-->
-					<p class="fs12">
-						<template v-for="(k,i) in item.title">
-							<span>{{k}}</span>
-							<i v-if="i !== item.title.length - 1" class="el-icon-arrow-right"></i>
-						</template>
-					</p>
-					<!--标签部分循环-->
-					<el-tag style="margin: 0 10px 10px 0;" v-for="tag in item.tags" :key="tag.id" @close="handleClose(tag)"
-									closable>
-						{{tag.nodeName}}
+				<div>
+					<!--展示选择的用户数据-->
+					<el-tag
+						class="marginRight20 marginTop20"
+						v-for="tag in listData"
+						:key="tag.id"
+						@close="handleClose(tag)"
+						closable>
+						{{tag.roleName}}
 					</el-tag>
 				</div>
-				<p v-if="selectUserIsNull == true" class="el-form-item__error">{{$t('public.isNotNull')}}</p>
+				<p v-if="selectUserIsNull === true" class="el-form-item__error">{{$t('public.isNotNull')}}</p>
 			</el-form-item>
-			<!--<el-form-item class="star" :label="$t('functionMenuMaintenance.modelLevel') + '：'" prop="menuLevel">-->
-			<!--<el-input v-model="addEdit.menuLevel" class="width200" readonly/>-->
-			<!--</el-form-item>-->
+			<!--启用禁用状态-->
 			<el-form-item class="star" :label="$t('functionMenuMaintenance.statusAlert') + '：'" prop="enable">
 				<el-radio-group v-model="addEdit.enable">
 					<el-radio :label="1">{{$t('public.enable')}}</el-radio>
 					<el-radio :label="0">{{$t('public.disable')}}</el-radio>
 				</el-radio-group>
 			</el-form-item>
+			<!--保存按钮-->
 			<el-form-item>
+				<!--添加时保存-->
 				<el-button v-if="ifAdd == true" type="primary" class="queryBtn" @click="addData('roleName')">
 					{{$t('public.save')}}
 				</el-button>
+				<!--编辑时保存-->
 				<el-button v-if="ifAdd == false" type="primary" class="queryBtn" @click="editData('roleName')">
 					{{$t('public.save')}}
 				</el-button>
 			</el-form-item>
 		</el-form>
 		<!--选择用户-->
-		<el-dialog class="functionMenuDetail-dialog-selectUser" :title="$t('functionMenuMaintenance.selectUser')"
-							 :visible.sync="dialogVisibleAlert" append-to-body>
-			<el-tree :data="selectUser" :props="defaultPropsUser" show-checkbox node-key="nodeId"
-							 :default-checked-keys="checkedKeysArr" ref="tree"/>
-			<span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="getCheckedNodes" class="alertBtn">{{$t('public.confirm')}}</el-button>
-          <el-button @click="dialogVisibleAlert = false" class="alertBtn">{{$t('public.cancel')}}</el-button>
-        </span>
+		<el-dialog
+			class="functionMenuDetail-dialog-selectUser"
+			:title="$t('functionMenuMaintenance.selectUser')"
+			:visible.sync="dialogVisibleAlert"
+			append-to-body>
+			<el-checkbox-group v-model="checkListRole">
+				<div class="marBottom10" v-for="(item,index) in selectUser" :key="index">
+					<el-checkbox :label="item.id">{{item.roleName}}</el-checkbox>
+					<br>
+				</div>
+			</el-checkbox-group>
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="getCheckedNodes" class="alertBtn">{{$t('public.confirm')}}</el-button>
+				<el-button @click="dialogVisibleAlert = false" class="alertBtn">{{$t('public.cancel')}}</el-button>
+			</div>
 		</el-dialog>
 	</Box>
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {isNotNull, isMenuHref} from "../../../../assets/js/validator";
 	import {queryOrgWithRole, returnObjectById} from "../../../../assets/js/recursive";
 
@@ -145,15 +172,16 @@
 					enable: 1,
 					orderMark: 1,
 				},
+				menuIconShow: 0, // 菜单图标单选按钮组
 				isShowEditPopover: false,
 				ifAdd: true, // 是否新增
 				selectUserIsNull: false, // 选中用户是否为空
 				dialogVisibleAlert: false, // 选择用户弹出层
-				checked: true, // 系统超级管理员
 				treeData: [], // 父级树型下拉框
 				languageList: [], // 系统支持的语言列表
 				listData: [], // 授权的角色列表
 				selectUser: [], // 选中的角色
+				checkListRole: [], // 选择角色弹出层 选中的角色列表
 				checkedKeysArr: [], // 选择用户树形控件默认选中的节点组
 				defaultProps: {
 					label: 'menuName',
@@ -188,6 +216,10 @@
 			}
 		},
 		methods: {
+			// 查看系统字体图标库
+			showIconfont() {
+				window.open('../../../../../static/font/demo_index.html', false);
+			},
 			// 编辑时禁用显示属性下拉框
 			disablePopover() {
 				var _t = this;
@@ -216,74 +248,66 @@
 			// 选择角色按钮
 			selectRoleBtn() {
 				var _t = this;
-				_t.getOrgRoleList();
+				// 获取角色列表
+				_t.getRoleList();
 				_t.dialogVisibleAlert = true;
-				// 编辑时 过滤数据
-				if (_t.ifAdd == false) {
-					var checkArr = new Array();
-					_t.result().forEach(function (item) {
-						checkArr.push(item.nodeId);
-					});
-					_t.checkedKeysArr = checkArr;
-				}
 			},
 			// 删除标签
 			handleClose(tag) {
 				var _t = this;
 				var listData = _t.listData === null ? [] : _t.listData;
+				// 删除 展示列表中的 选中的标签
 				listData.forEach(function (item, index) {
-					var tags = item.tags;
-					if (tags.length > 1) { // 该区域删除之后还有标签
-						tags.forEach(function (val, i) {
-							if (tag.nodeId == tags[i].nodeId) {
-								tags.splice(i, 1);
-								_t.result();
-								return false;
-							}
-						});
-					} else { // 该区域删除之后没有标签了 删除该区域
-						tags.forEach(function (val, i) {
-							if (tag.nodeId == tags[i].nodeId) {
-								tags.splice(i, 1);
-								listData.splice(index, 1);
-								_t.result();
-								return false;
-							}
-						});
+					if (tag.id === item.id) {
+						listData.splice(index, 1);
 					}
 				});
 				// 删除标签之后 角色为空 显示提示
-				if (_t.listData.length == 0) {
+				if (_t.listData.length === 0) {
 					_t.selectUserIsNull = true;
 				}
 			},
 			// 剩余人员
 			result() {
-				var _t = this;
-				var listData = _t.listData === null ? [] : _t.listData;
-				var nodeArr = new Array();
-				listData.forEach(function (item) {
-					if (item.tags.length !== 0) {
-						item.tags.forEach(function (val) {
-							nodeArr.push(val);
-						});
-					}
-				});
-				return nodeArr;
+				// var _t = this;
+				// var listData = _t.listData === null ? [] : _t.listData;
+				// var nodeArr = new Array();
+				// listData.forEach(function (item) {
+				// 	if (item.tags.length !== 0) {
+				// 		item.tags.forEach(function (val) {
+				// 			nodeArr.push(val);
+				// 		});
+				// 	}
+				// });
+				// return nodeArr;
 			},
-			// 获取节点显示数据
+			// 获取选中的角色列表
 			getCheckedNodes() {
 				var _t = this;
+				// 先清空 选中
+				_t.listData = [];
+				// 隐藏选择角色弹出层
 				_t.dialogVisibleAlert = false;
-				_t.listData = queryOrgWithRole(_t.selectUser, _t.$refs.tree.getCheckedNodes(), 1);
-				if (_t.listData.length == 0) {
+				// 将节点id数组对应的集合找到
+				var listData = new Array();
+				if (_t.checkListRole.length !== 0) {
+					_t.checkListRole.forEach((item) => {
+						_t.selectUser.forEach((val) => {
+							if (item === val.id) {
+								listData.push(val);
+							}
+						});
+					});
+					_t.listData = listData;
+				}
+				// 校验选中的角色列表是否为空
+				if (_t.listData.length === 0) {
 					_t.selectUserIsNull = true;
 				} else {
 					_t.selectUserIsNull = false;
 				}
-				_t.$refs.tree.setCheckedKeys([]);
 			},
-			// 获取左侧功能菜单列表
+			// 获取 父级菜单 下拉列表
 			getMenuData() {
 				var _t = this;
 				_t.$api.get('system/menu/', {
@@ -297,14 +321,14 @@
 						case 200: // 查询成功
 							_t.treeData = res.data.rootMenu === null ? [] : res.data.rootMenu;
 							// 判断是新增还是编辑
-							if (_t.ifAdd == true) {
+							if (_t.ifAdd === true) {
 								// 新增
 								_t.getLanguage();
 							} else {
 								// 编辑
 								_t.addEdit.id = _t.$route.params.functionMenuId ? _t.$route.params.functionMenuId : localStorage.getItem('functionMenuId');
 								_t.getEditData(_t.addEdit.id);
-								_t.getOrgRoleList();
+								_t.getRoleList();
 							}
 							break;
 						case 1003: // 无操作权限
@@ -319,21 +343,17 @@
 					}
 				});
 			},
-			// 获取组织角色列表
-			getOrgRoleList() {
+			// 获取角色列表
+			getRoleList() {
 				var _t = this;
-				_t.$api.get('system/organization/getOrgRole', {
-					jsonString: JSON.stringify({
-						systemMenu: {}
-					})
-				}, function (res) {
+				_t.$api.get('system/role/all', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var selectUser = new Array();
-							selectUser.push(JSON.parse(res.data));
-							_t.selectUser = selectUser[0].children;
-							if (_t.ifAdd == false) {
-								_t.getEditRoleData(_t.addEdit.id);
+							if (res.data !== null) {
+								_t.selectUser = res.data.list === null ? [] : res.data.list;
+								if (_t.ifAdd === false) {
+									_t.getEditRoleData(_t.addEdit.id);
+								}
 							}
 							break;
 						case 1003: // 无操作权限
@@ -431,6 +451,16 @@
 								var menuNameMap = returnObjectById(_t.treeData, _t.addEdit.parentId);
 								_t.addEdit.parentName = menuNameMap.menuName;
 							}
+							// 判断 图标和图片单选框的 切换
+							if (_t.addEdit.menuClass !== '' && _t.addEdit.menuClass !== null) {
+								_t.menuIconShow = 0;
+							} else {
+								if (_t.addEdit.menuIcon !== '') {
+									_t.menuIconShow = 1;
+								} else {
+									_t.menuIconShow = 0;
+								}
+							}
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -458,20 +488,22 @@
 						function (res) {
 							switch (res.status) {
 								case 200:
-									var nodeIdArr = new Array();
-									var resData = res.data === null ? [] : res.data;
-									resData.forEach(function (item) {
-										if (item !== null) {
-											var obj = new Object();
-											obj.children = [];
-											obj.level = 1; // 类型 1代表角色类型 2代表组织类型
-											obj.nodeId = item.id;
-											obj.nodeName = item.roleName;
-											obj.parentNodeId = item.organizationId == null ? '0' : item.organizationId;
-											nodeIdArr.push(obj);
+									_t.listData = res.data === null ? [] : res.data;
+									// 页面加载完毕 选中已经勾选的 节点
+									_t.$nextTick(function () {
+										if (_t.listData.length !== 0) {
+											// 先清空
+											_t.checkListRole = [];
+											var checkListRole = new Array();
+											_t.listData.forEach((item) => {
+												checkListRole.push(item.id);
+											});
+											// 后赋值
+											_t.checkListRole = checkListRole;
+										} else {
+											_t.checkListRole = [];
 										}
 									});
-									_t.listData = queryOrgWithRole(_t.selectUser, nodeIdArr, 1);
 									break;
 								case 1003: // 无操作权限
 								case 1004: // 登录过期
@@ -480,9 +512,10 @@
 									_t.exclude(_t, res.message);
 									break;
 								default:
+									_t.listData = [];
 									break;
 							}
-					});
+						});
 				}
 			},
 			// 返回上一级
@@ -525,12 +558,11 @@
 					menuIcon = null;
 				}
 				_t.$refs[formName].validate((valid) => {
-					if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+					if (valid && _t.selectUserIsNull === false && isNullNum === _t.languageList.length) {
 						// 角色集合
 						var selectRoleList = new Array();
-						var result = _t.result() === null ? [] : _t.result();
-						result.forEach(function (item) {
-							selectRoleList.push(item.nodeId);
+						_t.listData.forEach(function (item) {
+							selectRoleList.push(item.id);
 						});
 						// 跳转方式
 						var menuTarget = '';
@@ -560,7 +592,7 @@
 										name: 'functionMenuMaintenance'
 									});
 									// 新增语言之后刷新左侧导航的数据
-									_t.$bus.emit('getMenu', true);
+									_t.$bus.emit('getMenuData', true);
 									break;
 								case 1003: // 无操作权限
 								case 1004: // 登录过期
@@ -616,12 +648,11 @@
 					menuIcon = null;
 				}
 				_t.$refs[formName].validate((valid) => {
-					if (valid && _t.selectUserIsNull == false && isNullNum == _t.languageList.length) {
+					if (valid && _t.selectUserIsNull === false && isNullNum === _t.languageList.length) {
 						var selectUserList = new Array();
 						// 角色集合
-						var result = _t.result() === null ? [] : _t.result();
-						result.forEach(function (item) {
-							selectUserList.push(item.nodeId);
+						_t.listData.forEach(function (item) {
+							selectUserList.push(item.id);
 						});
 						// 跳转方式
 						var menuTarget = '';
@@ -652,7 +683,7 @@
 										name: 'functionMenuMaintenance'
 									});
 									// 编辑成功后刷新左侧导航的数据
-									_t.$bus.emit('getMenu', true);
+									_t.$bus.emit('getMenuData', true);
 									break;
 								case 1003: // 无操作权限
 								case 1004: // 登录过期
@@ -681,13 +712,13 @@
 			_t.ifAdd = _t.$route.params.functionIsAdd ? _t.$route.params.functionIsAdd : localStorage.getItem('functionIsAdd');
 			_t.addEdit.parentId = _t.$route.params.functionParentId ? _t.$route.params.functionParentId : localStorage.getItem('functionParentId');
 			_t.addEdit.menuLevel = _t.$route.params.functionMenuLevel ? _t.$route.params.functionMenuLevel : localStorage.getItem('functionMenuLevel');
-			// 获取父级菜单下拉列表
-			_t.getMenuData();
-			if (_t.ifAdd == true) {
+			if (_t.ifAdd === true || _t.ifAdd === 'true' || _t.ifAdd === null) {
 				_t.ifAdd = true;
 			} else {
 				_t.ifAdd = false;
 			}
+			// 获取父级菜单下拉列表
+			_t.getMenuData();
 		},
 		beforeDestroy() {
 			localStorage.removeItem('functionIsAdd');

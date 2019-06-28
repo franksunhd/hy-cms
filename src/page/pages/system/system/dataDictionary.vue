@@ -29,10 +29,10 @@
 				<!--表单-->
 				<el-form :model="formItem" inline>
 					<el-form-item :label="$t('dataDictionary.businessCode') + '：'">
-						<el-input class="width200" v-model="formItem.businessCode" clearable/>
+						<el-input class="width200" v-model="formItem.businessCode" @keyup.enter.native="getData()" clearable/>
 					</el-form-item>
 					<el-form-item :label="$t('dataDictionary.dictionaryName') + '：'">
-						<el-input class="width200" v-model="formItem.dictionaryName" clearable/>
+						<el-input class="width200" v-model="formItem.dictionaryName" @keyup.enter.native="getData()" clearable/>
 					</el-form-item>
 					<el-form-item :label="$t('dataDictionary.status') + '：'">
 						<el-select v-model="formItem.status" class="width200" clearable>
@@ -74,9 +74,9 @@
 					<el-table-column type="selection" fixed header-align="left" align="left"/>
 					<el-table-column width="60" :label="$t('public.index')" header-align="left" align="left">
 						<template slot-scope="scope">
-								<span>
-                  {{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
-                </span>
+							<span>
+                  				{{scope.$index+(options.currentPage - 1) * options.pageSize + 1}}
+               				</span>
 						</template>
 					</el-table-column>
 					<el-table-column min-width="100px" prop="dictionaryType" :label="$t('dataDictionary.dictionaryType')"
@@ -210,7 +210,7 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {isNotNull} from "../../../../assets/js/validator";
 	import {orgBreadcrumb} from "../../../../assets/js/recursive";
 
@@ -632,7 +632,7 @@
 					if (valid && isNullNum === _t.systemBasedataLanguageList.length) {
 						_t.$api.post('system/basedata/', {
 							systemBasedata: {
-								parentId: _t.addEdit.parentId == null ? null : _t.addEdit.parentId,
+								parentId: _t.addEdit.parentId == null ? null : (_t.addEdit.parentId == '' ? null : _t.addEdit.parentId),
 								dictionaryCode: _t.addEdit.dictionaryCode == null ? null : _t.addEdit.dictionaryCode.trim(),
 								dictionaryType: _t.addEdit.dictionaryType == null ? null : _t.addEdit.dictionaryType.trim(),
 								orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark.trim(),
@@ -641,9 +641,11 @@
 								systemBasedataLanguageList: _t.systemBasedataLanguageList
 							}
 						}, function (res) {
-							_t.dialogVisible = false;
 							switch (res.status) {
 								case 200:
+									//关闭编辑窗
+									_t.dialogVisible = false;
+									//重新加载数据
 									_t.getMenuData(false);
 									_t.getData();
 									_t.resetFormData();
@@ -653,6 +655,9 @@
 								case 1005: // token过期
 								case 1006: // token不通过
 									_t.exclude(_t, res.message);
+									break;
+								case 2005: //修改失败
+									_t.$message.error(res.message);
 									break;
 								default:
 									break;
@@ -797,18 +802,20 @@
 						_t.$api.put('system/basedata/', {
 							systemBasedata: {
 								id: _t.addEdit.id,
-								parentId: _t.addEdit.parentId,
-								dictionaryCode: _t.addEdit.dictionaryCode,
-								dictionaryType: _t.addEdit.dictionaryType,
-								orderMark: _t.addEdit.orderMark,
+								parentId: _t.addEdit.parentId == null ? null : (_t.addEdit.parentId == '' ? null : _t.addEdit.parentId),
+								dictionaryCode: _t.addEdit.dictionaryCode == null ? null : _t.addEdit.dictionaryCode.trim(),
+								dictionaryType: _t.addEdit.dictionaryType == null ? null : _t.addEdit.dictionaryType.trim(),
+								orderMark: _t.addEdit.orderMark == null ? null : _t.addEdit.orderMark,
 								level: _t.addEdit.level,
 								enable: _t.addEdit.enable == 1 ? true : false,
 								systemBasedataLanguageList: _t.systemBasedataLanguageList
 							}
 						}, function (res) {
-							_t.dialogVisible = false;
 							switch (res.status) {
 								case 200:
+									//关闭编辑窗
+									_t.dialogVisible = false;
+									//重新加载数据
 									_t.getMenuData(false);
 									_t.getData();
 									_t.resetFormData();
@@ -818,6 +825,9 @@
 								case 1005: // token过期
 								case 1006: // token不通过
 									_t.exclude(_t, res.message);
+									break;
+								case 2005: //修改失败
+									_t.$message.error(res.message);
 									break;
 								case 2006:
 									_t.$alert(res.message, _t.$t('public.resultTip'), {

@@ -6,8 +6,8 @@ html, body, .Index-box {
 
 /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
 *::-webkit-scrollbar {
-	width: 5px;
-	height: 5px;
+	width: 10px;
+	height: 10px;
 }
 
 /*定义滚动条的轨道，内阴影及圆角*/
@@ -17,26 +17,8 @@ html, body, .Index-box {
 
 /*定义滑块，内阴影及圆角*/
 *::-webkit-scrollbar-thumb {
-	height: 20px;
+	height: 10px;
 	border-radius: 5px;
-}
-
-
-/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
-.el-table__body-wrapper::-webkit-scrollbar {
-	width: 15px;
-	height: 15px;
-}
-
-/*定义滚动条的轨道，内阴影及圆角*/
-.el-table__body-wrapper::-webkit-scrollbar-track {
-	border-radius: 0;
-}
-
-/*定义滑块，内阴影及圆角*/
-.el-table__body-wrapper::-webkit-scrollbar-thumb {
-	height: 20px;
-	border-radius: 0;
 }
 
 /*头部导航*/
@@ -133,6 +115,14 @@ html, body, .Index-box {
 	padding: 20px;
 }
 
+.paddingTop10 {
+	padding-top: 10px;
+}
+
+.paddingBottom10 {
+	padding-bottom: 10px;
+}
+
 .width50 {
 	width: 50px;
 }
@@ -205,12 +195,6 @@ html, body, .Index-box {
 
 .fontWeightBold {
 	font-weight: bold;
-}
-
-/*messageBox弹出层 确认和取消按钮调换位置*/
-.btn-custom-cancel {
-	float: right;
-	margin-left: 10px;
 }
 
 /*表单*/
@@ -372,8 +356,16 @@ html, body, .Index-box {
 	padding-right: 10px;
 }
 
+.paddingRight-20 {
+	padding-right: 20px;
+}
+
 .marRight10 {
 	margin-right: 10px;
+}
+
+.marBottom0 {
+	margin-bottom: 0 !important;
 }
 
 .marginBottom20 {
@@ -778,8 +770,45 @@ input::-webkit-input-placeholder {
 	border-radius: 10px 0 0 0;
 }
 
-
 /*选中页签圆角*/
 #tabs-Box-tabs .el-tabs__header.is-bottom .el-tabs__item.is-active {
 	border-radius: 0 0 10px 10px;
+}
+
+/*数据中心*/
+#dataCenterMenu {
+	overflow: hidden;
+	width: 60px;
+	position: absolute;
+	border-radius: 6px;
+}
+
+.dataCenterMenu__item {
+	display: block;
+	font-size: 12px;
+	line-height: 25px;
+	text-align: center;
+}
+
+.dataCenterMenu__item:last-child {
+	border-bottom: none;
+}
+.inputGroup{
+	display: inline-block;
+	text-align: center;
+	width: 20px;
+}
+
+/*分组 select*/
+.el-select-group__wrap > li.el-select-group__title {
+	font-size: 12px;
+	padding-left: 10px;
+}
+
+.el-select-group__wrap ul.el-select-group > li.el-select-dropdown__item {
+	padding-left: 30px;
+}
+
+.el-table__fixed-right::before, .el-table__fixed::before {
+	height: 0;
 }

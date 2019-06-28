@@ -10,12 +10,34 @@
 		<div class="borderBottomFormItem">
 			<!--表单-->
 			<el-form :model="formItem" inline>
+				<!-- searchStr -->
+				<el-form-item
+					:label="$t('monitorStatusSearch.formIP') + ' / ' + $t('monitorStatusSearch.formType') + ' / '
+						+ $t('monitorStatusSearch.formName') + ' / ' + $t('monitorStatusSearch.formStatusText') + '：'">
+					<el-input v-model="formItem.searchStr" class="width200" @keyup.enter.native="getData()" clearable/>
+				</el-form-item>
+				<!--
+				&lt;!&ndash; IP &ndash;&gt;
 				<el-form-item :label="$t('monitorStatusSearch.formIP') + '：'">
 					<el-input v-model="formItem.assetDevice.ip" class="width200" clearable/>
 				</el-form-item>
-				<el-form-item :label="$t('monitorStatusSearch.formStatusType') + '：'">
+				&lt;!&ndash; 类型 &ndash;&gt;
+				<el-form-item :label="$t('monitorStatusSearch.formType') + '：'">
+					<el-input v-model="formItem.part" class="width200" clearable/>
+				</el-form-item>
+				&lt;!&ndash; 名称 &ndash;&gt;
+				<el-form-item :label="$t('monitorStatusSearch.formName') + '：'">
+					<el-input v-model="formItem.path" class="width200" clearable/>
+				</el-form-item>
+				&lt;!&ndash; 最新状态 &ndash;&gt;
+				<el-form-item :label="$t('monitorStatusSearch.formStatusText') + '：'">
+					<el-input v-model="formItem.statusText" class="width200" clearable/>
+				</el-form-item>
+				-->
+				<!-- 状态 -->
+				<el-form-item :label="$t('monitorStatusSearch.formStatus') + '：'">
 					<el-select
-						v-model="formItem.status" class="width200" clearable>
+						v-model="formItem.status" class="width200" @change="getData" clearable>
 						<el-option
 							v-for="(item,index) in formBaseData.AlarmSeverityList"
 							:key="index"
@@ -23,8 +45,9 @@
 							:value="item.type"/>
 					</el-select>
 				</el-form-item>
+				<!-- 取值间隔 -->
 				<el-form-item :label="$t('monitorStatusSearch.formMonitorRate') + '：'">
-					<el-select v-model="formItem.deviceMonitorAttr.monitorInterval" class="width200" clearable>
+					<el-select v-model="formItem.deviceMonitorAttr.monitorInterval" class="width200" @change="getData" clearable>
 						<el-option
 							v-for="(item,index) in formBaseData.MonitorRateList"
 							:key="index"
@@ -32,7 +55,6 @@
 							:value="item.type"/>
 					</el-select>
 				</el-form-item>
-				<el-form-item label=" "></el-form-item>
 				<el-form-item>
 					<el-button class="queryBtn" type="primary" @click="getData">{{$t('public.query')}}</el-button>
 					<el-button class="queryBtn" type="reset" @click="resetData">{{$t('public.reset')}}</el-button>
@@ -59,6 +81,7 @@
 				stripe
 				@cell-click="clickCellOfTable"
 				@selection-change="selectTableLine">
+				<!-- 序号 -->
 				<el-table-column width="60px" :label="$t('public.index')" header-align="center" align="center">
 					<template slot-scope="scope">
 						<span>
@@ -66,43 +89,52 @@
 						</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="70px" :label="$t('monitorStatusSearch.columnStatus')" header-align="center"
-												 align="center">
+				<!-- 状态 -->
+				<el-table-column
+					width="70px" header-align="center" align="center"
+					:label="$t('monitorStatusSearch.columnStatus')">
 					<template slot-scope="scope">
-						<el-tooltip v-if="scope.row.status == 99" effect="dark"
-												:content="dictionaryMap.AlarmSeverity[scope.row.status]" placement="top-start">
+						<el-tooltip
+							v-if="scope.row.status == 99" effect="dark" placement="top-start"
+							:content="dictionaryMap.AlarmSeverity[scope.row.status]">
 							<span class="iconfont iconfontError">&#xe64a;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 66" effect="dark"
-												:content="dictionaryMap.AlarmSeverity[scope.row.status]" placement="top-start">
+						<el-tooltip
+							v-if="scope.row.status == 66" effect="dark" placement="top-start"
+							:content="dictionaryMap.AlarmSeverity[scope.row.status]">
 							<span class="iconfont iconfontWarn">&#xe649;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 22" effect="dark"
-												:content="dictionaryMap.AlarmSeverity[scope.row.status]" placement="top-start">
+						<el-tooltip
+							v-if="scope.row.status == 22" effect="dark" placement="top-start"
+							:content="dictionaryMap.AlarmSeverity[scope.row.status]">
 							<span class="iconfont iconfontDisable">&#xe64f;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 11" effect="dark"
-												:content="dictionaryMap.AlarmSeverity[scope.row.status]" placement="top-start">
+						<el-tooltip
+							v-if="scope.row.status == 11" effect="dark" placement="top-start"
+							:content="dictionaryMap.AlarmSeverity[scope.row.status]">
 							<span class="iconfont iconfontDisable">&#xe64e;</span>
 						</el-tooltip>
-						<el-tooltip v-if="scope.row.status == 33" effect="dark"
-												:content="dictionaryMap.AlarmSeverity[scope.row.status]" placement="top-start">
+						<el-tooltip
+							v-if="scope.row.status == 33" effect="dark" placement="top-start"
+							:content="dictionaryMap.AlarmSeverity[scope.row.status]">
 							<span class="iconfont iconfontSuccess">&#xe648;</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
+				<!-- IP -->
 				<el-table-column width="130px" :label="$t('monitorStatusSearch.columnIp')" header-align="center" align="center">
 					<template slot-scope="scope">
 						<span>{{scope.row.assetDevice.ip}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="120px" :label="$t('monitorStatusSearch.columnType')" header-align="center"
-												 align="center">
+				<!-- 类型 -->
+				<el-table-column width="120px" :label="$t('monitorStatusSearch.columnType')" header-align="center" align="center">
 					<template slot-scope="scope">
 						<span>{{scope.row.part}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="300px" :label="$t('monitorStatusSearch.columnName')" header-align="left" align="left">
+				<!-- 名称 -->
+				<el-table-column width="350px" :label="$t('monitorStatusSearch.columnName')" header-align="left" align="left">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" placement="left-start">
 							<div slot="content" style="width: 150px">
@@ -112,8 +144,8 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column prop="roomName" :label="$t('monitorStatusSearch.columnStatusText')" header-align="left"
-												 align="left">
+				<!-- 最新状态字段 -->
+				<el-table-column header-align="left" align="left" :label="$t('monitorStatusSearch.columnStatusText')">
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" placement="left-start">
 							<div slot="content" style="width: 150px">
@@ -123,14 +155,18 @@
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column width="120px" prop="framePosition" :label="$t('monitorStatusSearch.columnMonitorRate')"
-												 header-align="center" align="center">
+				<!-- 取值间隔 -->
+				<el-table-column
+					width="120px" header-align="center" align="center"
+					:label="$t('monitorStatusSearch.columnMonitorRate')">
 					<template slot-scope="scope">
 						<span>{{dictionaryMap.MonitorRate[scope.row.deviceMonitorAttrList[0].monitorInterval]}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="140px" prop="ip" :label="$t('monitorStatusSearch.columnLastModifyTime')"
-												 header-align="center" align="center">
+				<!-- 更新时间 -->
+				<el-table-column
+					width="140px" header-align="center" align="center"
+					:label="$t('monitorStatusSearch.columnLastModifyTime')">
 					<template slot-scope="scope">
 						<span>{{scope.row.lastModifyTime | dateFilter}}</span>
 					</template>
@@ -174,7 +210,7 @@
 </template>
 
 <script>
-	import Box from '../../../components/Box';
+	import Box from '../../../components/common/Box';
 	import {dateFilterDay, dateFilter, dateFilterDayCN} from "../../../assets/js/filters";
 
 	export default {
@@ -194,6 +230,7 @@
 					deviceMonitorAttr: {
 						monitorInterval: null
 					},
+					searchStr:null,
 					operation: null
 				},
 				statusMenu: true,
@@ -241,6 +278,7 @@
 				_t.formItem.status = null;
 				_t.formItem.assetDevice = {ip: null};
 				_t.formItem.deviceMonitorAttr = {monitorInterval: null};
+				_t.formItem.searchStr = null;
 				_t.formItem.nodeType = 1;
 			},
 			// 表格选中的值
@@ -345,15 +383,16 @@
 			getData() {
 				var _t = this;
 				_t.$store.commit('setLoading', true);
-				_t.$api.get('monitor/deviceMonitor/uniteListByPage', {
+				_t.$api.get('monitor/deviceMonitor/statusSearchPagelist', {
 					jsonString: JSON.stringify({
 						deviceMonitorAssociated: {
-							part: _t.formItem.part == null ? null : (_t.formItem.part.trim() == '' ? null : ('%' + _t.formItem.part.trim() + '%')),
-							path: _t.formItem.path == null ? null : (_t.formItem.path.trim() == '' ? null : ('%' + _t.formItem.path.trim() + '%')),
-							statusText: _t.formItem.statusText == null ? null : (_t.formItem.statusText.trim() == '' ? null : ('%' + _t.formItem.statusText.trim() + '%')),
+							part: _t.formItem.part == null ? null : (_t.formItem.part.trim() == '' ? null : _t.formItem.part.trim()),
+							path: _t.formItem.path == null ? null : (_t.formItem.path.trim() == '' ? null : _t.formItem.path.trim()),
+							statusText: _t.formItem.statusText == null ? null : (_t.formItem.statusText.trim() == '' ? null : _t.formItem.statusText.trim()),
 							status: _t.formItem.status == null ? null : (_t.formItem.status.trim() == '' ? null : _t.formItem.status.trim()),
-							assetDevice: _t.formItem.assetDevice.ip == null ? null : (_t.formItem.assetDevice.ip.trim() == '' ? null : {ip: ('%' + _t.formItem.assetDevice.ip.trim() + '%')}),
+							assetDevice: _t.formItem.assetDevice.ip == null ? null : (_t.formItem.assetDevice.ip.trim() == '' ? null : {ip: _t.formItem.assetDevice.ip.trim()}),
 							deviceMonitorAttr: _t.formItem.deviceMonitorAttr.monitorInterval == null ? null : (_t.formItem.deviceMonitorAttr.monitorInterval.trim() == '' ? null : {monitorInterval: _t.formItem.deviceMonitorAttr.monitorInterval.trim()}),
+							searchStr: _t.formItem.searchStr == null ? null : (_t.formItem.searchStr.trim() == '' ? null : _t.formItem.searchStr.trim()),
 							nodeType: 1
 						},
 						page: {

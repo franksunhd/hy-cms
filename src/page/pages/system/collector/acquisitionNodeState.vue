@@ -22,17 +22,17 @@
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeState.groupName') + '：'">
           <el-select class="width200">
-            <el-option></el-option>
+            <el-option />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeState.nodeType') + '：'">
           <el-select class="width200">
-            <el-option></el-option>
+            <el-option />
           </el-select>
         </el-form-item>
         <el-form-item :label="$t('acquisitionNodeState.status') + '：'">
           <el-select class="width200">
-            <el-option></el-option>
+            <el-option />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -68,7 +68,7 @@
           {{$t('acquisitionNodeState.offLine')}}
         </el-button>
         <el-select class="fr width200">
-          <el-option></el-option>
+          <el-option />
         </el-select>
       </div>
       <!--表格-->
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
+  import Box from '../../../../components/common/Box';
   export default {
     name: "acquisitionNodeState",
     components:{Box},
@@ -189,7 +189,8 @@
 				_t.$confirm(_t.$t('acquisitionNodeState.dialogRunningTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
+          cancelButtonClass: 'alertBtn',
+					confirmButtonClass: 'alertBtn',
           type: 'warning',
         }).then(()=>{
 
@@ -203,7 +204,8 @@
 				_t.$confirm(_t.$t('acquisitionNodeState.dialogStoppedTip'),_t.$t('public.confirmTip'),{
           confirmButtonText: _t.$t('public.confirm'),
           cancelButtonText: _t.$t('public.close'),
-          cancelButtonClass: "btn-custom-cancel",
+					cancelButtonClass: 'alertBtn',
+					confirmButtonClass: 'alertBtn',
           type: 'warning',
         }).then(()=>{
 

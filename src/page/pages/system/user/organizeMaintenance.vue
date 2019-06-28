@@ -12,7 +12,7 @@
     <div class="borderRightColorGray organizationMenuBox">
       <p class="organizeMaintenance-title">
         <a href="javascript:;" @click="clickNode(treeMenuData.nodeId)">
-					{{treeMenuData.nodeName}}
+					{{$t('organizeMaintenance.organization')}}
 				</a>
       </p>
       <el-tree
@@ -30,7 +30,7 @@
         <!--表单-->
         <el-form inline :model="formItem">
           <el-form-item :label="$t('organizeMaintenance.organizationName') +'：'">
-            <el-input class="width200" v-model="formItem.organizationName" clearable/>
+            <el-input class="width200" v-model="formItem.organizationName" @keyup.enter.native="getData()" clearable/>
           </el-form-item>
           <el-form-item :label="$t('organizeMaintenance.createUpdateDate') +'：'">
             <el-date-picker
@@ -148,7 +148,7 @@
               v-model="addEdit.organization"
               style="width: 200px;"
               suffix-icon="el-icon-arrow-down"
-              :disabled="ifAdd == false" 
+              :disabled="ifAdd == false"
               readonly
               slot="reference"/>
           </el-popover>
@@ -176,7 +176,7 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
+  import Box from '../../../../components/common/Box';
   import {isNotNull} from "../../../../assets/js/validator";
   import {dateFilter} from "../../../../assets/js/filters";
 

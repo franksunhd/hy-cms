@@ -6,7 +6,7 @@
 			<el-row :gutter="20">
 				<el-col :span="6">
 					<div class="home-main-alert-box home-shadowBox displayFlex-self"
-						 style="cursor: pointer" @click="toAassetDeviceMaintenancePage">
+							 style="cursor: pointer" @click="toAassetDeviceMaintenancePage">
 						<span class="iconfontPrimaryBg">
 							<span class="iconfontPrimaryBox">
 								<span class="iconfont">&#xe6a0;</span>
@@ -23,7 +23,7 @@
 				</el-col>
 				<el-col :span="6">
 					<div class="home-main-alert-box home-shadowBox displayFlex-self"
-						 style="cursor: pointer" @click="toMonitoringAndControlPage">
+							 style="cursor: pointer" @click="toMonitoringAndControlPage">
 						<span class="iconfontErrorBg">
 						  <span class="iconfontErrorBox">
 							<span class="iconfont ">&#xe69f;</span>
@@ -40,7 +40,7 @@
 				</el-col>
 				<el-col :span="6">
 					<div class="home-main-alert-box home-shadowBox displayFlex-self"
-						 style="cursor: pointer" @click="toCurrentAlarmPage">
+							 style="cursor: pointer" @click="toCurrentAlarmPage">
 						<span class="iconfontWarnBg">
 						  <span class="iconfontWarnBox">
 							<span class="iconfont">&#xe6a1;</span>
@@ -57,7 +57,7 @@
 				</el-col>
 				<el-col :span="6">
 					<div class="home-main-alert-box home-shadowBox displayFlex-self"
-						 style="cursor: pointer" @click="toHistoryAlarmPage">
+							 style="cursor: pointer" @click="toHistoryAlarmPage">
 						<span class="iconfontSuccessBg">
 						  <span class="iconfontSuccessBox">
 							<span class="iconfont">&#xe6a2;</span>
@@ -82,10 +82,11 @@
 			<!--表格-->
 			<div class="marginTop20 marginBottom20 home-shadowBox whiteBg homeTable">
 				<div class="home-main-title paddingLeft-20 borderBottomColor">
-					{{$t('homePage.formThisAlarmList')}}
+					{{$t('homePage.formLatestAlertList')}}
 				</div>
 				<div class="padding20" style="padding-bottom: 10px;">
 					<el-table :data="tableData" ref="table" stripe border class="whiteBg" @cell-click="cellClickColumn">
+						<!--序号-->
 						<el-table-column width="80px" :label="$t('public.index')" header-align="center" align="center">
 							<template slot-scope="scope">
 						    	<span>
@@ -93,53 +94,73 @@
 								</span>
 							</template>
 						</el-table-column>
-						<el-table-column width="70px" :label="$t('homePage.columnStatus')" header-align="center" align="center">
+						<!--告警发生时间-->
+						<el-table-column :label="$t('homePage.columnOccurrenceTime')" header-align="left"
+														 width="150px"
+														 align="left">
 							<template slot-scope="scope">
-								<el-tooltip v-if="scope.row.status == 99" effect="dark"
-														:content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+								<el-tooltip effect="dark" placement="top-start">
+									<div slot="content">
+										<span v-if="scope.row.occurrenceTime === null">N/A</span>
+										<span v-else>{{scope.row.occurrenceTime | dateFilter}}</span>
+									</div>
+									<span v-if="scope.row.occurrenceTime === null">N/A</span>
+									<span v-else>{{scope.row.occurrenceTime | dateFilter}}</span>
+								</el-tooltip>
+							</template>
+						</el-table-column>
+						<el-table-column width="70px" :label="$t('homePage.columnAlarmLevel')" header-align="center" align="center">
+							<template slot-scope="scope">
+								<el-tooltip v-if="scope.row.alarmLevel == 99" effect="dark"
+														:content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
 									<span class="iconfont iconfontError">&#xe64a;</span>
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.status == 66" effect="dark"
-														:content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+								<el-tooltip v-if="scope.row.alarmLevel == 66" effect="dark"
+														:content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
 									<span class="iconfont iconfontWarn">&#xe649;</span>
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.status == 22" effect="dark"
-														:content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+								<el-tooltip v-if="scope.row.alarmLevel == 22" effect="dark"
+														:content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
 									<span class="iconfont iconfontDisable">&#xe64f;</span>
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.status == 11" effect="dark"
-														:content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+								<el-tooltip v-if="scope.row.alarmLevel == 11" effect="dark"
+														:content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
 									<span class="iconfont iconfontDisable">&#xe64e;</span>
 								</el-tooltip>
-								<el-tooltip v-if="scope.row.status == 33" effect="dark"
-														:content="tableDataBase.AlarmSeverity[scope.row.status]" placement="top-start">
+								<el-tooltip v-if="scope.row.alarmLevel == 33" effect="dark"
+														:content="tableDataBase.AlarmSeverity[scope.row.alarmLevel]" placement="top-start">
 									<span class="iconfont iconfontSuccess">&#xe648;</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="deviceName" :label="$t('homePage.columnName')" header-align="left" align="left">
+						<!--设备信息-->
+						<el-table-column prop="deviceName" :label="$t('homePage.columnName')"
+														 min-width="50px"
+														 header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark" placement="top-start">
 									<div slot="content">
-										<span>{{scope.row.deviceName === null ? 'N/A' :scope.row.deviceName}}</span>
+										<span>{{scope.row.deviceName === null ? 'N/A' : scope.row.deviceName}},({{scope.row.ip}})</span>
 									</div>
-									<span>{{scope.row.deviceName === null ? 'N/A' :scope.row.deviceName}}</span>
+									<span>{{scope.row.deviceName === null ? 'N/A' : scope.row.deviceName}},({{scope.row.ip}})</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="lastMonitorTime" :label="$t('homePage.columnLastAlarmTime')" header-align="left" align="left">
+						<!--告警内容-->
+						<el-table-column :label="$t('homePage.columnAlarmContent')"
+														 min-width="80px"
+														 header-align="left" align="left">
 							<template slot-scope="scope">
-								<el-tooltip effect="dark" placement="top-start">
-									<div slot="content">
-										<span v-if="scope.row.lastMonitorTime === null">N/A</span>
-										<span v-else>{{scope.row.lastMonitorTime | dateFilter}}</span>
+								<el-tooltip effect="dark" placement="left-start">
+									<div slot="content" style="width: 150px">
+										{{scope.row.currentStatus}}
 									</div>
-									<span v-if="scope.row.lastMonitorTime === null">N/A</span>
-									<span v-else>{{scope.row.lastMonitorTime | dateFilter}}</span>
+									<span>{{scope.row.currentStatus}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="roomName" :label="$t('homePage.columnRoom')" header-align="left" align="left">
+						<!--机房-->
+						<el-table-column width="150px" :label="$t('homePage.columnRoom')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark" :content="scope.row.roomName" placement="top-start">
 									<div slot="content">
@@ -149,23 +170,26 @@
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="frameName" :label="$t('homePage.columnFrame')" header-align="left" align="left">
+						<!--机柜-->
+						<el-table-column width="150px" :label="$t('homePage.columnRack')" header-align="left" align="left">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark" placement="top-start">
 									<div slot="content">
-										<span>{{scope.row.frameName === null ? 'N/A' : scope.row.frameName}}</span>
+										<span>{{scope.row.rackName === null ? 'N/A' : scope.row.rackName}}</span>
 									</div>
-									<span>{{scope.row.frameName === null ? 'N/A' : scope.row.frameName}}</span>
+									<span>{{scope.row.rackName === null ? 'N/A' : scope.row.rackName}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
-						<el-table-column prop="framePosition" :label="$t('homePage.columnPosition')" header-align="left" align="left">
+						<!--位置-->
+						<el-table-column width="70px" :label="$t('homePage.columnPosition')" header-align="left"
+														 align="left">
 							<template slot-scope="scope">
 								<el-tooltip effect="dark"
-									:content="scope.row.framePosition == null ? 'N/A' : (scope.row.framePosition)+'U'"
-									placement="top-start">
-									<span v-if="scope.row.framePosition== null">N/A</span>
-									<span>{{scope.row.framePosition}}</span>
+														:content="scope.row.rackPosition == null ? 'N/A' : (scope.row.rackPosition)+'U'"
+														placement="top-start">
+									<span v-if="scope.row.rackPosition== null">N/A</span>
+									<span>{{scope.row.rackPosition}}</span>
 								</el-tooltip>
 							</template>
 						</el-table-column>
@@ -187,18 +211,18 @@
 			@clearSetInterval="clearSetInterval"
 			:active-name="homeActive"
 			:page-device-name="pageDeviceName"
-			:page-device-id="pageDeviceId" />
+			:page-device-id="pageDeviceId"/>
 	</Box>
 </template>
 
 <script>
-	import Box from '../../components/Box';
-	import AdministrationTags from '../../components/AdministrationTabs';
+	import Box from '../../components/common/Box';
+	import AdministrationTags from '../../components/monitor/AdministrationTabs';
 	import {dateFilter} from "../../assets/js/filters";
 
 	export default {
 		name: "home",
-		components: {Box, dateFilter,AdministrationTags},
+		components: {Box, dateFilter, AdministrationTags},
 		data() {
 			return {
 				echart: true,
@@ -251,10 +275,10 @@
 					},
 					// 柱状图 距离顶部距离
 					grid: {
-						top: '100',
+						top: 100,
 					},
 					icon: ['circle'], // 设置图例为圆形
-					color: ['#f2583c', '#a5a099', '#5bd25d', '#e7950d', '#f50707', '#37d0c7'], // 柱形数据加图例颜色
+					color: ['#f96563','#27afcd','#359dfb','#8170f5','#4f5e6c','#60d162','#f4bd5b','#6e84bc','#e471e5'],
 					// 图例数据
 					legend: {
 						top: 30,
@@ -263,27 +287,29 @@
 					// 关于下载等功能的一些配置
 					toolbox: {
 						show: true,
-						x: 'right',
-						y: 'top',
+						top: 10,
+						right: 30,
 						feature: {
-							mark: {
-								show: true
-							},
-							dataView: {
-								show: true,
-								readOnly: false
-							},
+							// 视图类型
 							magicType: {
 								show: true,
-								type: ['line', 'bar', 'stack', 'tiled']
+								type: ['line', 'bar'],
+								title: {
+									line: this.$t('homePage.returnLine'),
+									bar: this.$t('homePage.returnBar')
+								}
 							},
+							// 还原
 							restore: {
-								show: true
+								show: true,
+								title: this.$t('homePage.restore'),
 							},
+							// 保存为图片
 							saveAsImage: {
-								show: true
+								show: true,
+								title: this.$t('homePage.download')
 							}
-						}
+						},
 					},
 					calculable: true,
 					// x轴配置
@@ -301,17 +327,17 @@
 				lastTime: new Date().getTime(), //记录上次定时器的执行时间
 				timer: null, //记录定时器
 				// 调用标签页
-				homeActive:'', // 点击表格 跳转值 告警事件
-				pageDeviceId:'',
+				homeActive: '', // 点击表格 跳转值 告警事件
+				pageDeviceId: '',
 				pageDeviceName: '',
 			}
 		},
 		methods: {
 			// 表格行点击
-			cellClickColumn(row){
+			cellClickColumn(row) {
 				var _t = this;
 				if (row.id !== null) {
-					_t.pageDeviceId = row.id;
+					_t.pageDeviceId = row.deviceId;
 					_t.pageDeviceName = row.deviceName;
 					_t.homeActive = 'two';
 					//销毁刷新定时器
@@ -322,10 +348,10 @@
 			// 绘制柱状图
 			drawLine() {
 				var _t = this;
-				var myChart = this.$echarts.init(document.getElementById("eCharts"));
+				var myChart = _t.$echarts.init(document.getElementById("eCharts"));
 				myChart.setOption(_t.option);
 				// 柱形图的点击事件
-				myChart.on('click',function(params){
+				myChart.on('click', function (params) {
 					if (typeof params.seriesType === undefined) {
 						return;
 					} else {
@@ -341,7 +367,7 @@
 							}
 						}
 						// 点击总数 设备状态 为未定义 设为null 查全部状态
-						if (dataObject.status === undefined){
+						if (dataObject.status === undefined) {
 							dataObject.status = null;
 						}
 						// 取出设备类型字段
@@ -352,13 +378,58 @@
 								dataObject.nodeName = alarmTypeMap[key];
 							}
 						}
-						_t.$router.push({name:'EquipmentMonitoring',params:{
-								homeEquipmentData:JSON.stringify(dataObject),
-								homeEquipmentStatus:true // 区分是否单独进入设备监测页面
+						_t.$router.push({
+							name: 'EquipmentMonitoring', params: {
+								homeEquipmentData: JSON.stringify(dataObject),
+								homeEquipmentStatus: true // 区分是否单独进入设备监测页面
 							}
 						});
-						localStorage.setItem('homeEquipmentData',JSON.stringify(dataObject));
-						localStorage.setItem('homeEquipmentStatus',true);
+						localStorage.setItem('homeEquipmentData', JSON.stringify(dataObject));
+						localStorage.setItem('homeEquipmentStatus', true);
+					}
+				});
+			},
+			// 绘制柱状图(new)
+			drawLineByType() {
+				var _t = this;
+				var myChart = _t.$echarts.init(document.getElementById("eCharts"));
+				myChart.setOption(_t.option);
+				// 柱形图的点击事件
+				myChart.on('click', function (params) {
+					if (typeof params.seriesType === undefined) {
+						return;
+					} else {
+						var alarmStatusMap = _t.tableDataBase.AlarmSeverity;
+						var alarmTypeMap = _t.tableDataBase.AssetType;
+						// 获取 根据序号 判断 类型 0暂停 1忽略 2正常 3警告 4紧急 5总数
+						var dataObject = new Object();
+						// 取出 设备状态字段
+						for (var key in alarmStatusMap) {
+							if (params.name === alarmStatusMap[key]) {
+								// 根据name名从字典中取出 设备状态 key
+								dataObject.status = key;
+							}
+						}
+						// 点击总数 设备状态 为未定义 设为null 查全部状态
+						if (dataObject.status === undefined) {
+							dataObject.status = null;
+						}
+						// 取出设备类型字段
+						for (var key in alarmTypeMap) {
+							if (params.seriesName === alarmTypeMap[key]) {
+								// 根据name名从字典中取出 设备状态 key
+								dataObject.nodeId = key;
+								dataObject.nodeName = alarmTypeMap[key];
+							}
+						}
+						_t.$router.push({
+							name: 'EquipmentMonitoring', params: {
+								homeEquipmentData: JSON.stringify(dataObject),
+								homeEquipmentStatus: true // 区分是否单独进入设备监测页面
+							}
+						});
+						localStorage.setItem('homeEquipmentData', JSON.stringify(dataObject));
+						localStorage.setItem('homeEquipmentStatus', true);
 					}
 				});
 			},
@@ -378,24 +449,21 @@
 			getData() {
 				var _t = this;
 				_t.$store.commit('setLoading', true);
-				_t.$api.get('/asset/assetDevice/pagelist', {
+				_t.$api.get('alarm/alarm/pagelist', {
 					jsonString: JSON.stringify({
-						assetDevice: {
-							monitorStatus: 1,
-						},
-						alarmDevice: true,
-						currentPage: _t.options.currentPage,
-						pageSize: _t.options.pageSize,
+						page: {
+							currentPage: _t.options.currentPage,
+							pageSize: _t.options.pageSize
+						}
 					})
 				}, function (res) {
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							// 获取表格对应的状态值
-							var tableData = res.data.list === null ? [] : res.data.list;
-							_t.tableData = tableData;
-							_t.options.currentPage = res.data.currentPage;
-							_t.options.total = res.data.count;
+							var resData = res.data.list === null ? [] : res.data.list;
+							_t.tableData = resData;
+							_t.options.currentPage = res.data.page.currentPage;
+							_t.options.total = res.data.page.totalResultSize;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -412,7 +480,7 @@
 				});
 			},
 			// 查询表格中状态对应的数据值
-			getTableDataValue() {
+			getDictionaryMap() {
 				var _t = this;
 				_t.$store.commit('setLoading', true);
 				_t.$api.post('system/basedata/map', {
@@ -422,7 +490,6 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							_t.getData();
 							_t.tableDataBase = res.data;
 							break;
 						case 1003: // 无操作权限
@@ -443,9 +510,9 @@
 				_t.$api.get('/alarm/alarm/newAlarm', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							if(null != res.data){
+							if (null != res.data) {
 								_t.equipmentData.newAlarmCount = res.data.newAlarmCount;
-							}else{
+							} else {
 								_t.equipmentData.newAlarmCount = 0;
 							}
 							break;
@@ -467,9 +534,9 @@
 				_t.$api.get('/alarm/alarm/resumeAlarm', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							if(null != res.data){
+							if (null != res.data) {
 								_t.equipmentData.recoverCount = res.data.recoverCount;
-							}else{
+							} else {
 								_t.equipmentData.recoverCount = 0;
 							}
 							break;
@@ -481,6 +548,71 @@
 							break;
 						default:
 							_t.equipmentData.recoverCount = 0;
+							break;
+					}
+				})
+			},
+			//监测概览新接口
+			getDeviceSortStatusByType(){
+				var _t=this;
+				_t.$api.get('asset/assetDevice/deviceSortStatusByType',{},function(res){
+					switch (res.status){
+						case 200:
+							if (res.data && res.data !== null) {
+								// 字典状态
+								var alarmSeverity = res.data.alarmSeverity;
+								// value
+								var deviceData = res.data.deviceData;
+								// name
+								var typeNameMap = res.data.typeNameMap;
+								// X轴显示数据
+								_t.option.xAxis[0].data = res.data.alarmSeverityList;
+								// 给图列赋值
+								_t.option.legend.data = res.data.typeList;
+								// 设置柱状图副标题为更新时间
+								var requestTime = dateFilter(res.requesttime);
+								// 设置副标题
+								_t.option.title.subtext = requestTime;
+								// 组装 y轴数据
+								var yAxios = new Array();
+								var labelOption = {
+									normal: {
+										show: true,
+										formatter: '{c}',
+										align: 'center',
+										verticalAlign: 'middle',
+										position: 'top',
+										/*rotate: 90,*/
+									}
+								};
+								for (var key in deviceData) {
+									var obj = new Object();
+									obj.type = 'bar';
+									obj.name = typeNameMap[key];
+									obj.data = deviceData[key];
+									obj.label = labelOption;
+									yAxios.push(obj);
+								}
+								_t.option.series = yAxios;
+								// 绘制柱状图 并注册点击事件
+								_t.drawLineByType();
+
+								// 获取 计算头部 设备数量
+								var deviceData = res.data.sourceData === null ? [] : res.data.sourceData;
+								var equipmentAllData = 0; // 设备总数
+								var equipmentAlarmData = 0; // 告警设备数
+								deviceData.forEach((item) => {
+									// 计算 统计设备总数 和 告警设备数
+									equipmentAllData += item.all;
+									equipmentAlarmData += item['66'] + item['99'];
+								});
+								// 设备总数
+								_t.equipmentData.equipmentAllData = equipmentAllData;
+								// 告警设备数 紧急和警告的综合
+								_t.equipmentData.equipmentAlarmData = equipmentAlarmData;
+							}
+							break;
+						default:
 							break;
 					}
 				})
@@ -511,6 +643,7 @@
 								obj.data = []; // y 轴数据初始化
 								alarmSeverityListArr.push(obj);
 								legend.push(alarmSeverity[key]); // 添加图例
+
 							}
 							// 柱形图 x轴 数据
 							var xDataArr = new Array();
@@ -539,7 +672,7 @@
 							_t.equipmentData.equipmentAllData = equipmentAllData;
 							// 告警设备数 紧急和警告的综合
 							_t.equipmentData.equipmentAlarmData = equipmentAlarmData;
-							// 绘制柱状图
+							// 绘制柱状图 并注册点击事件
 							_t.drawLine();
 							break;
 						case 1003: // 无操作权限
@@ -556,28 +689,28 @@
 				})
 			},
 			//跳转到设备资产页面
-			toAassetDeviceMaintenancePage(){
-				this.$router.push({ name:'assetDeviceMaintenance'});
+			toAassetDeviceMaintenancePage() {
+				this.$router.push({name: 'assetDeviceMaintenance'});
 			},
 			//跳转到监测汇总页面
-			toMonitoringAndControlPage(){
-				this.$router.push({ name:'monitoringAndControl'});
+			toMonitoringAndControlPage() {
+				this.$router.push({name: 'monitoringAndControl'});
 			},
 			//跳转到当前告警页面
-			toCurrentAlarmPage(){
-				this.$router.push({ name:'alarmCurrent'});
+			toCurrentAlarmPage() {
+				this.$router.push({name: 'alarmCurrent'});
 			},
 			//跳转到历史告警页面
-			toHistoryAlarmPage(){
-				this.$router.push({ name:'alarmHistory'});
+			toHistoryAlarmPage() {
+				this.$router.push({name: 'alarmHistory'});
 			},
 			// 接收组件中传回的设备id
-			changePageDeviceId(val){
+			changePageDeviceId(val) {
 				var _t = this;
 				_t.pageDeviceId = val;
 			},
 			// 启动父组件定时器
-			refreshSetInterval(val){
+			refreshSetInterval(val) {
 				var _t = this;
 				if (val) {
 					// 开启定时器
@@ -585,7 +718,7 @@
 				}
 			},
 			// 清除父组件定时器
-			clearSetInterval(val){
+			clearSetInterval(val) {
 				var _t = this;
 				if (val) {
 					//销毁刷新定时器
@@ -620,9 +753,12 @@
 						_t.getNewAlarmCount();
 						//今日告警恢复数
 						_t.getRecoverCount();
+
 						//监测概览接口
-						_t.getDeviceSortStatus();
-						//获取当前告警设备列表的数据
+						//_t.getDeviceSortStatus();
+						_t.getDeviceSortStatusByType();
+
+						//获取最新告警列表的数据
 						_t.getData();
 					}
 				}, rate * 1000);
@@ -630,23 +766,37 @@
 		},
 		created() {
 			var _t = this;
-			_t.getTableDataValue();
-			_t.getDeviceSortStatus();
+
+			//获取最新告警列表的数据
+			_t.getData();
+
+			//获取表格中用于翻译的字典
+			_t.getDictionaryMap();
+
+			//监测概览接口
+			//_t.getDeviceSortStatus();
+			_t.getDeviceSortStatusByType();
+
+			//今日新增告警数
 			_t.getNewAlarmCount();
+			//今日告警恢复数
 			_t.getRecoverCount();
+
+			_t.$bus.on('getMenu', (val) => {
+				if (val) {
+					_t.getDictionaryMap();
+				}
+			});
 		},
 		mounted() {
 			var _t = this;
-
 			// 给body设置自定义属性用于登录过期 提示只执行一次
 			document.body.setAttribute('data-return', false);
-
 			//定时刷新页面
 			_t.refreshPage();
 		},
 		beforeDestroy() {
 			var _t = this;
-
 			//销毁刷新定时器
 			clearInterval(_t.timer);
 			_t.timer = null;

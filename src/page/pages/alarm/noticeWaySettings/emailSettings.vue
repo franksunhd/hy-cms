@@ -16,7 +16,13 @@
 					<span>{{formData.host}}</span>
 				</el-form-item>
 				<el-form-item class="formWidthEmail fl" :label="$t('emailSettings.formUserAddress') + '：'">
-					<span>{{formData.user}}</span>
+					<span>{{formData.emailAddress}}</span>
+				</el-form-item>
+				<el-form-item :label="$t('emailSettings.formNickName') + '：'">
+					<span>{{formData.nickname}}</span>
+				</el-form-item>
+				<el-form-item class="formWidthEmail fl" :label="$t('emailSettings.formEmailUserName') + '：'">
+					<span>{{formData.userName}}</span>
 				</el-form-item>
 				<el-form-item :label="$t('emailSettings.formIsSSL') + '：'">
 					<el-checkbox :disabled="true" v-model="formData.sslEnable">
@@ -29,17 +35,14 @@
 				<el-form-item :label="$t('emailSettings.formSMTPPort') + '：'">
 					<span>{{formData.port}}</span>
 				</el-form-item>
-				<el-form-item :label="$t('emailSettings.formEmailUserName') + '：'">
-					<span>{{formData.userName}}</span>
-				</el-form-item>
 				<el-form-item :label="$t('emailSettings.formEmailSignature') + '：'">
-					<quill-editor v-model="formData.signature" class="emailSettings-formQuill" :options="editorOptions" ref="myQuillEditor"></quill-editor>
-<!--					<el-input class="textAreaBox" type="textarea" :autosize="{ minRows: 4, maxRows: 6 }" v-model="formData.signature"/>-->
+					<div id="form-html"></div>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" class="alertBtn" @click="editDataBtn">{{$t('emailSettings.formBtnModify')}}
 					</el-button>
-					<el-button class="height34" @click="dialogVisible_test = true">{{$t('emailSettings.formBtnTestSend')}}</el-button>
+					<el-button class="height34" @click="dialogVisible_test = true">{{$t('emailSettings.formBtnTestSend')}}
+					</el-button>
 					<el-button class="height34" @click="isShowTableClick">{{$t('emailSettings.formBtnUserSettings')}}</el-button>
 				</el-form-item>
 			</el-form>
@@ -97,13 +100,25 @@
 			:close-on-click-modal="false"
 			:close-on-press-escape="false">
 			<el-form :model="addEdit" label-width="120px" :rules="rules" ref="ruleForm">
-				<el-form-item :label="$t('emailSettings.formSMTPServer') + '：'" prop="host">
+				<el-form-item class="star" :label="$t('emailSettings.formSMTPServer') + '：'" prop="host">
 					<el-input v-model="addEdit.host" class="width200"/>
 				</el-form-item>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item :label="$t('emailSettings.formUserAddress') + '：'" prop="user">
-							<el-input v-model="addEdit.user" class="width200"/>
+						<el-form-item class="star" :label="$t('emailSettings.formUserAddress') + '：'" prop="emailAddress">
+							<el-input v-model="addEdit.emailAddress" class="width200"/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item class="star" :label="$t('emailSettings.formNickName') + '：'" prop="nickname">
+							<el-input v-model="addEdit.nickname" class="width200"/>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item class="star" :label="$t('emailSettings.formEmailUserName') + '：'" prop="userName">
+							<el-input v-model="addEdit.userName" class="width200"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
@@ -114,21 +129,32 @@
 				</el-row>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item :label="$t('emailSettings.formPassword') + '：'" prop="password">
-							<el-input v-model="addEdit.password" class="width200"/>
+						<el-form-item class="star" :label="$t('emailSettings.formPassword') + '：'" prop="password">
+							<el-input v-model="addEdit.password" type="password" class="width200"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item :label="$t('emailSettings.formSMTPPort') + '：'" prop="port">
+						<el-form-item class="star" :label="$t('emailSettings.formSMTPPort') + '：'" prop="port">
 							<el-input v-model="addEdit.port" class="width200"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
-				<el-form-item :label="$t('emailSettings.formEmailUserName') + '：'" prop="userName">
-					<el-input v-model="addEdit.userName" class="width200"/>
-				</el-form-item>
 				<el-form-item :label="$t('emailSettings.formEmailSignature') + '：'">
-					<el-input class="textAreaBox" type="textarea" :autosize="{ minRows: 4, maxRows: 6 }" v-model="addEdit.signature"/>
+					<div class="positionRelative">
+						<UEModify :defaultMsg="addEdit.signature" :config="config" ref="UEModify"/>
+						<el-upload
+							class="emailSettings-modifyUpload"
+							:action="rootUrl + '/uploadImageFile'"
+							:data="dataObject"
+							:show-file-list="false"
+							:accept="accept"
+							:headers="uploadHeaders"
+							name="uploadFile"
+							:on-success="handleAvatarSuccess"
+							:before-upload="beforeAvatarUpload">
+							<span class="emailSettings-modifyUpload-iconImg"></span>
+						</el-upload>
+					</div>
 				</el-form-item>
 			</el-form>
 			<div slot="footer">
@@ -145,16 +171,35 @@
 			:visible.sync="dialogVisible_test"
 			:close-on-click-modal="false"
 			:close-on-press-escape="false">
-			<el-form :model="testForm" label-width="150px" :rules="rules" ref="testRuleForm">
-				<el-form-item :label="$t('emailSettings.dialogUserEmailAddress') + '：'" prop="emailAddress">
-					<el-input v-model="testForm.emailAddress" class="width200"/>
-				</el-form-item>
-				<el-form-item :label="$t('emailSettings.dialogUserEmailContent') + '：'" prop="emailContent">
-					<el-input type="textarea" :autosize="{ minRows: 4, maxRows: 6 }" v-model="testForm.emailContent"/>
-				</el-form-item>
-			</el-form>
+			<div v-loading="emailSettings_loading" :element-loading-text="$t('public.loadingSend')">
+				<el-form :model="testForm" label-width="160px" :rules="rules" ref="testRuleForm">
+					<el-form-item class="star" :label="$t('emailSettings.dialogUserEmailAddress') + '：'" prop="emailAddress">
+						<el-input v-model="testForm.emailAddress" class="width200"/>
+					</el-form-item>
+					<el-form-item class="star" :label="$t('emailSettings.dialogUserEmailContent') + '：'">
+						<div class="positionRelative">
+							<UETest :defaultMsg="defaultMSGTest" :config="config" ref="UETest"/>
+							<el-upload
+								class="emailSettings-testUpload"
+								:action="rootUrl + '/uploadImageFile'"
+								:data="dataObject"
+								:show-file-list="false"
+								:accept="accept"
+								:headers="uploadHeaders"
+								name="uploadFile"
+								:on-success="handleAvatarTestSuccess"
+								:before-upload="beforeAvatarUpload">
+								<span class="emailSettings-modifyUpload-iconImg"></span>
+							</el-upload>
+							<span v-if="emailContentFlag" class="fs12 iconfontError">{{$t('public.isNotNull')}}</span>
+						</div>
+					</el-form-item>
+				</el-form>
+			</div>
 			<div slot="footer">
-				<el-button type="primary" class="height34" @click="testSend('testRuleForm')">{{$t('emailSettings.formBtnTestSend')}}</el-button>
+				<el-button type="primary" class="height34" @click="testSend('testRuleForm')">
+					{{$t('emailSettings.formBtnTestSend')}}
+				</el-button>
 				<el-button class="height34 alertBtn" @click="resetTestData">{{$t('public.cancel')}}</el-button>
 			</div>
 		</el-dialog>
@@ -162,15 +207,41 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {dateFilter, passWordString} from "../../../../assets/js/filters";
-	import {isNotNull,isEmail} from "../../../../assets/js/validator";
+	import {isNotNull, isEmail} from "../../../../assets/js/validator";
+	import UEModify from '../../../../components/alarm/UEModify';
+	import UETest from '../../../../components/alarm/UETest';
 
 	export default {
 		name: "emailSettinds",
-		components: {Box},
+		components: {Box, UEModify, UETest},
 		data() {
 			return {
+				dataObject: {
+					module: 'notice',
+					business: 'editor',
+					joinTimestamp: true
+				},
+				defaultModify: null,
+				defaultMSGTest: '',
+				config: {
+					initialFrameWidth: null, // 初始化宽度
+					initialFrameHeight: 150, // 初始化高度
+					toolbars: [
+						[
+							'bold', 'italic', 'underline', '|',
+							'justifyleft', 'justifyright', 'justifycenter', 'justifyjustify', '|',
+							'forecolor', 'backcolor', '|',
+							'insertorderedlist', 'insertunorderedlist', '|',
+							'link']
+					]
+				},
+				rootUrl: this.$api.root(),
+				accept:this.$api.imgType(),
+				uploadHeaders: {
+					'token': localStorage.getItem('hy-token') || ''
+				},
 				// 显示表单
 				formData: {
 					host: '',
@@ -190,33 +261,25 @@
 					pageSize: 10, // 显示条数
 				},
 				dialogVisible: false, // 修改邮件设置弹出层
+				editDataId: '',
 				addEdit: {
-					id: '', // id
 					host: '', // smtp服务器
-					user: '', // 发件人地址
+					emailAddress: '', // 发件人地址
+					nickname:'', // 发件人用户昵称
 					sslEnable: false, // 是否加密
 					password: '', // 密码 授权码
 					port: '', // 端口
 					userName: '', // 邮件显示名称
 					signature: '', // 签名
+					transportProtocol: 'smtp', // 协议
 				},
-				dialogVisible_test:false, // 测试发送
+				dialogVisible_test: false, // 测试发送
+				emailContentFlag: false, // 测试发送为空提示
+				emailSettings_loading:false, // 测试发送 loading
 				// 测试发送表单
-				testForm:{
-					emailAddress:'',
-					emailContent:'',
-				},
-				// 表单部分 富文本编辑器配置
-				editorOptions:{
-					modules:{
-						toolbar: [
-							['bold', 'italic','underline','strike'],
-							[{'color':[]},{'background':[]}],
-							[{'header':[1,2,3,4,5,6,false]}],
-							[{'size': ['12px', '14px', '16px' ,'18px', '20px', '22px', '24px']}],
-						]
-					},
-					theme:'snow'
+				testForm: {
+					emailAddress: '',
+					emailContent: '',
 				},
 				rules: {
 					host: [
@@ -234,17 +297,48 @@
 					userName: [
 						{validator: isNotNull, trigger: ['blur']}
 					],
-					emailAddress:[
+					emailAddress: [
 						{validator: isNotNull, trigger: ['blur']},
 						{validator: isEmail, trigger: ['blur']}
 					],
-					emailContent:[
+					emailContent: [
+						{validator: isNotNull, trigger: ['blur']}
+					],
+					nickname:[
 						{validator: isNotNull, trigger: ['blur']}
 					]
 				}
 			}
 		},
 		methods: {
+			// 修改时 图片上传前
+			beforeAvatarUpload(file){
+				var isLt1M = file.size / 1024 / 1024 < 1;
+				if (!isLt1M) {
+					this.$message.error('上传头像图片大小不能超过 1MB!');
+				}
+				return isLt1M;
+			},
+			// 修改图片上传成功
+			handleAvatarSuccess(res) {
+				var _t = this;
+				if (res.status === 200) {
+					var imgPath = res.data.image_base64;
+					var imgDom = "<img src='"+ imgPath +"' />";
+					var signature = _t.$refs.UEModify.getUEContent() + imgDom;
+					_t.$refs.UEModify.setUEContent(signature);
+				}
+			},
+			// 测试发送图片上传成功
+			handleAvatarTestSuccess(res){
+				var _t = this;
+				if (res.status === 200) {
+					var imgPath = res.data.image_base64;
+					var imgDom = "<img src='"+ imgPath +"' />";
+					var signature = _t.$refs.UETest.getUEContent() + imgDom;
+					_t.$refs.UETest.setUEContent(signature);
+				}
+			},
 			// 获取表单数据
 			getFormData() {
 				var _t = this;
@@ -260,13 +354,16 @@
 							var listData = res.data.list === null ? [] : res.data.list;
 							// 表单只有一条数据
 							if (listData[0]) {
-								_t.addEdit.id = listData[0].id;
+								_t.editDataId = listData[0].id;
 								if (JSON.parse(listData[0].confContents)) {
 									_t.formData = JSON.parse(listData[0].confContents);
+									if (_t.formData.signature && document.getElementById('form-html')) {
+										document.getElementById('form-html').innerHTML = _t.formData.signature;
+									}
 									if (_t.formData.sslEnable === true || _t.formData.sslEnable === 'true') {
-										_t.formData.sslEnable =  true;
+										_t.formData.sslEnable = true;
 									} else {
-										_t.formData.sslEnable =  false;
+										_t.formData.sslEnable = false;
 									}
 								}
 							}
@@ -355,29 +452,30 @@
 			editDataBtn() {
 				var _t = this;
 				_t.dialogVisible = true;
-				_t.getEditData(_t.addEdit.id);
+				_t.getEditData(_t.editDataId);
 			},
 			// 编辑数据回显
-			getEditData(val){
+			getEditData(val) {
 				var _t = this;
-				_t.$api.get('system/noticeConf/' + val,{},function (res) {
+				_t.$api.get('system/noticeConf/' + val, {}, function (res) {
 					switch (res.status) {
 						case 200:
 							var listData = res.data;
 							// 表单只有一条数据
 							if (listData) {
-									var confContents = JSON.parse(listData.confContents);
-									_t.addEdit.host = confContents.host;
-									_t.addEdit.user = confContents.user;
-									if (confContents.sslEnable === true || confContents.sslEnable === 'true') {
-										_t.addEdit.sslEnable = true;
-									} else {
-										_t.addEdit.sslEnable = false;
-									}
-									_t.addEdit.password = confContents.password;
-									_t.addEdit.userName = confContents.userName;
-									_t.addEdit.port = confContents.port;
-									_t.addEdit.signature = confContents.signature;
+								var confContents = JSON.parse(listData.confContents);
+								_t.addEdit.host = confContents.host;
+								_t.addEdit.emailAddress = confContents.emailAddress;
+								_t.addEdit.nickname = confContents.nickname;
+								if (confContents.sslEnable === true || confContents.sslEnable === 'true') {
+									_t.addEdit.sslEnable = true;
+								} else {
+									_t.addEdit.sslEnable = false;
+								}
+								_t.addEdit.password = confContents.password;
+								_t.addEdit.userName = confContents.userName;
+								_t.addEdit.port = confContents.port;
+								_t.addEdit.signature = confContents.signature;
 							}
 							break;
 						case 1003: // 无操作权限
@@ -396,20 +494,22 @@
 				var _t = this;
 				_t.$refs[formName].validate((valid) => {
 					if (valid) {
-						_t.$api.put('system/noticeConf/',{
-							systemNoticeConf:{
-								id:_t.addEdit.id,
-								confSource:'userDefined',
-								noticeWay:0, // 邮件
-								confContents:JSON.stringify(_t.addEdit),
+						// 富文本编辑器 双引号替换为单引号
+						_t.addEdit.signature = _t.$refs.UEModify.getUEContent().replace(/\"/g,"'");
+						_t.$api.put('system/noticeConf/', {
+							systemNoticeConf: {
+								id: _t.editDataId,
+								confSource: 'userDefined',
+								noticeWay: 0, // 邮件
+								confContents: JSON.stringify(_t.addEdit),
 							}
-						},function (res) {
+						}, function (res) {
 							switch (res.status) {
 								case 200:
 									_t.$alert(_t.$t('roleMaintenance.confirmSaveSuccessTip'), _t.$t('public.resultTip'), {
 										confirmButtonText: _t.$t('public.confirm'),
 										confirmButtonClass: 'alertBtn'
-									}).then(()=>{
+									}).then(() => {
 										_t.getFormData();
 										_t.resetData();
 									});
@@ -442,20 +542,31 @@
 				_t.$refs.ruleForm.resetFields(); //移除校验结果并重置字段值
 			},
 			// 测试发送提交按钮
-			testSend(formName){
+			testSend(formName) {
 				var _t = this;
+				var content = _t.$refs.UETest.getUEContent();
+				if (content === null || content.trim() === '') {
+					_t.emailContentFlag = true;
+				} else {
+					_t.emailContentFlag = false;
+				}
 				_t.$refs[formName].validate((valid) => {
-					if (valid) {
-						_t.$api.post('system/noticeConf/sendEmail',{
-							emailAddress:_t.testForm.emailAddress,
-							emailContent:_t.testForm.emailContent,
-						},function (res) {
+					if (valid && _t.emailContentFlag === false) {
+						_t.testForm.emailContent = _t.$refs.UETest.getUEContent();
+						_t.emailSettings_loading = true;
+						_t.$api.post('system/noticeConf/sendEmail', {
+							emailAddress: _t.testForm.emailAddress,
+							emailContent: _t.testForm.emailContent,
+						}, function (res) {
+							_t.emailSettings_loading = false;
 							switch (res.status) {
 								case 200:
 									_t.$alert(_t.$t('emailSettings.dialogConfirmSuccessTip'), _t.$t('public.resultTip'), {
 										confirmButtonText: _t.$t('public.confirm'),
 										confirmButtonClass: 'alertBtn'
-									}).then(()=>{
+									}).then(() => {
+										_t.resetTestData();
+									}).catch(()=>{
 										_t.resetTestData();
 									});
 									break;
@@ -469,8 +580,9 @@
 									_t.$alert(_t.$t('emailSettings.dialogConfirmErrorTip'), _t.$t('public.resultTip'), {
 										confirmButtonText: _t.$t('public.confirm'),
 										confirmButtonClass: 'alertBtn'
-									}).then(()=>{
-									}).catch(()=>{});
+									}).then(() => {
+									}).catch(() => {
+									});
 									break;
 								default:
 									break;
@@ -480,7 +592,7 @@
 				});
 			},
 			// 测试重置
-			resetTestData(){
+			resetTestData() {
 				var _t = this;
 				_t.dialogVisible_test = false;
 				_t.testForm.emailAddress = '';
@@ -491,11 +603,6 @@
 		},
 		created() {
 			this.getFormData();
-		},
-		computed:{
-			editor(){
-				return this.$refs.myQuillEditor.quill;
-			}
 		},
 	}
 </script>
@@ -523,6 +630,33 @@
 		height: 34px;
 		line-height: 34px;
 	}
+
+	#form-html {
+		width: 550px;
+		border: 1px solid #e1e1e1;
+		padding: 20px;
+	}
+
+	.emailSettings-modifyUpload {
+		position: absolute;
+		top: 5px;
+		right: 180px;
+		z-index: 1000;
+	}
+
+	.emailSettings-testUpload {
+		position: absolute;
+		top: 5px;
+		right: 155px;
+		z-index: 1000;
+	}
+
+	.emailSettings-modifyUpload-iconImg {
+		width: 30px;
+		height: 30px;
+		display: inline-block;
+		background: url('../../../../../static/img/icons.png') no-repeat -720px -75px;
+	}
 </style>
 <style>
 	.emailSettings-dialog .el-dialog {
@@ -531,10 +665,14 @@
 	}
 
 	.emailSettings-formQuill {
-		width: 550px;
+		width: 600px;
 	}
 
 	.emailSettings-formQuill .ql-container.ql-snow {
 		min-height: 100px;
+	}
+
+	#form-html img {
+		max-width: 100%;
 	}
 </style>

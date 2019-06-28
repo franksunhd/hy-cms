@@ -12,7 +12,7 @@
 			<!--表单-->
 			<el-form inline v-model="formItem">
 				<el-form-item :label="$t('userMaintenance.account') + '：'">
-					<el-input v-model="formItem.username" class="width200" clearable/>
+					<el-input v-model="formItem.username" class="width200" @keyup.enter.native="getData()" clearable/>
 				</el-form-item>
 				<el-form-item id="selectTreeBox" class="positionRelative" :label="$t('userMaintenance.organization') + '：'">
 					<i class="el-icon-error el-input__clear selectTreeBox_close"></i>
@@ -184,28 +184,20 @@
 				<br/>
 				<!--分配角色-->
 				<el-form-item class="star assignRole-form" :label="$t('userMaintenance.assignRole') + '：'">
-					<p v-if="addEdit.organizationId == ''" class="iconfontError">{{$t('userMaintenance.placeSelectOrg')}}</p>
+					<p v-if="assignRoleList.length === 0" class="iconfontError">{{$t('userMaintenance.placeSelectOrg')}}</p>
 					<div v-else class="assignRole-box">
-						<div v-for="(item,index) in assignRoleList" :key="index">
-							<template v-for="(val,i) in item.nodeNames">
-								<span class="fs12 displayInlineBlock">{{val}}</span>
-								<i v-if="i !== item.nodeNames.length - 1" class="el-icon-arrow-right"></i>
-							</template>
-							<p v-if="item.children.length === 0" class="iconfontError">{{$t('userMaintenance.isNotRoleOnOrg')}}</p>
-							<el-checkbox-group v-else class="assignRole-group-box" v-model="item.assignRole" @change="changeAllRole">
-								<el-checkbox-button v-for="node in item.children" :label="node.nodeId" :key="node.nodeId">
-									{{node.nodeName}}
-								</el-checkbox-button>
-							</el-checkbox-group>
-						</div>
+						<el-checkbox-group class="assignRole-group-box" v-model="assignRoleListSelected">
+							<el-checkbox-button v-for="(item,index) in assignRoleList" :label="item.id" :key="index">
+								{{item.roleName}}
+							</el-checkbox-button>
+						</el-checkbox-group>
 					</div>
 					<span v-if="roleErrorTip" class="iconfontError">{{$t('public.isNotNull')}}</span>
 				</el-form-item>
 			</el-form>
 			<span slot="footer">
-        <el-button class="alertBtn" v-if="ifAdd === true" type="primary"
-									 @click="addData()">{{$t('public.confirm')}}</el-button>
-        <el-button class="alertBtn" v-if="ifAdd === false" type="primary" @click="editData('ruleForm')">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" v-if="ifAdd === true" type="primary" @click="addData">{{$t('public.confirm')}}</el-button>
+        <el-button class="alertBtn" v-if="ifAdd === false" type="primary" @click="editData">{{$t('public.confirm')}}</el-button>
         <el-button class="alertBtn" @click="resetFormAdd">{{$t('public.cancel')}}</el-button>
       </span>
 		</el-dialog>
@@ -213,7 +205,7 @@
 </template>
 
 <script>
-	import Box from '../../../../components/Box';
+	import Box from '../../../../components/common/Box';
 	import {isNotNull, isMobilePhone, isEmail} from "../../../../assets/js/validator";
 	import {orgBreadcrumb} from "../../../../assets/js/recursive";
 
@@ -241,8 +233,7 @@
 					mobileNum: '',
 					emails: '',
 					status: 1,
-					assignRole: [],
-					changeSelect: false
+					assignRole: []
 				},
 				errorTip: {
 					organizationFlag: false, // 是否显示
@@ -286,8 +277,10 @@
 				checkRoleIds: [],
 				// 编辑数据集合
 				editDataList: {},
-				// 角色列表
+				// 角色列表集合
 				assignRoleList: [],
+				// 选中的角色列表集合
+				assignRoleListSelected:[],
 				// 组织层级
 				organizationName: [],
 				// 分页
@@ -307,23 +300,6 @@
 			}
 		},
 		methods: {
-			// 全选角色
-			changeAllRole() {
-				var _t = this;
-				var assignRoleListArr = new Array();
-				_t.assignRoleList.forEach((item) => {
-					if (item.assignRole.length !== 0) {
-						item.assignRole.forEach((val) => {
-							assignRoleListArr.push(val);
-						});
-					}
-				});
-				if (assignRoleListArr.length !== 0) {
-					_t.roleErrorTip = false;
-				} else {
-					_t.roleErrorTip = true;
-				}
-			},
 			// 重置筛选表单
 			resetFormData() {
 				var _t = this;
@@ -339,6 +315,7 @@
 				var _t = this;
 				_t.dialogVisible = true;
 				_t.ifAdd = true;
+				_t.getRoleList();
 			},
 			// 查询表单所属组织下拉框
 			clickNode(val) {
@@ -353,10 +330,7 @@
 				_t.addEdit.organization = val.nodeName;
 				_t.addEdit.organizationId = val.nodeId;
 				_t.isShowEditPopover = false;
-				_t.addEdit.changeSelect = true;
 				_t.roleErrorTip = false;
-				_t.organizationName = orgBreadcrumb(_t.organizationList, val.nodeId);
-				_t.getRoleWithOrgId(_t.addEdit.organizationId);
 				// 校验 所属组织
 				_t.isNotNullRule(_t.addEdit.organizationId === '' || _t.addEdit.organization === '', 'organizationFlag', 'organizationTip', _t.$t('public.isNotNull'), 'user_id');
 			},
@@ -373,6 +347,7 @@
 				_t.addEdit.mobileNum = '';
 				_t.addEdit.status = 1;
 				_t.addEdit.emails = '';
+				_t.assignRoleListSelected = [];
 				_t.$refs.table.clearSelection();
 				// 重置表单手动校验
 				_t.roleErrorTip = false;
@@ -687,9 +662,9 @@
 				_t.$api.get('system/user/pagelist', {
 					jsonString: JSON.stringify({
 						systemUser: {
-							username: _t.formItem.username,
-							organizationId: _t.formItem.organizationId,
-							status: _t.formItem.status,
+							username: _t.formItem.username === null ? null : (_t.formItem.username.trim() === '' ? null : _t.formItem.username.trim()),
+							organizationId: _t.formItem.organizationId === null ? null : (_t.formItem.organizationId === '' ? null : _t.formItem.organizationId),
+							status: _t.formItem.status === null ? null : (_t.formItem.status === '' ? null : _t.formItem.status),
 							languageMark: localStorage.getItem('hy-language')
 						},
 						currentPage: _t.options.currentPage,
@@ -824,20 +799,7 @@
 				// 校验密码
 				_t.isNotNullRule(_t.addEdit.loginPassword === null || _t.addEdit.loginPassword.trim() === '', 'passwordFlag', 'passwordTip', _t.$t('public.isNotNull'), 'user_password');
 				// 获取 分配角色 集合
-				var assignRoleListArr = new Array();
-				_t.assignRoleList.forEach((val) => {
-					if (val.assignRole.length !== 0) {
-						val.assignRole.forEach((data) => {
-							assignRoleListArr.push(data);
-						});
-					}
-				});
-				// 判断分配角色
-				if (_t.addEdit.organizationId === '' && assignRoleListArr.length === 0) {
-					_t.roleErrorTip = true;
-				} else if (_t.addEdit.organizationId === '' && assignRoleListArr.length !== 0) {
-					_t.roleErrorTip = false;
-				} else if (_t.addEdit.organizationId !== '' && assignRoleListArr.length === 0) {
+				if (_t.assignRoleListSelected.length === 0) {
 					_t.roleErrorTip = true;
 				} else {
 					_t.roleErrorTip = false;
@@ -862,7 +824,7 @@
 							createBy: localStorage.getItem('hy-user-name'),
 							languageMark: localStorage.getItem('hy-language')
 						},
-						roleId: assignRoleListArr.join(',')
+						roleId: _t.assignRoleListSelected.join(',')
 					}, function (res) {
 						switch (res.status) {
 							case 200:
@@ -932,45 +894,25 @@
 					}
 				});
 			},
-			// 根据组织id查询 角色列表
-			getRoleWithOrgId(val, resData) {
+			// 查询全部 角色列表
+			getRoleList(editRoleList) {
 				var _t = this;
-				_t.$api.get('system/organization/getOrgRoleTree', {
-					jsonString: JSON.stringify({
-						org_id: val
-					})
-				}, function (res) {
+				_t.$api.get('system/role/all', {}, function (res) {
 					switch (res.status) {
 						case 200:
-							var assignRoleList = new Array();
-							var resDataList = res.data === null ? [] : res.data;
-							resDataList.forEach((item) => {
-								assignRoleList.push(JSON.parse(item))
-							});
-							assignRoleList.forEach((val) => {
-								val.nodeNames = val.nodeName.split(',');
-								val.assignRole = [];
-							});
-							// 编辑的时候存选中的集合
+							_t.assignRoleList = res.data.list === null ? [] : res.data.list;
 							if (_t.ifAdd === false) {
-								var roleList = resData.roleList;
-								// 外层是全部的集合
-								assignRoleList.forEach((val) => {
-									// 内层是选中的集合
-									var selectRoleArr = new Array();
-									if (val.children.length !== 0) {
-										val.children.forEach((role) => {
-											roleList.forEach((data) => {
-												if (role.nodeId === data.id) {
-													selectRoleArr.push(data.id);
-												}
-											});
+								if (editRoleList.roleList) {
+									var roleList = editRoleList.roleList === null ? [] : editRoleList.roleList;
+									if (roleList.length !== 0) {
+										var roleSelectedArr = new Array();
+										roleList.forEach((t)=>{
+											roleSelectedArr.push(t.id);
 										});
+										_t.assignRoleListSelected = roleSelectedArr;
 									}
-									val.assignRole = selectRoleArr;
-								});
+								}
 							}
-							_t.assignRoleList = assignRoleList;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -980,13 +922,6 @@
 							break;
 						default:
 							_t.assignRoleList = [];
-							if (_t.ifAdd) {
-								_t.addEdit.assignRole = [];
-							} else if (_t.ifAdd == false && _t.addEdit.changeSelect == false) {
-								_t.addEdit.assignRole = _t.editDataList.roleListIds.split(',');
-							} else if (_t.ifAdd == false && _t.addEdit.changeSelect == true) {
-								_t.addEdit.assignRole = [];
-							}
 							break;
 					}
 				});
@@ -1012,7 +947,7 @@
 							_t.addEdit.mobileNum = res.data.mobile;
 							_t.addEdit.emails = res.data.email;
 							_t.addEdit.status = res.data.status;
-							_t.getRoleWithOrgId(res.data.organizationId, res.data);
+							_t.getRoleList(res.data);
 							_t.dialogVisible = true;
 							break;
 						case 1003: // 无操作权限
@@ -1034,24 +969,11 @@
 				// 校验登录账号
 				_t.isNotNullRule(_t.addEdit.loginAccount === null || _t.addEdit.loginAccount.trim() === '', 'userNameFlag', 'userNameTip', _t.$t('public.isNotNull'), 'user_username');
 				// 获取 分配角色 集合
-				var assignRoleListArr = new Array();
-				_t.assignRoleList.forEach((val) => {
-					if (val.assignRole.length !== 0) {
-						val.assignRole.forEach((data) => {
-							assignRoleListArr.push(data);
-						});
-					}
-				});
-				if (_t.addEdit.organizationId === '' && assignRoleListArr.length === 0) {
-					_t.roleErrorTip = true;
-				} else if (_t.addEdit.organizationId === '' && assignRoleListArr.length !== 0) {
-					_t.roleErrorTip = false;
-				} else if (_t.addEdit.organizationId !== '' && assignRoleListArr.length === 0) {
+				if (_t.assignRoleListSelected.length === 0) {
 					_t.roleErrorTip = true;
 				} else {
 					_t.roleErrorTip = false;
 				}
-
 				// 没有错误提示就可以提交
 				if (_t.errorTip.organizationFlag === false
 					&& _t.errorTip.displayNameFlag === false
@@ -1073,7 +995,7 @@
 							createBy: localStorage.getItem('hy-user-name'),
 							languageMark: localStorage.getItem('hy-language')
 						},
-						roleId: assignRoleListArr.join(',')
+						roleId: _t.assignRoleListSelected.join(',')
 					}, function (res) {
 						switch (res.status) {
 							case 200:

@@ -31,22 +31,24 @@
 					</el-popover>
 				</el-form-item>
 				<el-form-item :label="$t('alarmCurrent.equipmentName') + '：'">
-					<el-input v-model="formItem.equipmentName" class="width200" clearable/>
+					<el-input v-model="formItem.equipmentName" class="width200" @keyup.enter.native="getData()" clearable/>
 				</el-form-item>
 				<el-form-item :label="$t('alarmCurrent.equipmentIp') + '：'">
-					<el-input v-model="formItem.equipmentIp" class="width200" clearable/>
+					<el-input v-model="formItem.equipmentIp" class="width200" @keyup.enter.native="getData()" clearable/>
 				</el-form-item>
 				<el-form-item :label="$t('alarmCurrent.computerRoomName') + '：'">
 					<el-select
 						v-model="formItem.computerRoomId"
 						clearable
 						@change="changeRoom(formItem.computerRoomId)"
-						class="width200">
-						<el-option
-							v-for="(item,index) in computerRoomList"
-							:key="index"
-							:label="item.name"
-							:value="item.id"/>
+						class="width200 selectGroupList">
+						<el-option-group
+							v-for="(data,i) in computerRoomList"
+							:label="data.name"
+							:key="i">
+							<el-option v-for="(item,index) in data.centerRooms" :key="index" :label="item.name"
+												 :value="item.id"/>
+						</el-option-group>
 					</el-select>
 				</el-form-item>
 				<el-form-item :label="$t('alarmCurrent.rackNameInfo') + '：'">
@@ -203,16 +205,16 @@
 					<template slot-scope="scope">
 						<el-tooltip effect="dark" placement="top-start">
 							<div slot="content">
-								<span>{{scope.row.frameName == null? 'N/A' : (scope.row.frameName == '' ? 'N/A' : scope.row.frameName)}}</span>
+								<span>{{scope.row.rackName == null? 'N/A' : (scope.row.rackName == '' ? 'N/A' : scope.row.rackName)}}</span>
 							</div>
-							<span>{{scope.row.frameName == null? 'N/A' : (scope.row.frameName == '' ? 'N/A' : scope.row.frameName)}}</span>
+							<span>{{scope.row.rackName == null? 'N/A' : (scope.row.rackName == '' ? 'N/A' : scope.row.rackName)}}</span>
 						</el-tooltip>
 					</template>
 				</el-table-column>
-				<el-table-column width="120px" prop="framePosition" :label="$t('alarmCurrent.location')"
+				<el-table-column width="120px" prop="rackPosition" :label="$t('alarmCurrent.location')"
 								 header-align="left" align="left">
 					<template slot-scope="scope">
-						<span>{{scope.row.framePosition == null ? 'N/A' : (scope.row.framePosition == '' ? 'N/A' : scope.row.framePosition + 'U')}}</span>
+						<span>{{scope.row.rackPosition == null ? 'N/A' : (scope.row.rackPosition == '' ? 'N/A' : scope.row.rackPosition + 'U')}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="120px" prop="ip" :label="$t('alarmCurrent.equipmentIp')" header-align="left"
@@ -285,9 +287,9 @@
 </template>
 
 <script>
-	import Box from '../../../components/Box';
-	import AdministrationTags from '../../../components/AdministrationTabs';
-	import equipmentAlarmDetails from '../../../components/equipmentAlarmDetails';
+	import Box from '../../../components/common/Box';
+	import AdministrationTags from '../../../components/monitor/AdministrationTabs';
+	import equipmentAlarmDetails from '../../../components/monitor/equipmentAlarmDetails';
 	import {dateFilterDay, dateFilter, dateFilterDayCN} from "../../../assets/js/filters";
 
 	export default {
@@ -325,12 +327,9 @@
 				// 设备类型树形下拉框数据
 				equipmentTypeList: [],
 				// 机房树形下拉框的数据
-				computerRoomList: [
-					{name: this.$t('public.all'), id: null}
-				],
+				computerRoomList: [],
 				// 机架下拉框数据
 				rackNameList: [],
-				framesData: [],
 				// 筛选列表
 				optionsList: [
 					{label: 1, id: 1},
@@ -447,11 +446,14 @@
 			// 改变表单的机房时加载机柜的数据
 			changeRoom(val) {
 				var _t = this;
-				if (_t.formItem.computerRoomId !== null) {
-					_t.framesData = _t.framesData === null ? [] : _t.framesData;
-					_t.framesData.forEach(function (item) {
-						if (item.roomId == val) {
-							_t.rackNameList = item.frame;
+				if (val !== null && val !== '') {
+					_t.computerRoomList.forEach(function (item) {
+						if (item.centerRooms && item.centerRooms !== null) {
+							item.centerRooms.forEach((t)=>{
+								if (t.id === val) {
+									_t.rackNameList = t.rackList ? t.rackList : [];
+								}
+							});
 						}
 					});
 				} else {
@@ -484,7 +486,7 @@
 							deviceName: _t.formItem.equipmentName == null ? null : (_t.formItem.equipmentName.trim() == '' ? null : _t.formItem.equipmentName.trim()),
 							ip: _t.formItem.equipmentIp == null ? null : (_t.formItem.equipmentIp.trim() == '' ? null : _t.formItem.equipmentIp.trim()),
 							roomId: _t.formItem.computerRoomId == null ? null : (_t.formItem.computerRoomId.trim() == '' ? null : _t.formItem.computerRoomId.trim()),
-							frameId: _t.formItem.rackNameId == null ? null : (_t.formItem.rackNameId.trim() == '' ? null : _t.formItem.rackNameId.trim()),
+							rackId: _t.formItem.rackNameId == null ? null : (_t.formItem.rackNameId.trim() == '' ? null : _t.formItem.rackNameId.trim()),
 							business: _t.formItem.businessId == null ? null : (_t.formItem.businessId.trim() == '' ? null : _t.formItem.businessId.trim()),
 							alarmLevel: _t.formItem.equipmentStatus == null ? null : (_t.formItem.equipmentStatus.trim() == '' ? null : _t.formItem.equipmentStatus.trim()),
 							status: _t.formItem.dealWithStatus == null ? null : (_t.formItem.dealWithStatus.trim() == '' ? null : _t.formItem.dealWithStatus.trim()),
@@ -623,10 +625,25 @@
 					_t.$store.commit('setLoading', false);
 					switch (res.status) {
 						case 200:
-							var computerRoomList = res.data.rooms === null ? [] : res.data.rooms;
-							_t.framesData = res.data.frames;
-							computerRoomList.unshift({name: _t.$t('public.all'), id: null});
-							_t.computerRoomList = computerRoomList;
+							if (res.data && res.data !== null) {
+								// 缓存机房机柜map
+								var rackMap = new Object();
+								if (res.data.racks && res.data.racks !== null) {
+									rackMap = res.data.racks;
+								}
+								// 第一层先把 数据中心下的 机房map转为 机房list
+								var dataCenterList = res.data.dataCenter === null ? [] : res.data.dataCenter;
+								// 第一层循环 数据中心
+								dataCenterList.forEach((center) => {
+									// 判断机房集合字段是否存在
+									if (center.centerRooms && center.centerRooms !== null) {
+										center.centerRooms.forEach((t) => {
+											t.rackList = rackMap[t.id] ? rackMap[t.id] : [];
+										});
+									}
+								});
+							}
+							_t.computerRoomList = dataCenterList;
 							break;
 						case 1003: // 无操作权限
 						case 1004: // 登录过期
@@ -635,7 +652,6 @@
 							_t.exclude(_t, res.message);
 							break;
 						default:
-							_t.computerRoomList = [{name: '所有纳管的设备', id: null}];
 							break;
 					}
 				});

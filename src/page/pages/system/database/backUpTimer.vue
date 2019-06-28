@@ -123,12 +123,11 @@
 </template>
 
 <script>
-  import Box from '../../../../components/Box';
-  import myCron from '../../../../components/cron';
+  import Box from '../../../../components/common/Box';
 
   export default {
     name: "backUpTimer",
-    components: {Box, myCron},
+    components: {Box},
     data() {
       return {
         disableBtn: {
